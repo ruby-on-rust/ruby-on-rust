@@ -1,8 +1,29 @@
 use std::fmt::{Debug, Formatter, Error};
 
 pub enum Expr {
-  Number(i64),
-  Operation(Box<Expr>, Operator, Box<Expr>)
+    // Nullary(),
+
+    // Unary(),
+    Number(i64),
+    Identifier(String),
+
+    Binary(Box<Expr>, Operator, Box<Expr>),
+    Assignment(String, Box<Expr>), // TODO maybe we should represent Identifier as a tuple or sth, instead of a plain String
+
+    // Ternary()
+}
+
+impl Debug for Expr {
+    fn fmt(&self, fmt: &mut Formatter) -> Result<(), Error> {
+        use self::Expr::*;
+        match *self {
+            Number(n) => write!(fmt, "{:?}", n),
+            Identifier(ref s) => write!(fmt, "{:?}", s),
+            Binary(ref l, op, ref r) => write!(fmt, "({:?} {:?} {:?})", l, op, r),
+            Assignment(ref id, ref e) => write!(fmt, "({:?} = {:?})", id, e),
+            // Error => write!(fmt, "error"),
+        }
+    }
 }
 
 #[derive(Copy, Clone)]
@@ -11,17 +32,7 @@ pub enum Operator {
     Div,
     Add,
     Sub,
-}
-
-impl Debug for Expr {
-    fn fmt(&self, fmt: &mut Formatter) -> Result<(), Error> {
-        use self::Expr::*;
-        match *self {
-            Number(n) => write!(fmt, "{:?}", n),
-            Operation(ref l, op, ref r) => write!(fmt, "({:?} {:?} {:?})", l, op, r),
-            // Error => write!(fmt, "error"),
-        }
-    }
+    Equal,
 }
 
 impl Debug for Operator {
@@ -32,6 +43,7 @@ impl Debug for Operator {
             Div => write!(fmt, "/"),
             Add => write!(fmt, "+"),
             Sub => write!(fmt, "-"),
+            Equal => write!(fmt, "="),
         }
     }
 }

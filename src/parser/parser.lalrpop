@@ -4,25 +4,34 @@ use parser::ast::*;
 grammar;
 
 pub Expr: Box<Expr> = {
+    ExprAssignment,
+};
+
+ExprAssignment: Box<Expr> = {
     ExprPlusMinus,
+    <i:Identifier> "=" <r:ExprPlusMinus> => Box::new(Expr::Assignment(i, r))
 };
 
-pub ExprPlusMinus: Box<Expr> = {
+ExprPlusMinus: Box<Expr> = {
     ExprMulDiv,
-    <l:ExprAtom> "+" <r:ExprPlusMinus> => Box::new(Expr::Operation(l, Operator::Add, r)),
-    <l:ExprAtom> "-" <r:ExprPlusMinus> => Box::new(Expr::Operation(l, Operator::Sub, r)),
+    <l:ExprAtom> "+" <r:ExprPlusMinus> => Box::new(Expr::Binary(l, Operator::Add, r)),
+    <l:ExprAtom> "-" <r:ExprPlusMinus> => Box::new(Expr::Binary(l, Operator::Sub, r)),
 };
 
-pub ExprMulDiv: Box<Expr> = {
+ExprMulDiv: Box<Expr> = {
     ExprAtom,
-    <l:ExprAtom> "*" <r:ExprPlusMinus> => Box::new(Expr::Operation(l, Operator::Mul, r)),
-    <l:ExprAtom> "/" <r:ExprPlusMinus> => Box::new(Expr::Operation(l, Operator::Div, r)),
-    // TODO %
+    <l:ExprAtom> "*" <r:ExprPlusMinus> => Box::new(Expr::Binary(l, Operator::Mul, r)),
+    <l:ExprAtom> "/" <r:ExprPlusMinus> => Box::new(Expr::Binary(l, Operator::Div, r)),
 };
 
-pub ExprAtom: Box<Expr> = {
+ExprAtom: Box<Expr> = {
     "(" <Expr> ")",
+    Identifier => Box::new(Expr::Identifier(<>)),
     Number => Box::new(Expr::Number(<>)),
+};
+
+Identifier: String = {
+    r"[a-zA-Z]\w*" => String::from(<>)
 };
 
 Number: i64 = {
