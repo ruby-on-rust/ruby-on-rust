@@ -1,0 +1,30 @@
+use std::str::FromStr;
+use parser::ast::*;
+
+grammar;
+
+pub Expr: Box<Expr> = {
+    ExprPlusMinus,
+};
+
+pub ExprPlusMinus: Box<Expr> = {
+    ExprMulDiv,
+    <l:ExprAtom> "+" <r:ExprPlusMinus> => Box::new(Expr::Operation(l, Operator::Add, r)),
+    <l:ExprAtom> "-" <r:ExprPlusMinus> => Box::new(Expr::Operation(l, Operator::Sub, r)),
+};
+
+pub ExprMulDiv: Box<Expr> = {
+    ExprAtom,
+    <l:ExprAtom> "*" <r:ExprPlusMinus> => Box::new(Expr::Operation(l, Operator::Mul, r)),
+    <l:ExprAtom> "/" <r:ExprPlusMinus> => Box::new(Expr::Operation(l, Operator::Div, r)),
+    // TODO %
+};
+
+pub ExprAtom: Box<Expr> = {
+    "(" <Expr> ")",
+    Number => Box::new(Expr::Number(<>)),
+};
+
+Number: i64 = {
+    r"[0-9]+" => i64::from_str(<>).unwrap()
+};
