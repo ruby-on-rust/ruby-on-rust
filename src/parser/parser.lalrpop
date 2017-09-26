@@ -8,20 +8,20 @@ pub Expr: Box<Expr> = {
 };
 
 ExprAssignment: Box<Expr> = {
-    ExprPlusMinus,
-    <i:Identifier> "=" <r:ExprPlusMinus> => Box::new(Expr::Assignment(i, r))
+    ExprAddSub,
+    <i:Identifier> "=" <r:ExprAddSub> => Box::new(Expr::Assignment(i, r))
 };
 
-ExprPlusMinus: Box<Expr> = {
+ExprAddSub: Box<Expr> = {
     ExprMulDiv,
-    <l:ExprAtom> "+" <r:ExprPlusMinus> => Box::new(Expr::Binary(l, Operator::Add, r)),
-    <l:ExprAtom> "-" <r:ExprPlusMinus> => Box::new(Expr::Binary(l, Operator::Sub, r)),
+    <l:ExprAtom> "+" <r:ExprAddSub> => Box::new(Expr::Binary(l, Operator::Add, r)),
+    <l:ExprAtom> "-" <r:ExprAddSub> => Box::new(Expr::Binary(l, Operator::Sub, r)),
 };
 
 ExprMulDiv: Box<Expr> = {
     ExprAtom,
-    <l:ExprAtom> "*" <r:ExprPlusMinus> => Box::new(Expr::Binary(l, Operator::Mul, r)),
-    <l:ExprAtom> "/" <r:ExprPlusMinus> => Box::new(Expr::Binary(l, Operator::Div, r)),
+    <l:ExprAtom> "*" <r:ExprAddSub> => Box::new(Expr::Binary(l, Operator::Mul, r)),
+    <l:ExprAtom> "/" <r:ExprAddSub> => Box::new(Expr::Binary(l, Operator::Div, r)),
 };
 
 ExprAtom: Box<Expr> = {
