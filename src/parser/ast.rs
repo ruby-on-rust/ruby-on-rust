@@ -6,6 +6,7 @@ pub enum Expr {
     // Unary(),
     Number(i64),
     Identifier(String),
+    // TODO prefixed. minus, bang, etc
 
     Binary(Box<Expr>, Operator, Box<Expr>),
     Assignment(String, Box<Expr>), // TODO maybe we should represent Identifier as a tuple or sth, instead of a plain String
@@ -32,7 +33,7 @@ pub enum Operator {
     Div,
     Add,
     Sub,
-    Equal,
+    // Equal,
 }
 
 impl Debug for Operator {
@@ -43,7 +44,7 @@ impl Debug for Operator {
             Div => write!(fmt, "/"),
             Add => write!(fmt, "+"),
             Sub => write!(fmt, "-"),
-            Equal => write!(fmt, "="),
+            // Equal => write!(fmt, "="),
         }
     }
 }

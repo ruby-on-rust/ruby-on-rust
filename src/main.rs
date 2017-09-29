@@ -6,12 +6,12 @@ mod interpreter;
 use interpreter::interpreter::Interpreter; // TODO got to be kidding...
 
 fn main() {
-    let mut interpreter = Interpreter {};
+    let mut interpreter = Interpreter { ..Default::default() };
     let mut input_line = String::new();
 
     loop {
         print!("> ");
-        io::stdout().flush();
+        let _ = io::stdout().flush();
 
         io::stdin().read_line(&mut input_line).ok().expect("input failed");
 

@@ -1,8 +1,0 @@
-- numbers being int, float, oct, etc
-- operators
-  - %
-  - bool
-  - a ? b : c
-- "#{foo}"
-- block and function
-- unicode as var name
