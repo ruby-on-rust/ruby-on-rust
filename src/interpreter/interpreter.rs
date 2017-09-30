@@ -2,14 +2,14 @@ use std::collections::HashMap;
 
 use parser::ast;
 
-use interpreter::memory::{Refer, Value};
+use interpreter::memory::{Refer, Value, Memory};
 use interpreter::scope::{Var};
 
 // TODO implement struct Memory
 #[derive(Default)]
 pub struct Interpreter {
     // TODO REVISIT only make `pub` for `Default` to work
-    pub memory: Vec<Value>,
+    pub memory: Memory,
     pub vars: HashMap<String, Var>
 }
 
@@ -22,7 +22,7 @@ impl Interpreter {
     pub fn eval_expr(&mut self, expr: ast::Expr) -> Refer {
         match expr {
             ast::Expr::Number(n) => {
-                return self.memory_allocate(Value::Number(n))
+                return self.memory.allocate_value(Value::Number(n))
             },
 
             ast::Expr::Identifier(var_name) => {
@@ -37,9 +37,9 @@ impl Interpreter {
                 return self.eval_expr_assignment(var_name, *expr)
             },
 
-            _ => {
-                unimplemented!()
-            }
+            // _ => {
+            //     unimplemented!()
+            // }
         }
     }
 

@@ -1,7 +1,3 @@
-use parser::ast;
-
-use super::interpreter::{Interpreter};
-
 pub type Refer = Option<u64>;
 
 // TODO maybe make Value a struct
@@ -12,20 +8,24 @@ pub enum Value {
     Number(i64)
 }
 
-impl Interpreter {
+#[derive(Default)]
+pub struct Memory {
+    space: Vec<Value>
+}
+
+impl Memory {
     // allocate a new slot in memory, save the value, and return the assigned address
     // TODO return a Result
-    pub fn memory_allocate(&mut self, value: Value) -> Refer {
-        self.memory.push(value);
+    pub fn allocate_value(&mut self, value: Value) -> Refer {
+        self.space.push(value);
 
         // TODO CLEANUP, or at least use that logging crate
         println!("allocated memory, current:");
-        println!("{:?}", self.memory);
+        println!("{:?}", self.space);
 
-        return Some(( self.memory.len() - 1 ) as u64)
+        return Some(( self.space.len() - 1 ) as u64)
     }
 
-    // TODO separate to Ref
     // TODO handle nil
     // TODO return a Result<Option<>>
     pub fn get_value_from_refer(&self, refer: Refer) -> &Value {
@@ -34,7 +34,7 @@ impl Interpreter {
         println!("{:?}", refer);
 
         if let Some(addr) = refer {
-            return &self.memory[addr as usize]
+            return &self.space[addr as usize]
         } else {
             unimplemented!()
         }

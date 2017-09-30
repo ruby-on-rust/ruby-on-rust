@@ -1,5 +1,3 @@
-use parser::ast;
-
 use interpreter::interpreter::{Interpreter};
 use interpreter::memory::{Refer};
 
