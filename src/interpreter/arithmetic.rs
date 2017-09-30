@@ -1,6 +1,8 @@
 use parser::ast;
 
-use super::interpreter::*;
+use interpreter::interpreter::{Interpreter};
+use interpreter::memory::{Refer, Value};
+use interpreter::scope::{Var};
 
 impl Interpreter {
     pub fn eval_expr_binary(&mut self, left_expr: ast::Expr, operator: ast::Operator, right_expr: ast::Expr) -> Refer {
@@ -16,15 +18,15 @@ impl Interpreter {
         // NOTE since we cant simply do this in rust, we use a `eval_2_exprs`
         // TODO may be improved
         // let left_refer = self.eval_expr(left_expr);
-        // let left_value = self.get_value_of_refer(left_refer);
+        // let left_value = self.get_value_from_refer(left_refer);
         // let right_refer = self.eval_expr(right_expr);
-        // let right_value = self.get_value_of_refer(right_refer);
+        // let right_value = self.get_value_from_refer(right_refer);
 
         let (left_refer, right_refer) = self.eval_2_exprs(left_expr, right_expr);
 
         let evaled_value = {
-            let left_value = self.get_value_of_refer(left_refer);
-            let right_value = self.get_value_of_refer(right_refer);
+            let left_value = self.get_value_from_refer(left_refer);
+            let right_value = self.get_value_from_refer(right_refer);
 
             match (left_value, right_value) {
                 (&Value::Number(left_value), &Value::Number(right_value)) => {
@@ -41,8 +43,8 @@ impl Interpreter {
         let (left_refer, right_refer) = self.eval_2_exprs(left_expr, right_expr);
 
         let evaled_value = {
-            let left_value = self.get_value_of_refer(left_refer);
-            let right_value = self.get_value_of_refer(right_refer);
+            let left_value = self.get_value_from_refer(left_refer);
+            let right_value = self.get_value_from_refer(right_refer);
 
             match (left_value, right_value) {
                 (&Value::Number(left_value), &Value::Number(right_value)) => {
@@ -59,8 +61,8 @@ impl Interpreter {
         let (left_refer, right_refer) = self.eval_2_exprs(left_expr, right_expr);
 
         let evaled_value = {
-            let left_value = self.get_value_of_refer(left_refer);
-            let right_value = self.get_value_of_refer(right_refer);
+            let left_value = self.get_value_from_refer(left_refer);
+            let right_value = self.get_value_from_refer(right_refer);
 
             match (left_value, right_value) {
                 (&Value::Number(left_value), &Value::Number(right_value)) => {
