@@ -65,7 +65,7 @@ impl Interpreter {
 
             match (left_value, right_value) {
                 (&Value::Number(left_value), &Value::Number(right_value)) => {
-                    Value::Number(left_value + right_value)
+                    Value::Number(left_value * right_value)
                 },
                 // _ => unimplemented!()
             }
