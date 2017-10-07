@@ -2,7 +2,9 @@ use std::collections::HashMap;
 
 use parser::ast;
 
-use interpreter::memory::{Refer, Value, Memory};
+use interpreter::object::{Primitive, Object};
+use interpreter::memory::{Refer, Memory};
+use interpreter::classes::{Classes};
 use interpreter::scope::{Var};
 
 // TODO implement struct Memory
@@ -10,7 +12,8 @@ use interpreter::scope::{Var};
 pub struct Interpreter {
     // TODO REVISIT only make `pub` for `Default` to work
     pub memory: Memory,
-    pub vars: HashMap<String, Var>
+    pub vars: HashMap<String, Var>,
+    pub classes: Classes
 }
 
 impl Interpreter {
@@ -18,12 +21,12 @@ impl Interpreter {
         match stmt {
             ast::Stmt::Expr(expr) => {
                 println!("evaluating line as *expression*");
-                let value = self.eval_expr(expr);
-                println!("evaluated value: {:?}", value);
+                let evaled_value_refer = self.eval_expr(expr);
+                println!("evaluated value: {:?}", evaled_value_refer);
             },
             ast::Stmt::ClassDefinition(class_def) => {
                 println!("evaluating line as *class definition*");
-                self.eval_class_def(class_def);
+                self.classes.def_class(class_def);
             },
         }
     }
@@ -31,7 +34,7 @@ impl Interpreter {
     pub fn eval_expr(&mut self, expr: ast::Expr) -> Refer {
         match expr {
             ast::Expr::Number(n) => {
-                return self.memory.allocate_value(Value::Number(n))
+                return self.memory.allocate_primitive(Primitive::Number(n))
             },
 
             ast::Expr::Identifier(var_name) => {
@@ -66,9 +69,5 @@ impl Interpreter {
         self.assign_var(var_name, evaled_value_refer);
 
         return evaled_value_refer
-    }
-
-    pub fn eval_class_def(&mut self, class_def: ast::ClassDefinition) {
-        unimplemented!()
     }
 }

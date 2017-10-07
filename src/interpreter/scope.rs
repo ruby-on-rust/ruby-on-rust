@@ -7,7 +7,9 @@ pub struct Var {
 }
 
 impl Interpreter {
-    // TODO return a Result
+    // TODO
+    // distinct localvar, global var, etc
+    // return a Result
     pub fn get_var_refer(&self, var_name: String) -> Refer {
         if let Some(var) = self.vars.get(&var_name) {
             return var.refer
@@ -16,7 +18,9 @@ impl Interpreter {
         }
     }
 
-    // TODO return a Result
+    // TODO
+    // distinct localvar, global var, etc
+    // return a Result
     pub fn assign_var(&mut self, var_name: String, refer: Refer) {
         // TODO REVISIT
         // should be easier after NNL is available
