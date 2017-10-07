@@ -14,9 +14,18 @@ pub struct Interpreter {
 }
 
 impl Interpreter {
-    pub fn eval_line(&mut self, expr: ast::Expr) {
-        let value = self.eval_expr(expr);
-        println!("evaluated value: {:?}", value);
+    pub fn eval_line(&mut self, stmt: ast::Stmt) {
+        match stmt {
+            ast::Stmt::Expr(expr) => {
+                println!("evaluating line as *expression*");
+                let value = self.eval_expr(expr);
+                println!("evaluated value: {:?}", value);
+            },
+            ast::Stmt::ClassDefinition(class_def) => {
+                println!("evaluating line as *class definition*");
+                self.eval_class_def(class_def);
+            },
+        }
     }
 
     pub fn eval_expr(&mut self, expr: ast::Expr) -> Refer {
@@ -46,6 +55,7 @@ impl Interpreter {
     // TODO NOTE
     // NOTE since we cant simply do this in rust, we use a `eval_2_exprs`
     // TODO may be improved
+    // TODO separate to ... expression.rs?
     pub fn eval_2_exprs(&mut self, expr_1: ast::Expr, expr_2: ast::Expr) -> (Refer, Refer) {
         (self.eval_expr(expr_1), self.eval_expr(expr_2))
     }
@@ -56,5 +66,9 @@ impl Interpreter {
         self.assign_var(var_name, evaled_value_refer);
 
         return evaled_value_refer
+    }
+
+    pub fn eval_class_def(&mut self, class_def: ast::ClassDefinition) {
+        unimplemented!()
     }
 }

@@ -1,9 +1,43 @@
 use std::str::FromStr;
 use parser::ast::*;
 
+// use token::Token;
+
 grammar;
 
-pub Expr: Box<Expr> = {
+// TODO multiple stmts
+// REF in rustypop:
+// stmts: () = {
+//   stmt,
+//   stmts stmt,
+// };
+// stmt: () = {
+//   Let,
+//   StmtItem,
+//   "pub" StmtItem,
+//   OuterAttrs StmtItem,
+//   OuterAttrs "pub" StmtItem,
+//   ExprStmtLike,
+//   block,
+//   ExprNoStmtLike ";",
+//   ";",
+// };
+
+pub Stmt: Box<Stmt> = {
+    ClassDefinition => Box::new(Stmt::ClassDefinition(*<>)),
+    Expr => Box::new(Stmt::Expr(*<>))
+};
+
+// TODO
+// - identifier const
+// - keyword class and end, as extern tokens
+// - grammer for consts defs and method defs
+// - inline version
+ClassDefinition: Box<ClassDefinition> = {
+    "class" <i:IdConst> "end" => Box::new(ClassDefinition { class_name: (String::from(i)) }),
+};
+
+Expr: Box<Expr> = {
     ExprAssignment,
 };
 
@@ -31,9 +65,37 @@ ExprAtom: Box<Expr> = {
 };
 
 Identifier: String = {
-    r"[a-zA-Z]\w*" => String::from(<>)
+    // TODO
+    // IdGlobalVar,
+    // IdInstanceVar,
+    // IdClassVar,
+    IdLocalVar,
+    IdConst
 };
+
+// TODO
+// IdGlobalVar: String = { r"" => String::from(<>) };
+// IdInstanceVar: String = { r"" => String::from(<>) };
+// IdClassVar: String = { r"" => String::from(<>) };
+IdLocalVar: String = { r"[a-z_]\w*" => String::from(<>) };
+IdConst: String = { r"[A-Z]\w*" => String::from(<>) };
 
 Number: i64 = {
     r"[0-9]+" => i64::from_str(<>).unwrap()
 };
+
+// extern {
+//     enum Token {
+//         "(" => Token::ParenOpen,
+//         ")" => Token::ParenClose,
+
+//         "=" => Token::Equals,
+//         "+" => Token::Plus,
+//         "-" => Token::Dash,
+//         "*" => Token::Star,
+//         "/" => Token::Slash,
+
+//         "class" => Token::KWClass,
+//         "end" => Token::KWEnd
+//     }
+// }

@@ -20,9 +20,9 @@ fn main() {
             line => {
                 let line = line.to_string();
 
-                let expr_ast = parser::parser::parse_Expr(&line).expect("parsing failed");
+                let stmt_ast = parser::parser::parse_Stmt(&line).expect("Parsing line");
 
-                interpreter.eval_line(*expr_ast);
+                interpreter.eval_line(*stmt_ast);
             }
         }
 

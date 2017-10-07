@@ -48,3 +48,12 @@ impl Debug for Operator {
         }
     }
 }
+
+pub struct ClassDefinition {
+    pub class_name: String
+}
+
+pub enum Stmt {
+    Expr(Expr),
+    ClassDefinition(ClassDefinition)
+}
