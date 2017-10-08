@@ -56,9 +56,15 @@ pub struct ClassDefinition {
 }
 
 #[derive(Clone)]
+pub struct MethodDefinition {
+    pub method_name: String
+}
+
+#[derive(Clone)]
 pub enum Stmt {
     Expr(Expr),
-    ClassDefinition(ClassDefinition)
+    ClassDefinition(ClassDefinition),
+    MethodDefinition(MethodDefinition)
 }
 
 pub type Stmts = Vec<Stmt>;

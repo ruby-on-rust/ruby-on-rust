@@ -34,6 +34,10 @@ impl Interpreter {
                 println!("evaluating line as *class definition*");
                 self.classes.def_class(class_def);
             },
+            ast::Stmt::MethodDefinition(method_def) => {
+                println!("evaluating line as *method definition*");
+                self.def_method(method_def);
+            },
         }
     }
 
@@ -75,5 +79,11 @@ impl Interpreter {
         self.assign_var(var_name, evaled_value_refer);
 
         return evaled_value_refer
+    }
+
+    // TODO
+    // separate to another file
+    pub fn def_method(&mut self, method_def: ast::MethodDefinition) {
+        unimplemented!();
     }
 }
