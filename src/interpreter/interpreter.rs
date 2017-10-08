@@ -17,7 +17,13 @@ pub struct Interpreter {
 }
 
 impl Interpreter {
-    pub fn eval_line(&mut self, stmt: ast::Stmt) {
+    pub fn eval_stmts(&mut self, stmts: ast::Stmts) {
+        for stmt in stmts {
+            self.eval_stmt(stmt);
+        }
+    }
+
+    pub fn eval_stmt(&mut self, stmt: ast::Stmt) {
         match stmt {
             ast::Stmt::Expr(expr) => {
                 println!("evaluating line as *expression*");

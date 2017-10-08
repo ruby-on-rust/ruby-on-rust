@@ -1,5 +1,7 @@
-use std::io::prelude::*;
+use std::env;
 use std::io;
+use std::io::prelude::*;
+use std::fs::File;
 
 mod parser;
 mod interpreter;
@@ -7,25 +9,36 @@ use interpreter::interpreter::Interpreter; // TODO got to be kidding...
 
 fn main() {
     let mut interpreter = Interpreter { ..Default::default() };
-    let mut input_line = String::new();
 
-    loop {
-        print!("> ");
-        let _ = io::stdout().flush();
+    // TODO proper cli
+    if let Some(file_path) = env::args().nth(1) {
+        let mut file = File::open(file_path).unwrap();
+        let mut content = String::new();
+        file.read_to_string(&mut content);
 
-        io::stdin().read_line(&mut input_line).ok().expect("input failed");
+        let stmts_ast = parser::parser::parse_Stmts(&content).expect("Parsing file");
 
-        match input_line.trim() {
-            "exit" => break,
-            line => {
-                let line = line.to_string();
+        interpreter.eval_stmts(stmts_ast);
+    } else {
+        let mut input_line = String::new();
+        loop {
+            print!("> ");
+            let _ = io::stdout().flush();
 
-                let stmt_ast = parser::parser::parse_Stmt(&line).expect("Parsing line");
+            io::stdin().read_line(&mut input_line).ok().expect("input failed");
 
-                interpreter.eval_line(*stmt_ast);
+            match input_line.trim() {
+                "exit" => break,
+                line => {
+                    let line = line.to_string();
+
+                    let stmt_ast = parser::parser::parse_Stmt(&line).expect("Parsing line");
+
+                    interpreter.eval_stmt(*stmt_ast);
+                }
             }
-        }
 
-        input_line.clear();
+            input_line.clear();
+        }
     }
 }

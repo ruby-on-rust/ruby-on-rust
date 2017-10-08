@@ -23,6 +23,15 @@ grammar;
 //   ";",
 // };
 
+pub Stmts: Stmts = {
+    Stmt => vec!(*<>),
+    <stmts:Stmts> <stmt:Stmt> => {
+        let mut new_stmts = stmts.to_vec();
+        new_stmts.push(*stmt);
+        new_stmts
+    }
+};
+
 pub Stmt: Box<Stmt> = {
     ClassDefinition => Box::new(Stmt::ClassDefinition(*<>)),
     Expr => Box::new(Stmt::Expr(*<>))

@@ -1,5 +1,6 @@
 use std::fmt::{Debug, Formatter, Error};
 
+#[derive(Clone)]
 pub enum Expr {
     // Nullary(),
 
@@ -49,11 +50,15 @@ impl Debug for Operator {
     }
 }
 
+#[derive(Clone)]
 pub struct ClassDefinition {
     pub class_name: String
 }
 
+#[derive(Clone)]
 pub enum Stmt {
     Expr(Expr),
     ClassDefinition(ClassDefinition)
 }
+
+pub type Stmts = Vec<Stmt>;
