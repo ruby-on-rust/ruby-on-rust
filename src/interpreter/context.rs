@@ -53,7 +53,7 @@ impl Context {
 
             // TODO distinct localvar, etc
             ast::Expr::Identifier(var_name) => {
-                return self.get_local_var_refer(var_name)
+                return self.fetch_var(var_name)
             },
 
             ast::Expr::Binary(l, op, r) => {
@@ -83,43 +83,25 @@ impl Context {
 
         let evaled_value_refer = self.eval_expr(expr);
 
-        self.assign_local_var(var_name, evaled_value_refer);
+        self.assign_var(var_name, evaled_value_refer);
 
         return evaled_value_refer
     }
 
     // TODO
-    // distinct localvar, global var, etc
+    // distinct localvar, global var, etc, parser-wise
     // return a Result
-    pub fn get_local_var_refer(&mut self, var_name: String) -> Refer {
-        if let Some(var) = self.current_scope().local_vars.get(&var_name) {
-            return var.refer
-        } else {
-            return None
-        }
+    pub fn fetch_var(&mut self, var_name: String) -> Refer {
+        // TODO assuming local var
+        self.current_scope().fetch_local_var_refer(var_name)
     }
 
     // TODO
     // distinct localvar, global var, etc
     // return a Result
-    pub fn assign_local_var(&mut self, var_name: String, refer: Refer) {
-        // TODO REVISIT
-        // should be easier after NNL is available
-        // ```
-        // if let Some(original_var) = self.local_vars.get_mut(&var_name) {
-        // if let ori_var = self.local_vars.get_mut() { balah } else { balah }
-        // ```
-
-        if self.current_scope().local_vars.contains_key(&var_name) {
-            let original_var = self.current_scope().local_vars.get_mut(&var_name).unwrap();
-            original_var.refer = refer;
-        } else {
-            self.current_scope().local_vars.insert(var_name, LocalVar{ refer } );
-        }
-
-        // TODO CLEANUP
-        println!("var assigned, current vars:");
-        println!("{:?}", self.current_scope().local_vars);
+    pub fn assign_var(&mut self, var_name: String, refer: Refer) {
+        // TODO assuming local var
+        self.current_scope().assign_local_var(var_name, refer);
     }
 
     // TODO
