@@ -1,6 +1,7 @@
 use std::env;
 use std::io;
 use std::io::prelude::*;
+use std::io::BufReader;
 use std::fs::File;
 
 mod parser;
@@ -12,9 +13,24 @@ fn main() {
 
     // TODO proper cli
     if let Some(file_path) = env::args().nth(1) {
-        let mut file = File::open(file_path).unwrap();
-        let mut content = String::new();
-        let _ = file.read_to_string(&mut content);
+        let file = File::open(file_path).expect("Opening file");
+
+        // TODO REVISIT implement comment via parser
+        // https://github.com/nikomatsakis/lalrpop/issues/10
+
+        // APPROACH 1
+        // let mut content = String::new();
+        // let _ = file.read_to_string(&mut content);
+
+        // APPROACH 2
+        let buf = BufReader::new(file);
+        let content: String = buf.lines()
+            .map(|l| l.expect("Parsing line"))
+            .filter(|l| !l.starts_with('#'))
+            .map(move |mut l| { l.push('\n'); l })
+            .collect();
+
+        println!("{:?}", content);
 
         let stmts_ast = parser::parser::parse_Stmts(&content).expect("Parsing file");
 
