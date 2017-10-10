@@ -1,4 +1,5 @@
 pub mod interpreter;
+pub mod context;
 pub mod object;
 pub mod classes;
 pub mod memory;

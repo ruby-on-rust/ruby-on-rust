@@ -1,89 +1,21 @@
-use std::collections::HashMap;
-
 use parser::ast;
 
-use interpreter::object::{Primitive, Object};
-use interpreter::memory::{Refer, Memory};
-use interpreter::classes::{Classes};
-use interpreter::scope::{Var};
+use interpreter::context::{Context};
 
-// TODO implement struct Memory
-#[derive(Default)]
 pub struct Interpreter {
-    // TODO REVISIT only make `pub` for `Default` to work
-    pub memory: Memory,
-    pub vars: HashMap<String, Var>,
-    pub classes: Classes
+    pub context: Context,
 }
 
 impl Interpreter {
+    pub fn new() -> Interpreter {
+        Interpreter {
+            context: Context::new()
+        }
+    }
+
     pub fn eval_stmts(&mut self, stmts: ast::Stmts) {
         for stmt in stmts {
-            self.eval_stmt(stmt);
+            self.context.eval_stmt(stmt);
         }
-    }
-
-    pub fn eval_stmt(&mut self, stmt: ast::Stmt) {
-        match stmt {
-            ast::Stmt::Expr(expr) => {
-                println!("evaluating line as *expression*");
-                let evaled_value_refer = self.eval_expr(expr);
-                println!("evaluated value: {:?}", evaled_value_refer);
-            },
-            ast::Stmt::ClassDefinition(class_def) => {
-                println!("evaluating line as *class definition*");
-                self.classes.def_class(class_def);
-            },
-            ast::Stmt::MethodDefinition(method_def) => {
-                println!("evaluating line as *method definition*");
-                self.def_method(method_def);
-            },
-        }
-    }
-
-    pub fn eval_expr(&mut self, expr: ast::Expr) -> Refer {
-        match expr {
-            ast::Expr::Number(n) => {
-                return self.memory.allocate_primitive(Primitive::Number(n))
-            },
-
-            ast::Expr::Identifier(var_name) => {
-                return self.get_var_refer(var_name)
-            },
-
-            ast::Expr::Binary(l, op, r) => {
-                return self.eval_expr_binary(*l, op, *r)
-            },
-
-            ast::Expr::Assignment(var_name, expr) => {
-                return self.eval_expr_assignment(var_name, *expr)
-            },
-
-            // _ => {
-            //     unimplemented!()
-            // }
-        }
-    }
-
-    // TODO NOTE
-    // NOTE since we cant simply do this in rust, we use a `eval_2_exprs`
-    // TODO may be improved
-    // TODO separate to ... expression.rs?
-    pub fn eval_2_exprs(&mut self, expr_1: ast::Expr, expr_2: ast::Expr) -> (Refer, Refer) {
-        (self.eval_expr(expr_1), self.eval_expr(expr_2))
-    }
-
-    pub fn eval_expr_assignment(&mut self, var_name: String, expr: ast::Expr) -> Refer {
-        let evaled_value_refer = self.eval_expr(expr);
-
-        self.assign_var(var_name, evaled_value_refer);
-
-        return evaled_value_refer
-    }
-
-    // TODO
-    // separate to another file
-    pub fn def_method(&mut self, method_def: ast::MethodDefinition) {
-        unimplemented!();
     }
 }

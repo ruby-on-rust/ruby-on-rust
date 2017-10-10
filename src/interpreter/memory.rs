@@ -2,12 +2,17 @@ use interpreter::object::{Object, Primitive};
 
 pub type Refer = Option<u64>;
 
-#[derive(Default)]
 pub struct Memory {
     space: Vec<Object>
 }
 
 impl Memory {
+    pub fn new() -> Memory {
+        Memory {
+            space: Vec::new()
+        }
+    }
+
     // TODO CLEANUP
     // // allocate a new slot in memory, save the value, and return the assigned address
     // // TODO return a Result
