@@ -15,7 +15,7 @@ impl Context {
     pub fn new() -> Context {
         Context {
             memory: Memory::new(),
-            scopes: vec![Scope { ..Default::default() }],
+            scopes: vec![Scope::new()],
             self_refer: None
         }
     }

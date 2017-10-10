@@ -7,7 +7,6 @@
 // }
 
 // #[derive(Debug)]
-// #[derive(Default)]
 // pub struct Classes {
 //     list: Vec<Class>,
 // }
