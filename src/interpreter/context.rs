@@ -24,11 +24,6 @@ impl Context {
         println!("### eval_stmt");
 
         match stmt {
-            ast::StmtTopLevel::Expr(expr) => {
-                println!("evaluating line as *expression*");
-                let evaled_value_refer = self.eval_expr(expr);
-                println!("evaluated value: {:?}", evaled_value_refer);
-            },
             ast::StmtTopLevel::ClassDefinition(class_def) => {
                 unimplemented!()
                 // TODO
@@ -38,6 +33,10 @@ impl Context {
             ast::StmtTopLevel::MethodDefinition(method_def) => {
                 println!("evaluating line as *method definition*");
                 self.def_method(method_def);
+            },
+            ast::StmtTopLevel::StmtWithinMethod(stmt) => {
+                println!("evaluating line as *normal stmt within method*");
+                let evaled_value_refer = self.eval_stmt_within_method(stmt);
             },
         }
     }

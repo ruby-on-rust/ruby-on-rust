@@ -35,7 +35,7 @@ pub Program: Program = {
 StmtTopLevel: Box<StmtTopLevel> = {
     // <class_def:ClassDefinition> => StmtTopLevel::ClassDefinition(class_def),
     <method_def:MethodDefinition> => Box::new(StmtTopLevel::MethodDefinition(*method_def)),
-    <e:Expr> => Box::new(StmtTopLevel::Expr(*e)),
+    <stmt:StmtWithinMethod> => Box::new(StmtTopLevel::StmtWithinMethod(*stmt)),
 };
 
 // // TODO

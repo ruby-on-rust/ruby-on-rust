@@ -6,7 +6,7 @@ pub type Program = Vec<StmtTopLevel>;
 pub enum StmtTopLevel {
     ClassDefinition(ClassDefinition),
     MethodDefinition(MethodDefinition),
-    Expr(Expr),
+    StmtWithinMethod(StmtWithinMethod)
 }
 
 #[derive(Clone)]
