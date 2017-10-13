@@ -23,34 +23,47 @@ grammar;
 //   ";",
 // };
 
-pub Stmts: Stmts = {
-    Stmt => vec!(*<>),
-    <stmts:Stmts> <stmt:Stmt> => {
+pub Program: Program = {
+    StmtTopLevel => vec!(*<>),
+    <stmts:Program> <stmt:StmtTopLevel> => {
         let mut new_stmts = stmts.to_vec();
         new_stmts.push(*stmt);
         new_stmts
     }
 };
 
-pub Stmt: Box<Stmt> = {
-    ClassDefinition => Box::new(Stmt::ClassDefinition(*<>)),
-    MethodDefinition => Box::new(Stmt::MethodDefinition(*<>)),
-    Expr => Box::new(Stmt::Expr(*<>))
+StmtTopLevel: Box<StmtTopLevel> = {
+    // <class_def:ClassDefinition> => StmtTopLevel::ClassDefinition(class_def),
+    <method_def:MethodDefinition> => Box::new(StmtTopLevel::MethodDefinition(*method_def)),
+    <e:Expr> => Box::new(StmtTopLevel::Expr(*e)),
 };
 
-// TODO
-// - identifier const
-// - keyword class and end, as extern tokens
-// - grammer for consts defs and method defs
-// - inline version
-ClassDefinition: Box<ClassDefinition> = {
-    "class" <i:IdConst> "end" => Box::new(ClassDefinition { class_name: (String::from(i)) }),
-};
+// // TODO
+// // - identifier const
+// // - keyword class and end, as extern tokens
+// // - grammer for consts defs and method defs
+// // - inline version
+// ClassDefinition: Box<ClassDefinition> = {
+//     "class" <i:IdConst> "end" => Box::new(ClassDefinition { class_name: (String::from(i)) }),
+// };
 
 // TODO
 // - LOTS
 MethodDefinition: Box<MethodDefinition> = {
-    "def" <i:IdMethodName> "end" => Box::new(MethodDefinition { method_name: (String::from(i)) }),
+    "def" <i:IdMethodName> <stmts:StmtsWithinMethod> "end" => Box::new(MethodDefinition { method_name: (String::from(i)), method_body: stmts }),
+};
+
+StmtsWithinMethod: StmtsWithinMethod = {
+    StmtWithinMethod => vec!(*<>),
+    <stmts:StmtsWithinMethod> <stmt:StmtWithinMethod> => {
+        let mut new_stmts = stmts.to_vec();
+        new_stmts.push(*stmt);
+        new_stmts
+    }
+};
+
+StmtWithinMethod: Box<StmtWithinMethod> = {
+    <e:Expr> => Box::new(StmtWithinMethod::Expr(*e))
 };
 
 Expr: Box<Expr> = {

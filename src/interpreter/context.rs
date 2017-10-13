@@ -20,24 +20,36 @@ impl Context {
         }
     }
 
-    pub fn eval_stmt(&mut self, stmt: ast::Stmt) {
+    pub fn eval_stmt_top_level(&mut self, stmt: ast::StmtTopLevel) {
         println!("### eval_stmt");
 
         match stmt {
-            ast::Stmt::Expr(expr) => {
+            ast::StmtTopLevel::Expr(expr) => {
                 println!("evaluating line as *expression*");
                 let evaled_value_refer = self.eval_expr(expr);
                 println!("evaluated value: {:?}", evaled_value_refer);
             },
-            ast::Stmt::ClassDefinition(class_def) => {
+            ast::StmtTopLevel::ClassDefinition(class_def) => {
                 unimplemented!()
                 // TODO
                 // println!("evaluating line as *class definition*");
                 // self.classes.def_class(class_def);
             },
-            ast::Stmt::MethodDefinition(method_def) => {
+            ast::StmtTopLevel::MethodDefinition(method_def) => {
                 println!("evaluating line as *method definition*");
                 self.def_method(method_def);
+            },
+        }
+    }
+
+    pub fn eval_stmt_within_method(&mut self, stmt: ast::StmtWithinMethod) {
+        println!("### eval_stmt");
+
+        match stmt {
+            ast::StmtWithinMethod::Expr(expr) => {
+                println!("evaluating line as *expression*");
+                let evaled_value_refer = self.eval_expr(expr);
+                println!("evaluated value: {:?}", evaled_value_refer);
             },
         }
     }

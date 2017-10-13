@@ -13,9 +13,9 @@ impl Interpreter {
         }
     }
 
-    pub fn eval_stmts(&mut self, stmts: ast::Stmts) {
-        for stmt in stmts {
-            self.context.eval_stmt(stmt);
+    pub fn eval_program(&mut self, program: ast::Program) {
+        for stmt in program {
+            self.context.eval_stmt_top_level(stmt);
         }
     }
 }

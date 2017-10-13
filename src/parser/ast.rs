@@ -1,5 +1,32 @@
 use std::fmt::{Debug, Formatter, Error};
 
+pub type Program = Vec<StmtTopLevel>;
+
+#[derive(Clone)]
+pub enum StmtTopLevel {
+    ClassDefinition(ClassDefinition),
+    MethodDefinition(MethodDefinition),
+    Expr(Expr),
+}
+
+#[derive(Clone)]
+pub struct ClassDefinition {
+    pub class_name: String
+}
+
+#[derive(Clone)]
+pub struct MethodDefinition {
+    pub method_name: String,
+    pub method_body: StmtsWithinMethod,
+}
+
+pub type StmtsWithinMethod = Vec<StmtWithinMethod>;
+
+#[derive(Clone)]
+pub enum StmtWithinMethod {
+    Expr(Expr)
+}
+
 #[derive(Clone)]
 pub enum Expr {
     // Nullary(),
@@ -49,22 +76,3 @@ impl Debug for Operator {
         }
     }
 }
-
-#[derive(Clone)]
-pub struct ClassDefinition {
-    pub class_name: String
-}
-
-#[derive(Clone)]
-pub struct MethodDefinition {
-    pub method_name: String
-}
-
-#[derive(Clone)]
-pub enum Stmt {
-    Expr(Expr),
-    ClassDefinition(ClassDefinition),
-    MethodDefinition(MethodDefinition)
-}
-
-pub type Stmts = Vec<Stmt>;

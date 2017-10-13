@@ -32,29 +32,30 @@ fn main() {
 
         println!("{:?}", content);
 
-        let stmts_ast = parser::parser::parse_Stmts(&content).expect("Parsing file");
+        let program_ast = parser::parser::parse_Program(&content).expect("Parsing file");
 
-        interpreter.eval_stmts(stmts_ast);
+        interpreter.eval_program(program_ast);
     } else {
-        let mut input_line = String::new();
-        loop {
-            print!("> ");
-            let _ = io::stdout().flush();
+        unimplemented!();
+        // let mut input_line = String::new();
+        // loop {
+        //     print!("> ");
+        //     let _ = io::stdout().flush();
 
-            io::stdin().read_line(&mut input_line).ok().expect("input failed");
+        //     io::stdin().read_line(&mut input_line).ok().expect("input failed");
 
-            match input_line.trim() {
-                "exit" => break,
-                line => {
-                    let line = line.to_string();
+        //     match input_line.trim() {
+        //         "exit" => break,
+        //         line => {
+        //             let line = line.to_string();
 
-                    let stmt_ast = parser::parser::parse_Stmt(&line).expect("Parsing line");
+        //             let stmt_ast = parser::parser::parse_Stmt(&line).expect("Parsing line");
 
-                    interpreter.context.eval_stmt(*stmt_ast);
-                }
-            }
+        //             interpreter.context.eval_stmt(*stmt_ast);
+        //         }
+        //     }
 
-            input_line.clear();
-        }
+        //     input_line.clear();
+        // }
     }
 }
