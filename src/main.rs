@@ -30,8 +30,6 @@ fn main() {
             .map(move |mut l| { l.push('\n'); l })
             .collect();
 
-        println!("{:?}", content);
-
         let program_ast = parser::parser::parse_Program(&content).expect("Parsing file");
 
         interpreter.eval_program(program_ast);

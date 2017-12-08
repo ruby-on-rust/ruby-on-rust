@@ -42,6 +42,18 @@ impl Memory {
 
     // TODO
     // - return a Result
+    pub fn allocate_obj(&mut self, obj: Object) -> Refer {
+        self.space.push(obj);
+
+        // TODO CLEANUP, or at least use that logging crate
+        println!("allocated memory, current space:");
+        println!("{:?}", self.space);
+
+        return Some(( self.space.len() - 1 ) as u64)
+    }
+
+    // TODO
+    // - return a Result
     pub fn allocate_primitive(&mut self, primitive: Primitive) -> Refer {
         // TODO DUMMY
         let Primitive::Number(dummy_value) = primitive;

@@ -1,22 +1,28 @@
 use parser::ast;
-use interpreter::object::{Object, Primitive};
+use interpreter::object::{Object, Primitive, Method};
 use interpreter::scope::{Scope, LocalVar};
 use interpreter::memory::{Refer, Memory};
 
 pub struct Context {
     pub memory: Memory,
     pub scopes: Vec<Scope>,
-    pub self_refer: Refer
+    pub top_level_obj: Refer
     // TODO
     // pub classes: Classes
 }
 
 impl Context {
     pub fn new() -> Context {
+
+        let mut memory = Memory::new();
+
+        // init top level obj
+        let addr = memory.allocate_obj( Object::new() );
+
         Context {
-            memory: Memory::new(),
+            memory,
             scopes: vec![Scope::new()],
-            self_refer: None
+            top_level_obj: addr
         }
     }
 
@@ -118,7 +124,11 @@ impl Context {
     // TODO
     // refine
     pub fn def_method(&mut self, method_def: ast::MethodDefinition) {
-        unimplemented!();
+        // TODO def method on obj
+        let method = Method::new(
+            method_def.method_name,
+        );
+        println!("method {} defined", method.name);
     }
 
     fn current_scope(&mut self) -> &mut Scope {
