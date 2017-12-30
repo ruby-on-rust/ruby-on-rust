@@ -1,0 +1,98 @@
+State 0:
+          input ::= * expr
+          expr ::= * expr OP_PLUS expr
+          expr ::= * expr OP_MINUS expr
+          expr ::= * LPAREN expr RPAREN
+          expr ::= * VALUE
+
+                         VALUE shift  6
+                        LPAREN shift  1
+                          expr shift  5
+                         input accept
+
+State 1:
+          expr ::= * expr OP_PLUS expr
+          expr ::= * expr OP_MINUS expr
+          expr ::= * LPAREN expr RPAREN
+          expr ::= LPAREN * expr RPAREN
+          expr ::= * VALUE
+
+                         VALUE shift  6
+                        LPAREN shift  1
+                          expr shift  4
+
+State 2:
+          expr ::= * expr OP_PLUS expr
+          expr ::= * expr OP_MINUS expr
+          expr ::= expr OP_MINUS * expr
+          expr ::= * LPAREN expr RPAREN
+          expr ::= * VALUE
+
+                         VALUE shift  6
+                        LPAREN shift  1
+                          expr shift  8
+
+State 3:
+          expr ::= * expr OP_PLUS expr
+          expr ::= expr OP_PLUS * expr
+          expr ::= * expr OP_MINUS expr
+          expr ::= * LPAREN expr RPAREN
+          expr ::= * VALUE
+
+                         VALUE shift  6
+                        LPAREN shift  1
+                          expr shift  9
+
+State 4:
+          expr ::= expr * OP_PLUS expr
+          expr ::= expr * OP_MINUS expr
+          expr ::= LPAREN expr * RPAREN
+
+                       OP_PLUS shift  3
+                      OP_MINUS shift  2
+                        RPAREN shift  7
+
+State 5:
+      (0) input ::= expr *
+          expr ::= expr * OP_PLUS expr
+          expr ::= expr * OP_MINUS expr
+
+                             $ reduce 0
+                       OP_PLUS shift  3
+                      OP_MINUS shift  2
+
+State 6:
+      (4) expr ::= VALUE *
+
+                     {default} reduce 4
+
+State 7:
+      (3) expr ::= LPAREN expr RPAREN *
+
+                     {default} reduce 3
+
+State 8:
+          expr ::= expr * OP_PLUS expr
+          expr ::= expr * OP_MINUS expr
+      (2) expr ::= expr OP_MINUS expr *
+
+                     {default} reduce 2
+
+State 9:
+          expr ::= expr * OP_PLUS expr
+      (1) expr ::= expr OP_PLUS expr *
+          expr ::= expr * OP_MINUS expr
+
+                     {default} reduce 1
+
+----------------------------------------------------
+Symbols:
+    0: $:
+    1: VALUE
+    2: OP_PLUS
+    3: OP_MINUS
+    4: LPAREN
+    5: RPAREN
+    6: error:
+    7: expr: VALUE LPAREN
+    8: input: VALUE LPAREN
