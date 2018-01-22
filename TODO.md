@@ -1,7 +1,3 @@
-# build.rs for parser.y -> parser.rs
+build.rs not invoked?
 
-current cmd
-
-```
 ./vendor/lemon/lemon_rust -Tvendor/lemon/lempar.rs ./src/parser.y
-```

@@ -1,22 +1,22 @@
-%type expr { Expression }
-%type VALUE { i64 }
-%left OP_PLUS OP_MINUS.
+// %type expr { Expression }
+// %type T_INTEGER { i64 }
+// // %left OP_PLUS OP_MINUS.
 
 %include {
 /* extra include */
 
-#[derive(Debug)]
-pub enum Operator {
-    Addition,
-    Substraction,
-}
+// #[derive(Debug)]
+// pub enum Operator {
+//     Addition,
+//     Substraction,
+// }
 
 #[derive(Debug)]
 pub enum Expression {
     Number(i64),
-    Binary(Operator, Box<Expression>, Box<Expression>),
+    // Binary(Operator, Box<Expression>, Box<Expression>),
+    Primary_bool(bool)
 }
-
 
 }
 
@@ -33,19 +33,18 @@ pub enum Expression {
     println!("parse_failure!");
 }
 
-input ::= expr(A). {
+program ::= expr(A). {
     self.extra = Some(A);
 }
 
-expr(A) ::= expr(B) OP_PLUS expr(C). {
-    A = Expression::Binary(Operator::Addition, Box::new(B), Box::new(C));
-}
-expr(A) ::= expr(B) OP_MINUS expr(C). {
-    A = Expression::Binary(Operator::Substraction, Box::new(B), Box::new(C));
-}
-expr(A) ::= LPAREN expr(B) RPAREN. {
-    A = B;
-}
-expr(A) ::= VALUE(B). {
-    A = Expression::Number(B);
-}
+// expr(A) ::= expr(B) OP_PLUS expr(C). {
+//     A = Expression::Binary(Operator::Addition, Box::new(B), Box::new(C));
+// }
+// expr(A) ::= expr(B) OP_MINUS expr(C). {
+//     A = Expression::Binary(Operator::Substraction, Box::new(B), Box::new(C));
+// }
+// expr(A) ::= LPAREN expr(B) RPAREN. {
+//     A = B;
+// }
+expr(A) ::= T_INTEGER(B). { A = Expression::Number(B); }
+expr(A) ::= KW_TRUE. { A = Expression:: }

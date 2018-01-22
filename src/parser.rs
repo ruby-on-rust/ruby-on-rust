@@ -4,18 +4,17 @@
 
 /* extra include */
 
-#[derive(Debug)]
-pub enum Operator {
-    Addition,
-    Substraction,
-}
+// #[derive(Debug)]
+// pub enum Operator {
+//     Addition,
+//     Substraction,
+// }
 
 #[derive(Debug)]
 pub enum Expression {
     Number(i64),
-    Binary(Operator, Box<Expression>, Box<Expression>),
+    // Binary(Operator, Box<Expression>, Box<Expression>),
 }
-
 
 /* TMPL: makeheader cruft */
 
@@ -23,16 +22,16 @@ pub enum Expression {
 /* TMPL: types */
 
 type YYCODETYPE = i8;
-const YYNOCODE: i32 = 10;
+const YYNOCODE: i32 = 6;
 type YYACTIONTYPE = u8;
 const YYWILDCARD: YYCODETYPE = 0;
 enum YYMinorType {
     YY0,
     YY5(Expression),
-    YY14(i64),
+    YY10(i64),
 }
-const YYNSTATE: i32 = 10;
-const YYNRULE: i32 = 5;
+const YYNSTATE: i32 = 3;
+const YYNRULE: i32 = 2;
 const YYERRORSYMBOL: i32 = 0;
 
 //const YY_NO_ACTION: i32 = YYNSTATE+YYNRULE+2;
@@ -45,54 +44,40 @@ const YYERRORSYMBOL: i32 = 0;
 )]
 pub enum Token {
     EOI, //0
-    VALUE( i64 ), //1
-    OP_PLUS, //2
-    OP_MINUS, //3
-    LPAREN, //4
-    RPAREN, //5
+    T_INTEGER( i64 ), //1
 }
 pub const TOKEN_EOI: i32 = 0;
-pub const TOKEN_VALUE: i32 = 1;
-pub const TOKEN_OP_PLUS: i32 = 2;
-pub const TOKEN_OP_MINUS: i32 = 3;
-pub const TOKEN_LPAREN: i32 = 4;
-pub const TOKEN_RPAREN: i32 = 5;
+pub const TOKEN_T_INTEGER: i32 = 1;
 #[inline]
 fn token_value(t: Token) -> (i32, YYMinorType) {
   match t {
         Token::EOI => (0, YYMinorType::YY0),
-        Token::VALUE(x) => (1, YYMinorType::YY14(x)),
-        Token::OP_PLUS => (2, YYMinorType::YY0),
-        Token::OP_MINUS => (3, YYMinorType::YY0),
-        Token::LPAREN => (4, YYMinorType::YY0),
-        Token::RPAREN => (5, YYMinorType::YY0),
+        Token::T_INTEGER(x) => (1, YYMinorType::YY10(x)),
   }
 }
-const YY_ACTTAB_COUNT: i32 = 13;
-const YY_ACTION: [YYACTIONTYPE; 13] = [
- /*     0 */    10,    9,    3,    2,    8,    3,    2,    6,    7,    4,
- /*    10 */     1,    5,   16,
+const YY_ACTTAB_COUNT: i32 = 5;
+const YY_ACTION: [YYACTIONTYPE; 5] = [
+ /*     0 */     1,    6,    3,    7,    2,
 ];
-const YY_LOOKAHEAD: [YYCODETYPE; 13] = [
- /*     0 */     0,    7,    2,    3,    7,    2,    3,    1,    5,    7,
- /*    10 */     4,    7,    8,
+const YY_LOOKAHEAD: [YYCODETYPE; 5] = [
+ /*     0 */     3,    4,    0,    5,    1,
 ];
 const YY_SHIFT_USE_DFLT: i32 = -1;
-const YY_SHIFT_COUNT: i32 = 5;
+const YY_SHIFT_COUNT: i32 = 1;
 const YY_SHIFT_MIN: i32 = 0;
-const YY_SHIFT_MAX: i32 = 6;
-const YY_SHIFT_OFST: [i8; 6] = [
- /*     0 */     6,    6,    6,    6,    3,    0,
+const YY_SHIFT_MAX: i32 = 3;
+const YY_SHIFT_OFST: [i8; 2] = [
+ /*     0 */     3,    2,
 ];
-const YY_REDUCE_USE_DFLT: i32 = -7;
-const YY_REDUCE_COUNT: i32 = 3;
-const YY_REDUCE_MIN: i32 = -6;
-const YY_REDUCE_MAX: i32 = 4;
-const YY_REDUCE_OFST: [i8; 4] = [
- /*     0 */     4,    2,   -3,   -6,
+const YY_REDUCE_USE_DFLT: i32 = -4;
+const YY_REDUCE_COUNT: i32 = 0;
+const YY_REDUCE_MIN: i32 = -3;
+const YY_REDUCE_MAX: i32 = 0;
+const YY_REDUCE_OFST: [i8; 1] = [
+ /*     0 */    -3,
 ];
-const YY_DEFAULT: [YYACTIONTYPE; 10] = [
- /*     0 */    15,   15,   15,   15,   15,   15,   14,   13,   12,   11,
+const YY_DEFAULT: [YYACTIONTYPE; 3] = [
+ /*     0 */     5,    5,    4,
 ];
 
 /* TMPL: fallback tokens */
@@ -114,12 +99,9 @@ const YY_FALLBACK: [i32; 0] = [
 
 /* TMPL: stack-overflow */
 
-const YY_RULE_INFO: [YYCODETYPE; 5] = [
-  8,
-  7,
-  7,
-  7,
-  7,
+const YY_RULE_INFO: [YYCODETYPE; 2] = [
+  4,
+  3,
 ];
 
 struct YYStackEntry {
@@ -320,61 +302,13 @@ match (yyp0.minor,) {
  YYMinorType::YY0
 }
             ,
-            1 /* expr ::= expr OP_PLUS expr */
-            => 
-{
-let yyres :  Expression ;
-let yyp2 = self.yystack.pop().unwrap();
-self.yystack.pop().unwrap();
-let yyp0 = self.yystack.pop().unwrap();
-match (yyp0.minor,yyp2.minor,) {
- (YYMinorType::YY5(yy0),YYMinorType::YY5(yy2),) => {
-
-    yyres = Expression::Binary(Operator::Addition, Box::new(yy0), Box::new(yy2));
-
-},    _ => unreachable!() };
- YYMinorType::YY5(yyres)
-}
-            ,
-            2 /* expr ::= expr OP_MINUS expr */
-            => 
-{
-let yyres :  Expression ;
-let yyp2 = self.yystack.pop().unwrap();
-self.yystack.pop().unwrap();
-let yyp0 = self.yystack.pop().unwrap();
-match (yyp0.minor,yyp2.minor,) {
- (YYMinorType::YY5(yy0),YYMinorType::YY5(yy2),) => {
-
-    yyres = Expression::Binary(Operator::Substraction, Box::new(yy0), Box::new(yy2));
-
-},    _ => unreachable!() };
- YYMinorType::YY5(yyres)
-}
-            ,
-            3 /* expr ::= LPAREN expr RPAREN */
-            => 
-{
-let yyres :  Expression ;
-self.yystack.pop().unwrap();
-let yyp1 = self.yystack.pop().unwrap();
-self.yystack.pop().unwrap();
-match (yyp1.minor,) {
- (YYMinorType::YY5(yy1),) => {
-
-    yyres = yy1;
-
-},    _ => unreachable!() };
- YYMinorType::YY5(yyres)
-}
-            ,
-            4 /* expr ::= VALUE */
+            1 /* expr ::= T_INTEGER */
             => 
 {
 let yyres :  Expression ;
 let yyp0 = self.yystack.pop().unwrap();
 match (yyp0.minor,) {
- (YYMinorType::YY14(yy0),) => {
+ (YYMinorType::YY10(yy0),) => {
 
     yyres = Expression::Number(yy0);
 

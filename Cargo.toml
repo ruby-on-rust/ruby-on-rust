@@ -2,6 +2,8 @@
 name = "ruby_on_rust"
 version = "0.0.0"
 authors = ["Nami.WANG <namiheike@gmail.com>"]
+build = "build.rs"
 
 [dependencies]
 # regex = "0.2"
+# itertools = "0.7.3"
