@@ -2,3 +2,6 @@
 name = "ruby_on_rust"
 version = "0.0.0"
 authors = ["Nami.WANG <namiheike@gmail.com>"]
+
+[dependencies]
+regex = "0.2"
