@@ -130,5 +130,7 @@ impl InputStream {
             None => None,
             Some(capture) => Some(capture.len())
         }
+
     }
+
 }

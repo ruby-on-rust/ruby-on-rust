@@ -2,12 +2,11 @@ use std::collections::HashMap;
 
 use regex::Regex;
 
-mod input_stream;
-use lexer::input_stream::InputStream;
-mod action;
-use lexer::action::Action;
+use parser::parser::Token;
+
+mod input_stream;      use lexer::input_stream::InputStream;
+mod action;            use lexer::action::Action;
 mod matching_patterns;
-// use lexer::matching_patterns;
 
 enum LexingState {
     // :line_begin    => lex_en_line_begin,
@@ -42,6 +41,8 @@ pub struct Lexer {
 
     input_stream: InputStream,
     state: LexingState,
+
+    tokens: Vec<Token>,
 }
 
 impl Lexer {
@@ -99,9 +100,11 @@ impl Lexer {
                 procedure: |lexer: &mut Lexer| {
                     println!("action invoked for int_dec");
 
-                    panic!("unimpl");
-                    // self.emit_token();
-                    // emit(:tINTEGER, digits.to_i(@num_base), @ts, @num_suffix_s);
+                    println!("current {:?}", lexer.input_stream.current_matched_token().unwrap());
+
+                    let parsed_int = lexer.input_stream.current_matched_token().unwrap().parse::<i64>().unwrap();
+
+                    lexer.emit_token(Token::T_INTEGER(parsed_int));
                 }
             }
         ]);
@@ -110,7 +113,8 @@ impl Lexer {
             patterns,
             state_actions,
             input_stream: InputStream::new(input_string),
-            state: LexingState::LineBegin
+            state: LexingState::LineBegin,
+            tokens: Vec::new(),
         }
     }
 
@@ -125,7 +129,7 @@ impl Lexer {
     // return a token
     // 
     // TODO wrap in a Result
-    pub fn advance(&mut self) {
+    fn advance(&mut self) {
         // TODO token queue
 
         // 
@@ -133,7 +137,7 @@ impl Lexer {
     }
 
     // match-state-invoke-action loop
-    pub fn exec(&mut self) {
+    fn exec(&mut self) {
         loop {
             match self.state {
                 LexingState::LineBegin => {
@@ -149,7 +153,7 @@ impl Lexer {
         }
     }
 
-    pub fn lex_at_state_line_begin(&mut self) {
+    fn lex_at_state_line_begin(&mut self) {
         println!("\n--- lex_at_state_line_begin ---");
 
         let actions = &self.state_actions.get("line_begin").unwrap().clone();
@@ -162,7 +166,7 @@ impl Lexer {
         procedure(self);
     }
 
-    pub fn lex_at_state_expr_begin(&mut self) {
+    fn lex_at_state_expr_begin(&mut self) {
         println!("\n--- lex_at_state_expr_begin ---");
 
         let actions = &self.state_actions.get("expr_begin").unwrap().clone();
@@ -175,7 +179,7 @@ impl Lexer {
         procedure(self);
     }
 
-    pub fn lex_at_state_expr_end(&mut self) {
+    fn lex_at_state_expr_end(&mut self) {
         println!("\n--- lex_at_state_expr_end ---");
 
         let actions = &self.state_actions.get("expr_end").unwrap().clone();
@@ -201,5 +205,11 @@ impl Lexer {
     //     let procedure = action.procedure;
     //     procedure(self);
     // }
+
+    fn emit_token(&mut self, token: Token) {
+        println!("emitting token: {:?}", token);
+
+        self.tokens.push(token);
+    }
 
 }

@@ -3,12 +3,11 @@
 
 extern crate regex;
 
-use std::io;
 use std::io::prelude::*;
 use std::fs::File;
 
 mod lexer;
-use lexer::Lexer;
+mod parser;
 
 fn main() {
     let mut f = File::open("tmp/a.rb").expect("cant read file");
