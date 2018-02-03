@@ -42,7 +42,7 @@ pub struct Lexer {
     input_stream: InputStream,
     state: LexingState,
 
-    tokens: Vec<Token>,
+    pub tokens: Vec<Token>,
 }
 
 impl Lexer {

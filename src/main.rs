@@ -8,6 +8,7 @@ use std::fs::File;
 
 mod lexer;
 mod parser;
+use parser::parser::{Parser, Token};
 
 fn main() {
     let mut f = File::open("tmp/a.rb").expect("cant read file");
@@ -18,20 +19,16 @@ fn main() {
 
     lexer.lex();
 
-    // let tokens = lexer.tokens;
+    let tokens = lexer.tokens;
 
-    // let mut parser = parser::Parser::new(None);
+    let mut parser = Parser::new(None);
+    for t in tokens {
+        println!("TOKEN: {:?}", t);
 
-    // println!("TOKENs:");
-    // for t in &tokens {
-    //     println!("TOKEN: {:?}", t);
-    // }
+        parser.parse(t);
+    }
 
-    // for t in tokens {
-    //     parser.parse(t);
-    // }
-
-    // parser.parse(parser::Token::EOI);
+    // parser.parse(Token::EOI);
 
     // println!("{:?}", parser.extra());
 }
