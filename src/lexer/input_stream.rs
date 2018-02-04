@@ -133,4 +133,8 @@ impl InputStream {
 
     }
 
+
+    pub fn no_more(&self) -> bool {
+        self.p > self.string.len()
+    }
 }

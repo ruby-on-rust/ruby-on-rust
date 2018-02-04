@@ -8,9 +8,10 @@ use std::fs::File;
 
 mod lexer;
 mod parser;
-use parser::parser::{Parser, Token};
+use parser::parser::{Parser};
 
 fn main() {
+
     let mut f = File::open("tmp/a.rb").expect("cant read file");
     let mut file_content = String::new();
     f.read_to_string(&mut file_content).expect("cant read file");
