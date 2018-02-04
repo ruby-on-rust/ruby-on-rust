@@ -10,9 +10,6 @@ mod lexing_state;      use lexer::lexing_state::{LexingState, get_lexing_state_f
 mod matching_patterns;
 
 pub struct Lexer {
-    // TODO refine
-    patterns: HashMap<&'static str, Regex>,
-
     // TODO CONSTant
     state_actions: HashMap<LexingState, Vec<Box<Action>>>,
 
@@ -147,7 +144,6 @@ impl Lexer {
         ]);
 
         Lexer {
-            patterns,
             state_actions,
             input_stream: InputStream::new(input_string),
             state: LexingState::LineBegin,
