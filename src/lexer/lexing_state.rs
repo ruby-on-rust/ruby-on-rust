@@ -43,6 +43,6 @@ impl FromStr for LexingState {
     }
 }
 
-pub fn get_lexing_state_from_str(name: &str) -> LexingState {
+pub fn get_lexing_state_by_name(name: &str) -> LexingState {
     name.parse::<LexingState>().unwrap()
 }

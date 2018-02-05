@@ -4,7 +4,7 @@ use parser::parser::Token;
 
 mod input_stream;      use lexer::input_stream::InputStream;
 mod action;            use lexer::action::{Action, ActionProc};
-mod lexing_state;      use lexer::lexing_state::{LexingState, get_lexing_state_from_str};
+mod lexing_state;      use lexer::lexing_state::{LexingState, get_lexing_state_by_name};
 mod matching_patterns;
 
 pub struct Lexer {
@@ -36,7 +36,7 @@ impl Lexer {
         // TODO macro-ize
         let mut state_actions = HashMap::new();
 
-        state_actions.insert(get_lexing_state_from_str("line_begin"), vec![
+        state_actions.insert(get_lexing_state_by_name("line_begin"), vec![
 
             // original action for c_any
             box Action {
@@ -57,7 +57,7 @@ impl Lexer {
             }
         ]);
 
-        state_actions.insert(get_lexing_state_from_str("expr_value"), vec![
+        state_actions.insert(get_lexing_state_by_name("expr_value"), vec![
             // original action for c_any
             box Action {
                 regex: patterns.get("c_any").unwrap().clone(), // TODO clone?
@@ -73,7 +73,7 @@ impl Lexer {
             // original action for eof
         ]);
 
-        state_actions.insert(get_lexing_state_from_str("expr_begin"), vec![
+        state_actions.insert(get_lexing_state_by_name("expr_begin"), vec![
             // original action for r"[+\-] w_any* [0-9]"
             // box Action {
             //     regex: Regex::new(r"^[+\-][[:space:]]*[0-9]").unwrap(), //r"[+\-] w_any* [0-9]"
@@ -94,7 +94,7 @@ impl Lexer {
             }
         ]);
 
-        state_actions.insert(get_lexing_state_from_str("expr_end"), vec![
+        state_actions.insert(get_lexing_state_by_name("expr_end"), vec![
 
             // original action for:
             //     [1-9] digit* '_'? %{ @num_base = 10; @num_digits_s = @ts } int_dec
