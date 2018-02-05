@@ -9,7 +9,7 @@ mod matching_patterns;
 
 pub struct Lexer {
     // TODO CONSTant
-    state_actions: HashMap<LexingState, Vec<Box<Action>>>,
+    transactions: HashMap<LexingState, Vec<Box<Action>>>,
 
     input_stream: InputStream,
     state: LexingState,
@@ -34,9 +34,9 @@ impl Lexer {
         );
 
         // TODO macro-ize
-        let mut state_actions = HashMap::new();
+        let mut transactions = HashMap::new();
 
-        state_actions.insert(get_state!("line_begin"), vec![
+        transactions.insert(get_state!("line_begin"), vec![
 
             // original action for c_any
             box Action {
@@ -57,7 +57,7 @@ impl Lexer {
             }
         ]);
 
-        state_actions.insert(get_state!("expr_value"), vec![
+        transactions.insert(get_state!("expr_value"), vec![
             // original action for c_any
             box Action {
                 regex: patterns.get("c_any").unwrap().clone(), // TODO clone?
@@ -73,7 +73,7 @@ impl Lexer {
             // original action for eof
         ]);
 
-        state_actions.insert(get_state!("expr_begin"), vec![
+        transactions.insert(get_state!("expr_begin"), vec![
             // original action for r"[+\-] w_any* [0-9]"
             // box Action {
             //     regex: Regex::new(r"^[+\-][[:space:]]*[0-9]").unwrap(), //r"[+\-] w_any* [0-9]"
@@ -94,7 +94,7 @@ impl Lexer {
             }
         ]);
 
-        state_actions.insert(get_state!("expr_end"), vec![
+        transactions.insert(get_state!("expr_end"), vec![
 
             // original action for:
             //     [1-9] digit* '_'? %{ @num_base = 10; @num_digits_s = @ts } int_dec
@@ -145,7 +145,7 @@ impl Lexer {
         ]);
 
         Lexer {
-            state_actions,
+            transactions,
             input_stream: InputStream::new(input_string),
             state: LexingState::LineBegin,
             is_breaking: false,
@@ -198,7 +198,7 @@ impl Lexer {
             }
 
             // get actions
-            let actions = &self.state_actions.get(&self.state).unwrap().clone();
+            let actions = &self.transactions.get(&self.state).unwrap().clone();
 
             // find matching action
             let action= self.input_stream.longest_matching_action(&actions).expect("cant match any action");
