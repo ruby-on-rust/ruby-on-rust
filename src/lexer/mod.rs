@@ -1,5 +1,3 @@
-#![feature(macro_rules)]
-
 use std::collections::HashMap;
 
 use parser::parser::Token;

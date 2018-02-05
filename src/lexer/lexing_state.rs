@@ -8,7 +8,7 @@ use std::str::FromStr;
 // :expr_dot      => lex_en_expr_dot,
 // :expr_fname    => lex_en_expr_fname,
 // :expr_value    => lex_en_expr_value,
-// :expr_beg      => lex_en_expr_beg,
+// :expr_beg      => lex_egn_expr_beg,
 // :expr_mid      => lex_en_expr_mid,
 // :expr_arg      => lex_en_expr_arg,
 // :expr_cmdarg   => lex_en_expr_cmdarg,
@@ -48,8 +48,4 @@ impl FromStr for LexingState {
             _ => Err(()),
         }
     }
-}
-
-pub fn get_lexing_state_by_name(name: &str) -> LexingState {
-    name.parse::<LexingState>().unwrap()
 }
