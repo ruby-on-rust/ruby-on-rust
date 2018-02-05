@@ -1,3 +1,5 @@
+#![macro_use]
+
 use std::str::FromStr;
 
 // ORIGINAL
@@ -20,6 +22,11 @@ use std::str::FromStr;
 // :plain_string  => lex_en_plain_string,
 // :plain_words   => lex_en_plain_string,
 
+macro_rules! get_state {
+    ($e:expr) => (
+        $e.parse::<LexingState>().unwrap()
+    );
+}
 
 #[derive(Debug, PartialEq, Eq, Hash)]
 pub enum LexingState {
