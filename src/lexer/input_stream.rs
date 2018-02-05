@@ -90,7 +90,7 @@ impl InputStream {
 
     // TODO refine naming
     pub fn simulate_fhold(&mut self) {
-        println!("invoking cmd fhold");
+        println!("\n>>> invoking fhold");
 
         // NOTE assume original p is never 0
         self.p -= 1;
@@ -99,7 +99,7 @@ impl InputStream {
     // basically
     // p = @ts - 1;
     pub fn hold_current_token(&mut self) {
-        println!("invoking cmd hold_current_token");
+        println!("\n>>> invoking hold_current_token");
 
         match ( self.ts, self.te ) {
             ( Some(ts), Some(te) ) => {
@@ -132,7 +132,6 @@ impl InputStream {
         }
 
     }
-
 
     pub fn no_more(&self) -> bool {
         self.p > self.string.len()

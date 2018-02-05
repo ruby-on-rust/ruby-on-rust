@@ -1,7 +1,5 @@
 use std::collections::HashMap;
 
-use regex::Regex;
-
 use parser::parser::Token;
 
 mod input_stream;      use lexer::input_stream::InputStream;
@@ -16,6 +14,8 @@ pub struct Lexer {
     input_stream: InputStream,
     state: LexingState,
 
+    is_breaking: bool,
+
     pub tokens: Vec<Token>,
 }
 
@@ -29,7 +29,7 @@ impl Lexer {
         // original do_eof
         shared_actions.insert("do_eof", |lexer: &mut Lexer| {
                 println!("action invoked for c_eof");
-                lexer.state = LexingState::Breaking;
+                lexer.flag_breaking();
             }
         );
 
@@ -129,6 +129,7 @@ impl Lexer {
 
                     lexer.input_stream.simulate_fhold();
                     lexer.state = LexingState::LineBegin;
+                    lexer.flag_breaking();
                 }
             },
 
@@ -147,6 +148,7 @@ impl Lexer {
             state_actions,
             input_stream: InputStream::new(input_string),
             state: LexingState::LineBegin,
+            is_breaking: false,
             tokens: Vec::new(),
         }
     }
@@ -163,10 +165,15 @@ impl Lexer {
         }
     }
 
-    // TODO return a token
+    // return a token
+    // 
+    // TODO
     // then the current `emit` is not correct
+    // every `exec()` should emit a token
     // 
     // TODO wrap in a Result
+    // 
+
     fn advance(&mut self) {
         // TODO token queue
 
@@ -179,13 +186,13 @@ impl Lexer {
     // match-state-invoke-action loop
     // 
     // exec machine until encounter break
-    // still not sure about this..
     // 
     fn exec(&mut self) {
         loop {
             println!("\n--- exec looping, state: {:?} ---", self.state);
 
-            if ( self.state == LexingState::Breaking ) {
+            if ( self.is_breaking == true ) {
+                self.is_breaking = false;
                 println!("breaking...");
                 break;
             }
@@ -203,10 +210,13 @@ impl Lexer {
         }
     }
 
+    fn flag_breaking(&mut self) {
+        self.is_breaking = true;
+    }
+
     fn emit_token(&mut self, token: Token) {
         println!("emitting token: {:?}", token);
 
         self.tokens.push(token);
     }
-
 }

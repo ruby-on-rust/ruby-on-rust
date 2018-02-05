@@ -27,9 +27,6 @@ pub enum LexingState {
     ExprValue,
     ExprBegin,
     ExprEnd,
-
-    // no corresponding original
-    Breaking,
 }
 
 impl FromStr for LexingState {
@@ -41,7 +38,6 @@ impl FromStr for LexingState {
             "expr_value" => Ok(LexingState::ExprValue),
             "expr_begin" => Ok(LexingState::ExprBegin),
             "expr_end" => Ok(LexingState::ExprEnd),
-            "breaking" => Ok(LexingState::Breaking),
             _ => Err(()),
         }
     }
