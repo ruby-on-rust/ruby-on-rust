@@ -4,8 +4,9 @@ use parser::parser::Token;
 
 mod input_stream;      use lexer::input_stream::InputStream;
 mod lexing_state;      use lexer::lexing_state::{LexingState};
+mod shared_actions;
 mod transactions;
-mod action;            use lexer::action::{Action, ActionProc};
+mod action;            use lexer::action::{Action};
 mod matching_patterns;
 
 pub struct Lexer {
@@ -22,21 +23,9 @@ pub struct Lexer {
 
 impl Lexer {
     pub fn new(input_string: String) -> Lexer {
-        // TODO separate shared_actions constructing
-        let mut shared_actions: HashMap<&'static str, ActionProc> = HashMap::new();
-
-        // original do_eof
-        shared_actions.insert("do_eof", |lexer: &mut Lexer| {
-                println!("action invoked for c_eof");
-                lexer.flag_breaking();
-            }
-        );
-
-        // let transactions = self.build_transactions
-
         Lexer {
             state: LexingState::LineBegin,
-            transactions: transactions::construct(shared_actions),
+            transactions: transactions::construct(),
             is_breaking: false,
 
             input_stream: InputStream::new(input_string),
