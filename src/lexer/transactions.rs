@@ -4,10 +4,12 @@ use lexer::Lexer;
 use lexer::lexing_state::LexingState;
 use lexer::action::{Action, ActionProc};
 use lexer::matching_patterns;
+use lexer::shared_actions;
 use parser::parser::Token;
 
-pub fn construct(shared_actions: HashMap<&'static str, ActionProc>) -> HashMap<LexingState, Vec<Box<Action>>> {
+pub fn construct() -> HashMap<LexingState, Vec<Box<Action>>> {
     let patterns = matching_patterns::construct();
+    let shared_actions = shared_actions::construct();
 
     let mut transactions = HashMap::new();
 
