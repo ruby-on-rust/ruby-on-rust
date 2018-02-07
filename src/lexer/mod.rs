@@ -44,6 +44,10 @@ impl Lexer {
         }
 
         transactions.insert(get_state!("line_begin"), vec![
+            // original action for w_any
+            action!("c_nl", |lexer: &mut Lexer| {
+                println!("action invoked for c_any");
+            }),
 
             // original action for c_any
             action!("c_any", |lexer: &mut Lexer| {
@@ -95,6 +99,7 @@ impl Lexer {
                 let parsed_int = lexer.input_stream.current_matched_token().unwrap().parse::<i64>().unwrap();
 
                 lexer.emit_token(Token::T_INTEGER(parsed_int));
+                lexer.flag_breaking();
             }),
 
             // TODO NOT CORRESPONDING
@@ -136,6 +141,7 @@ impl Lexer {
             // TODO advance and advance and advance
             self.advance();
 
+            // TODO not the correct way
             if (self.input_stream.no_more()) {
                 break;
             }

@@ -38,7 +38,7 @@ impl InputStream {
     // starting from pos
     pub fn longest_matching_action(&mut self, actions: &Vec<Box<Action>>) -> Option<Box<Action>> {
 
-        println!("finding longest matching action... current p {}", self.p);
+        println!("finding longest matching action..., current p: {}", self.p);
 
         // TODO not that elegant, use Option<Action> instead of
         let mut longest_matched_action_i: Option<usize> = None;
@@ -92,23 +92,31 @@ impl InputStream {
     pub fn simulate_fhold(&mut self) {
         println!("\n>>> invoking fhold");
 
+        println!("=== debugging fhold invoking: p {:?} ts {:?} te {:?}", self.p, self.ts, self.te );
+
         // NOTE assume original p is never 0
         self.p -= 1;
+
+        println!("=== debugging fhold invoking: p {:?} ts {:?} te {:?}", self.p, self.ts, self.te );
     }
 
-    // basically
-    // p = @ts - 1;
+    // TODO
+    // 
+    // NOTE
+    // 
+    // for some reason
+    // original `p = @ts - 1;`
+    // 
+    // still not sure about usage of `p` and `@p` in original `lexer.rl`
+    // 
+    // we're using p = @ts for now
+    // 
     pub fn hold_current_token(&mut self) {
         println!("\n>>> invoking hold_current_token");
 
         match ( self.ts, self.te ) {
             ( Some(ts), Some(te) ) => {
-                if ts == 0 {
-                    self.p = 0;
-                }
-                else {
-                    self.p = ts - 1;
-                }
+                self.p = ts;
             },
             _ => {
                 println!("    no current token");
