@@ -1224,14 +1224,14 @@ this is a tracker for original matching_patterns, character_classes, states, act
     c_eof => do_eof;
   *|;
 
+## expr_value
+
+```
   # Like expr_beg, but no 1.9 label or 2.2 quoted label possible.
   #
   expr_value := |*
-      # a:b: a(:b), a::B, A::B
+      - # a:b: a(:b), a::B, A::B
       label (any - ':')
-      => { p = @ts - 1
-           fgoto expr_end; };
-
       # "bar", 'baz'
       ['"] # '
       => {
@@ -1537,7 +1537,11 @@ this is a tracker for original matching_patterns, character_classes, states, act
 
       c_eof => do_eof;
   *|;
+```
 
+## leading_dot
+
+```
   leading_dot := |*
       # Insane leading dots:
       # a #comment
@@ -1549,43 +1553,25 @@ this is a tracker for original matching_patterns, character_classes, states, act
       => { emit(:tNL, nil, @newline_s, @newline_s + 1)
            fhold; fnext line_begin; fbreak; };
   *|;
+```
 
+## line_comment
+
+```
   #
   # === EMBEDDED DOCUMENT (aka BLOCK COMMENT) PARSING ===
   #
+```
 
-  line_comment := |*
-      '=end' c_line* c_nl_zlen
-      => {
-        emit_comment(@eq_begin_s, @te)
-        fgoto line_begin;
-      };
+- '=end' c_line* c_nl_zlen
+- c_line* c_nl;
+- c_line* zlen
 
-      c_line* c_nl;
+## line_begin
 
-      c_line* zlen
-      => {
-        diagnostic :fatal, :embedded_document, nil,
-                   range(@eq_begin_s, @eq_begin_s + '=begin'.length)
-      };
-  *|;
-
-  line_begin := |*
-      w_any;
-
-      '=begin' ( c_space | c_nl_zlen )
-      => { @eq_begin_s = @ts
-           fgoto line_comment; };
-
-      '__END__' ( c_eol - zlen )
-      => { p = pe - 3 };
-
-      c_any
-      => { fhold; fgoto expr_value; };
-
-      c_eof => do_eof;
-  *|;
-
-  }%%
-  # %
-end
+- w_any;
+  - partly done
+- '=begin' ( c_space | c_nl_zlen )
+- '__END__' ( c_eol - zlen )
+- c_any
+- c_eof => do_eof;
