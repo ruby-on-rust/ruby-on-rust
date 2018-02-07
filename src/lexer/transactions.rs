@@ -20,9 +20,14 @@ pub fn construct(shared_actions: HashMap<&'static str, ActionProc>) -> HashMap<L
         };
     }
 
-    // TODO maybe impl macro transaction!
+    macro_rules! transaction {
+        ( $state:expr, $actions:expr ) => {
+            let state = $state.parse::<LexingState>().unwrap();
+            transactions.insert(state, $actions);
+        };
+    }
 
-    transactions.insert(get_state!("line_begin"), vec![
+    transaction!("line_begin", vec![
         // original action for w_any
         action!("c_nl", |lexer: &mut Lexer| {
             println!("action invoked for c_any");
@@ -41,7 +46,8 @@ pub fn construct(shared_actions: HashMap<&'static str, ActionProc>) -> HashMap<L
         action!("c_eof", shared_actions.get("do_eof").unwrap().clone()),
     ]);
 
-    transactions.insert(get_state!("expr_value"), vec![
+
+    transaction!("expr_value", vec![
         // original action for c_any
         action!("c_any", |lexer: &mut Lexer| {
             println!("action invoked for c_any");
@@ -54,7 +60,7 @@ pub fn construct(shared_actions: HashMap<&'static str, ActionProc>) -> HashMap<L
         // original action for eof
     ]);
 
-    transactions.insert(get_state!("expr_begin"), vec![
+    transaction!("expr_begin", vec![
         // original action for c_any
         action!("c_any", |lexer: &mut Lexer| {
                 println!("action invoked for c_any");
@@ -65,7 +71,7 @@ pub fn construct(shared_actions: HashMap<&'static str, ActionProc>) -> HashMap<L
         )
     ]);
 
-    transactions.insert(get_state!("expr_end"), vec![
+    transaction!("expr_end", vec![
 
         // original action for:
         //     [1-9] digit* '_'? %{ @num_base = 10; @num_digits_s = @ts } int_dec
