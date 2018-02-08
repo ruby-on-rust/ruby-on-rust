@@ -33,6 +33,12 @@ pub fn construct() -> HashMap<LexingState, Vec<Box<Action>>> {
         };
     }
 
+    macro_rules! get_shared_action {
+        ( $action_name:expr ) => {
+            shared_actions.get($action_name).unwrap().clone()
+        };
+    }
+
     transaction!("line_begin", vec![
         // original action for w_any
         action!("c_nl", |lexer: &mut Lexer| {
@@ -49,11 +55,13 @@ pub fn construct() -> HashMap<LexingState, Vec<Box<Action>>> {
 
         // TODO
         // original action for eof
-        action!("c_eof", shared_actions.get("do_eof").unwrap().clone()),
+        action!("c_eof", get_shared_action!("do_eof")),
     ]);
 
 
     transaction!("expr_value", vec![
+        action!("w_space_comment", get_shared_action!("noop")),
+
         // original action for c_any
         action!("c_any", |lexer: &mut Lexer| {
             println!("action invoked for c_any");
@@ -135,7 +143,7 @@ pub fn construct() -> HashMap<LexingState, Vec<Box<Action>>> {
         // original action for:
         //     c_eof
 
-        action!("c_eof", shared_actions.get("do_eof").unwrap().clone())
+        action!("c_eof", get_shared_action!("do_eof"))
 
     ]);
 

@@ -13,6 +13,8 @@ pub fn construct() -> HashMap<&'static str, ActionProc> {
         };
     }
 
+    action!("noop", |lexer: &mut Lexer|{});
+
     // original do_eof
     action!("do_eof", |lexer: &mut Lexer| {
         println!("action invoked for c_eof");
