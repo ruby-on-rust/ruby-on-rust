@@ -14,3 +14,13 @@ current build cmd
   - % in matching pattern
 - testing
 - auto rewrite ragel transitions?
+
+#
+
+[1-9] digit* '_'? %{ @num_base = 10; @num_digits_s = @ts } int_dec
+
+somethingA %{actionB} somethingB
+
+stateA --(transition and invoke action)--> stateB
+
+like this?
