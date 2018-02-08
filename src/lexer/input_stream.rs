@@ -131,17 +131,23 @@ impl InputStream {
 
         let sliced_string: String = self.string.chars().skip(self.p).collect();
 
-        println!("    current sliced string: {}", sliced_string);
+        println!("    current sliced string: {}, (len: {})\n", sliced_string, sliced_string.len());
 
         let captures = regex.captures(&sliced_string);
         match captures {
             None => None,
-            Some(capture) => Some(capture.len())
+            Some(capture) => {
+                let match_ = capture.get(0).unwrap();
+                let matched_str = String::from(match_.as_str());
+                // println!("    matched str: {:?}", matched_str);
+                // println!("    DEBUGGING CAPTURE: capture: {:?}", capture);
+                Some(matched_str.len())
+            }
         }
 
     }
 
     pub fn no_more(&self) -> bool {
-        self.p > self.string.len()
+        self.p >= self.string.len()
     }
 }

@@ -3,7 +3,7 @@
 %include {
 }
 
-%derive_token { Debug }
+%derive_token { Debug, Copy, Clone }
 
 %extra_argument { Option<i64> }
 
@@ -20,3 +20,5 @@
 input ::= T_INTEGER(A). {
     self.extra = Some(A);
 }
+
+input ::= K_TRUE.

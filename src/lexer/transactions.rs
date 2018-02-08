@@ -1,4 +1,8 @@
+// TODO the name `transaction` is misleading, it's a machine consists of transaction`s` actually
+
 use std::collections::HashMap;
+
+use regex::Regex;
 
 use lexer::Lexer;
 use lexer::lexing_state::LexingState;
@@ -16,7 +20,7 @@ pub fn construct() -> HashMap<LexingState, Vec<Box<Action>>> {
     macro_rules! action {
         ($pattern_name:expr, $procedure:expr) => {
             box Action {
-                regex: patterns.get($pattern_name).unwrap().clone(), // TODO clone?
+                regex: patterns.get($pattern_name).expect(&format!("no matching_pattern: {:?}", $pattern_name)).clone(), // TODO clone?
                 procedure: $procedure
             }
         };
@@ -63,6 +67,14 @@ pub fn construct() -> HashMap<LexingState, Vec<Box<Action>>> {
     ]);
 
     transaction!("expr_begin", vec![
+
+        // original action
+        //     keyword
+        action!("keyword", |lexer: &mut Lexer| {
+            lexer.input_stream.hold_current_token();
+            lexer.state = LexingState::ExprEnd;
+        }),
+
         // original action for c_any
         action!("c_any", |lexer: &mut Lexer| {
                 println!("action invoked for c_any");
@@ -74,6 +86,16 @@ pub fn construct() -> HashMap<LexingState, Vec<Box<Action>>> {
     ]);
 
     transaction!("expr_end", vec![
+
+        //
+        // KEYWORDS
+        //
+
+        // original action for: keyword_with_end
+        action!("keyword_with_end", |lexer: &mut Lexer| {
+            lexer.emit_token_from_table("keywords");
+            lexer.flag_breaking();
+        }),
 
         // original action for:
         //     [1-9] digit* '_'? %{ @num_base = 10; @num_digits_s = @ts } int_dec
@@ -93,17 +115,10 @@ pub fn construct() -> HashMap<LexingState, Vec<Box<Action>>> {
         // original action for:
         //     w_newline
 
-        action!("c_eol", |lexer: &mut Lexer| {
-            println!("action invoked for c_eol");
+        action!("c_nl", |lexer: &mut Lexer| {
+            println!("action invoked for w_newline/c_nl");
 
-            // TODO
-            // any
-            // => { emit(:tNL, nil, @newline_s, @newline_s + 1)
-            //     fhold; fnext line_begin; fbreak; };
-
-            lexer.input_stream.simulate_fhold();
-            lexer.state = LexingState::LineBegin;
-            lexer.flag_breaking();
+            lexer.state = LexingState::LeadingDot;
         }),
 
         // original action for:
@@ -111,6 +126,26 @@ pub fn construct() -> HashMap<LexingState, Vec<Box<Action>>> {
 
         action!("c_eof", shared_actions.get("do_eof").unwrap().clone())
 
+    ]);
+
+    transaction!("leading_dot", vec![
+        //   # Insane leading dots:
+        //   # a #comment
+        //   #  .b: a.b
+        //   c_space* %{ tm = p } ('.' | '&.')
+        //   => { p = tm - 1; fgoto expr_end; };
+
+        // original action for: any
+        //   any
+        //   => { emit(:tNL, nil, @newline_s, @newline_s + 1)
+        //        fhold; fnext line_begin; fbreak; };
+
+        action!("any", |lexer: &mut Lexer| {
+            // TODO
+            lexer.input_stream.simulate_fhold();
+            lexer.state = LexingState::LineBegin;
+            lexer.flag_breaking();
+        }),
     ]);
 
     transactions

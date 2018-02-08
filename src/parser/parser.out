@@ -1,10 +1,17 @@
 State 0:
           input ::= * T_INTEGER
+          input ::= * K_TRUE
 
-                     T_INTEGER shift  1
+                     T_INTEGER shift  2
+                        K_TRUE shift  1
                          input accept
 
 State 1:
+      (1) input ::= K_TRUE *
+
+                             $ reduce 1
+
+State 2:
       (0) input ::= T_INTEGER *
 
                              $ reduce 0
@@ -13,5 +20,6 @@ State 1:
 Symbols:
     0: $:
     1: T_INTEGER
-    2: error:
-    3: input: T_INTEGER
+    2: K_TRUE
+    3: error:
+    4: input: T_INTEGER K_TRUE
