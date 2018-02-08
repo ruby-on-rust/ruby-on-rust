@@ -8,13 +8,16 @@ mod shared_actions;
 mod transactions;
 mod action;            use lexer::action::{Action};
 mod matching_patterns;
+mod tokens_tables;
 
 pub struct Lexer {
-    // TODO CONSTant
+    state: LexingState,
+
+    tokens_tables: HashMap<&'static str, HashMap<&'static str, Token>>,
+
     transactions: HashMap<LexingState, Vec<Box<Action>>>,
 
     input_stream: InputStream,
-    state: LexingState,
 
     is_breaking: bool,
 
@@ -25,6 +28,7 @@ impl Lexer {
     pub fn new(input_string: String) -> Lexer {
         Lexer {
             state: LexingState::LineBegin,
+            tokens_tables: tokens_tables::construct(),
             transactions: transactions::construct(),
             is_breaking: false,
 
@@ -106,70 +110,10 @@ impl Lexer {
         self.tokens.push(token);
     }
 
-    // 
-    // mapping tables of strings literal -> token
-    // 
-    // 
-    // PUNCTUATION = {
-    //     '='   => :tEQL,     '&'   => :tAMPER2,  '|'   => :tPIPE,
-    //     '!'   => :tBANG,    '^'   => :tCARET,   '+'   => :tPLUS,
-    //     '-'   => :tMINUS,   '*'   => :tSTAR2,   '/'   => :tDIVIDE,
-    //     '%'   => :tPERCENT, '~'   => :tTILDE,   ','   => :tCOMMA,
-    //     ';'   => :tSEMI,    '.'   => :tDOT,     '..'  => :tDOT2,
-    //     '...' => :tDOT3,    '['   => :tLBRACK2, ']'   => :tRBRACK,
-    //     '('   => :tLPAREN2, ')'   => :tRPAREN,  '?'   => :tEH,
-    //     ':'   => :tCOLON,   '&&'  => :tANDOP,   '||'  => :tOROP,
-    //     '-@'  => :tUMINUS,  '+@'  => :tUPLUS,   '~@'  => :tTILDE,
-    //     '**'  => :tPOW,     '->'  => :tLAMBDA,  '=~'  => :tMATCH,
-    //     '!~'  => :tNMATCH,  '=='  => :tEQ,      '!='  => :tNEQ,
-    //     '>'   => :tGT,      '>>'  => :tRSHFT,   '>='  => :tGEQ,
-    //     '<'   => :tLT,      '<<'  => :tLSHFT,   '<='  => :tLEQ,
-    //     '=>'  => :tASSOC,   '::'  => :tCOLON2,  '===' => :tEQQ,
-    //     '<=>' => :tCMP,     '[]'  => :tAREF,    '[]=' => :tASET,
-    //     '{'   => :tLCURLY,  '}'   => :tRCURLY,  '`'   => :tBACK_REF2,
-    //     '!@'  => :tBANG,    '&.'  => :tANDDOT,
-    // }
-
-    // PUNCTUATION_BEGIN = {
-    //     '&'   => :tAMPER,   '*'   => :tSTAR,    '**'  => :tDSTAR,
-    //     '+'   => :tUPLUS,   '-'   => :tUMINUS,  '::'  => :tCOLON3,
-    //     '('   => :tLPAREN,  '{'   => :tLBRACE,  '['   => :tLBRACK,
-    // }
-
-    // KEYWORDS = {
-    //     'if'     => :kIF_MOD,      'unless'   => :kUNLESS_MOD,
-    //     'while'  => :kWHILE_MOD,   'until'    => :kUNTIL_MOD,
-    //     'rescue' => :kRESCUE_MOD,  'defined?' => :kDEFINED,
-    //     'BEGIN'  => :klBEGIN,      'END'      => :klEND,
-    // }
-
-    // KEYWORDS_BEGIN = {
-    //     'if'     => :kIF,          'unless'   => :kUNLESS,
-    //     'while'  => :kWHILE,       'until'    => :kUNTIL,
-    //     'rescue' => :kRESCUE,      'defined?' => :kDEFINED,
-    // }
-
-    // %w(class module def undef begin end then elsif else ensure case when
-    //     for break next redo retry in do return yield super self nil true
-    //     false and or not alias __FILE__ __LINE__ __ENCODING__).each do |keyword|
-    //     KEYWORDS_BEGIN[keyword] = KEYWORDS[keyword] = :"k#{keyword.upcase}"
-    // end
-
     fn emit_token_from_table(&mut self, table_name: &str) {
-        // TODO const, separate
-
-        let keywords: HashMap<&'static str, Token> = vec![
-            ( "true", Token::K_TRUE ),
-        ].into_iter().collect();
-
-        let tables: HashMap<&'static str, HashMap<&str, Token>> = vec![
-            ( "keywords", keywords ),
-        ].into_iter().collect();
-
-        // ---
         let token_str = self.input_stream.current_matched_token().unwrap().clone();
-        let token = tables.get(table_name).unwrap().get(token_str.as_str()).unwrap();
+        let token = self.tokens_tables.get(table_name).unwrap().get(token_str.as_str()).unwrap().clone();
 
-        self.emit_token(*token);
+        self.emit_token(token);
     }
 }
