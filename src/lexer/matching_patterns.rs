@@ -38,13 +38,17 @@ pub fn construct() -> HashMap<&'static str, Regex> {
     // TOKEN DEFINITIONS
     // 
 
-    // TODO INCOMPLETED
-    //     ORIGINAL keyword_with_end
+    //     ORIGINAL
+    //         # A list of keywords which have different meaning at the beginning of expression.
+    //         keyword_modifier    = 'if'     | 'unless' | 'while'  | 'until' | 'rescue' ;
+    pattern!("keyword_modifier", "(if)|(unless)|(while)|(until)|(rescue)");
+
+    //     ORIGINAL
     //         # A list of keywords which do not accept an expression after them.
     //         keyword_with_end    = 'end'    | 'self'   | 'true'   | 'false'  | 'retry'    |
     //                               'redo'   | 'nil'    | 'BEGIN'  | 'END'    | '__FILE__' |
     //                               '__LINE__' | '__ENCODING__';
-    pattern!("keyword_with_end", "(true)");
+    pattern!("keyword_with_end", "(end)|(self)|(true)|(false)|(retry)|(redo)|(nil)|(BEGIN)|(END)|(__FILE__)|(__LINE__)|(__ENCODING__)");
 
     // TODO INCOMPLETED
     //     ORIGINAL keyword
@@ -52,7 +56,7 @@ pub fn construct() -> HashMap<&'static str, Regex> {
     //         keyword             = keyword_with_value | keyword_with_mid |
     //                               keyword_with_end   | keyword_with_arg |
     //                               keyword_with_fname | keyword_modifier ;
-    pattern!("keyword", "(true)");
+    pattern!("keyword", "(if)|(unless)|(while)|(until)|(rescue)|(end)|(self)|(true)|(false)|(retry)|(redo)|(nil)|(BEGIN)|(END)|(__FILE__)|(__LINE__)|(__ENCODING__)");
 
     // 
     // NUMERIC PARSING

@@ -68,6 +68,17 @@ pub fn construct() -> HashMap<LexingState, Vec<Box<Action>>> {
 
     transaction!("expr_begin", vec![
 
+        // original
+        //     # if a: Statement if.
+        //     keyword_modifier
+        //     => { emit_table(KEYWORDS_BEGIN)
+        //          fnext expr_value; fbreak; };
+        action!("keyword_modifier", |lexer: &mut Lexer| {
+            lexer.emit_token_from_table("keywords_begin");
+            lexer.state = LexingState::ExprValue;
+            lexer.flag_breaking();
+        }),
+
         // original action
         //     keyword
         action!("keyword", |lexer: &mut Lexer| {
