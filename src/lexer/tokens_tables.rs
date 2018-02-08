@@ -1,7 +1,5 @@
 use std::collections::HashMap;
 
-use lexer::Lexer;
-
 use parser::parser::Token;
 
 // 
@@ -55,11 +53,18 @@ use parser::parser::Token;
 
 pub fn construct() -> HashMap<&'static str, HashMap<&'static str, Token>> {
     let keywords: HashMap<&'static str, Token> = vec![
+        ( "if", Token::K_IF_MOD ),
+        ( "true", Token::K_TRUE ),
+    ].into_iter().collect();
+
+    let keywords_begin: HashMap<&'static str, Token> = vec![
+        ( "if", Token::K_IF ),
         ( "true", Token::K_TRUE ),
     ].into_iter().collect();
 
     let tables: HashMap<&'static str, HashMap<&str, Token>> = vec![
         ( "keywords", keywords ),
+        ( "keywords_begin", keywords_begin )
     ].into_iter().collect();
 
     tables

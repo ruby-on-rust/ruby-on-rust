@@ -22,3 +22,8 @@ input ::= T_INTEGER(A). {
 }
 
 input ::= K_TRUE.
+
+// NOTE
+// fake rules for generating tokens for lexer
+input ::= K_IF_MOD.
+input ::= K_IF.
