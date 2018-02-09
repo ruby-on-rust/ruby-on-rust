@@ -60,25 +60,95 @@ pub fn construct() -> TMatchingPatterns {
     // TOKEN DEFINITIONS
     // 
 
-    //     ORIGINAL
-    //         # A list of keywords which have different meaning at the beginning of expression.
-    //         keyword_modifier    = 'if'     | 'unless' | 'while'  | 'until' | 'rescue' ;
+    // # All operators are punctuation. There is more to punctuation
+    // # than just operators. Operators can be overridden by user;
+    // # punctuation can not.
+
+    // # A list of operators which are valid in the function name context, but
+    // # have different semantics in others.
+    // operator_fname      = '[]' | '[]=' | '`'  | '-@' | '+@' | '~@'  | '!@' ;
+    pattern!("operator_fname", "([])|([]=)|`|(-@)|(+@)|(~@)|(!@)");
+
+    // # A list of operators which can occur within an assignment shortcut (+ → +=).
+    // operator_arithmetic = '&'  | '|'   | '&&' | '||' | '^'  | '+'   | '-'  |
+    //                       '*'  | '/'   | '**' | '~'  | '<<' | '>>'  | '%'  ;
+    pattern!("operator_arithmetic", "(&)|(|)|(&&)|(||)|(^)|(+)|(-)|(*)|(/)|(**)|(~)|(<<)|(>>)|(%)");
+
+    // # A list of all user-definable operators not covered by groups above.
+    // operator_rest       = '=~' | '!~' | '==' | '!=' | '!'   | '===' |
+    //                       '<'  | '<=' | '>'  | '>=' | '<=>' | '=>'  ;
+    pattern!("operator_rest", "((=~)|(!~)|(==)|(!=)|(!)|(===)|(<)|(<=)|(>)|(>=)|(<=>)|(=>)");
+
+    //   # Note that `{` and `}` need to be referred to as e_lbrace and e_rbrace,
+    //   # as they are ambiguous with interpolation `#{}` and should be counted.
+    //   # These braces are not present in punctuation lists.
+
+    //   # A list of punctuation which has different meaning when used at the
+    //   # beginning of expression.
+    //   punctuation_begin   = '-'  | '+'  | '::' | '('  | '['  |
+    //                         '*'  | '**' | '&'  ;
+    pattern!("punctuation_begin", "(-)|(+)|(::)|(()|([)|(*)|(**)|(&)");
+
+    //   # A list of all punctuation except punctuation_begin.
+    //   punctuation_end     = ','  | '='  | '->' | '('  | '['  | ']'   |
+    //                         '::' | '?'  | ':'  | '.'  | '..' | '...' ;
+    pattern!("punctuation_end", "(,)|(=)|(->)|(()|([)|(])|(::)|(?)|(:)|(.)|(..)|(...)");
+
+    // # A list of keywords which have different meaning at the beginning of expression.
+    // keyword_modifier    = 'if'     | 'unless' | 'while'  | 'until' | 'rescue' ;
     pattern!("keyword_modifier", "(if)|(unless)|(while)|(until)|(rescue)");
 
-    //     ORIGINAL
-    //         # A list of keywords which do not accept an expression after them.
-    //         keyword_with_end    = 'end'    | 'self'   | 'true'   | 'false'  | 'retry'    |
-    //                               'redo'   | 'nil'    | 'BEGIN'  | 'END'    | '__FILE__' |
-    //                               '__LINE__' | '__ENCODING__';
+    // # A list of keywords which accept an argument-like expression, i.e. have the
+    // # same post-processing as method calls or commands. Example: `yield 1`,
+    // # `yield (1)`, `yield(1)`, are interpreted as if `yield` was a function.
+    // keyword_with_arg    = 'yield'  | 'super'  | 'not'    | 'defined?' ;
+    pattern!("keyword_with_arg", "(yield)|(super)|(not)|(defined?)");
+
+    // # A list of keywords which accept a literal function name as an argument.
+    // keyword_with_fname  = 'def'    | 'undef'  | 'alias'  ;
+    pattern!("keyword_with_fname", "(def)|(undef)|(alias)");
+
+    // # A list of keywords which accept an expression after them.
+    // keyword_with_value  = 'else'   | 'case'   | 'ensure' | 'module' | 'elsif' | 'then'  |
+    //                       'for'    | 'in'     | 'do'     | 'when'   | 'begin' | 'class' |
+    //                       'and'    | 'or'     ;
+    pattern!("keyword_with_value", "(else)|(case)|(ensure)|(module)|(elsif)|(then)|(for)|(in)|(do)|(when)|(begin)|(class)|(and)|(or)");
+
+    // # A list of keywords which accept a value, and treat the keywords from
+    // # `keyword_modifier` list as modifiers.
+    // keyword_with_mid    = 'rescue' | 'return' | 'break'  | 'next'   ;
+    pattern!("keyword_with_mid", "(rescue)|(return)|(break)|(next)");
+
+    // # A list of keywords which do not accept an expression after them.
+    // keyword_with_end    = 'end'    | 'self'   | 'true'   | 'false'  | 'retry'    |
+    //                       'redo'   | 'nil'    | 'BEGIN'  | 'END'    | '__FILE__' |
+    //                       '__LINE__' | '__ENCODING__';
     pattern!("keyword_with_end", "(end)|(self)|(true)|(false)|(retry)|(redo)|(nil)|(BEGIN)|(END)|(__FILE__)|(__LINE__)|(__ENCODING__)");
 
-    // TODO INCOMPLETED
-    //     ORIGINAL keyword
-    //         # All keywords.
-    //         keyword             = keyword_with_value | keyword_with_mid |
-    //                               keyword_with_end   | keyword_with_arg |
-    //                               keyword_with_fname | keyword_modifier ;
-    pattern!("keyword", "(if)|(unless)|(while)|(until)|(rescue)|(end)|(self)|(true)|(false)|(retry)|(redo)|(nil)|(BEGIN)|(END)|(__FILE__)|(__LINE__)|(__ENCODING__)");
+    // # All keywords.
+    // keyword             = keyword_with_value | keyword_with_mid |
+    //                       keyword_with_end   | keyword_with_arg |
+    //                       keyword_with_fname | keyword_modifier ;
+    pattern!("keyword", "([])|([]=)|`|(-@)|(+@)|(~@)|(!@)|(&)|(|)|(&&)|(||)|(^)|(+)|(-)|(*)|(/)|(**)|(~)|(<<)|(>>)|(%)|(if)|(unless)|(while)|(until)|(rescue)|(end)|(self)|(true)|(false)|(retry)|(redo)|(nil)|(BEGIN)|(END)|(__FILE__)|(__LINE__)|(__ENCODING__)|(if)|(unless)|(while)|(until)|(rescue)|(end)|(self)|(true)|(false)|(retry)|(redo)|(nil)|(BEGIN)|(END)|(__FILE__)|(__LINE__)|(__ENCODING__)");
+
+    //   constant       = c_upper c_alnum*;
+    pattern!("constant", "[[:upper:]][[:alnum:]]*");
+    //   bareword       = c_alpha c_alnum*;
+    pattern!("bareword", "[[:alpha:]][[:alnum:]]*");
+
+    //   call_or_var    = c_lower c_alnum*;
+    pattern!("call_or_var", "[[:lower:]][[:alnum:]]*");
+    //   class_var      = '@@' bareword;
+    pattern!("class_var", "@@[[:alpha:]][[:alnum:]]*");
+    //   instance_var   = '@' bareword;
+    pattern!("instance_var", "@[[:alpha:]][[:alnum:]]*");
+    //   global_var     = '$'
+    //       ( bareword | digit+
+    //       | [`'+~*$&?!@/\\;,.=:<>"] # `
+    //       | '-' c_alnum
+    //       )
+    //   ;
+    // TODO
 
     // 
     // NUMERIC PARSING
