@@ -149,7 +149,10 @@ pub fn construct() -> HashMap<LexingState, Vec<Box<Action>>> {
         }),
     ]);
 
-    transaction!("line_begin", machines::construct_machine_line_begin(patterns, shared_actions));
+
+    transaction!("expr_variable", machines::construct_machine_expr_variable(&patterns, &shared_actions));
+
+    transaction!("line_begin", machines::construct_machine_line_begin(&patterns, &shared_actions));
 
     transactions
 }
