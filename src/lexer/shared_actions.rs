@@ -3,8 +3,10 @@ use std::collections::HashMap;
 use lexer::Lexer;
 use lexer::action::{ActionProc};
 
-pub fn construct() -> HashMap<&'static str, ActionProc> {
-    let mut actions: HashMap<&'static str, ActionProc> = HashMap::new();
+pub type TSharedActions = HashMap<&'static str, ActionProc>;
+
+pub fn construct() -> TSharedActions {
+    let mut actions: TSharedActions = HashMap::new();
 
     // TODO share action! macro between shared_action and transactions
     macro_rules! action {

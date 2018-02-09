@@ -2,7 +2,9 @@ use std::collections::HashMap;
 
 use regex::Regex;
 
-pub fn construct() -> HashMap<&'static str, Regex> {
+pub type TMatchingPatterns = HashMap<&'static str, Regex>;
+
+pub fn construct() -> TMatchingPatterns {
     let mut patterns = HashMap::new();
 
     macro_rules! pattern {

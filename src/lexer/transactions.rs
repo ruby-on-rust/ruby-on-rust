@@ -9,6 +9,8 @@ use lexer::lexing_state::LexingState;
 use lexer::action::{Action, ActionProc};
 use lexer::matching_patterns;
 use lexer::shared_actions;
+use lexer::machines;
+
 use parser::parser::Token;
 
 pub fn construct() -> HashMap<LexingState, Vec<Box<Action>>> {
@@ -38,26 +40,6 @@ pub fn construct() -> HashMap<LexingState, Vec<Box<Action>>> {
             shared_actions.get($action_name).unwrap().clone()
         };
     }
-
-    transaction!("line_begin", vec![
-        // original action for w_any
-        action!("c_nl", |lexer: &mut Lexer| {
-            println!("action invoked for c_any");
-        }),
-
-        // original action for c_any
-        action!("c_any", |lexer: &mut Lexer| {
-            println!("action invoked for c_any");
-
-            lexer.input_stream.simulate_fhold();
-            lexer.state = LexingState::ExprValue;
-        }),
-
-        // TODO
-        // original action for eof
-        action!("c_eof", get_shared_action!("do_eof")),
-    ]);
-
 
     transaction!("expr_value", vec![
         action!("w_space_comment", get_shared_action!("noop")),
@@ -166,6 +148,8 @@ pub fn construct() -> HashMap<LexingState, Vec<Box<Action>>> {
             lexer.flag_breaking();
         }),
     ]);
+
+    transaction!("line_begin", machines::construct_machine_line_begin(patterns, shared_actions));
 
     transactions
 }

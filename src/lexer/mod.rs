@@ -5,6 +5,7 @@ use parser::parser::Token;
 mod input_stream;      use lexer::input_stream::InputStream;
 mod lexing_state;      use lexer::lexing_state::{LexingState};
 mod shared_actions;
+mod machines;
 mod transactions;
 mod action;            use lexer::action::{Action};
 mod matching_patterns;
