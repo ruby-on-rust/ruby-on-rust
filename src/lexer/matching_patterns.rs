@@ -65,5 +65,13 @@ pub fn construct() -> HashMap<&'static str, Regex> {
     // TODO ORIGINAL
     pattern!("int_dec", "[1-9][[:digit:]]*_?([[:digit:]]_)*[[:digit:]]*_?");
 
+
+    //
+    // === WHITESPACE HANDLING ===
+    //
+
+    // TODO NOT CORRESPONDING
+    pattern!("w_space_comment", " +");
+
     patterns
 }
