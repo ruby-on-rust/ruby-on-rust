@@ -5,7 +5,7 @@ use regex::Regex;
 pub type TMatchingPatterns = HashMap<&'static str, Regex>;
 
 pub fn construct() -> TMatchingPatterns {
-    let mut patterns = HashMap::new();
+    let mut patterns: TMatchingPatterns = HashMap::new();
 
     macro_rules! pattern {
         ($name:expr, $regex:expr) => {
@@ -15,26 +15,46 @@ pub fn construct() -> TMatchingPatterns {
 
     // TODO maybe impl a macro patterns!
 
+
+
+    // 
+    // NATIVE
+    // 
+
+    // any
+    patterns.insert("any", Regex::new(r"(?s)^.").unwrap()); // TODO NOT SURE
+    patterns.insert("zlen", Regex::new(r"^$").unwrap()); // TODO REALLY?
+
     // 
     // CHARACTER CLASSES
     // 
 
-    pattern!("any", ".");
+    //   c_nl       = '\n' $ do_nl;
+    pattern!("c_nl", "\\n");     // TODO NOT CORRESPONDING
+    //   c_space    = [ \t\r\f\v];
+    pattern!("c_space", "[ \\t\\r\\f\\v]");
+    //   c_space_nl = c_space | c_nl;
+    pattern!("c_space_nl", "[ \\n\\t\\r\\f\\v]");
 
-    // ORIGINAL
-    //     c_eof      = 0x04 | 0x1a | 0 | zlen; # ^D, ^Z, \0, EOF
-    pattern!("c_eof", "\\z");
+    //   c_eof      = 0x04 | 0x1a | 0 | zlen; # ^D, ^Z, \0, EOF
+    pattern!("c_eof", "\\z"); // TODO NOT CORRESPONDING
+    //   c_eol      = c_nl | c_eof;
+    pattern!("c_eol", "\\n|\\z"); // TODO NOT CORRESPONDING
+    //   c_any      = any - c_eof;
+    patterns.insert("c_any", Regex::new(r"(?s)^.").unwrap()); // TODO NOT CORRESPONDING
 
-    // ORIGINAL
-    //     c_nl       = '\n' $ do_nl;
-    //     c_eol      = c_nl | c_eof;
-    pattern!("c_nl", "\\n");
-    pattern!("c_eol", "\\n");
+    //   c_nl_zlen  = c_nl | zlen;
+    pattern!("c_nl_zlen", "\\n"); // TODO NOT CORRESPONDING
 
-    //     ORIGINAL
-    //         c_any = any - c_eof;
-    patterns.insert("c_any", Regex::new(r"(?s)^.").unwrap()); // TODO not sure if this is correct?
+    //   c_line     = any - c_nl_zlen;
+    pattern!("c_line", "[^\\n]"); // TODO NOT CORRESPONDING
 
+    // TODO
+    //   c_unicode  = c_any - 0x00..0x7f;
+    //   c_upper    = [A-Z];
+    //   c_lower    = [a-z_]  | c_unicode;
+    //   c_alpha    = c_lower | c_upper;
+    //   c_alnum    = c_alpha | [0-9];
 
     // 
     // TOKEN DEFINITIONS
