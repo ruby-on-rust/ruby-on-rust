@@ -6,7 +6,6 @@ mod input_stream;      use lexer::input_stream::InputStream;
 mod lexing_state;      use lexer::lexing_state::{LexingState};
 mod shared_actions;
 mod machines;
-mod transactions;
 mod action;            use lexer::action::{Action};
 mod matching_patterns;
 mod tokens_tables;
@@ -16,7 +15,7 @@ pub struct Lexer {
 
     tokens_tables: HashMap<&'static str, HashMap<&'static str, Token>>,
 
-    transactions: HashMap<LexingState, Vec<Box<Action>>>,
+    machines: HashMap<LexingState, Vec<Box<Action>>>,
 
     input_stream: InputStream,
 
@@ -30,7 +29,7 @@ impl Lexer {
         Lexer {
             state: LexingState::LineBegin,
             tokens_tables: tokens_tables::construct(),
-            transactions: transactions::construct(),
+            machines: machines::construct(),
             is_breaking: false,
 
             input_stream: InputStream::new(input_string),
@@ -89,7 +88,7 @@ impl Lexer {
             // ===
 
             // get actions
-            let actions = &self.transactions.get(&self.state).unwrap().clone();
+            let actions = &self.machines.get(&self.state).unwrap().clone();
 
             // find matching action
             let action= self.input_stream.longest_matching_action(&actions).expect("cant match any action");
