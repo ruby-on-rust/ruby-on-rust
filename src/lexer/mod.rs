@@ -111,7 +111,7 @@ impl Lexer {
     }
 
     fn emit_token_from_table(&mut self, table_name: &str) {
-        let token_str = self.input_stream.current_matched_token().unwrap().clone();
+        let token_str = self.input_stream.current_token().unwrap().clone();
 
         let tokens_table = self.tokens_tables.get(table_name).unwrap();
         let token = tokens_table.get(token_str.as_str()).unwrap();

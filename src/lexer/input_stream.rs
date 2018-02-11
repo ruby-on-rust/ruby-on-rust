@@ -74,14 +74,14 @@ impl InputStream {
                 self.p += longest_matched_action_len;
                 self.te = Some(self.p);
 
-                println!("matched token: {:?}", self.current_matched_token() );
+                println!("matched token: {:?}", self.current_token() );
 
                 Some(actions.get(i).unwrap().clone())
             }
         }
     }
 
-    pub fn current_matched_token(&self) -> Option<String> {
+    pub fn current_token(&self) -> Option<String> {
         match ( self.ts, self.te ) {
             ( Some(ts), Some(te) ) => {
                 Some( self.string.chars().skip(ts).take(te - ts).collect() )
@@ -90,8 +90,8 @@ impl InputStream {
         }
     }
 
-    pub fn current_matched_token_string(&self) -> TokenString {
-        TokenString::from(self.current_matched_token().unwrap())
+    pub fn current_token_string(&self) -> TokenString {
+        TokenString::from(self.current_token().unwrap())
     }
 
     // TODO refine naming

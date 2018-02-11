@@ -69,7 +69,7 @@ pub fn construct_machine_expr_variable( patterns: &TMatchingPatterns, shared_act
         //         emit(:tGVAR)
         //       end
         action!("global_var", |lexer: &mut Lexer| {
-            let token = Token::T_GVAR( lexer.input_stream.current_matched_token_string() );
+            let token = Token::T_GVAR( lexer.input_stream.current_token_string() );
             lexer.emit_token(token);
         }),
     ]
