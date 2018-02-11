@@ -30,7 +30,7 @@ pub fn construct() -> HashMap<LexingState, Vec<Box<Action>>> {
 
     macro_rules! transaction {
         ( $state:expr, $actions:expr ) => {
-            let state = $state.parse::<LexingState>().unwrap();
+            let state = $state.parse::<LexingState>().expect("can't parse LexingState");
             transactions.insert(state, $actions);
         };
     }

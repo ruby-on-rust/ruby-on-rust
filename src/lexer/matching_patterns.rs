@@ -67,17 +67,17 @@ pub fn construct() -> TMatchingPatterns {
     // # A list of operators which are valid in the function name context, but
     // # have different semantics in others.
     // operator_fname      = '[]' | '[]=' | '`'  | '-@' | '+@' | '~@'  | '!@' ;
-    pattern!("operator_fname", "([])|([]=)|`|(-@)|(+@)|(~@)|(!@)");
+    pattern!("operator_fname", "(\\[\\])|(\\[\\]=)|`|(-@)|(\\+@)|(~@)|(!@)");
 
     // # A list of operators which can occur within an assignment shortcut (+ → +=).
     // operator_arithmetic = '&'  | '|'   | '&&' | '||' | '^'  | '+'   | '-'  |
     //                       '*'  | '/'   | '**' | '~'  | '<<' | '>>'  | '%'  ;
-    pattern!("operator_arithmetic", "(&)|(|)|(&&)|(||)|(^)|(+)|(-)|(*)|(/)|(**)|(~)|(<<)|(>>)|(%)");
+    pattern!("operator_arithmetic", "(&)|(\\|)|(&&)|(\\|\\|)|(\\^)|(\\+)|(-)|(\\*)|(/)|(\\*\\*)|(~)|(<<)|(>>)|(%)");
 
     // # A list of all user-definable operators not covered by groups above.
     // operator_rest       = '=~' | '!~' | '==' | '!=' | '!'   | '===' |
     //                       '<'  | '<=' | '>'  | '>=' | '<=>' | '=>'  ;
-    pattern!("operator_rest", "((=~)|(!~)|(==)|(!=)|(!)|(===)|(<)|(<=)|(>)|(>=)|(<=>)|(=>)");
+    pattern!("operator_rest", "(=~)|(!~)|(==)|(!=)|(!)|(===)|(<)|(<=)|(>)|(>=)|(<=>)|(=>)");
 
     //   # Note that `{` and `}` need to be referred to as e_lbrace and e_rbrace,
     //   # as they are ambiguous with interpolation `#{}` and should be counted.
@@ -87,12 +87,12 @@ pub fn construct() -> TMatchingPatterns {
     //   # beginning of expression.
     //   punctuation_begin   = '-'  | '+'  | '::' | '('  | '['  |
     //                         '*'  | '**' | '&'  ;
-    pattern!("punctuation_begin", "(-)|(+)|(::)|(()|([)|(*)|(**)|(&)");
+    pattern!("punctuation_begin", "(-)|(\\+)|(::)|(\\()|(\\[)|(\\*)|(\\*\\*)|(&)");
 
     //   # A list of all punctuation except punctuation_begin.
     //   punctuation_end     = ','  | '='  | '->' | '('  | '['  | ']'   |
     //                         '::' | '?'  | ':'  | '.'  | '..' | '...' ;
-    pattern!("punctuation_end", "(,)|(=)|(->)|(()|([)|(])|(::)|(?)|(:)|(.)|(..)|(...)");
+    pattern!("punctuation_end", "(,)|(=)|(->)|(\\()|(\\[)|(\\])|(::)|(\\?)|(:)|(\\.)|(\\.\\.)|(\\.\\..)");
 
     // # A list of keywords which have different meaning at the beginning of expression.
     // keyword_modifier    = 'if'     | 'unless' | 'while'  | 'until' | 'rescue' ;
@@ -129,7 +129,7 @@ pub fn construct() -> TMatchingPatterns {
     // keyword             = keyword_with_value | keyword_with_mid |
     //                       keyword_with_end   | keyword_with_arg |
     //                       keyword_with_fname | keyword_modifier ;
-    pattern!("keyword", "([])|([]=)|`|(-@)|(+@)|(~@)|(!@)|(&)|(|)|(&&)|(||)|(^)|(+)|(-)|(*)|(/)|(**)|(~)|(<<)|(>>)|(%)|(if)|(unless)|(while)|(until)|(rescue)|(end)|(self)|(true)|(false)|(retry)|(redo)|(nil)|(BEGIN)|(END)|(__FILE__)|(__LINE__)|(__ENCODING__)|(if)|(unless)|(while)|(until)|(rescue)|(end)|(self)|(true)|(false)|(retry)|(redo)|(nil)|(BEGIN)|(END)|(__FILE__)|(__LINE__)|(__ENCODING__)");
+    pattern!("keyword", "(\\[\\])|(\\[\\]=)|`|(-@)|(\\+@)|(~@)|(!@)|(&)|(\\|)|(&&)|(\\|\\|)|(\\^)|(\\+)|(-)|(\\*)|(/)|(\\*\\*)|(~)|(<<)|(>>)|(%)|(if)|(unless)|(while)|(until)|(rescue)|(end)|(self)|(true)|(false)|(retry)|(redo)|(nil)|(BEGIN)|(END)|(__FILE__)|(__LINE__)|(__ENCODING__)|(if)|(unless)|(while)|(until)|(rescue)|(end)|(self)|(true)|(false)|(retry)|(redo)|(nil)|(BEGIN)|(END)|(__FILE__)|(__LINE__)|(__ENCODING__)");
 
     //   constant       = c_upper c_alnum*;
     pattern!("constant", "[[:upper:]][[:alnum:]]*");
@@ -148,7 +148,20 @@ pub fn construct() -> TMatchingPatterns {
     //       | '-' c_alnum
     //       )
     //   ;
-    // TODO
+    // TODO use indoc!
+    pattern!("global_var", "\\$(
+([[:alpha:]][[:alnum:]]*)|
+([[:digit:]]+)|
+([`'\\+~\\*\\$&?!@/;,\\.=:<>\"])|
+(-[[:alnum:]])
+)"); // TODO NOT SURE, TO BE CONFIRMED
+
+    //   # Ruby accepts (and fails on) variables with leading digit
+    //   # in literal context, but not in unquoted symbol body.
+    //   class_var_v    = '@@' c_alnum+;
+    //   instance_var_v = '@' c_alnum+;
+
+    //   label          = bareword [?!]? ':';
 
     // 
     // NUMERIC PARSING
