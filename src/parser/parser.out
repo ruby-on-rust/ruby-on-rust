@@ -3,29 +3,36 @@ State 0:
           input ::= * K_TRUE
           input ::= * K_IF_MOD
           input ::= * K_IF
+          input ::= * T_GVAR
 
-                     T_INTEGER shift  4
-                        K_TRUE shift  3
-                      K_IF_MOD shift  2
-                          K_IF shift  1
+                     T_INTEGER shift  5
+                        T_GVAR shift  1
+                        K_TRUE shift  4
+                      K_IF_MOD shift  3
+                          K_IF shift  2
                          input accept
 
 State 1:
+      (4) input ::= T_GVAR *
+
+                             $ reduce 4
+
+State 2:
       (3) input ::= K_IF *
 
                              $ reduce 3
 
-State 2:
+State 3:
       (2) input ::= K_IF_MOD *
 
                              $ reduce 2
 
-State 3:
+State 4:
       (1) input ::= K_TRUE *
 
                              $ reduce 1
 
-State 4:
+State 5:
       (0) input ::= T_INTEGER *
 
                              $ reduce 0
@@ -34,8 +41,9 @@ State 4:
 Symbols:
     0: $:
     1: T_INTEGER
-    2: K_TRUE
-    3: K_IF_MOD
-    4: K_IF
-    5: error:
-    6: input: T_INTEGER K_TRUE K_IF_MOD K_IF
+    2: T_GVAR
+    3: K_TRUE
+    4: K_IF_MOD
+    5: K_IF
+    6: error:
+    7: input: T_INTEGER T_GVAR K_TRUE K_IF_MOD K_IF

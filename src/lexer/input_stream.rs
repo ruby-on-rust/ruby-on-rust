@@ -2,6 +2,8 @@ use regex::Regex;
 
 use lexer::action::Action;
 
+use parser::parser::TokenString;
+
 pub struct InputStream {
     string: String,
 
@@ -86,6 +88,10 @@ impl InputStream {
             },
             _ => None
         }
+    }
+
+    pub fn current_matched_token_string(&self) -> TokenString {
+        TokenString::from(self.current_matched_token().unwrap())
     }
 
     // TODO refine naming

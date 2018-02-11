@@ -154,7 +154,7 @@ pub fn construct() -> TMatchingPatterns {
 ([[:digit:]]+)|
 ([`'\\+~\\*\\$&?!@/;,\\.=:<>\"])|
 (-[[:alnum:]])
-)"); // TODO NOT SURE, TO BE CONFIRMED
+)");
 
     //   # Ruby accepts (and fails on) variables with leading digit
     //   # in literal context, but not in unquoted symbol body.

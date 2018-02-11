@@ -2,15 +2,6 @@
 // # string interpolation related code.
 // #
 // expr_variable := |*
-//     global_var
-//     => {
-//       if    tok =~ /^\$([1-9][0-9]*)$/
-//         emit(:tNTH_REF, tok(@ts + 1).to_i)
-//       elsif tok =~ /^\$([&`'+])$/
-//         emit(:tBACK_REF)
-//       else
-//         emit(:tGVAR)
-//       end
 
 //       fnext *stack_pop; fbreak;
 //     };
@@ -43,6 +34,8 @@ use lexer::action::{Action};
 use lexer::matching_patterns::TMatchingPatterns;
 use lexer::shared_actions::TSharedActions;
 
+use parser::parser::{Token, TokenString};
+
 pub fn construct_machine_expr_variable( patterns: &TMatchingPatterns, shared_actions: &TSharedActions ) -> Vec<Box<Action>> {
 
     // TODO 
@@ -64,5 +57,20 @@ pub fn construct_machine_expr_variable( patterns: &TMatchingPatterns, shared_act
     }
 
     vec![
+
+        // TODO INCOMPLETE
+        //     global_var
+        //     => {
+        //       if    tok =~ /^\$([1-9][0-9]*)$/
+        //         emit(:tNTH_REF, tok(@ts + 1).to_i)
+        //       elsif tok =~ /^\$([&`'+])$/
+        //         emit(:tBACK_REF)
+        //       else
+        //         emit(:tGVAR)
+        //       end
+        action!("global_var", |lexer: &mut Lexer| {
+            let token = Token::T_GVAR( lexer.input_stream.current_matched_token_string() );
+            lexer.emit_token(token);
+        }),
     ]
 }

@@ -1,9 +1,13 @@
 %type T_INTEGER { i64 }
+%type T_GVAR { TokenString }
 
 %include {
+
+pub type TokenString = String;
+
 }
 
-%derive_token { Debug, Copy, Clone }
+%derive_token { Debug, Clone }
 
 %extra_argument { Option<i64> }
 
@@ -27,3 +31,4 @@ input ::= K_TRUE.
 // fake rules for generating tokens for lexer
 input ::= K_IF_MOD.
 input ::= K_IF.
+input ::= T_GVAR.
