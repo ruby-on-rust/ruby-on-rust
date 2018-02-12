@@ -56,7 +56,7 @@ pub fn construct_machine_expr_value( patterns: &TMatchingPatterns, shared_action
         action!("c_any", |lexer: &mut Lexer| {
             println!("action invoked for c_any");
 
-            lexer.input_stream.simulate_fhold();
+            lexer.input_stream.hold_current_char();
             lexer.push_next_state(LexingState::ExprBegin);
         }),
 

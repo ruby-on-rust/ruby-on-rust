@@ -100,16 +100,16 @@ impl InputStream {
         TokenString::from(slice)
     }
 
-    // TODO refine naming
-    pub fn simulate_fhold(&mut self) {
+    // NOTE fhold in ragel
+    pub fn hold_current_char(&mut self) {
         println!("\n>>> invoking fhold");
 
-        println!("=== debugging fhold invoking: p {:?} ts {:?} te {:?}", self.p, self.ts, self.te );
+        // println!("=== debugging fhold invoking: p {:?} ts {:?} te {:?}", self.p, self.ts, self.te );
 
-        // NOTE assume original p is never 0
+        // NOTE assuming original p is never 0
         self.p -= 1;
 
-        println!("=== debugging fhold invoking: p {:?} ts {:?} te {:?}", self.p, self.ts, self.te );
+        // println!("=== debugging fhold invoking: p {:?} ts {:?} te {:?}", self.p, self.ts, self.te );
     }
 
     // TODO

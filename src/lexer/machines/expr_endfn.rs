@@ -1,5 +1,5 @@
 // TRACKER
-//   WIP
+//   DONE
 
 // # After literal function name in definition. Behaves like `expr_end`,
 // # but allows a tLABEL.
@@ -67,7 +67,7 @@ pub fn construct_machine_expr_endfn( patterns: &TMatchingPatterns, shared_action
                 let slice = lexer.input_stream.token_string_from_range( lexer.input_stream.ts.unwrap(), lexer.input_stream.te.unwrap() - 2 );
                 let token = Token::T_LABLE(slice);
                 lexer.emit_token(token);
-                lexer.input_stream.simulate_fhold();
+                lexer.input_stream.hold_current_char();
                 lexer.push_next_state(LexingState::ExprLabelArg);
                 lexer.flag_breaking();
             }
@@ -79,7 +79,7 @@ pub fn construct_machine_expr_endfn( patterns: &TMatchingPatterns, shared_action
         //     c_any
         //     => { fhold; fgoto expr_end; };
         action!("c_any", |lexer: &mut Lexer| {
-            lexer.input_stream.simulate_fhold();
+            lexer.input_stream.hold_current_char();
             lexer.push_next_state(LexingState::ExprEnd);
         }),
 

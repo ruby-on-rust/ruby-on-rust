@@ -152,8 +152,8 @@ pub fn construct_machine_expr_fname( patterns: &TMatchingPatterns, shared_action
         box Action {
             regex: Regex::new(r"^::").unwrap(),
             procedure: |lexer: &mut Lexer| {
-                lexer.input_stream.simulate_fhold();
-                lexer.input_stream.simulate_fhold();
+                lexer.input_stream.hold_current_char();
+                lexer.input_stream.hold_current_char();
                 lexer.push_next_state(LexingState::ExprEnd);
             }
         },
@@ -163,7 +163,7 @@ pub fn construct_machine_expr_fname( patterns: &TMatchingPatterns, shared_action
         box Action {
             regex: Regex::new(r"^:").unwrap(),
             procedure: |lexer: &mut Lexer| {
-                lexer.input_stream.simulate_fhold();
+                lexer.input_stream.hold_current_char();
                 lexer.push_next_state(LexingState::ExprEnd);
             }
         },
@@ -194,7 +194,7 @@ pub fn construct_machine_expr_fname( patterns: &TMatchingPatterns, shared_action
         //     c_any
         //     => { fhold; fgoto expr_end; };
         action!("c_any", |lexer: &mut Lexer| {
-            lexer.input_stream.simulate_fhold();
+            lexer.input_stream.hold_current_char();
             lexer.push_next_state(LexingState::ExprEnd);
         }),
 
