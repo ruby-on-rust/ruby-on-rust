@@ -291,7 +291,7 @@ use lexer::action::{Action};
 use lexer::matching_patterns::TMatchingPatterns;
 use lexer::shared_actions::TSharedActions;
 
-pub fn construct_machine_expr_begin( patterns: &TMatchingPatterns, shared_actions: &TSharedActions ) -> Vec<Box<Action>> {
+pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions: &TSharedActions ) -> Vec<Box<Action>> {
 
     // TODO 
     // share these macros for every machine constructing

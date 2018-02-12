@@ -9,6 +9,7 @@ mod machines;
 mod action;            use lexer::action::{Action};
 mod matching_patterns;
 mod tokens_tables;
+mod shared_functions;
 
 pub struct Lexer {
     states_stack: Vec<LexingState>,

@@ -23,19 +23,23 @@ use std::str::FromStr;
 #[derive(Debug, PartialEq, Eq, Hash)]
 pub enum LexingState {
     LineBegin,
+    ExprDot,
+    ExprFname,
     ExprValue,
-    ExprBegin,
+    ExprBeg,
+    ExprMid,
+    ExprArg,
+    ExprCmdarg,
     ExprEnd,
-    LeadingDot,
+    ExprEndarg,
+    ExprEndfn,
+    ExprLabelarg,
 
     // TODO
-    // this is not a original state in lexer.rl,
-    // this is just a machine
+    // not original states in lexer.rl,
+    // just machine
     ExprVariable,
-
-    ExprFName,
-    ExprEndFn,
-    ExprLabelArg,
+    LeadingDot,
 }
 
 impl FromStr for LexingState {
@@ -43,15 +47,22 @@ impl FromStr for LexingState {
 
     fn from_str(s: &str) -> Result<LexingState, ()> {
         match s {
-            "expr_variable" => Ok(LexingState::ExprVariable),
-            "expr_fname" => Ok(LexingState::ExprFName),
             "line_begin" => Ok(LexingState::LineBegin),
+            "expr_dot" => Ok(LexingState::ExprDot),
+            "expr_fname" => Ok(LexingState::ExprFname),
             "expr_value" => Ok(LexingState::ExprValue),
-            "expr_begin" => Ok(LexingState::ExprBegin),
+            "expr_beg" => Ok(LexingState::ExprBeg),
+            "expr_mid" => Ok(LexingState::ExprMid),
+            "expr_arg" => Ok(LexingState::ExprArg),
+            "expr_cmdarg" => Ok(LexingState::ExprCmdarg),
             "expr_end" => Ok(LexingState::ExprEnd),
+            "expr_endarg" => Ok(LexingState::ExprEndarg),
+            "expr_endfn" => Ok(LexingState::ExprEndfn),
+            "expr_labelarg" => Ok(LexingState::ExprLabelarg),
+
+            "expr_variable" => Ok(LexingState::ExprVariable),
             "leading_dot" => Ok(LexingState::LeadingDot),
-            "expr_end_fn" => Ok(LexingState::ExprEndFn),
-            "expr_labelarg" => Ok(LexingState::ExprLabelArg),
+
             _ => Err(()),
         }
     }

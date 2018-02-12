@@ -68,7 +68,7 @@ pub fn construct_machine_expr_endfn( patterns: &TMatchingPatterns, shared_action
                 let token = Token::T_LABLE(slice);
                 lexer.emit_token(token);
                 lexer.input_stream.hold_current_char();
-                lexer.push_next_state(LexingState::ExprLabelArg);
+                lexer.push_next_state(LexingState::ExprLabelarg);
                 lexer.flag_breaking();
             }
         },

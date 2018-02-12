@@ -106,7 +106,7 @@ pub fn construct_machine_expr_fname( patterns: &TMatchingPatterns, shared_action
         action!("constant", |lexer: &mut Lexer| {
             let token =  Token::T_CONSTANT( lexer.input_stream.current_token_string() );
             lexer.emit_token(token);
-            lexer.push_next_state(LexingState::ExprEndFn);
+            lexer.push_next_state(LexingState::ExprEndfn);
             lexer.flag_breaking();
         }),
 
@@ -118,7 +118,7 @@ pub fn construct_machine_expr_fname( patterns: &TMatchingPatterns, shared_action
             procedure: |lexer: &mut Lexer| {
                 let token =  Token::T_IDENTIFIER( lexer.input_stream.current_token_string() );
                 lexer.emit_token(token);
-                lexer.push_next_state(LexingState::ExprEndFn);
+                lexer.push_next_state(LexingState::ExprEndfn);
                 lexer.flag_breaking();
             }
         },
