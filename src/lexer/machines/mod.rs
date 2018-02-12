@@ -5,8 +5,9 @@ use lexer::action::{Action};
 use lexer::matching_patterns;
 use lexer::shared_actions;
 
-mod line_begin; pub use self::line_begin::*;
 mod expr_variable; pub use self::expr_variable::*;
+mod expr_fname; pub use self::expr_fname::*;
+mod line_begin; pub use self::line_begin::*;
 mod expr_value; pub use self::expr_value::*;
 mod expr_begin; pub use self::expr_begin::*;
 mod expr_end; pub use self::expr_end::*;
@@ -26,6 +27,7 @@ pub fn construct() -> HashMap<LexingState, Vec<Box<Action>>> {
     }
 
     transaction!("expr_variable", construct_machine_expr_variable(&patterns, &shared_actions));
+    transaction!("expr_fname", construct_machine_expr_fname(&patterns, &shared_actions));
     transaction!("expr_value", construct_machine_expr_value(&patterns, &shared_actions));
     transaction!("expr_begin", construct_machine_expr_begin(&patterns, &shared_actions));
     transaction!("expr_end", construct_machine_expr_end(&patterns, &shared_actions));

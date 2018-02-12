@@ -31,7 +31,10 @@ pub enum LexingState {
     // TODO
     // this is not a original state in lexer.rl,
     // this is just a machine
-    ExprVariable
+    ExprVariable,
+
+    ExprFName,
+    ExprEndFn,
 }
 
 impl FromStr for LexingState {
@@ -39,12 +42,14 @@ impl FromStr for LexingState {
 
     fn from_str(s: &str) -> Result<LexingState, ()> {
         match s {
+            "expr_variable" => Ok(LexingState::ExprVariable),
+            "expr_fname" => Ok(LexingState::ExprFName),
             "line_begin" => Ok(LexingState::LineBegin),
             "expr_value" => Ok(LexingState::ExprValue),
             "expr_begin" => Ok(LexingState::ExprBegin),
             "expr_end" => Ok(LexingState::ExprEnd),
             "leading_dot" => Ok(LexingState::LeadingDot),
-            "expr_variable" => Ok(LexingState::ExprVariable),
+            "expr_end_fn" => Ok(LexingState::ExprEndFn),
             _ => Err(()),
         }
     }
