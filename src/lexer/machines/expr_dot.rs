@@ -74,5 +74,18 @@ pub fn construct_machine_expr_dot( patterns: &TMatchingPatterns, shared_actions:
             lexer.push_next_state(next_state);
             lexer.flag_breaking();
         }),
+
+        //     call_or_var
+        //     => { emit(:tIDENTIFIER)
+        //           fnext *arg_or_cmdarg; fbreak; };
+        action!("call_or_var", |lexer: &mut Lexer| {
+            let token = Token::T_IDENTIFIER(lexer.input_stream.current_token_string());
+            lexer.emit_token(token);
+
+            // simulating `fnext *arg_or_cmdarg;`
+            let next_state = lexer.arg_or_cmdarg();
+            lexer.push_next_state(next_state);
+            lexer.flag_breaking();
+        }),
     ]
 }
