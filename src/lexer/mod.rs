@@ -11,7 +11,7 @@ mod matching_patterns;
 mod tokens_tables;
 
 pub struct Lexer {
-    state: LexingState,
+    states_stack: Vec<LexingState>,
 
     tokens_tables: HashMap<&'static str, HashMap<&'static str, Token>>,
 
@@ -27,7 +27,7 @@ pub struct Lexer {
 impl Lexer {
     pub fn new(input_string: String) -> Lexer {
         Lexer {
-            state: LexingState::LineBegin,
+            states_stack: vec![LexingState::LineBegin],
             tokens_tables: tokens_tables::construct(),
             machines: machines::construct(),
             is_breaking: false,
@@ -78,7 +78,7 @@ impl Lexer {
         self.is_breaking = false;
 
         loop {
-            println!("\n--- exec looping, state: {:?} ---", self.state);
+            println!("\n--- exec looping, states_stack: {:?} ---", self.states_stack);
 
             if ( self.is_breaking == true ) {
                 println!("breaking...");
@@ -88,7 +88,8 @@ impl Lexer {
             // ===
 
             // get actions
-            let actions = &self.machines.get(&self.state).unwrap().clone();
+            let state = self.states_stack.pop().expect("states_stack is empty");
+            let actions = self.machines.get(&state).unwrap().clone();
 
             // find matching action
             let action= self.input_stream.longest_matching_action(&actions).expect("cant match any action");
@@ -102,6 +103,10 @@ impl Lexer {
 
     fn flag_breaking(&mut self) {
         self.is_breaking = true;
+    }
+
+    fn push_next_state(&mut self, state: LexingState) {
+        self.states_stack.push(state);
     }
 
     fn emit_token(&mut self, token: Token) {

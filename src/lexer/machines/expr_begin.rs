@@ -319,7 +319,7 @@ pub fn construct_machine_expr_begin( patterns: &TMatchingPatterns, shared_action
         //          fnext expr_value; fbreak; };
         action!("keyword_modifier", |lexer: &mut Lexer| {
             lexer.emit_token_from_table("keywords_begin");
-            lexer.state = LexingState::ExprValue;
+            lexer.push_next_state(LexingState::ExprValue);
             lexer.flag_breaking();
         }),
 
@@ -327,7 +327,7 @@ pub fn construct_machine_expr_begin( patterns: &TMatchingPatterns, shared_action
         //     keyword
         action!("keyword", |lexer: &mut Lexer| {
             lexer.input_stream.hold_current_token();
-            lexer.state = LexingState::ExprEnd;
+            lexer.push_next_state(LexingState::ExprEnd);
         }),
 
         // original action for c_any
@@ -335,7 +335,7 @@ pub fn construct_machine_expr_begin( patterns: &TMatchingPatterns, shared_action
                 println!("action invoked for c_any");
 
                 lexer.input_stream.hold_current_token();
-                lexer.state = LexingState::ExprEnd;
+                lexer.push_next_state(LexingState::ExprEnd);
             }
         )
     ]

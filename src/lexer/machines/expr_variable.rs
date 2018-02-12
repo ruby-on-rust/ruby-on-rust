@@ -3,9 +3,6 @@
 // #
 // expr_variable := |*
 
-//       fnext *stack_pop; fbreak;
-//     };
-
 //     class_var_v
 //     => {
 //       if tok =~ /^@@[0-9]/
@@ -34,7 +31,7 @@ use lexer::action::{Action};
 use lexer::matching_patterns::TMatchingPatterns;
 use lexer::shared_actions::TSharedActions;
 
-use parser::parser::{Token, TokenString};
+use parser::parser::{Token};
 
 pub fn construct_machine_expr_variable( patterns: &TMatchingPatterns, shared_actions: &TSharedActions ) -> Vec<Box<Action>> {
 
@@ -68,9 +65,16 @@ pub fn construct_machine_expr_variable( patterns: &TMatchingPatterns, shared_act
         //       else
         //         emit(:tGVAR)
         //       end
+        //       fnext *stack_pop; fbreak;
+        //     };
+
         action!("global_var", |lexer: &mut Lexer| {
             let token = Token::T_GVAR( lexer.input_stream.current_token_string() );
             lexer.emit_token(token);
+
+            // TODO NOTE `fnext *stack_pop` seems unnecessary here?
+
+            lexer.flag_breaking();
         }),
     ]
 }

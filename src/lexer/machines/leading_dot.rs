@@ -51,7 +51,7 @@ pub fn construct_machine_leading_dot( patterns: &TMatchingPatterns, shared_actio
         action!("any", |lexer: &mut Lexer| {
             // TODO
             lexer.input_stream.simulate_fhold();
-            lexer.state = LexingState::LineBegin;
+            lexer.push_next_state(LexingState::LineBegin);
             lexer.flag_breaking();
         }),
     ]

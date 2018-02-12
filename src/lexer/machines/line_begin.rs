@@ -35,7 +35,7 @@ pub fn construct_machine_line_begin( patterns: &TMatchingPatterns, shared_action
             println!("action invoked for c_any");
 
             lexer.input_stream.simulate_fhold();
-            lexer.state = LexingState::ExprValue;
+            lexer.push_next_state(LexingState::ExprValue);
         }),
 
         // TODO
