@@ -3,6 +3,7 @@
 %type T_GVAR { TokenString }
 %type T_CONSTANT { TokenString }
 %type T_IDENTIFIER { TokenString }
+%type T_LABLE { TokenString }
 
 %include {
 

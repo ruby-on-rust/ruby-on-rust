@@ -157,10 +157,12 @@ pub fn construct() -> TMatchingPatterns {
 
     //   # Ruby accepts (and fails on) variables with leading digit
     //   # in literal context, but not in unquoted symbol body.
+    // TODO
     //   class_var_v    = '@@' c_alnum+;
     //   instance_var_v = '@' c_alnum+;
 
     //   label          = bareword [?!]? ':';
+    pattern!("label", "[[:alpha:]][[:alnum:]]*[\\?!]?:");
 
     // 
     // NUMERIC PARSING
