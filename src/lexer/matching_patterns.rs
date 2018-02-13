@@ -168,9 +168,8 @@ pub fn construct() -> TMatchingPatterns {
     // NUMERIC PARSING
     // 
 
-    // TODO ORIGINAL
+    // TODO INCOMPLETE
     pattern!("int_dec", "[1-9][[:digit:]]*_?([[:digit:]]_)*[[:digit:]]*_?");
-
 
     // #
     // # === WHITESPACE HANDLING ===
@@ -229,5 +228,37 @@ pub fn construct() -> TMatchingPatterns {
     //     ;
     pattern!("w_any", "[ \\t\\r\\f\\v]+"); // TODO INCOMPLETE
 
+    //   #
+    //   # === EXPRESSION PARSING ===
+    //   #
+
+    //   # These rules implement a form of manually defined lookahead.
+    //   # The default longest-match scanning does not work here due
+    //   # to sheer ambiguity.
+
+    //   ambiguous_fid_suffix =         # actual    parsed
+    //       [?!]    %{ tm = p }      | # a?        a?
+    //       [?!]'=' %{ tm = p - 2 }    # a!=b      a != b
+    //   ;
+
+    //   ambiguous_ident_suffix =       # actual    parsed
+    //       ambiguous_fid_suffix     |
+    //       '='     %{ tm = p }      | # a=        a=
+    //       '=='    %{ tm = p - 2 }  | # a==b      a == b
+    //       '=~'    %{ tm = p - 2 }  | # a=~b      a =~ b
+    //       '=>'    %{ tm = p - 2 }  | # a=>b      a => b
+    //       '==='   %{ tm = p - 3 }    # a===b     a === b
+    //   ;
+
+    //   ambiguous_symbol_suffix =      # actual    parsed
+    //       ambiguous_ident_suffix |
+    //       '==>'   %{ tm = p - 2 }    # :a==>b    :a= => b
+    //   ;
+
+    //   # Ambiguous with 1.9 hash labels.
+    //   ambiguous_const_suffix =       # actual    parsed
+    //       '::'    %{ tm = p - 2 }    # A::B      A :: B
+    //   ;
+    
     patterns
 }

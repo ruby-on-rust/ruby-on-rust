@@ -10,56 +10,7 @@
 // #
 // # Transitions to `expr_endfn` afterwards.
 // #
-// expr_fname := |*
-//     keyword
-//     => { emit_table(KEYWORDS_BEGIN);
-//          fnext expr_endfn; fbreak; };
 
-//     constant
-//     => { emit(:tCONSTANT)
-//          fnext expr_endfn; fbreak; };
-
-//     bareword [?=!]?
-//     => { emit(:tIDENTIFIER)
-//          fnext expr_endfn; fbreak; };
-
-//     global_var
-//     => { p = @ts - 1
-//          fnext expr_end; fcall expr_variable; };
-
-//     # If the handling was to be delegated to expr_end,
-//     # these cases would transition to something else than
-//     # expr_endfn, which is incorrect.
-//     operator_fname      |
-//     operator_arithmetic |
-//     operator_rest
-//     => { emit_table(PUNCTUATION)
-//          fnext expr_endfn; fbreak; };
-
-//     '::'
-//     => { fhold; fhold; fgoto expr_end; };
-
-//     ':'
-//     => { fhold; fgoto expr_beg; };
-
-//     '%s' c_any
-//     => {
-//       if version?(23)
-//         type, delimiter = tok[0..-2], tok[-1].chr
-//         fgoto *push_literal(type, delimiter, @ts);
-//       else
-//         p = @ts - 1
-//         fgoto expr_end;
-//       end
-//     };
-
-//     w_any;
-
-//     c_any
-//     => { fhold; fgoto expr_end; };
-
-//     c_eof => do_eof;
-// *|;
 
 use regex::Regex;
 
@@ -72,10 +23,6 @@ use lexer::shared_actions::TSharedActions;
 use parser::parser::Token;
 
 pub fn construct_machine_expr_fname( patterns: &TMatchingPatterns, shared_actions: &TSharedActions ) -> Vec<Box<Action>> {
-
-    // TODO 
-    // share these macros for every machine constructing
-
     macro_rules! action {
         ($pattern_name:expr, $procedure:expr) => {
             box Action {

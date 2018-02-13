@@ -21,7 +21,7 @@ pub struct InputStream {
     // 
     // TODO refine naming
     // TODO use a range for ts..te
-    p: usize,
+    pub p: usize,
     pub ts: Option<usize>,
     pub te: Option<usize>,
 }
@@ -82,6 +82,7 @@ impl InputStream {
     }
 
     // TODO maybe dont need to use a Option for current_token, ts, te
+    // TODO renaming current_token -> current_slice
     pub fn current_token(&self) -> Option<String> {
         match ( self.ts, self.te ) {
             ( Some(ts), Some(te) ) => {
@@ -91,6 +92,7 @@ impl InputStream {
         }
     }
 
+    // TODO renaming current_slice_as_token_string
     pub fn current_token_string(&self) -> TokenString {
         TokenString::from(self.current_token().unwrap())
     }
@@ -123,6 +125,8 @@ impl InputStream {
     // 
     // we're using p = @ts for now
     // 
+    // TODO renaming hold_current_slice
+
     pub fn hold_current_token(&mut self) {
         println!("\n>>> invoking hold_current_token");
 

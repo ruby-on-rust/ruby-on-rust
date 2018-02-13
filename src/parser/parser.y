@@ -5,6 +5,7 @@
 %type T_IDENTIFIER { TokenString }
 %type T_LABLE { TokenString }
 %type T_IVAR { TokenString }
+%type T_FID { TokenString }
 
 %include {
 

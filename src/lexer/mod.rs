@@ -26,7 +26,6 @@ pub struct Lexer {
     command_state: bool,
 
     pub tokens: Vec<Token>,
-
 }
 
 impl Lexer {
@@ -127,7 +126,7 @@ impl Lexer {
         self.tokens.push(token);
     }
 
-    // take current_token
+    // emit current slice as token from table
     // TODO naming
     fn emit_token_from_table(&mut self, table_name: &str) {
         let token_str = self.input_stream.current_token().unwrap().clone();

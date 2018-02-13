@@ -6,18 +6,6 @@
 // #
 // # Transitions to `expr_end` afterwards.
 // #
-// expr_endfn := |*
-//     label ( any - ':' )
-//     => { emit(:tLABEL, tok(@ts, @te - 2), @ts, @te - 1)
-//          fhold; fnext expr_labelarg; fbreak; };
-
-//     w_space_comment;
-
-//     c_any
-//     => { fhold; fgoto expr_end; };
-
-//     c_eof => do_eof;
-// *|;
 
 use regex::Regex;
 
@@ -30,10 +18,6 @@ use lexer::shared_actions::TSharedActions;
 use parser::parser::Token;
 
 pub fn construct_machine_expr_endfn( patterns: &TMatchingPatterns, shared_actions: &TSharedActions ) -> Vec<Box<Action>> {
-
-    // TODO 
-    // share these macros for every machine constructing
-
     macro_rules! action {
         ($pattern_name:expr, $procedure:expr) => {
             box Action {
