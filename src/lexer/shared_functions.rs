@@ -2,7 +2,6 @@ use lexer::Lexer;
 use lexer::LexingState;
 
 impl Lexer {
-    // TODO IMCOMPLETE
     // def arg_or_cmdarg
     //   if @command_state
     //     self.class.lex_en_expr_cmdarg
@@ -11,6 +10,10 @@ impl Lexer {
     //   end
     // end
     pub fn arg_or_cmdarg(&self) -> LexingState {
-        LexingState::ExprArg
+        if self.command_state {
+            LexingState::ExprCmdarg
+        } else {
+            LexingState::ExprArg
+        }
     }
 }

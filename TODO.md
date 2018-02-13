@@ -12,8 +12,9 @@ current build cmd
   - how to handle eof
   - difference between @p and p
   - % in matching pattern
-- testing
 - auto rewrite ragel transitions?
+
+differents between @cs(current state in ragel) and the top state of the states stack
 
 #
 

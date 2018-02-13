@@ -22,7 +22,11 @@ pub struct Lexer {
 
     is_breaking: bool,
 
+    // CORRESPOND @command_state in lexer.rl
+    command_state: bool,
+
     pub tokens: Vec<Token>,
+
 }
 
 impl Lexer {
@@ -32,6 +36,7 @@ impl Lexer {
             tokens_tables: tokens_tables::construct(),
             machines: machines::construct(),
             is_breaking: false,
+            command_state: false,
 
             input_stream: InputStream::new(input_string),
 
@@ -66,6 +71,12 @@ impl Lexer {
             println!("no more..., breaking...");
             return;
         }
+
+        // TODO NOTE
+        // we're using `states_stack.last()`(top of the stack) as the corresponding to `@cs`(current state)
+        // not sure if this will cause any issue
+        self.command_state = ( self.states_stack.last().unwrap() == &LexingState::ExprValue ) || 
+                             ( self.states_stack.last().unwrap() == &LexingState::LineBegin );
 
         // 
         self.exec();
