@@ -4,6 +4,7 @@
 %type T_CONSTANT { TokenString }
 %type T_IDENTIFIER { TokenString }
 %type T_LABLE { TokenString }
+%type T_IVAR { TokenString }
 
 %include {
 

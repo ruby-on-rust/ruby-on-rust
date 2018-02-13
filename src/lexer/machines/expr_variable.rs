@@ -3,30 +3,6 @@
 
 // # Variable lexing code is accessed from both expressions and
 // # string interpolation related code.
-// #
-// expr_variable := |*
-
-//     class_var_v
-//     => {
-//       if tok =~ /^@@[0-9]/
-//         diagnostic :error, :cvar_name, { :name => tok }
-//       end
-
-//       emit(:tCVAR)
-//       fnext *stack_pop; fbreak;
-//     };
-
-//     instance_var_v
-//     => {
-//       if tok =~ /^@[0-9]/
-//         diagnostic :error, :ivar_name, { :name => tok }
-//       end
-
-//       emit(:tIVAR)
-//       fnext *stack_pop; fbreak;
-//     };
-// *|;
-
 
 use lexer::Lexer;
 use lexer::LexingState;
@@ -76,8 +52,40 @@ pub fn construct_machine_expr_variable( patterns: &TMatchingPatterns, shared_act
             lexer.emit_token(token);
 
             // TODO NOTE `fnext *stack_pop` seems unnecessary here?
+            // since, that's what will happen, right?
 
             lexer.flag_breaking();
         }),
+
+        //   class_var_v
+        //   => {
+        //     if tok =~ /^@@[0-9]/
+        //       diagnostic :error, :cvar_name, { :name => tok }
+        //     end
+        // TODO INCOMPLETE
+        action!("class_var_v", |lexer: &mut Lexer| {
+            
+        }),
+
+        //     instance_var_v
+        //     => {
+        //       if tok =~ /^@[0-9]/
+        //         diagnostic :error, :ivar_name, { :name => tok }
+        //       end
+
+        //       emit(:tIVAR)
+        //       fnext *stack_pop; fbreak;
+        //     };
+        // TODO IMCOMPLETE
+        action!("instance_var_v", |lexer: &mut Lexer| {
+            let token = Token::T_IVAR(lexer.input_stream.current_token_string());
+            lexer.emit_token(token);
+
+            // TODO NOTE `fnext *stack_pop` seems unnecessary here?
+            // since, that's what will happen, right?
+
+            lexer.flag_breaking();
+        }),
+
     ]
 }
