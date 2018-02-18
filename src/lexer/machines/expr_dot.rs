@@ -175,7 +175,7 @@ pub fn construct_machine_expr_dot( patterns: &TMatchingPatterns, shared_actions:
         //     => { fhold; fgoto expr_end; };
         action!("c_any", |lexer: &mut Lexer| {
             lexer.input_stream.hold_current_char();
-            lexer.push_next_state("expr_end");
+            lexer.push_next_state(state!("expr_end"))
         }),
 
         //     c_eof => do_eof;

@@ -4,10 +4,11 @@ use parser::parser::Token;
 
 #[macro_use]
 mod lexing_state;      use self::lexing_state::LexingState;
+#[macro_use]
+mod action;            use self::action::Action;
 mod input_stream;      use self::input_stream::InputStream;
 mod shared_actions;    use self::shared_actions::TSharedActions;
 mod machines;
-mod action;            use self::action::{Action};
 mod matching_patterns;
 mod tokens_tables;
 mod shared_functions;

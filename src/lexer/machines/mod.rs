@@ -12,7 +12,7 @@ mod expr_value; pub use self::expr_value::*;
 mod expr_beg; pub use self::expr_beg::*;
 // mod expr_mid; pub use self::expr_mid::*;
 mod expr_arg; pub use self::expr_arg::*;
-// mod expr_cmdarg; pub use self::expr_cmdarg::*;
+mod expr_cmdarg; pub use self::expr_cmdarg::*;
 mod expr_end; pub use self::expr_end::*;
 // mod expr_endarg; pub use self::expr_endarg::*;
 mod expr_endfn; pub use self::expr_endfn::*;
@@ -40,7 +40,7 @@ pub fn construct(shared_actions: &shared_actions::TSharedActions) -> HashMap<Lex
     machine!("expr_beg", construct_machine_expr_beg(&patterns, &shared_actions));
     // machine!("expr_mid", construct_machine_expr_mid(&patterns, &shared_actions));
     machine!("expr_arg", construct_machine_expr_arg(&patterns, &shared_actions));
-    // machine!("expr_cmdarg", construct_machine_expr_cmdarg(&patterns, &shared_actions));
+    machine!("expr_cmdarg", construct_machine_expr_cmdarg(&patterns, &shared_actions));
     machine!("expr_end", construct_machine_expr_end(&patterns, &shared_actions));
     // machine!("expr_endarg", construct_machine_expr_endarg(&patterns, &shared_actions));
     machine!("expr_endfn", construct_machine_expr_endfn(&patterns, &shared_actions));

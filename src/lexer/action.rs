@@ -10,3 +10,12 @@ pub struct Action {
     pub regex: Regex,
     pub procedure: ActionProc
 }
+
+macro_rules! action_with_literal {
+    ($pattern_literal:expr, $procedure:expr) => {
+        box Action {
+            regex: Regex::new( &format!(r"^{}", $pattern_literal) ).unwrap(),
+            procedure: $procedure
+        }
+    };
+}

@@ -18,8 +18,6 @@ pub fn construct() -> TMatchingPatterns {
         };
     }
 
-    // TODO maybe impl a macro patterns!
-
     // 
     // NATIVE
     // 
@@ -32,7 +30,7 @@ pub fn construct() -> TMatchingPatterns {
     // 
 
     //   c_nl       = '\n' $ do_nl;
-    pattern!("c_nl", r"\n"); // TODO NOT CORRESPONDING
+    pattern!("c_nl", r"\n"); // WITH EMBEDDED ACTION
     //   c_space    = [ \t\r\f\v];
     pattern!("c_space", r"[ \t\r\f\v]");
     //   c_space_nl = c_space | c_nl;
@@ -175,6 +173,54 @@ pub fn construct() -> TMatchingPatterns {
     // TODO INCOMPLETE
     pattern!("int_dec", "[1-9][[:digit:]]*_?([[:digit:]]_)*[[:digit:]]*_?");
 
+
+    // #
+    // # === STRING AND HEREDOC PARSING ===
+    // #
+
+    // # Heredoc parsing is quite a complex topic. First, consider that heredocs
+    // # can be arbitrarily nested. For example:
+    // #
+    // #     puts <<CODE
+    // #     the result is: #{<<RESULT.inspect
+    // #       i am a heredoc
+    // #     RESULT
+    // #     }
+    // #     CODE
+    // #
+    // # which, incidentally, evaluates to:
+    // #
+    // #     the result is: "  i am a heredoc\n"
+    // #
+    // # To parse them, lexer refers to two kinds (remember, nested heredocs)
+    // # of positions in the input stream, namely heredoc_e
+    // # (HEREDOC declaration End) and @herebody_s (HEREdoc BODY line Start).
+    // #
+    // # heredoc_e is simply contained inside the corresponding Literal, and
+    // # when the heredoc is closed, the lexing is restarted from that position.
+    // #
+    // # @herebody_s is quite more complex. First, @herebody_s changes after each
+    // # heredoc line is lexed. This way, at '\n' tok(@herebody_s, @te) always
+    // # contains the current line, and also when a heredoc is started, @herebody_s
+    // # contains the position from which the heredoc will be lexed.
+    // #
+    // # Second, as (insanity) there are nested heredocs, we need to maintain a
+    // # stack of these positions. Each time #push_literal is called, it saves current
+    // # @heredoc_s to literal.saved_herebody_s, and after an interpolation (possibly
+    // # containing another heredocs) is closed, the previous value is restored.
+
+    // e_heredoc_nl = c_nl % {
+    // # After every heredoc was parsed, @herebody_s contains the
+    // # position of next token after all heredocs.
+    // if @herebody_s
+    //     p = @herebody_s
+    //     @herebody_s = nil
+    // end
+    // };
+    // TODO INCOMPLETE
+    // c_heredoc_nl embedded proc
+    pattern!("e_heredoc_nl", r"\n");
+
     // #
     // # === WHITESPACE HANDLING ===
     // #
@@ -224,6 +270,7 @@ pub fn construct() -> TMatchingPatterns {
 
     // w_newline =
     //     e_heredoc_nl;
+    pattern!("w_newline", r"\n"); // TODO NOT CORRESPONDING
 
     // w_any =
     //     w_space
