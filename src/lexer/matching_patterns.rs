@@ -27,24 +27,24 @@ pub fn construct() -> TMatchingPatterns {
     // 
 
     //   c_nl       = '\n' $ do_nl;
-    pattern!("c_nl", "\\n"); // TODO NOT CORRESPONDING
+    pattern!("c_nl", r"\n"); // TODO NOT CORRESPONDING
     //   c_space    = [ \t\r\f\v];
-    pattern!("c_space", "[ \\t\\r\\f\\v]");
+    pattern!("c_space", r"[ \t\r\f\v]");
     //   c_space_nl = c_space | c_nl;
-    pattern!("c_space_nl", "[ \\n\\t\\r\\f\\v]"); // TODO NOT CORRESPONDING
+    pattern!("c_space_nl", r"[ \n\t\r\f\v]"); // TODO NOT CORRESPONDING
 
     //   c_eof      = 0x04 | 0x1a | 0 | zlen; # ^D, ^Z, \0, EOF
-    pattern!("c_eof", "\\z"); // TODO NOT CORRESPONDING
+    pattern!("c_eof", r"\z"); // TODO NOT CORRESPONDING
     //   c_eol      = c_nl | c_eof;
-    pattern!("c_eol", "\\n|\\z"); // TODO NOT CORRESPONDING
+    pattern!("c_eol", r"\n|\z"); // TODO NOT CORRESPONDING
     //   c_any      = any - c_eof;
     patterns.insert("c_any", Regex::new(r"(?s)^.").unwrap()); // TODO NOT CORRESPONDING
 
     //   c_nl_zlen  = c_nl | zlen;
-    pattern!("c_nl_zlen", "\\n"); // TODO NOT CORRESPONDING
+    pattern!("c_nl_zlen", r"\n"); // TODO NOT CORRESPONDING
 
     //   c_line     = any - c_nl_zlen;
-    pattern!("c_line", "[^\\n]"); // TODO NOT CORRESPONDING
+    pattern!("c_line", r"[^\n]"); // TODO NOT CORRESPONDING
 
     // TODO
     //   c_unicode  = c_any - 0x00..0x7f;
@@ -64,12 +64,12 @@ pub fn construct() -> TMatchingPatterns {
     // # A list of operators which are valid in the function name context, but
     // # have different semantics in others.
     // operator_fname      = '[]' | '[]=' | '`'  | '-@' | '+@' | '~@'  | '!@' ;
-    pattern!("operator_fname", "(\\[\\])|(\\[\\]=)|`|(-@)|(\\+@)|(~@)|(!@)");
+    pattern!("operator_fname", r"(\[\])|(\[\]=)|`|(-@)|(\+@)|(~@)|(!@)");
 
     // # A list of operators which can occur within an assignment shortcut (+ → +=).
     // operator_arithmetic = '&'  | '|'   | '&&' | '||' | '^'  | '+'   | '-'  |
     //                       '*'  | '/'   | '**' | '~'  | '<<' | '>>'  | '%'  ;
-    pattern!("operator_arithmetic", "(&)|(\\|)|(&&)|(\\|\\|)|(\\^)|(\\+)|(-)|(\\*)|(/)|(\\*\\*)|(~)|(<<)|(>>)|(%)");
+    pattern!("operator_arithmetic", r"(&)|(\|)|(&&)|(\|\|)|(\^)|(\+)|(-)|(\*)|(/)|(\*\*)|(~)|(<<)|(>>)|(%)");
 
     // # A list of all user-definable operators not covered by groups above.
     // operator_rest       = '=~' | '!~' | '==' | '!=' | '!'   | '===' |
@@ -84,12 +84,12 @@ pub fn construct() -> TMatchingPatterns {
     //   # beginning of expression.
     //   punctuation_begin   = '-'  | '+'  | '::' | '('  | '['  |
     //                         '*'  | '**' | '&'  ;
-    pattern!("punctuation_begin", "(-)|(\\+)|(::)|(\\()|(\\[)|(\\*)|(\\*\\*)|(&)");
+    pattern!("punctuation_begin", r"(-)|(\+)|(::)|(\()|(\[)|(\*)|(\*\*)|(&)");
 
     //   # A list of all punctuation except punctuation_begin.
     //   punctuation_end     = ','  | '='  | '->' | '('  | '['  | ']'   |
     //                         '::' | '?'  | ':'  | '.'  | '..' | '...' ;
-    pattern!("punctuation_end", "(,)|(=)|(->)|(\\()|(\\[)|(\\])|(::)|(\\?)|(:)|(\\.)|(\\.\\.)|(\\.\\.\\.)");
+    pattern!("punctuation_end", r"(,)|(=)|(->)|(\()|(\[)|(\])|(::)|(\?)|(:)|(\.)|(\.\.)|(\.\.\.)");
 
     // # A list of keywords which have different meaning at the beginning of expression.
     // keyword_modifier    = 'if'     | 'unless' | 'while'  | 'until' | 'rescue' ;
@@ -126,7 +126,7 @@ pub fn construct() -> TMatchingPatterns {
     // keyword             = keyword_with_value | keyword_with_mid |
     //                       keyword_with_end   | keyword_with_arg |
     //                       keyword_with_fname | keyword_modifier ;
-    pattern!("keyword", "(\\[\\])|(\\[\\]=)|`|(-@)|(\\+@)|(~@)|(!@)|(&)|(\\|)|(&&)|(\\|\\|)|(\\^)|(\\+)|(-)|(\\*)|(/)|(\\*\\*)|(~)|(<<)|(>>)|(%)|(if)|(unless)|(while)|(until)|(rescue)|(end)|(self)|(true)|(false)|(retry)|(redo)|(nil)|(BEGIN)|(END)|(__FILE__)|(__LINE__)|(__ENCODING__)|(if)|(unless)|(while)|(until)|(rescue)|(end)|(self)|(true)|(false)|(retry)|(redo)|(nil)|(BEGIN)|(END)|(__FILE__)|(__LINE__)|(__ENCODING__)");
+    pattern!("keyword", r"(\[\])|(\[\]=)|`|(-@)|(\+@)|(~@)|(!@)|(&)|(\|)|(&&)|(\|\|)|(\^)|(\+)|(-)|(\*)|(/)|(\*\*)|(~)|(<<)|(>>)|(%)|(if)|(unless)|(while)|(until)|(rescue)|(end)|(self)|(true)|(false)|(retry)|(redo)|(nil)|(BEGIN)|(END)|(__FILE__)|(__LINE__)|(__ENCODING__)|(if)|(unless)|(while)|(until)|(rescue)|(end)|(self)|(true)|(false)|(retry)|(redo)|(nil)|(BEGIN)|(END)|(__FILE__)|(__LINE__)|(__ENCODING__)");
 
     //   constant       = c_upper c_alnum*;
     pattern!("constant", "[[:upper:]][[:alnum:]]*");
@@ -161,7 +161,7 @@ pub fn construct() -> TMatchingPatterns {
     pattern!("instance_var_v", "@[:alnum:]+");
 
     //   label          = bareword [?!]? ':';
-    pattern!("label", "[[:alpha:]][[:alnum:]]*[\\?!]?:");
+    pattern!("label", r"[[:alpha:]][[:alnum:]]*[\?!]?:");
 
     // 
     // NUMERIC PARSING
@@ -187,7 +187,7 @@ pub fn construct() -> TMatchingPatterns {
     //     c_space+
     //     | '\\' e_heredoc_nl
     //     ;
-    pattern!("w_space", "([ \\t\\r\\f\\v]+)"); // TODO INCOMPLETE
+    pattern!("w_space", r"([ \t\r\f\v]+)"); // TODO INCOMPLETE
 
     // w_comment =
     //     '#'     %{ @sharp_s = p - 1 }
@@ -201,7 +201,7 @@ pub fn construct() -> TMatchingPatterns {
     //     | w_comment
     //     ;
 
-    pattern!("w_space_comment", "[ \\t\\r\\f\\v]+"); // TODO IMCOMPLETE
+    pattern!("w_space_comment", r"[ \t\r\f\v]+"); // TODO IMCOMPLETE
 
     // # A newline in non-literal context always interoperates with
     // # here document logic and can always be escaped by a backslash,
@@ -225,7 +225,7 @@ pub fn construct() -> TMatchingPatterns {
     //     | w_comment
     //     | w_newline
     //     ;
-    pattern!("w_any", "[ \\t\\r\\f\\v]+"); // TODO INCOMPLETE
+    pattern!("w_any", r"[ \t\r\f\v]+"); // TODO INCOMPLETE
 
     //   #
     //   # === EXPRESSION PARSING ===
@@ -275,7 +275,7 @@ pub fn construct() -> TMatchingPatterns {
 
     //     @paren_nest += 1
     // };
-    pattern!("e_lparen", "\\(");
+    pattern!("e_lparen", r"\(");
 
     // e_rparen = ')' % {
     //     @paren_nest -= 1
