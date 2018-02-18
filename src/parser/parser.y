@@ -108,6 +108,7 @@ input ::= T_EQL.
 input ::= T_EQQ.
 input ::= T_GEQ.
 input ::= T_GT.
+input ::= T_LAMBEG.
 input ::= T_LAMBDA.
 input ::= T_LBRACE.
 input ::= T_LBRACE_ARG.

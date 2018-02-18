@@ -66,14 +66,14 @@ pub fn construct_machine_expr_endarg( patterns: &TMatchingPatterns, shared_actio
         //     fnext expr_value;
         //     };
         action_with_literal!(pattern_lit!("e_lbrace"), |lexer: &mut Lexer| {
-            if !lexer.lambda_stack.is_empty() && lexer.lambda_stack.last().unwrap() == lexer.paren_nest {
+            if !lexer.lambda_stack.is_empty() && lexer.lambda_stack.last().unwrap() == &lexer.paren_nest {
                 lexer.lambda_stack.pop().unwrap();
                 lexer.emit_token(Token::T_LAMBEG); // TODO original token has value '{'
             } else {
                 lexer.emit_token(Token::T_LBRACE_ARG); // TODO original token has value '{'
             }
             lexer.push_next_state(state!("expr_value"));
-        })，
+        }),
 
         //     'do'
         //     => { emit_do(true)
@@ -89,8 +89,8 @@ pub fn construct_machine_expr_endarg( patterns: &TMatchingPatterns, shared_actio
 
         //     c_any
         //     => { fhold; fgoto expr_end; };
-        action_with_literal("c_any", |lexer: &mut Lexer| {
-            lexer.hold_current_char();
+        action_with_literal!("c_any", |lexer: &mut Lexer| {
+            lexer.input_stream.hold_current_char();
             lexer.push_next_state(state!("expr_end"));
         }),
 
