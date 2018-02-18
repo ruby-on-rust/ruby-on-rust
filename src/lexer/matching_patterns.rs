@@ -27,11 +27,11 @@ pub fn construct() -> TMatchingPatterns {
     // 
 
     //   c_nl       = '\n' $ do_nl;
-    pattern!("c_nl", "\\n");     // TODO NOT CORRESPONDING
+    pattern!("c_nl", "\\n"); // TODO NOT CORRESPONDING
     //   c_space    = [ \t\r\f\v];
     pattern!("c_space", "[ \\t\\r\\f\\v]");
     //   c_space_nl = c_space | c_nl;
-    pattern!("c_space_nl", "[ \\n\\t\\r\\f\\v]");
+    pattern!("c_space_nl", "[ \\n\\t\\r\\f\\v]"); // TODO NOT CORRESPONDING
 
     //   c_eof      = 0x04 | 0x1a | 0 | zlen; # ^D, ^Z, \0, EOF
     pattern!("c_eof", "\\z"); // TODO NOT CORRESPONDING
@@ -89,7 +89,7 @@ pub fn construct() -> TMatchingPatterns {
     //   # A list of all punctuation except punctuation_begin.
     //   punctuation_end     = ','  | '='  | '->' | '('  | '['  | ']'   |
     //                         '::' | '?'  | ':'  | '.'  | '..' | '...' ;
-    pattern!("punctuation_end", "(,)|(=)|(->)|(\\()|(\\[)|(\\])|(::)|(\\?)|(:)|(\\.)|(\\.\\.)|(\\.\\..)");
+    pattern!("punctuation_end", "(,)|(=)|(->)|(\\()|(\\[)|(\\])|(::)|(\\?)|(:)|(\\.)|(\\.\\.)|(\\.\\.\\.)");
 
     // # A list of keywords which have different meaning at the beginning of expression.
     // keyword_modifier    = 'if'     | 'unless' | 'while'  | 'until' | 'rescue' ;

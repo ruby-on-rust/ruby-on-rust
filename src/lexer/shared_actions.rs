@@ -29,6 +29,10 @@ pub fn construct() -> TSharedActions {
     // e_lbrack = '[' % {
     //   @cond.push(false); @cmdarg.push(false)
     // };
+    action!("e_lbrack", |lexer: &mut Lexer| {
+        lexer.cond.push(false);
+        lexer.cmdarg.push(false);
+    });
 
     // # Ruby 1.9 lambdas require parentheses counting in order to
     // # emit correct opening kDO/tLBRACE.

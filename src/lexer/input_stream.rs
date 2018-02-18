@@ -97,14 +97,17 @@ impl InputStream {
         TokenString::from(self.current_token().unwrap())
     }
 
+    pub fn slice_from_range(&self, start: usize, end: usize) -> String {
+        self.string.chars().skip(start).take(end - start).collect()
+    }
+
     pub fn token_string_from_range(&self, ts: usize, te: usize) -> TokenString {
-        let slice: String = self.string.chars().skip(ts).take(te - ts).collect();
-        TokenString::from(slice)
+        TokenString::from(self.slice_from_range(ts, te))
     }
 
     // NOTE fhold in ragel
     pub fn hold_current_char(&mut self) {
-        println!("\n>>> invoking fhold");
+        // println!("\n>>> invoking fhold");
 
         // println!("=== debugging fhold invoking: p {:?} ts {:?} te {:?}", self.p, self.ts, self.te );
 

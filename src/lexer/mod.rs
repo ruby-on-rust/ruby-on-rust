@@ -27,7 +27,10 @@ pub struct Lexer {
 
     cond: StackState,
     cmdarg: StackState,
-    paren_nest: usize, // TODO seems like a Ruby 1.9 thing
+
+    // TODO seems like a Ruby 1.9 thing
+    paren_nest: usize,
+    lambda_stack: Vec<usize>,
 
     pub tokens: Vec<Token>,
 }
@@ -51,6 +54,7 @@ impl Lexer {
             cond: StackState::new(),
             cmdarg: StackState::new(),
             paren_nest: 0,
+            lambda_stack: vec![],
 
             tokens: Vec::new(),
         }
