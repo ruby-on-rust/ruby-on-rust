@@ -2,42 +2,55 @@ use std::collections::HashMap;
 
 use parser::parser::Token;
 
-mod input_stream;      use lexer::input_stream::InputStream;
-mod lexing_state;      use lexer::lexing_state::{LexingState};
-mod shared_actions;
+mod input_stream;      use self::input_stream::InputStream;
+mod lexing_state;      use self::lexing_state::{LexingState};
+mod shared_actions;    use self::shared_actions::{TSharedActions};
 mod machines;
-mod action;            use lexer::action::{Action};
+mod action;            use self::action::{Action};
 mod matching_patterns;
 mod tokens_tables;
 mod shared_functions;
+mod stack_state;       use self::stack_state::StackState;
 
 pub struct Lexer {
     states_stack: Vec<LexingState>,
 
     tokens_tables: HashMap<&'static str, HashMap<&'static str, Token>>,
-
+    shared_actions: TSharedActions,
     machines: HashMap<LexingState, Vec<Box<Action>>>,
 
     input_stream: InputStream,
 
     is_breaking: bool,
-
     // CORRESPOND @command_state in lexer.rl
     command_state: bool,
+
+    cond: StackState,
+    cmdarg: StackState,
+    paren_nest: usize, // TODO seems like a Ruby 1.9 thing
 
     pub tokens: Vec<Token>,
 }
 
 impl Lexer {
     pub fn new(input_string: String) -> Lexer {
+        let shared_actions = shared_actions::construct();
+
         Lexer {
             states_stack: vec![LexingState::LineBegin],
             tokens_tables: tokens_tables::construct(),
-            machines: machines::construct(),
-            is_breaking: false,
-            command_state: false,
+
+            shared_actions: shared_actions.clone(),
+            machines: machines::construct(&shared_actions),
 
             input_stream: InputStream::new(input_string),
+
+            is_breaking: false,
+
+            command_state: false,
+            cond: StackState::new(),
+            cmdarg: StackState::new(),
+            paren_nest: 0,
 
             tokens: Vec::new(),
         }
@@ -135,5 +148,10 @@ impl Lexer {
         let token = tokens_table.get(token_str.as_str()).unwrap();
 
         self.tokens.push((*token).clone());
+    }
+
+    fn invoke_proc(&mut self, proc_name: &str) {
+        let procedure = self.shared_actions.get(proc_name).expect("no such proc in shared_actions").clone();
+        procedure(self);
     }
 }

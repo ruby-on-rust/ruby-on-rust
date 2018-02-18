@@ -15,8 +15,6 @@ pub fn construct() -> TMatchingPatterns {
 
     // TODO maybe impl a macro patterns!
 
-
-
     // 
     // NATIVE
     // 
@@ -157,9 +155,10 @@ pub fn construct() -> TMatchingPatterns {
 
     //   # Ruby accepts (and fails on) variables with leading digit
     //   # in literal context, but not in unquoted symbol body.
-    // TODO
     //   class_var_v    = '@@' c_alnum+;
+    pattern!("class_var_v", "@@[:alnum:]+");
     //   instance_var_v = '@' c_alnum+;
+    pattern!("instance_var_v", "@[:alnum:]+");
 
     //   label          = bareword [?!]? ':';
     pattern!("label", "[[:alpha:]][[:alnum:]]*[\\?!]?:");
@@ -259,6 +258,39 @@ pub fn construct() -> TMatchingPatterns {
     //   ambiguous_const_suffix =       # actual    parsed
     //       '::'    %{ tm = p - 2 }    # A::B      A :: B
     //   ;
-    
+
+
+    // # Resolving kDO/kDO_COND/kDO_BLOCK ambiguity requires embedding
+    // # @cond/@cmdarg-related code to e_lbrack, e_lparen and e_lbrace.
+
+    // e_lbrack = '[' % {
+    //     @cond.push(false); @cmdarg.push(false)
+    // };
+
+    // # Ruby 1.9 lambdas require parentheses counting in order to
+    // # emit correct opening kDO/tLBRACE.
+
+    // e_lparen = '(' % {
+    //     @cond.push(false); @cmdarg.push(false)
+
+    //     @paren_nest += 1
+    // };
+    pattern!("e_lparen", "\\(");
+
+    // e_rparen = ')' % {
+    //     @paren_nest -= 1
+    // };
+
+    // # Ruby is context-sensitive wrt/ local identifiers.
+    // action local_ident {
+    //     emit(:tIDENTIFIER)
+
+    //     if !@static_env.nil? && @static_env.declared?(tok)
+    //     fnext expr_endfn; fbreak;
+    //     else
+    //     fnext *arg_or_cmdarg; fbreak;
+    //     end
+    // }
+
     patterns
 }

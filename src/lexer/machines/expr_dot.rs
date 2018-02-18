@@ -156,9 +156,9 @@ pub fn construct_machine_expr_dot( patterns: &TMatchingPatterns, shared_actions:
         //           fnext expr_arg; fbreak; };
         box Action {
             // TODO impl pattern_literals, for operator_fname, etc. and build pattern like this
-            regex: Regex::new(r"^(((\\[\\])|(\\[\\]=)|`|(-@)|(\\+@)|(~@)|(!@))|((&)|(\\|)|(&&)|(\\|\\|)|(\\^)|(\\+)|(-)|(\\*)|(/)|(\\*\\*)|(~)|(<<)|(>>)|(%))|((=~)|(!~)|(==)|(!=)|(!)|(===)|(<)|(<=)|(>)|(>=)|(<=>)|(=>)))").unwrap(),
-            //                     ^                                        ^   ^                                                                          ^   ^                                                        ^
-            //                     operator_fname                               _arithmetic                                                                    _rest
+            regex: Regex::new(r"^(\[\])|(\[\]=)|`|(-@)|(\+@)|(~@)|(!@)|(&)|(\|)|(&&)|(\|\|)|(\^)|(\+)|(-)|(\*)|(/)|(\*\*)|(~)|(<<)|(>>)|(%)|(=~)|(!~)|(==)|(!=)|(!)|(===)|(<)|(<=)|(>)|(>=)|(<=>)|(=>)").unwrap(),
+            //                   ^                                   ^ ^                                                                  ^ ^                                                        ^
+            //                   operator_fname                        _arithmetic                                                          _rest
             procedure: |lexer: &mut Lexer| {
                 lexer.emit_token_from_table("punctuation");
                 lexer.push_next_state(LexingState::ExprArg);

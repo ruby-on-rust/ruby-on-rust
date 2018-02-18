@@ -29,3 +29,7 @@ somethingA %{actionB} somethingB
 stateA --(transition and invoke action)--> stateB
 
 like this?
+
+# rust practice
+
+- &'static str
