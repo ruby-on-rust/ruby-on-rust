@@ -67,3 +67,5 @@ impl FromStr for LexingState {
         }
     }
 }
+
+macro_rules! state { ($state_name:expr) => { $state_name.parse::<LexingState>().unwrap() }; }

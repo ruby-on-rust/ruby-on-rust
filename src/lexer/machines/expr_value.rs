@@ -55,7 +55,7 @@ pub fn construct_machine_expr_value( patterns: &TMatchingPatterns, shared_action
             println!("action invoked for c_any");
 
             lexer.input_stream.hold_current_char();
-            lexer.push_next_state(LexingState::ExprBeg);
+            lexer.push_next_state(state!("expr_beg"));
         }),
 
         // TODO

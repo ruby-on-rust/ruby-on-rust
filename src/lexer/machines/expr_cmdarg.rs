@@ -67,7 +67,7 @@ pub fn construct_machine_expr_cmdarg( patterns: &TMatchingPatterns, shared_actio
         action_with_literal!(format!(r"{}+{}", pattern_lit!("w_space"), pattern_lit!("e_lparen")), |lexer: &mut Lexer| {
             lexer.emit_token(Token::T_LPAREN_ARG);
             // NOTE ignored version 18
-            lexer.push_next_state(LexingState::ExprBeg);
+            lexer.push_next_state(state!("expr_beg"));
         }),
 
         //     w_space* 'do'

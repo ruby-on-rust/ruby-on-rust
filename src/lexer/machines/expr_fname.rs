@@ -77,7 +77,7 @@ pub fn construct_machine_expr_fname( patterns: &TMatchingPatterns, shared_action
         //          fnext expr_end; fcall expr_variable; };
         action!("global_var", |lexer: &mut Lexer| {
             lexer.input_stream.hold_current_token();
-            lexer.push_next_state(LexingState::ExprEnd);
+            lexer.push_next_state(state!("expr_end"));
             lexer.push_next_state(LexingState::ExprVariable);
         }),
 
@@ -103,7 +103,7 @@ pub fn construct_machine_expr_fname( patterns: &TMatchingPatterns, shared_action
             procedure: |lexer: &mut Lexer| {
                 lexer.input_stream.hold_current_char();
                 lexer.input_stream.hold_current_char();
-                lexer.push_next_state(LexingState::ExprEnd);
+                lexer.push_next_state(state!("expr_end"))
             }
         },
 
@@ -113,7 +113,7 @@ pub fn construct_machine_expr_fname( patterns: &TMatchingPatterns, shared_action
             regex: Regex::new(r"^:").unwrap(),
             procedure: |lexer: &mut Lexer| {
                 lexer.input_stream.hold_current_char();
-                lexer.push_next_state(LexingState::ExprEnd);
+                lexer.push_next_state(state!("expr_end"))
             }
         },
 
@@ -133,7 +133,7 @@ pub fn construct_machine_expr_fname( patterns: &TMatchingPatterns, shared_action
             regex: Regex::new(r"^%s.").unwrap(), // TODO using `.` for `c_any`
             procedure: |lexer: &mut Lexer| {
                 lexer.input_stream.hold_current_token();
-                lexer.push_next_state(LexingState::ExprEnd);
+                lexer.push_next_state(state!("expr_end"))
             }
         },
 
@@ -144,7 +144,7 @@ pub fn construct_machine_expr_fname( patterns: &TMatchingPatterns, shared_action
         //     => { fhold; fgoto expr_end; };
         action!("c_any", |lexer: &mut Lexer| {
             lexer.input_stream.hold_current_char();
-            lexer.push_next_state(LexingState::ExprEnd);
+            lexer.push_next_state(state!("expr_end"))
         }),
 
         //     c_eof => do_eof;
