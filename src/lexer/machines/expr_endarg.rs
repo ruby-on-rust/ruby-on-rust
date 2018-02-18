@@ -1,5 +1,5 @@
 // TRACKER
-//   WIP
+//   DONE
 
 // # The rationale for this state is pretty complex. Normally, if an argument
 // # is passed to a command and then there is a block (tLCURLY...tRCURLY),
@@ -16,19 +16,6 @@
 // #
 // # The default post-`expr_endarg` state is `expr_end`, so this state also handles
 // # `do` (as `kDO_BLOCK` in `expr_beg`).
-// expr_endarg := |*
-
-//     'do'
-//     => { emit_do(true)
-//         fnext expr_value; fbreak; };
-
-//     w_space_comment;
-
-//     c_any
-//     => { fhold; fgoto expr_end; };
-
-//     c_eof => do_eof;
-// *|;
 
 use regex::Regex;
 
@@ -78,6 +65,36 @@ pub fn construct_machine_expr_endarg( patterns: &TMatchingPatterns, shared_actio
         //     end
         //     fnext expr_value;
         //     };
-        WIP
+        action_with_literal!(pattern_lit!("e_lbrace"), |lexer: &mut Lexer| {
+            if !lexer.lambda_stack.is_empty() && lexer.lambda_stack.last().unwrap() == lexer.paren_nest {
+                lexer.lambda_stack.pop().unwrap();
+                lexer.emit_token(Token::T_LAMBEG); // TODO original token has value '{'
+            } else {
+                lexer.emit_token(Token::T_LBRACE_ARG); // TODO original token has value '{'
+            }
+            lexer.push_next_state(state!("expr_value"));
+        })，
+
+        //     'do'
+        //     => { emit_do(true)
+        //         fnext expr_value; fbreak; };
+        action_with_literal!("do", |lexer: &mut Lexer| {
+            lexer.emit_do(true);
+            lexer.push_next_state(state!("expr_value"));
+            lexer.flag_breaking();
+        }),
+
+        //     w_space_comment;
+        action!("w_space_comment", get_shared_action!("noop")),
+
+        //     c_any
+        //     => { fhold; fgoto expr_end; };
+        action_with_literal("c_any", |lexer: &mut Lexer| {
+            lexer.hold_current_char();
+            lexer.push_next_state(state!("expr_end"));
+        }),
+
+        //     c_eof => do_eof;
+        action!("c_eof", get_shared_action!("do_eof")),
     ]
 }
