@@ -22,6 +22,10 @@ use rust macro top construct enum
 
 #
 
+use pattern_literals to construct complex patterns inline in action
+
+#
+
 [1-9] digit* '_'? %{ @num_base = 10; @num_digits_s = @ts } int_dec
 
 somethingA %{actionB} somethingB

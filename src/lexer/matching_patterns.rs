@@ -2,13 +2,18 @@ use std::collections::HashMap;
 
 use regex::Regex;
 
-pub type TMatchingPatterns = HashMap<&'static str, Regex>;
+// TODO should these be 'static ?
+type TMatchingPatternLiterals = HashMap<&'static str, &'static str>;
+type TMatchingPatternRegexs = HashMap<&'static str, Regex>;
+pub type TMatchingPatterns = ( TMatchingPatternLiterals, TMatchingPatternRegexs );
 
 pub fn construct() -> TMatchingPatterns {
-    let mut patterns: TMatchingPatterns = HashMap::new();
+    let mut pattern_literals: TMatchingPatternLiterals = HashMap::new();
+    let mut patterns: TMatchingPatternRegexs = HashMap::new();
 
     macro_rules! pattern {
         ($name:expr, $regex:expr) => {
+            pattern_literals.insert($name, $regex);
             patterns.insert($name, Regex::new( &format!(r"^{}", $regex) ).unwrap());
         };
     }
@@ -292,5 +297,5 @@ pub fn construct() -> TMatchingPatterns {
     //     end
     // }
 
-    patterns
+    (pattern_literals, patterns)
 }

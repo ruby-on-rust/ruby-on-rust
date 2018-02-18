@@ -23,10 +23,12 @@ use lexer::shared_actions::TSharedActions;
 use parser::parser::Token;
 
 pub fn construct_machine_expr_fname( patterns: &TMatchingPatterns, shared_actions: &TSharedActions ) -> Vec<Box<Action>> {
+    let (pattern_literals, pattern_regexs) = (*patterns).clone();
+
     macro_rules! action {
         ($pattern_name:expr, $procedure:expr) => {
             box Action {
-                regex: patterns.get($pattern_name).expect(&format!("no matching_pattern: {:?}", $pattern_name)).clone(), // TODO clone?
+                regex: pattern_regexs.get($pattern_name).expect(&format!("no matching_pattern: {:?}", $pattern_name)).clone(), // TODO clone?
                 procedure: $procedure
             }
         };
