@@ -1,24 +1,9 @@
 // TRACKER
-//   WIP
+//   DONE
 
 // # The previous token emitted was a `tIDENTIFIER` or `tFID`; no space
 // # is consumed; the current expression is a command or method call.
 // #
-// expr_arg := |*
-
-//     w_space;
-
-//     w_comment
-//     => { fgoto expr_end; };
-
-//     w_newline
-//     => { fhold; fgoto expr_end; };
-
-//     c_any
-//     => { fhold; fgoto expr_beg; };
-
-//     c_eof => do_eof;
-// *|;
 
 use regex::Regex;
 
@@ -337,6 +322,22 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
             procedure: |lexer: &mut Lexer| { lexer.input_stream.hold_current_token(); lexer.push_next_state(LexingState::ExprEnd); }
         },
 
+        //     w_space;
+        action!("w_space", get_shared_action!("noop")),
 
+        //     w_comment
+        //     => { fgoto expr_end; };
+        action!("w_space", |lexer: &mut Lexer| { lexer.push_next_state(LexingState::ExprEnd); }),
+
+        //     w_newline
+        //     => { fhold; fgoto expr_end; };
+        action!("w_newline", |lexer: &mut Lexer| { lexer.push_next_state(LexingState::ExprEnd); }),
+
+        //     c_any
+        //     => { fhold; fgoto expr_beg; };
+        action!("c_any", |lexer: &mut Lexer| { lexer.push_next_state(LexingState::ExprBeg); }),
+
+        //     c_eof => do_eof;
+        action!("w_space", get_shared_action!("do_eof")),
     ]
 }
