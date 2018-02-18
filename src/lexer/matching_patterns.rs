@@ -39,9 +39,9 @@ pub fn construct() -> TMatchingPatterns {
     //   c_eof      = 0x04 | 0x1a | 0 | zlen; # ^D, ^Z, \0, EOF
     pattern!("c_eof", r"\z"); // TODO NOT CORRESPONDING
     //   c_eol      = c_nl | c_eof;
-    pattern!("c_eol", r"\n|\z"); // TODO NOT CORRESPONDING
+    pattern!("c_eol", r"(\n|\z)"); // TODO NOT CORRESPONDING
     //   c_any      = any - c_eof;
-    patterns.insert("c_any", Regex::new(r"(?s)^.").unwrap()); // TODO NOT CORRESPONDING
+    pattern!("c_any", r"^."); // TODO NOT CORRESPONDING
 
     //   c_nl_zlen  = c_nl | zlen;
     pattern!("c_nl_zlen", r"\n"); // TODO NOT CORRESPONDING
