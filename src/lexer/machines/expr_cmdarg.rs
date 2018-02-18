@@ -1,5 +1,5 @@
 // TRACKER
-//   WIP
+//   DONE
 
 // # The previous token was an identifier which was seen while in the
 // # command mode (that is, the state at the beginning of #advance was
@@ -7,27 +7,6 @@
 // # two very rare and specific condition:
 // #   * In 1.8 mode, "foo (lambda do end)".
 // #   * In 1.9+ mode, "f x: -> do foo do end end".
-// expr_cmdarg := |*
-
-//     w_space* 'do'
-//     => {
-//       if @cond.active?
-//         emit(:kDO_COND, 'do'.freeze, @te - 2, @te)
-//       else
-//         emit(:kDO, 'do'.freeze, @te - 2, @te)
-//       end
-//       fnext expr_value; fbreak;
-//     };
-
-//     c_any             |
-//     # Disambiguate with the `do' rule above.
-//     w_space* bareword |
-//     w_space* label
-//     => { p = @ts - 1
-//           fgoto expr_arg; };
-
-//     c_eof => do_eof;
-// *|;
 
 use regex::Regex;
 
@@ -45,9 +24,27 @@ pub fn construct_machine_expr_cmdarg( patterns: &TMatchingPatterns, shared_actio
     macro_rules! action {
         ($pattern_name:expr, $procedure:expr) => {
             box Action {
-                regex: pattern_regexs.get($pattern_name).expect(&format!("no matching_pattern: {:?}", $pattern_name)).clone(), // TODO clone?
+                regex: pattern_regexs.get($pattern_name).expect(&format!("no matching_pattern: {:?}", $pattern_name)).clone(),
                 procedure: $procedure
             }
+        };
+    }
+
+    // TODO merge action_with_literal! and pattern_lit!, so we can write code like:
+    // pattern!("{}+|{}", "w_space", "foo")
+
+    macro_rules! action_with_literal {
+        ($pattern_literal:expr, $procedure:expr) => {
+            box Action {
+                regex: Regex::new( &format!(r"^{}", $pattern_literal) ).unwrap(),
+                procedure: $procedure
+            }
+        };
+    }
+
+    macro_rules! pattern_lit {
+        ($pattern_name:expr) => {
+            pattern_literals.get($pattern_name).unwrap()
         };
     }
 
@@ -67,6 +64,47 @@ pub fn construct_machine_expr_cmdarg( patterns: &TMatchingPatterns, shared_actio
         //         fnext expr_beg; fbreak;
         //       end
         //     };
+        action_with_literal!(format!(r"{}+{}", pattern_lit!("w_space"), pattern_lit!("e_lparen")), |lexer: &mut Lexer| {
+            lexer.emit_token(Token::T_LPAREN_ARG);
+            // NOTE ignored version 18
+            lexer.push_next_state(LexingState::ExprBeg);
+        }),
 
+        //     w_space* 'do'
+        //     => {
+        //       if @cond.active?
+        //         emit(:kDO_COND, 'do'.freeze, @te - 2, @te)
+        //       else
+        //         emit(:kDO, 'do'.freeze, @te - 2, @te)
+        //       end
+        //       fnext expr_value; fbreak;
+        //     };
+        action_with_literal!(format!(r"{}*do", pattern_lit!("w_space")), |lexer: &mut Lexer| {
+            if lexer.cond.is_active() {
+                lexer.emit_token(Token::K_DO_COND),
+            } else {
+                lexer.emit_token(Token::K_DO),
+            }
+            lexer.push_next_state(LexingState::ExprValue);
+            lexer.flag_breaking();
+        }),
+
+        //     c_any             |
+        //     # Disambiguate with the `do' rule above.
+        //     w_space* bareword |
+        //     w_space* label
+        //     => { p = @ts - 1
+        //           fgoto expr_arg; };
+
+        //     c_eof => do_eof;
+        action_with_literal!(format!(r"({})|({}*{})|({}*{})",
+            pattern_lit!("c_any"),
+            pattern_lit!("w_space"), pattern_lit!("bareword"),
+            pattern_lit!("w_space"), pattern_lit!("label"),
+            )
+        , |lexer: &mut Lexer| {
+            lexer.input_stream.hold_current_token();
+            lexer.push_next_state(LexingState::ExprArg);
+        }),
     ]
 }

@@ -43,6 +43,7 @@ input ::= K_CLASS.
 input ::= K_DEF.
 input ::= K_DEFINED.
 input ::= K_DO.
+input ::= K_DO_COND.
 input ::= K_ELSE.
 input ::= K_ELSIF.
 input ::= K_END.
