@@ -11,6 +11,14 @@ pub fn construct() -> TMatchingPatterns {
     let mut pattern_literals: TMatchingPatternLiterals = HashMap::new();
     let mut patterns: TMatchingPatternRegexs = HashMap::new();
 
+    // NOTE
+    // pattern!
+    //   1. insert regex into pattern_literals
+    //   2. insert regex plus prefix ^ into patterns
+    // 
+    // use patterns.insert(^regex) directly to avoid unnecessary pattern_literal
+    // 
+
     macro_rules! pattern {
         ($name:expr, $regex:expr) => {
             pattern_literals.insert($name, $regex);
@@ -264,7 +272,7 @@ pub fn construct() -> TMatchingPatterns {
     //       current_literal.start_interp_brace
     //     end
     //   };
-    // NOTE moved to shared_actions
+    // NOTE embedded action moved to shared_actions
     pattern!("e_lbrace", r"\{");
 
     //   e_rbrace = '}' % {
@@ -421,13 +429,15 @@ pub fn construct() -> TMatchingPatterns {
     //     # the way Ragel handles EOF.
     //     c_line* %{ emit_comment(@sharp_s, p == pe ? p - 2 : p) }
     //     ;
+    // TODO INCOMPLETE
+    // patterns.insert("w_comment", r"^#.*");
 
     // w_space_comment =
     //     w_space
     //     | w_comment
     //     ;
-
-    pattern!("w_space_comment", r"[ \t\r\f\v]+"); // TODO IMCOMPLETE
+    // TODO INCOMPLETE
+    pattern!("w_space_comment", r"[ \t\r\f\v]+");
 
     // # A newline in non-literal context always interoperates with
     // # here document logic and can always be escaped by a backslash,
