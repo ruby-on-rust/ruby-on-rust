@@ -52,5 +52,25 @@ pub fn construct() -> TSharedActions {
     //   @paren_nest -= 1
     // };
 
+    //   e_lbrace = '{' % {
+    //     @cond.push(false); @cmdarg.push(false)
+
+    //     current_literal = literal
+    //     if current_literal
+    //       current_literal.start_interp_brace
+    //     end
+    //   };
+    action!("e_lbrace", |lexer: &mut Lexer| {
+        lexer.cond.push(false);
+        lexer.cmdarg.push(false);
+
+        match lexer.literal() {
+            Some(literal) => {
+                literal.start_interp_brace()
+            }
+            None => ()
+        };
+    });
+
     actions
 }

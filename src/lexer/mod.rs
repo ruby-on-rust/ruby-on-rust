@@ -13,6 +13,7 @@ mod matching_patterns;
 mod tokens_tables;
 mod shared_functions;
 mod stack_state;       use self::stack_state::StackState;
+mod literal;           use self::literal::Literal;
 
 pub struct Lexer {
     states_stack: Vec<LexingState>,
@@ -24,7 +25,11 @@ pub struct Lexer {
     input_stream: InputStream,
 
     is_breaking: bool,
-    // CORRESPOND @command_state in lexer.rl
+
+    // @literal_state
+    literal_stack: Vec<Literal>,
+
+    // @command_state
     command_state: bool,
 
     cond: StackState,
@@ -52,6 +57,7 @@ impl Lexer {
 
             is_breaking: false,
 
+            literal_stack: vec![],
             command_state: false,
             cond: StackState::new(),
             cmdarg: StackState::new(),

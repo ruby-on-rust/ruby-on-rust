@@ -65,7 +65,10 @@ pub fn construct_machine_expr_endarg( patterns: &TMatchingPatterns, shared_actio
         //     end
         //     fnext expr_value;
         //     };
+        // with embedded e_lbrace
         action_with_literal!(pattern_lit!("e_lbrace"), |lexer: &mut Lexer| {
+            lexer.invoke_proc("e_lbrace");
+
             if !lexer.lambda_stack.is_empty() && lexer.lambda_stack.last().unwrap() == &lexer.paren_nest {
                 lexer.lambda_stack.pop().unwrap();
                 lexer.emit_token(Token::T_LAMBEG); // TODO original token has value '{'
