@@ -16,7 +16,7 @@ mod expr_cmdarg; pub use self::expr_cmdarg::*;
 mod expr_end; pub use self::expr_end::*;
 mod expr_endarg; pub use self::expr_endarg::*;
 mod expr_endfn; pub use self::expr_endfn::*;
-// mod expr_labelarg; pub use self::expr_labelarg::*;
+mod expr_labelarg; pub use self::expr_labelarg::*;
 
 mod expr_variable; pub use self::expr_variable::*;
 mod leading_dot; pub use self::leading_dot::*;
@@ -44,7 +44,7 @@ pub fn construct(shared_actions: &shared_actions::TSharedActions) -> HashMap<Lex
     machine!("expr_end", construct_machine_expr_end(&patterns, &shared_actions));
     machine!("expr_endarg", construct_machine_expr_endarg(&patterns, &shared_actions));
     machine!("expr_endfn", construct_machine_expr_endfn(&patterns, &shared_actions));
-    // machine!("expr_labelarg", construct_machine_expr_labelarg(&patterns, &shared_actions));
+    machine!("expr_labelarg", construct_machine_expr_labelarg(&patterns, &shared_actions));
 
     machine!("expr_variable", construct_machine_expr_variable(&patterns, &shared_actions));
     machine!("leading_dot", construct_machine_leading_dot(&patterns, &shared_actions));

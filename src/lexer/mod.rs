@@ -39,6 +39,10 @@ pub struct Lexer {
     paren_nest: usize,
     lambda_stack: Vec<usize>,
 
+    // @in_kwarg
+    // # True at the end of "def foo a:"
+    in_kwarg: bool,
+
     pub tokens: Vec<Token>,
 }
 
@@ -63,6 +67,8 @@ impl Lexer {
             cmdarg: StackState::new(),
             paren_nest: 0,
             lambda_stack: vec![],
+
+            in_kwarg: false,
 
             tokens: Vec::new(),
         }
