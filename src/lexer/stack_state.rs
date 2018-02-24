@@ -34,6 +34,14 @@ impl StackState {
         }
     }
 
+    // def lexpop
+    //   @stack = ((@stack >> 1) | (@stack & 1))
+    //   @stack[0] == 1
+    // end
+    pub fn lexpop(&mut self) -> bool {
+        panic!("UNIMPL");
+    }
+
     // def active?
     //   @stack[0] == 1
     // end
