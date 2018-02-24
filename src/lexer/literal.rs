@@ -1,6 +1,8 @@
 // TODO INCOMPLETE
 // TODO NOTE DOCS
 
+// TODO handle binary encoding issues
+
 // module Parser
 
 //   class Lexer::Literal
@@ -203,63 +205,78 @@
 
 // end
 
-use lexer::Lexer;
+use std::collections::HashMap;
 
+use lexer::Lexer;
+use lexer::LexingState;
+
+#[derive(Debug, Clone)]
 pub struct Literal {
+    nesting: usize,
+
+    // # String type. For :'foo', it is :'
+    str_type: String,
+
+    // # Start of the string type specifier.
+    // starting point of the literal, normarlly related to @ts
+    str_s: usize,
+
     interp_braces: usize,
 }
 
 impl Literal {
     //     def initialize(lexer, str_type, delimiter, str_s, heredoc_e = nil,
     //                    indent = false, dedent_body = false, label_allowed = false)
-    //       @lexer       = lexer
-    //       @nesting     = 1
+    pub fn new(
+        str_type: String,
+        delimiter: String,
+        str_s: usize,
+    ) -> Literal {
+        // TODO
+        //       # DELIMITERS and TYPES are hashes with keys encoded in binary.
+        //       # Coerce incoming data to the same encoding.
+        //       str_type     = coerce_encoding(str_type)
+        //       delimiter    = coerce_encoding(delimiter)
 
-    //       # DELIMITERS and TYPES are hashes with keys encoded in binary.
-    //       # Coerce incoming data to the same encoding.
-    //       str_type     = coerce_encoding(str_type)
-    //       delimiter    = coerce_encoding(delimiter)
+        // TODO
+        //       unless TYPES.include?(str_type)
+        //         lexer.send(:diagnostic, :error, :unexpected_percent_str,
+        //                    { :type => str_type }, @lexer.send(:range, str_s, str_s + 2))
+        //       end
 
-    //       unless TYPES.include?(str_type)
-    //         lexer.send(:diagnostic, :error, :unexpected_percent_str,
-    //                    { :type => str_type }, @lexer.send(:range, str_s, str_s + 2))
-    //       end
+        // TODO
+        //       @start_tok, @interpolate = TYPES[str_type]
+        //       @start_delim = DELIMITERS.include?(delimiter) ? delimiter : nil
+        //       @end_delim   = DELIMITERS.fetch(delimiter, delimiter)
 
-    //       # String type. For :'foo', it is :'
-    //       @str_type    = str_type
-    //       # Start of the string type specifier.
-    //       @str_s       = str_s
+        //       @heredoc_e     = heredoc_e
+        //       @indent        = indent
+        //       @label_allowed = label_allowed
 
-    //       @start_tok, @interpolate = TYPES[str_type]
-    //       @start_delim = DELIMITERS.include?(delimiter) ? delimiter : nil
-    //       @end_delim   = DELIMITERS.fetch(delimiter, delimiter)
+        //       @dedent_body   = dedent_body
+        //       @dedent_level  = nil
 
-    //       @heredoc_e     = heredoc_e
-    //       @indent        = indent
-    //       @label_allowed = label_allowed
+        //       @space_emitted = true
 
-    //       @dedent_body   = dedent_body
-    //       @dedent_level  = nil
+        //       # Monolithic strings are glued into a single token, e.g.
+        //       # tSTRING_BEG tSTRING_CONTENT tSTRING_END -> tSTRING.
+        //       @monolithic  = (@start_tok == :tSTRING_BEG  &&
+        //                       %w(' ").include?(str_type) &&
+        //                       !heredoc?)
 
-    //       @interp_braces = 0
+        //       # Capture opening delimiter in percent-literals.
+        //       @str_type += delimiter if @str_type.start_with?('%'.freeze)
 
-    //       @space_emitted = true
+        //       clear_buffer
 
-    //       # Monolithic strings are glued into a single token, e.g.
-    //       # tSTRING_BEG tSTRING_CONTENT tSTRING_END -> tSTRING.
-    //       @monolithic  = (@start_tok == :tSTRING_BEG  &&
-    //                       %w(' ").include?(str_type) &&
-    //                       !heredoc?)
+        //       emit_start_tok unless @monolithic
 
-    //       # Capture opening delimiter in percent-literals.
-    //       @str_type += delimiter if @str_type.start_with?('%'.freeze)
-
-    //       clear_buffer
-
-    //       emit_start_tok unless @monolithic
-    //     end
-    pub fn new() -> Literal {
         Literal {
+            nesting: 1,
+
+            str_type,
+            str_s,
+
             interp_braces: 0
         }
     }
@@ -273,54 +290,63 @@ impl Literal {
 }
 
 impl Lexer {
-//   def push_literal(*args)
-//     new_literal = Literal.new(self, *args)
-//     @literal_stack.push(new_literal)
+    //   def push_literal(*args)
+    //     new_literal = Literal.new(self, *args)
+    //     @literal_stack.push(new_literal)
 
-//     if new_literal.words? && new_literal.backslash_delimited?
-//       if new_literal.interpolate?
-//         self.class.lex_en_interp_backslash_delimited_words
-//       else
-//         self.class.lex_en_plain_backslash_delimited_words
-//       end
-//     elsif new_literal.words? && !new_literal.backslash_delimited?
-//       if new_literal.interpolate?
-//         self.class.lex_en_interp_words
-//       else
-//         self.class.lex_en_plain_words
-//       end
-//     elsif !new_literal.words? && new_literal.backslash_delimited?
-//       if new_literal.interpolate?
-//         self.class.lex_en_interp_backslash_delimited
-//       else
-//         self.class.lex_en_plain_backslash_delimited
-//       end
-//     else
-//       if new_literal.interpolate?
-//         self.class.lex_en_interp_string
-//       else
-//         self.class.lex_en_plain_string
-//       end
-//     end
-//   end
+    //     if new_literal.words? && new_literal.backslash_delimited?
+    //       if new_literal.interpolate?
+    //         self.class.lex_en_interp_backslash_delimited_words
+    //       else
+    //         self.class.lex_en_plain_backslash_delimited_words
+    //       end
+    //     elsif new_literal.words? && !new_literal.backslash_delimited?
+    //       if new_literal.interpolate?
+    //         self.class.lex_en_interp_words
+    //       else
+    //         self.class.lex_en_plain_words
+    //       end
+    //     elsif !new_literal.words? && new_literal.backslash_delimited?
+    //       if new_literal.interpolate?
+    //         self.class.lex_en_interp_backslash_delimited
+    //       else
+    //         self.class.lex_en_plain_backslash_delimited
+    //       end
+    //     else
+    //       if new_literal.interpolate?
+    //         self.class.lex_en_interp_string
+    //       else
+    //         self.class.lex_en_plain_string
+    //       end
+    //     end
+    //   end
+    // 
+    // TODO INCOMPLETE
+    // 
+    // usually being called as `fgoto *push_literal`, implying it returns a state
+    pub fn push_literal(&mut self, literal: Literal) -> LexingState {
+        self.literal_stack.push(literal.clone());
 
-//   def literal
-//     @literal_stack.last
-//   end
+        state!("plain_string")
+    }
+
+    //   def literal
+    //     @literal_stack.last
+    //   end
     pub fn literal(&mut self) -> Option<&mut Literal> { self.literal_stack.last_mut() }
 
-//   def pop_literal
-//     old_literal = @literal_stack.pop
+    //   def pop_literal
+    //     old_literal = @literal_stack.pop
 
-//     @dedent_level = old_literal.dedent_level
+    //     @dedent_level = old_literal.dedent_level
 
-//     if old_literal.type == :tREGEXP_BEG
-//       # Fetch modifiers.
-//       self.class.lex_en_regexp_modifiers
-//     elsif @version < 24
-//       self.class.lex_en_expr_end
-//     else
-//       self.class.lex_en_expr_endarg
-//     end
-//   end
+    //     if old_literal.type == :tREGEXP_BEG
+    //       # Fetch modifiers.
+    //       self.class.lex_en_regexp_modifiers
+    //     elsif @version < 24
+    //       self.class.lex_en_expr_end
+    //     else
+    //       self.class.lex_en_expr_endarg
+    //     end
+    //   end
 }

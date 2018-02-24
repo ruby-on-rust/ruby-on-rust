@@ -6,6 +6,8 @@
 %type T_LABLE { TokenString }
 %type T_IVAR { TokenString }
 %type T_FID { TokenString }
+%type T_UNARY_NUM { TokenString }
+%type T_SYMBOL { TokenString }
 
 %include {
 

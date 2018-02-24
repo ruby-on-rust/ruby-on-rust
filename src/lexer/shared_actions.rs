@@ -41,7 +41,6 @@ pub fn construct() -> TSharedActions {
     //   @cond.push(false); @cmdarg.push(false)
     //   @paren_nest += 1
     // };
-
     action!("e_lparen", |lexer: &mut Lexer| {
         lexer.cond.push(false);
         lexer.cmdarg.push(false);
@@ -70,6 +69,20 @@ pub fn construct() -> TSharedActions {
             }
             None => ()
         };
+    });
+
+    // # Ruby is context-sensitive wrt/ local identifiers.
+    // action local_ident {
+    //     emit(:tIDENTIFIER)
+
+    //     if !@static_env.nil? && @static_env.declared?(tok)
+    //     fnext expr_endfn; fbreak;
+    //     else
+    //     fnext *arg_or_cmdarg; fbreak;
+    //     end
+    // }
+    action!("local_ident", |lexer: &mut Lexer| {
+        panic!("UNIMPL");
     });
 
     actions

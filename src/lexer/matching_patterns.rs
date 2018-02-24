@@ -464,6 +464,10 @@ pub fn construct() -> TMatchingPatterns {
     //     ;
     pattern!("w_any", r"[ \t\r\f\v]+"); // TODO INCOMPLETE
 
+    // TODO NOT CORRESPONDING
+    // NOTE cant combine current `w_any` with `*`, since it ends with `+`
+    pattern!("w_any_*", r"[ \t\r\f\v]*");
+
     //   #
     //   # === EXPRESSION PARSING ===
     //   #
@@ -503,6 +507,8 @@ pub fn construct() -> TMatchingPatterns {
     // e_lbrack = '[' % {
     //     @cond.push(false); @cmdarg.push(false)
     // };
+    // NOTE embedded action moved to shared_actions
+    pattern!("e_lbrack", r"\[");
 
     // # Ruby 1.9 lambdas require parentheses counting in order to
     // # emit correct opening kDO/tLBRACE.
@@ -512,22 +518,12 @@ pub fn construct() -> TMatchingPatterns {
 
     //     @paren_nest += 1
     // };
+    // NOTE embedded action moved to shared_actions
     pattern!("e_lparen", r"\(");
 
     // e_rparen = ')' % {
     //     @paren_nest -= 1
     // };
-
-    // # Ruby is context-sensitive wrt/ local identifiers.
-    // action local_ident {
-    //     emit(:tIDENTIFIER)
-
-    //     if !@static_env.nil? && @static_env.declared?(tok)
-    //     fnext expr_endfn; fbreak;
-    //     else
-    //     fnext *arg_or_cmdarg; fbreak;
-    //     end
-    // }
 
     (pattern_literals, patterns)
 }
