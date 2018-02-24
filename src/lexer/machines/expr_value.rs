@@ -1,33 +1,18 @@
-// # Like expr_beg, but no 1.9 label or 2.2 quoted label possible.
-// #
-// expr_value := |*
-//     # a:b: a(:b), a::B, A::B
-//     label (any - ':')
-//     => { p = @ts - 1
-//          fgoto expr_end; };
+// TRACKER
+//     DONE
 
-//     # "bar", 'baz'
-//     ['"] # '
-//     => {
-//       fgoto *push_literal(tok, tok, @ts);
-//     };
+//   # Like expr_beg, but no 1.9 label or 2.2 quoted label possible.
 
-//     w_space_comment;
-
-//     w_newline
-//     => { fgoto line_begin; };
-
-//     c_any
-//     => { fhold; fgoto expr_beg; };
-
-//     c_eof => do_eof;
-// *|;
+use regex::Regex;
 
 use lexer::Lexer;
 use lexer::LexingState;
 use lexer::action::{Action};
 use lexer::matching_patterns::TMatchingPatterns;
 use lexer::shared_actions::TSharedActions;
+use lexer::literal::Literal;
+
+use parser::parser::Token;
 
 pub fn construct_machine_expr_value( patterns: &TMatchingPatterns, shared_actions: &TSharedActions ) -> Vec<Box<Action>> {
     let (pattern_literals, pattern_regexs) = (*patterns).clone();
@@ -35,9 +20,15 @@ pub fn construct_machine_expr_value( patterns: &TMatchingPatterns, shared_action
     macro_rules! action {
         ($pattern_name:expr, $procedure:expr) => {
             box Action {
-                regex: pattern_regexs.get($pattern_name).expect(&format!("no matching_pattern: {:?}", $pattern_name)).clone(), // TODO clone?
+                regex: pattern_regexs.get($pattern_name).expect(&format!("no matching_pattern: {:?}", $pattern_name)).clone(),
                 procedure: $procedure
             }
+        };
+    }
+
+    macro_rules! pattern_lit {
+        ($pattern_name:expr) => {
+            pattern_literals.get($pattern_name).unwrap()
         };
     }
 
@@ -48,17 +39,52 @@ pub fn construct_machine_expr_value( patterns: &TMatchingPatterns, shared_action
     }
 
     vec![
+
+        //       # a:b: a(:b), a::B, A::B
+        //       label (any - ':')
+        //       => { p = @ts - 1
+        //            fgoto expr_end; };
+        action_with_literal!(
+            format!(r"{}[^:]", pattern_lit!("label")),
+            |lexer: &mut Lexer| {
+                lexer.input_stream.hold_current_token();
+                lexer.push_next_state(state!("expr_end"));
+            }
+        ),
+
+        //       # "bar", 'baz'
+        //       ['"] # '
+        //       => {
+        //         fgoto *push_literal(tok, tok, @ts);
+        //       };
+        action_with_literal!(
+            "['\"]",
+            |lexer: &mut Lexer| {
+                let lit_type = lexer.input_stream.current_token().unwrap();
+                let lit_delimiter = lexer.input_stream.current_token().unwrap();
+
+                let literal = Literal::new( lit_type, lit_delimiter, lexer.input_stream.ts.unwrap() );
+
+                let next_state = lexer.push_literal(literal);
+                lexer.push_next_state(next_state);
+            }
+        ),
+
+        //       w_space_comment;
         action!("w_space_comment", get_shared_action!("noop")),
 
-        // original action for c_any
-        action!("c_any", |lexer: &mut Lexer| {
-            println!("action invoked for c_any");
+        //       w_newline
+        //       => { fgoto line_begin; };
+        action!("w_newline", |lexer: &mut Lexer| { lexer.push_next_state(state!("line_begin")); }),
 
+        //       c_any
+        //       => { fhold; fgoto expr_beg; };
+        action!("c_any", |lexer: &mut Lexer| {
             lexer.input_stream.hold_current_char();
             lexer.push_next_state(state!("expr_beg"));
         }),
 
-        // TODO
-        // original action for eof
+        //   c_eof => do_eof;
+        action!("c_eof", get_shared_action!("do_eof")),
     ]
 }
