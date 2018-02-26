@@ -50,6 +50,9 @@ pub fn construct() -> TSharedActions {
     // e_rparen = ')' % {
     //   @paren_nest -= 1
     // };
+    action!("e_rparen", |lexer: &mut Lexer| {
+        lexer.paren_nest -= 1;
+    });
 
     //   e_lbrace = '{' % {
     //     @cond.push(false); @cmdarg.push(false)
@@ -69,6 +72,30 @@ pub fn construct() -> TSharedActions {
             }
             None => ()
         };
+    });
+
+    //   e_rbrace = '}' % {
+    //     current_literal = literal
+    //     if current_literal
+    //       if current_literal.end_interp_brace_and_try_closing
+    //         if version?(18, 19)
+    //           emit(:tRCURLY, '}'.freeze, p - 1, p)
+    //         else
+    //           emit(:tSTRING_DEND, '}'.freeze, p - 1, p)
+    //         end
+
+    //         if current_literal.saved_herebody_s
+    //           @herebody_s = current_literal.saved_herebody_s
+    //         end
+
+    //         fhold;
+    //         fnext *stack_pop;
+    //         fbreak;
+    //       end
+    //     end
+    //   };
+    action!("e_rbrace", |lexer: &mut Lexer| {
+        panic!("UNIMPL");
     });
 
     // # Ruby is context-sensitive wrt/ local identifiers.

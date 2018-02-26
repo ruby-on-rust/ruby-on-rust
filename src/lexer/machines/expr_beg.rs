@@ -227,7 +227,9 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
         // TODO UNIMPL
         // 
         action_with_literal!(
-            format!(":{}{}", pattern_lit!("bareword"), pattern_lit!("ambiguous_symbol_suffix")),
+            // TODO DUMMY
+            // format!(":{}{}", pattern_lit!("bareword"), pattern_lit!("ambiguous_symbol_suffix")),
+            format!(":{}", pattern_lit!("bareword")),
             |lexer: &mut Lexer| {
                 panic!("TODO");
             }
@@ -368,7 +370,7 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
         //       punctuation_begin
         //       => { emit_table(PUNCTUATION_BEGIN)
         //            fbreak; };
-        action!("puncuation_begin", |lexer: &mut Lexer| {
+        action!("punctuation_begin", |lexer: &mut Lexer| {
             lexer.emit_token_from_table("puncuation_begin");
             lexer.flag_breaking();
         }),

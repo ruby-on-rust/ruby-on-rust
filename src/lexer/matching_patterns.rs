@@ -477,6 +477,8 @@ pub fn construct() -> TMatchingPatterns {
     //       end
     //     end
     //   };
+    // NOTE embedded action moved to shared_actions
+    pattern!("e_rbrace", r"\}");
 
     //   action extend_interp_code {
     //     current_literal = literal
@@ -706,6 +708,8 @@ pub fn construct() -> TMatchingPatterns {
     // e_rparen = ')' % {
     //     @paren_nest -= 1
     // };
+    // NOTE embedded action moved to shared_actions
+    pattern!("e_rparen", r"\(");
 
     (pattern_literals, patterns)
 }

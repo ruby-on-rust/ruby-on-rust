@@ -128,7 +128,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //            emit(:tLSHFT, '<<'.freeze,    @te - 2, @te)
         //            fnext expr_value; fbreak; };
         action_with_literal!(
-            format!(r"class{}<<", pattern_lit!("w_any_star")),
+            format!(r"class{}<<", pattern_lit!("w_any_*")),
             |lexer: &mut Lexer| {
                 lexer.emit_token(Token::K_CLASS);
                 lexer.emit_token(Token::T_LSHFT); // TODO originally has value `<<`
