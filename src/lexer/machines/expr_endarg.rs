@@ -1,6 +1,3 @@
-// TRACKER
-//   DONE
-
 // # The rationale for this state is pretty complex. Normally, if an argument
 // # is passed to a command and then there is a block (tLCURLY...tRCURLY),
 // # the block is attached to the innermost argument (`f` in `m f {}`), or it

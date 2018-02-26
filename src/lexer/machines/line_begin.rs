@@ -1,6 +1,3 @@
-// TRACKER
-//   DONE
-
 use regex::Regex;
 
 use lexer::Lexer;

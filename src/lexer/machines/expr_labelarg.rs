@@ -1,6 +1,3 @@
-// TRACKER
-//     DONE
-
 // # Special newline handling for "def a b:"
 
 use regex::Regex;

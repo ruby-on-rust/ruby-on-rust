@@ -1,6 +1,3 @@
-// TRACKER
-//   DONE
-
 // # Literal function name in method call (e.g. `a.class`).
 // #
 // # Transitions to `expr_arg` afterwards.

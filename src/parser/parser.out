@@ -91,6 +91,7 @@ State 0:
           input ::= * T_MATCH
           input ::= * T_MINUS
           input ::= * T_NEQ
+          input ::= * T_NL
           input ::= * T_NMATCH
           input ::= * T_OROP
           input ::= * T_OP_ASGN
@@ -109,98 +110,99 @@ State 0:
           input ::= * T_UMINUS
           input ::= * T_UPLUS
 
-                     T_INTEGER shift  109
-                       K_ALIAS shift  108
-                         K_AND shift  107
-                       K_BEGIN shift  106
-                       K_BREAK shift  105
-                        K_CASE shift  104
-                       K_CLASS shift  103
-                         K_DEF shift  102
-                     K_DEFINED shift  101
-                          K_DO shift  100
-                    K_DO_BLOCK shift  99
-                     K_DO_COND shift  98
-                   K_DO_LAMBDA shift  97
-                        K_ELSE shift  96
-                       K_ELSIF shift  95
-                         K_END shift  94
-                      K_ENSURE shift  93
-                       K_FALSE shift  92
-                         K_FOR shift  91
-                          K_IF shift  90
-                      K_IF_MOD shift  89
-                          K_IN shift  88
-                      K_LBEGIN shift  87
-                        K_LEND shift  86
-                      K_MODULE shift  85
-                        K_NEXT shift  84
-                         K_NIL shift  83
-                         K_NOT shift  82
-                          K_OR shift  81
-                        K_REDO shift  80
-                      K_RESCUE shift  79
-                  K_RESCUE_MOD shift  78
-                       K_RETRY shift  77
-                      K_RETURN shift  76
-                        K_SELF shift  75
-                       K_SUPER shift  74
-                        K_THEN shift  73
-                        K_TRUE shift  72
-                       K_UNDEF shift  71
-                      K_UNLESS shift  70
-                  K_UNLESS_MOD shift  69
-                       K_UNTIL shift  68
-                   K_UNTIL_MOD shift  67
-                        K_WHEN shift  66
-                       K_WHILE shift  65
-                   K_WHILE_MOD shift  64
-                       K_YIELD shift  63
-                 K__ENCODING__ shift  62
-                     K__FILE__ shift  61
-                     K__LINE__ shift  60
-                       T_AMPER shift  59
-                      T_AMPER2 shift  58
-                      T_ANDDOT shift  57
-                       T_ANDOP shift  56
-                        T_AREF shift  55
-                        T_ASET shift  54
-                       T_ASSOC shift  53
-                   T_BACK_REF2 shift  52
-                        T_BANG shift  51
-                       T_CARET shift  50
-                         T_CMP shift  49
-                       T_COLON shift  48
-                      T_COLON2 shift  47
-                      T_COLON3 shift  46
-                       T_COMMA shift  45
-                      T_DIVIDE shift  44
-                         T_DOT shift  43
-                        T_DOT2 shift  42
-                        T_DOT3 shift  41
-                       T_DSTAR shift  40
-                          T_EH shift  39
-                          T_EQ shift  38
-                         T_EQL shift  37
-                         T_EQQ shift  36
-                         T_GEQ shift  35
-                          T_GT shift  34
-                      T_LAMBEG shift  33
-                      T_LAMBDA shift  32
-                      T_LBRACE shift  31
-                  T_LBRACE_ARG shift  30
-                      T_LBRACK shift  29
-                     T_LBRACK2 shift  28
-                      T_LCURLY shift  27
-                         T_LEQ shift  26
-                      T_LPAREN shift  25
-                     T_LPAREN2 shift  24
-                  T_LPAREN_ARG shift  23
-                       T_LSHFT shift  22
-                          T_LT shift  21
-                       T_MATCH shift  20
-                       T_MINUS shift  19
-                         T_NEQ shift  18
+                     T_INTEGER shift  110
+                       K_ALIAS shift  109
+                         K_AND shift  108
+                       K_BEGIN shift  107
+                       K_BREAK shift  106
+                        K_CASE shift  105
+                       K_CLASS shift  104
+                         K_DEF shift  103
+                     K_DEFINED shift  102
+                          K_DO shift  101
+                    K_DO_BLOCK shift  100
+                     K_DO_COND shift  99
+                   K_DO_LAMBDA shift  98
+                        K_ELSE shift  97
+                       K_ELSIF shift  96
+                         K_END shift  95
+                      K_ENSURE shift  94
+                       K_FALSE shift  93
+                         K_FOR shift  92
+                          K_IF shift  91
+                      K_IF_MOD shift  90
+                          K_IN shift  89
+                      K_LBEGIN shift  88
+                        K_LEND shift  87
+                      K_MODULE shift  86
+                        K_NEXT shift  85
+                         K_NIL shift  84
+                         K_NOT shift  83
+                          K_OR shift  82
+                        K_REDO shift  81
+                      K_RESCUE shift  80
+                  K_RESCUE_MOD shift  79
+                       K_RETRY shift  78
+                      K_RETURN shift  77
+                        K_SELF shift  76
+                       K_SUPER shift  75
+                        K_THEN shift  74
+                        K_TRUE shift  73
+                       K_UNDEF shift  72
+                      K_UNLESS shift  71
+                  K_UNLESS_MOD shift  70
+                       K_UNTIL shift  69
+                   K_UNTIL_MOD shift  68
+                        K_WHEN shift  67
+                       K_WHILE shift  66
+                   K_WHILE_MOD shift  65
+                       K_YIELD shift  64
+                 K__ENCODING__ shift  63
+                     K__FILE__ shift  62
+                     K__LINE__ shift  61
+                       T_AMPER shift  60
+                      T_AMPER2 shift  59
+                      T_ANDDOT shift  58
+                       T_ANDOP shift  57
+                        T_AREF shift  56
+                        T_ASET shift  55
+                       T_ASSOC shift  54
+                   T_BACK_REF2 shift  53
+                        T_BANG shift  52
+                       T_CARET shift  51
+                         T_CMP shift  50
+                       T_COLON shift  49
+                      T_COLON2 shift  48
+                      T_COLON3 shift  47
+                       T_COMMA shift  46
+                      T_DIVIDE shift  45
+                         T_DOT shift  44
+                        T_DOT2 shift  43
+                        T_DOT3 shift  42
+                       T_DSTAR shift  41
+                          T_EH shift  40
+                          T_EQ shift  39
+                         T_EQL shift  38
+                         T_EQQ shift  37
+                         T_GEQ shift  36
+                          T_GT shift  35
+                      T_LAMBEG shift  34
+                      T_LAMBDA shift  33
+                      T_LBRACE shift  32
+                  T_LBRACE_ARG shift  31
+                      T_LBRACK shift  30
+                     T_LBRACK2 shift  29
+                      T_LCURLY shift  28
+                         T_LEQ shift  27
+                      T_LPAREN shift  26
+                     T_LPAREN2 shift  25
+                  T_LPAREN_ARG shift  24
+                       T_LSHFT shift  23
+                          T_LT shift  22
+                       T_MATCH shift  21
+                       T_MINUS shift  20
+                         T_NEQ shift  19
+                          T_NL shift  18
                       T_NMATCH shift  17
                         T_OROP shift  16
                      T_OP_ASGN shift  15
@@ -221,546 +223,551 @@ State 0:
                          input accept
 
 State 1:
-    (108) input ::= T_UPLUS *
+    (109) input ::= T_UPLUS *
+
+                             $ reduce 109
+
+State 2:
+    (108) input ::= T_UMINUS *
 
                              $ reduce 108
 
-State 2:
-    (107) input ::= T_UMINUS *
+State 3:
+    (107) input ::= T_TILDE *
 
                              $ reduce 107
 
-State 3:
-    (106) input ::= T_TILDE *
+State 4:
+    (106) input ::= T_STAR2 *
 
                              $ reduce 106
 
-State 4:
-    (105) input ::= T_STAR2 *
+State 5:
+    (105) input ::= T_STAR *
 
                              $ reduce 105
 
-State 5:
-    (104) input ::= T_STAR *
+State 6:
+    (104) input ::= T_SEMI *
 
                              $ reduce 104
 
-State 6:
-    (103) input ::= T_SEMI *
+State 7:
+    (103) input ::= T_RSHFT *
 
                              $ reduce 103
 
-State 7:
-    (102) input ::= T_RSHFT *
+State 8:
+    (102) input ::= T_RPAREN *
 
                              $ reduce 102
 
-State 8:
-    (101) input ::= T_RPAREN *
+State 9:
+    (101) input ::= T_RCURLY *
 
                              $ reduce 101
 
-State 9:
-    (100) input ::= T_RCURLY *
+State 10:
+    (100) input ::= T_RBRACK *
 
                              $ reduce 100
 
-State 10:
-     (99) input ::= T_RBRACK *
+State 11:
+     (99) input ::= T_POW *
 
                              $ reduce 99
 
-State 11:
-     (98) input ::= T_POW *
+State 12:
+     (98) input ::= T_PLUS *
 
                              $ reduce 98
 
-State 12:
-     (97) input ::= T_PLUS *
+State 13:
+     (97) input ::= T_PIPE *
 
                              $ reduce 97
 
-State 13:
-     (96) input ::= T_PIPE *
+State 14:
+     (96) input ::= T_PERCENT *
 
                              $ reduce 96
 
-State 14:
-     (95) input ::= T_PERCENT *
+State 15:
+     (95) input ::= T_OP_ASGN *
 
                              $ reduce 95
 
-State 15:
-     (94) input ::= T_OP_ASGN *
+State 16:
+     (94) input ::= T_OROP *
 
                              $ reduce 94
 
-State 16:
-     (93) input ::= T_OROP *
+State 17:
+     (93) input ::= T_NMATCH *
 
                              $ reduce 93
 
-State 17:
-     (92) input ::= T_NMATCH *
+State 18:
+     (92) input ::= T_NL *
 
                              $ reduce 92
 
-State 18:
+State 19:
      (91) input ::= T_NEQ *
 
                              $ reduce 91
 
-State 19:
+State 20:
      (90) input ::= T_MINUS *
 
                              $ reduce 90
 
-State 20:
+State 21:
      (89) input ::= T_MATCH *
 
                              $ reduce 89
 
-State 21:
+State 22:
      (88) input ::= T_LT *
 
                              $ reduce 88
 
-State 22:
+State 23:
      (87) input ::= T_LSHFT *
 
                              $ reduce 87
 
-State 23:
+State 24:
      (86) input ::= T_LPAREN_ARG *
 
                              $ reduce 86
 
-State 24:
+State 25:
      (85) input ::= T_LPAREN2 *
 
                              $ reduce 85
 
-State 25:
+State 26:
      (84) input ::= T_LPAREN *
 
                              $ reduce 84
 
-State 26:
+State 27:
      (83) input ::= T_LEQ *
 
                              $ reduce 83
 
-State 27:
+State 28:
      (82) input ::= T_LCURLY *
 
                              $ reduce 82
 
-State 28:
+State 29:
      (81) input ::= T_LBRACK2 *
 
                              $ reduce 81
 
-State 29:
+State 30:
      (80) input ::= T_LBRACK *
 
                              $ reduce 80
 
-State 30:
+State 31:
      (79) input ::= T_LBRACE_ARG *
 
                              $ reduce 79
 
-State 31:
+State 32:
      (78) input ::= T_LBRACE *
 
                              $ reduce 78
 
-State 32:
+State 33:
      (77) input ::= T_LAMBDA *
 
                              $ reduce 77
 
-State 33:
+State 34:
      (76) input ::= T_LAMBEG *
 
                              $ reduce 76
 
-State 34:
+State 35:
      (75) input ::= T_GT *
 
                              $ reduce 75
 
-State 35:
+State 36:
      (74) input ::= T_GEQ *
 
                              $ reduce 74
 
-State 36:
+State 37:
      (73) input ::= T_EQQ *
 
                              $ reduce 73
 
-State 37:
+State 38:
      (72) input ::= T_EQL *
 
                              $ reduce 72
 
-State 38:
+State 39:
      (71) input ::= T_EQ *
 
                              $ reduce 71
 
-State 39:
+State 40:
      (70) input ::= T_EH *
 
                              $ reduce 70
 
-State 40:
+State 41:
      (69) input ::= T_DSTAR *
 
                              $ reduce 69
 
-State 41:
+State 42:
      (68) input ::= T_DOT3 *
 
                              $ reduce 68
 
-State 42:
+State 43:
      (67) input ::= T_DOT2 *
 
                              $ reduce 67
 
-State 43:
+State 44:
      (66) input ::= T_DOT *
 
                              $ reduce 66
 
-State 44:
+State 45:
      (65) input ::= T_DIVIDE *
 
                              $ reduce 65
 
-State 45:
+State 46:
      (64) input ::= T_COMMA *
 
                              $ reduce 64
 
-State 46:
+State 47:
      (63) input ::= T_COLON3 *
 
                              $ reduce 63
 
-State 47:
+State 48:
      (62) input ::= T_COLON2 *
 
                              $ reduce 62
 
-State 48:
+State 49:
      (61) input ::= T_COLON *
 
                              $ reduce 61
 
-State 49:
+State 50:
      (60) input ::= T_CMP *
 
                              $ reduce 60
 
-State 50:
+State 51:
      (59) input ::= T_CARET *
 
                              $ reduce 59
 
-State 51:
+State 52:
      (58) input ::= T_BANG *
 
                              $ reduce 58
 
-State 52:
+State 53:
      (57) input ::= T_BACK_REF2 *
 
                              $ reduce 57
 
-State 53:
+State 54:
      (56) input ::= T_ASSOC *
 
                              $ reduce 56
 
-State 54:
+State 55:
      (55) input ::= T_ASET *
 
                              $ reduce 55
 
-State 55:
+State 56:
      (54) input ::= T_AREF *
 
                              $ reduce 54
 
-State 56:
+State 57:
      (53) input ::= T_ANDOP *
 
                              $ reduce 53
 
-State 57:
+State 58:
      (52) input ::= T_ANDDOT *
 
                              $ reduce 52
 
-State 58:
+State 59:
      (51) input ::= T_AMPER2 *
 
                              $ reduce 51
 
-State 59:
+State 60:
      (50) input ::= T_AMPER *
 
                              $ reduce 50
 
-State 60:
+State 61:
      (49) input ::= K__LINE__ *
 
                              $ reduce 49
 
-State 61:
+State 62:
      (48) input ::= K__FILE__ *
 
                              $ reduce 48
 
-State 62:
+State 63:
      (47) input ::= K__ENCODING__ *
 
                              $ reduce 47
 
-State 63:
+State 64:
      (46) input ::= K_YIELD *
 
                              $ reduce 46
 
-State 64:
+State 65:
      (45) input ::= K_WHILE_MOD *
 
                              $ reduce 45
 
-State 65:
+State 66:
      (44) input ::= K_WHILE *
 
                              $ reduce 44
 
-State 66:
+State 67:
      (43) input ::= K_WHEN *
 
                              $ reduce 43
 
-State 67:
+State 68:
      (42) input ::= K_UNTIL_MOD *
 
                              $ reduce 42
 
-State 68:
+State 69:
      (41) input ::= K_UNTIL *
 
                              $ reduce 41
 
-State 69:
+State 70:
      (40) input ::= K_UNLESS_MOD *
 
                              $ reduce 40
 
-State 70:
+State 71:
      (39) input ::= K_UNLESS *
 
                              $ reduce 39
 
-State 71:
+State 72:
      (38) input ::= K_UNDEF *
 
                              $ reduce 38
 
-State 72:
+State 73:
      (37) input ::= K_TRUE *
 
                              $ reduce 37
 
-State 73:
+State 74:
      (36) input ::= K_THEN *
 
                              $ reduce 36
 
-State 74:
+State 75:
      (35) input ::= K_SUPER *
 
                              $ reduce 35
 
-State 75:
+State 76:
      (34) input ::= K_SELF *
 
                              $ reduce 34
 
-State 76:
+State 77:
      (33) input ::= K_RETURN *
 
                              $ reduce 33
 
-State 77:
+State 78:
      (32) input ::= K_RETRY *
 
                              $ reduce 32
 
-State 78:
+State 79:
      (31) input ::= K_RESCUE_MOD *
 
                              $ reduce 31
 
-State 79:
+State 80:
      (30) input ::= K_RESCUE *
 
                              $ reduce 30
 
-State 80:
+State 81:
      (29) input ::= K_REDO *
 
                              $ reduce 29
 
-State 81:
+State 82:
      (28) input ::= K_OR *
 
                              $ reduce 28
 
-State 82:
+State 83:
      (27) input ::= K_NOT *
 
                              $ reduce 27
 
-State 83:
+State 84:
      (26) input ::= K_NIL *
 
                              $ reduce 26
 
-State 84:
+State 85:
      (25) input ::= K_NEXT *
 
                              $ reduce 25
 
-State 85:
+State 86:
      (24) input ::= K_MODULE *
 
                              $ reduce 24
 
-State 86:
+State 87:
      (23) input ::= K_LEND *
 
                              $ reduce 23
 
-State 87:
+State 88:
      (22) input ::= K_LBEGIN *
 
                              $ reduce 22
 
-State 88:
+State 89:
      (21) input ::= K_IN *
 
                              $ reduce 21
 
-State 89:
+State 90:
      (20) input ::= K_IF_MOD *
 
                              $ reduce 20
 
-State 90:
+State 91:
      (19) input ::= K_IF *
 
                              $ reduce 19
 
-State 91:
+State 92:
      (18) input ::= K_FOR *
 
                              $ reduce 18
 
-State 92:
+State 93:
      (17) input ::= K_FALSE *
 
                              $ reduce 17
 
-State 93:
+State 94:
      (16) input ::= K_ENSURE *
 
                              $ reduce 16
 
-State 94:
+State 95:
      (15) input ::= K_END *
 
                              $ reduce 15
 
-State 95:
+State 96:
      (14) input ::= K_ELSIF *
 
                              $ reduce 14
 
-State 96:
+State 97:
      (13) input ::= K_ELSE *
 
                              $ reduce 13
 
-State 97:
+State 98:
      (12) input ::= K_DO_LAMBDA *
 
                              $ reduce 12
 
-State 98:
+State 99:
      (11) input ::= K_DO_COND *
 
                              $ reduce 11
 
-State 99:
+State 100:
      (10) input ::= K_DO_BLOCK *
 
                              $ reduce 10
 
-State 100:
+State 101:
       (9) input ::= K_DO *
 
                              $ reduce 9
 
-State 101:
+State 102:
       (8) input ::= K_DEFINED *
 
                              $ reduce 8
 
-State 102:
+State 103:
       (7) input ::= K_DEF *
 
                              $ reduce 7
 
-State 103:
+State 104:
       (6) input ::= K_CLASS *
 
                              $ reduce 6
 
-State 104:
+State 105:
       (5) input ::= K_CASE *
 
                              $ reduce 5
 
-State 105:
+State 106:
       (4) input ::= K_BREAK *
 
                              $ reduce 4
 
-State 106:
+State 107:
       (3) input ::= K_BEGIN *
 
                              $ reduce 3
 
-State 107:
+State 108:
       (2) input ::= K_AND *
 
                              $ reduce 2
 
-State 108:
+State 109:
       (1) input ::= K_ALIAS *
 
                              $ reduce 1
 
-State 109:
+State 110:
       (0) input ::= T_INTEGER *
 
                              $ reduce 0
@@ -868,22 +875,23 @@ Symbols:
    98: T_MATCH
    99: T_MINUS
   100: T_NEQ
-  101: T_NMATCH
-  102: T_OROP
-  103: T_OP_ASGN
-  104: T_PERCENT
-  105: T_PIPE
-  106: T_PLUS
-  107: T_POW
-  108: T_RBRACK
-  109: T_RCURLY
-  110: T_RPAREN
-  111: T_RSHFT
-  112: T_SEMI
-  113: T_STAR
-  114: T_STAR2
-  115: T_TILDE
-  116: T_UMINUS
-  117: T_UPLUS
-  118: error:
-  119: input: T_INTEGER K_ALIAS K_AND K_BEGIN K_BREAK K_CASE K_CLASS K_DEF K_DEFINED K_DO K_DO_BLOCK K_DO_COND K_DO_LAMBDA K_ELSE K_ELSIF K_END K_ENSURE K_FALSE K_FOR K_IF K_IF_MOD K_IN K_LBEGIN K_LEND K_MODULE K_NEXT K_NIL K_NOT K_OR K_REDO K_RESCUE K_RESCUE_MOD K_RETRY K_RETURN K_SELF K_SUPER K_THEN K_TRUE K_UNDEF K_UNLESS K_UNLESS_MOD K_UNTIL K_UNTIL_MOD K_WHEN K_WHILE K_WHILE_MOD K_YIELD K__ENCODING__ K__FILE__ K__LINE__ T_AMPER T_AMPER2 T_ANDDOT T_ANDOP T_AREF T_ASET T_ASSOC T_BACK_REF2 T_BANG T_CARET T_CMP T_COLON T_COLON2 T_COLON3 T_COMMA T_DIVIDE T_DOT T_DOT2 T_DOT3 T_DSTAR T_EH T_EQ T_EQL T_EQQ T_GEQ T_GT T_LAMBEG T_LAMBDA T_LBRACE T_LBRACE_ARG T_LBRACK T_LBRACK2 T_LCURLY T_LEQ T_LPAREN T_LPAREN2 T_LPAREN_ARG T_LSHFT T_LT T_MATCH T_MINUS T_NEQ T_NMATCH T_OROP T_OP_ASGN T_PERCENT T_PIPE T_PLUS T_POW T_RBRACK T_RCURLY T_RPAREN T_RSHFT T_SEMI T_STAR T_STAR2 T_TILDE T_UMINUS T_UPLUS
+  101: T_NL
+  102: T_NMATCH
+  103: T_OROP
+  104: T_OP_ASGN
+  105: T_PERCENT
+  106: T_PIPE
+  107: T_PLUS
+  108: T_POW
+  109: T_RBRACK
+  110: T_RCURLY
+  111: T_RPAREN
+  112: T_RSHFT
+  113: T_SEMI
+  114: T_STAR
+  115: T_STAR2
+  116: T_TILDE
+  117: T_UMINUS
+  118: T_UPLUS
+  119: error:
+  120: input: T_INTEGER K_ALIAS K_AND K_BEGIN K_BREAK K_CASE K_CLASS K_DEF K_DEFINED K_DO K_DO_BLOCK K_DO_COND K_DO_LAMBDA K_ELSE K_ELSIF K_END K_ENSURE K_FALSE K_FOR K_IF K_IF_MOD K_IN K_LBEGIN K_LEND K_MODULE K_NEXT K_NIL K_NOT K_OR K_REDO K_RESCUE K_RESCUE_MOD K_RETRY K_RETURN K_SELF K_SUPER K_THEN K_TRUE K_UNDEF K_UNLESS K_UNLESS_MOD K_UNTIL K_UNTIL_MOD K_WHEN K_WHILE K_WHILE_MOD K_YIELD K__ENCODING__ K__FILE__ K__LINE__ T_AMPER T_AMPER2 T_ANDDOT T_ANDOP T_AREF T_ASET T_ASSOC T_BACK_REF2 T_BANG T_CARET T_CMP T_COLON T_COLON2 T_COLON3 T_COMMA T_DIVIDE T_DOT T_DOT2 T_DOT3 T_DSTAR T_EH T_EQ T_EQL T_EQQ T_GEQ T_GT T_LAMBEG T_LAMBDA T_LBRACE T_LBRACE_ARG T_LBRACK T_LBRACK2 T_LCURLY T_LEQ T_LPAREN T_LPAREN2 T_LPAREN_ARG T_LSHFT T_LT T_MATCH T_MINUS T_NEQ T_NL T_NMATCH T_OROP T_OP_ASGN T_PERCENT T_PIPE T_PLUS T_POW T_RBRACK T_RCURLY T_RPAREN T_RSHFT T_SEMI T_STAR T_STAR2 T_TILDE T_UMINUS T_UPLUS

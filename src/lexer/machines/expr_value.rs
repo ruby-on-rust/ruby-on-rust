@@ -1,6 +1,3 @@
-// TRACKER
-//     DONE
-
 //   # Like expr_beg, but no 1.9 label or 2.2 quoted label possible.
 
 use regex::Regex;

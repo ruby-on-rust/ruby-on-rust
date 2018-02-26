@@ -1,6 +1,3 @@
-// TRACKER
-//   DONE
-
 // # The previous token was an identifier which was seen while in the
 // # command mode (that is, the state at the beginning of #advance was
 // # expr_value). This state is very similar to expr_arg, but disambiguates

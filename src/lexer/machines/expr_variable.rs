@@ -1,6 +1,3 @@
-// TRACKER
-//   INCOMPLETE
-
 // # Variable lexing code is accessed from both expressions and
 // # string interpolation related code.
 

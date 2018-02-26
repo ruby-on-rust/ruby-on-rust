@@ -127,6 +127,7 @@ input ::= T_LT.
 input ::= T_MATCH.
 input ::= T_MINUS.
 input ::= T_NEQ.
+input ::= T_NL.
 input ::= T_NMATCH.
 input ::= T_OROP.
 input ::= T_OP_ASGN.

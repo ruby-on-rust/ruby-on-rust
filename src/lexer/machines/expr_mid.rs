@@ -1,6 +1,3 @@
-// TRACKER
-//   DONE
-
 // # The rationale for this state is that several keywords accept value
 // # (i.e. should transition to `expr_beg`), do not accept it like a command
 // # (i.e. not an `expr_arg`), and must behave like a statement, that is,

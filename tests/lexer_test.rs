@@ -15,7 +15,7 @@ fn test_identifier() {
 
     println!("tokens {:?}", tokens);
 
-    assert_eq!(tokens.len().unwrap(), 1);
+    assert_eq!(tokens.len(), 1);
     // TODO
     // assert_eq!(tokens.get(0).unwrap(), &Token::T_IDENTIFIER(TokenString::from("identifier")));
 }

@@ -1,6 +1,3 @@
-// TRACKER
-//   DONE
-
 // # Literal function name in definition (e.g. `def class`).
 // # Keywords are returned as their respective tokens; this is used
 // # to support singleton def `def self.foo`. Global variables are

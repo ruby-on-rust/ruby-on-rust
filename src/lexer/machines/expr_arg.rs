@@ -1,6 +1,3 @@
-// TRACKER
-//   DONE
-
 // # The previous token emitted was a `tIDENTIFIER` or `tFID`; no space
 // # is consumed; the current expression is a command or method call.
 // #
