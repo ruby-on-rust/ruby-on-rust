@@ -2,6 +2,8 @@ use std::collections::HashMap;
 
 use parser::parser::Token;
 
+use shared::static_env::StaticEnv;
+
 #[macro_use]
 mod lexing_state;      use self::lexing_state::LexingState;
 #[macro_use]
@@ -43,6 +45,8 @@ pub struct Lexer {
     // # True at the end of "def foo a:"
     in_kwarg: bool,
 
+    static_env: Option<StaticEnv>,
+
     pub tokens: Vec<Token>,
 }
 
@@ -69,6 +73,8 @@ impl Lexer {
             lambda_stack: vec![],
 
             in_kwarg: false,
+
+            static_env: None,
 
             tokens: Vec::new(),
         }

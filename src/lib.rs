@@ -3,6 +3,7 @@
 
 extern crate regex;
 
+mod shared;
 pub mod lexer;
 pub mod parser;
 // pub use parser::parser::{Parser, Token};

@@ -1,7 +1,10 @@
 use std::collections::HashMap;
 
+use lexer::LexingState;
 use lexer::Lexer;
 use lexer::action::{ActionProc};
+
+use parser::parser::Token;
 
 pub type TSharedActions = HashMap<&'static str, ActionProc>;
 
@@ -109,7 +112,17 @@ pub fn construct() -> TSharedActions {
     //     end
     // }
     action!("local_ident", |lexer: &mut Lexer| {
-        panic!("UNIMPL");
+        let token = Token::T_IDENTIFIER(lexer.input_stream.current_token_string());
+        lexer.emit_token(token);
+
+        if !lexer.static_env.is_none() && lexer.static_env.unwrap().has_declared(lexer.input_stream.current_token().unwrap()) {
+            lexer.push_next_state(state!("expr_endfn"));
+            lexer.flag_breaking();
+        } else {
+            let next_state = lexer.arg_or_cmdarg();
+            lexer.push_next_state(next_state);
+            lexer.flag_breaking();
+        }
     });
 
     actions

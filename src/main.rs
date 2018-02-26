@@ -8,6 +8,8 @@ use std::fs::File;
 
 mod lexer;
 mod parser;
+mod shared;
+
 use parser::parser::{Parser, Token};
 
 fn main() {
