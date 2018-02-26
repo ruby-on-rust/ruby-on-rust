@@ -115,7 +115,14 @@ pub fn construct() -> TSharedActions {
         let token = Token::T_IDENTIFIER(lexer.input_stream.current_token_string());
         lexer.emit_token(token);
 
-        if !lexer.static_env.is_none() && lexer.static_env.unwrap().has_declared(lexer.input_stream.current_token().unwrap()) {
+        let goto_expr_endfn = match lexer.static_env {
+            None => false,
+            Some(ref static_env) => {
+                static_env.has_declared(lexer.input_stream.current_token().unwrap())
+            }
+        };
+
+        if goto_expr_endfn {
             lexer.push_next_state(state!("expr_endfn"));
             lexer.flag_breaking();
         } else {
