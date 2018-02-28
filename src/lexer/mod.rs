@@ -83,8 +83,20 @@ impl Lexer {
     // TODO return Result
     pub fn lex(&mut self) {
         loop {
+            println!("will advance. current p {}", self.input_stream.p);
+
             // TODO advance and advance and advance
             self.advance();
+
+            println!("advanced. current p {}", self.input_stream.p);
+
+            // handle eof
+            if self.input_stream.no_more() {
+                println!("no more, breaking...");
+                self.flag_breaking();
+                break;
+            }
+
         }
     }
 
@@ -100,13 +112,7 @@ impl Lexer {
     fn advance(&mut self) {
         // TODO token queue
 
-        // println!("--- advance ---");
-
-        // TODO HACKING NOT WORKING not the correct way
-        if (self.input_stream.no_more()) {
-            println!("no more..., breaking...");
-            return;
-        }
+        println!("--- advance ---");
 
         // TODO NOTE
         // we're using `states_stack.last()`(top of the stack) as the corresponding to `@cs`(current state)
@@ -140,7 +146,7 @@ impl Lexer {
             let actions = self.machines.get(&state).unwrap().clone();
 
             // find matching action
-            let action= self.input_stream.longest_matching_action(&actions).expect("cant match any action");
+            let action = self.input_stream.longest_matching_action(&actions).expect("cant match any action");
             println!("matched action: {:?}", action.regex);
 
             // invoke proc

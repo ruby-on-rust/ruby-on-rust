@@ -30,7 +30,7 @@ pub fn construct() -> TMatchingPatterns {
     // NATIVE
     // 
 
-    patterns.insert("any", Regex::new(r"(?s)^.").unwrap()); // TODO NOT SURE
+    patterns.insert("any", Regex::new(r"(?s)^").unwrap()); // TODO NOT SURE
     patterns.insert("zlen", Regex::new(r"^$").unwrap()); // TODO REALLY?
 
     // 
@@ -43,13 +43,13 @@ pub fn construct() -> TMatchingPatterns {
     pattern!("c_space", r"[ \t\r\f\v]");
     //   c_space_nl = c_space | c_nl;
     pattern!("c_space_nl", r"[ \n\t\r\f\v]"); // TODO NOT CORRESPONDING
-
     //   c_eof      = 0x04 | 0x1a | 0 | zlen; # ^D, ^Z, \0, EOF
-    pattern!("c_eof", r"\z"); // TODO NOT CORRESPONDING
+    pattern!("c_eof", r"$"); // TODO NOT CORRESPONDING
+
     //   c_eol      = c_nl | c_eof;
     pattern!("c_eol", r"(\n|\z)"); // TODO NOT CORRESPONDING
     //   c_any      = any - c_eof;
-    pattern!("c_any", r"."); // TODO NOT CORRESPONDING
+    pattern!("c_any", r"(?s)."); // TODO NOT CORRESPONDING
 
     //   c_nl_zlen  = c_nl | zlen;
     pattern!("c_nl_zlen", r"\n"); // TODO NOT CORRESPONDING

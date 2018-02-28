@@ -337,6 +337,6 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
         action!("c_any", |lexer: &mut Lexer| { lexer.push_next_state(state!("expr_beg")); }),
 
         //     c_eof => do_eof;
-        action!("w_space", get_shared_action!("do_eof")),
+        action!("c_eof", get_shared_action!("do_eof")),
     ]
 }

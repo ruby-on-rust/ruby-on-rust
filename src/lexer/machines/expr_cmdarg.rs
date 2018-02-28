@@ -93,6 +93,7 @@ pub fn construct_machine_expr_cmdarg( patterns: &TMatchingPatterns, shared_actio
         //       end
         //       fnext expr_value; fbreak;
         //     };
+        // TODO impl w_space_*, since w_space ends with `+`
         action_with_literal!(format!(r"{}*do", pattern_lit!("w_space")), |lexer: &mut Lexer| {
             if lexer.cond.is_active() {
                 lexer.emit_token(Token::K_DO_COND);
@@ -109,8 +110,7 @@ pub fn construct_machine_expr_cmdarg( patterns: &TMatchingPatterns, shared_actio
         //     w_space* label
         //     => { p = @ts - 1
         //           fgoto expr_arg; };
-
-        //     c_eof => do_eof;
+        // TODO use w_space_*
         action_with_literal!(format!(r"({})|({}*{})|({}*{})",
             pattern_lit!("c_any"),
             pattern_lit!("w_space"), pattern_lit!("bareword"),
@@ -120,5 +120,8 @@ pub fn construct_machine_expr_cmdarg( patterns: &TMatchingPatterns, shared_actio
             lexer.input_stream.hold_current_token();
             lexer.push_next_state(LexingState::ExprArg);
         }),
+
+        //     c_eof => do_eof;
+        action!("c_eof", get_shared_action!("do_eof")),
     ]
 }

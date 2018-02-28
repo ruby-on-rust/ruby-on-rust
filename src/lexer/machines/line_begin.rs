@@ -63,6 +63,6 @@ pub fn construct_machine_line_begin( patterns: &TMatchingPatterns, shared_action
         }),
 
         //       c_eof => do_eof;
-        action!("c_nl", get_shared_action!("do_eof")),
+        action!("c_eof", get_shared_action!("do_eof")),
     ]
 }

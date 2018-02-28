@@ -44,19 +44,20 @@ impl InputStream {
 
         // TODO not that elegant, use Option<Action> instead of
         let mut longest_matched_action_i: Option<usize> = None;
-        let mut longest_matched_action_len = 0;
+        let mut longest_matched_action_len = -1; // -1 since there will be matching result with len 0 (c_eof)
         for (i, action) in actions.iter().enumerate() {
 
-            println!("matching action with regex {:?}", &action.regex);
+            // println!("matching action with regex {:?}", &action.regex);
 
             match self.match_action_starting_from_pos(&action.regex) {
                 None => {},
                 Some(len) => {
+                    let len = len as isize;
 
-                    println!("matched something with length: {}", len);
+                    // println!("matched something with length: {}", len);
 
                     if ( len > longest_matched_action_len ) {
-                        longest_matched_action_len = len;
+                        longest_matched_action_len = len as isize;
                         longest_matched_action_i = Some(i);
                     }
                 }
@@ -71,7 +72,7 @@ impl InputStream {
             Some(i) => {
                 // update p, ts, te
                 self.ts = Some(self.p);
-                self.p += longest_matched_action_len;
+                self.p += longest_matched_action_len as usize;
                 self.te = Some(self.p);
 
                 println!("matched token: {:?}", self.current_token() );
@@ -131,14 +132,14 @@ impl InputStream {
     // TODO renaming hold_current_slice
 
     pub fn hold_current_token(&mut self) {
-        println!("\n>>> invoking hold_current_token");
+        // println!("\n>>> invoking hold_current_token");
 
         match ( self.ts, self.te ) {
             ( Some(ts), Some(te) ) => {
                 self.p = ts;
             },
             _ => {
-                println!("    no current token");
+                // println!("    no current token");
             }
         }
     }
@@ -146,11 +147,11 @@ impl InputStream {
     // return matched length, starting from 1
     fn match_action_starting_from_pos(&mut self, regex: &Regex) -> Option<usize> {
 
-        println!("    matching action starting from pos");
+        // println!("    matching action starting from pos");
 
         let sliced_string: String = self.string.chars().skip(self.p).collect();
 
-        println!("    current sliced string: {}, (len: {})\n", sliced_string, sliced_string.len());
+        // println!("    current sliced string: {}, (len: {})\n", sliced_string, sliced_string.len());
 
         let captures = regex.captures(&sliced_string);
         match captures {
