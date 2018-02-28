@@ -14,5 +14,3 @@
 /tmp
 
 /vendor/lemon/lemon_rust
-/src/parser/parser.rs
-/src/parser/parser.out
