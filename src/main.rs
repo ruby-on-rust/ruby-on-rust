@@ -1,4 +1,3 @@
-#![feature(io)]
 #![feature(box_syntax, box_patterns)]
 
 extern crate regex;
