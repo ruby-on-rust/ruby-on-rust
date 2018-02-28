@@ -15,7 +15,7 @@ pub type TokenString = String;
 
 }
 
-%derive_token { Debug, Clone }
+%derive_token { Debug, Clone, PartialEq }
 
 %extra_argument { Option<i64> }
 
