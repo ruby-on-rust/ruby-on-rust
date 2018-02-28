@@ -462,7 +462,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //       '?'
         //       => { emit(:tEH, '?'.freeze)
         //            fnext expr_value; fbreak; };
-        action_with_literal!(r"?", |lexer: &mut Lexer| {
+        action_with_literal!(r"\?", |lexer: &mut Lexer| {
             lexer.emit_token(Token::T_EH);
             lexer.push_next_state(state!("expr_value"));
             lexer.flag_breaking();
