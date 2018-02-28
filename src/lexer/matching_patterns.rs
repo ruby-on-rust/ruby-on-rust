@@ -49,7 +49,7 @@ pub fn construct() -> TMatchingPatterns {
     //   c_eol      = c_nl | c_eof;
     pattern!("c_eol", r"(\n|\z)"); // TODO NOT CORRESPONDING
     //   c_any      = any - c_eof;
-    pattern!("c_any", r"^."); // TODO NOT CORRESPONDING
+    pattern!("c_any", r"."); // TODO NOT CORRESPONDING
 
     //   c_nl_zlen  = c_nl | zlen;
     pattern!("c_nl_zlen", r"\n"); // TODO NOT CORRESPONDING
