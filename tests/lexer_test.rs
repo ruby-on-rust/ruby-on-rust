@@ -1,3 +1,6 @@
+// based on 
+// https://github.com/whitequark/parser/blob/2a73841d6da04a5ab9bd270561165fd766722d43/test/test_lexer.rb
+
 extern crate ruby_on_rust;
 
 use ruby_on_rust::lexer::Lexer;
