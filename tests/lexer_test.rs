@@ -12,12 +12,6 @@ fn test_identifier() {
 
     let mut lexer = Lexer::new(content);
 
-    lexer.lex();
-
-    let tokens = lexer.tokens;
-
-    println!("tokens {:?}", tokens);
-
-    assert_eq!(tokens.len(), 1);
-    assert_eq!(tokens.get(0).unwrap(), &Token::T_IDENTIFIER(TokenString::from("identifier")));
+    let token = lexer.advance().unwrap();
+    assert_eq!(token, Token::T_IDENTIFIER(TokenString::from("identifier")));
 }
