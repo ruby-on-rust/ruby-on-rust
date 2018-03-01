@@ -112,6 +112,8 @@ pub fn construct() -> TSharedActions {
     //     end
     // }
     action!("local_ident", |lexer: &mut Lexer| {
+        println!("shared action local_ident invoked");
+
         let token = Token::T_IDENTIFIER(lexer.input_stream.current_token_string());
         lexer.emit_token(token);
 
