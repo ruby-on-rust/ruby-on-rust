@@ -137,7 +137,13 @@ pub fn construct() -> TMatchingPatterns {
     // keyword             = keyword_with_value | keyword_with_mid |
     //                       keyword_with_end   | keyword_with_arg |
     //                       keyword_with_fname | keyword_modifier ;
-    pattern!("keyword", r"(\[\])|(\[\]=)|`|(-@)|(\+@)|(~@)|(!@)|(&)|(\|)|(&&)|(\|\|)|(\^)|(\+)|(-)|(\*)|(/)|(\*\*)|(~)|(<<)|(>>)|(%)|(if)|(unless)|(while)|(until)|(rescue)|(end)|(self)|(true)|(false)|(retry)|(redo)|(nil)|(BEGIN)|(END)|(__FILE__)|(__LINE__)|(__ENCODING__)|(if)|(unless)|(while)|(until)|(rescue)|(end)|(self)|(true)|(false)|(retry)|(redo)|(nil)|(BEGIN)|(END)|(__FILE__)|(__LINE__)|(__ENCODING__)");
+    // TODO simplify after NLL is online
+    // let _keyword_pattern = format!(r"{}|{}|{}|{}|{}|{}",
+    //     pattern_literals.get("keyword_with_value").unwrap(), pattern_literals.get("keyword_with_mid").unwrap(),
+    //     pattern_literals.get("keyword_with_arg").unwrap(), pattern_literals.get("keyword_with_end").unwrap(),
+    //     pattern_literals.get("keyword_with_fname").unwrap(), pattern_literals.get("keyword_modifier").unwrap()
+    // );
+    pattern!("keyword", "(else)|(case)|(ensure)|(module)|(elsif)|(then)|(for)|(in)|(do)|(when)|(begin)|(class)|(and)|(or)|(rescue)|(return)|(break)|(next)|(end)|(self)|(true)|(false)|(retry)|(redo)|(nil)|(BEGIN)|(END)|(__FILE__)|(__LINE__)|(__ENCODING__)|(yield)|(super)|(not)|(defined?)|(def)|(undef)|(alias)|(if)|(unless)|(while)|(until)|(rescue)");
 
     //   constant       = c_upper c_alnum*;
     pattern!("constant", "[[:upper:]][[:alnum:]]*");

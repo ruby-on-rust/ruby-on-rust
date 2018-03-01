@@ -239,8 +239,18 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //         fbreak;
         //       };
         // 
-        // TODO UNIMPL
+        // TODO IMCOMPLETE
+        //     @num_base stuff
         // 
+        action_with_literal!(
+            format!(r"[1-9][[:digit:]]*_?{}", pattern_lit!("int_dec")),
+            |lexer: &mut Lexer| {
+                // TODO DUMMY
+                let int = lexer.input_stream.current_token().unwrap().parse::<i64>().unwrap();
+                lexer.emit_token(Token::T_INTEGER(int));
+                lexer.flag_breaking();
+            }
+        ),
 
         //       flo_frac flo_pow?
         //       => {

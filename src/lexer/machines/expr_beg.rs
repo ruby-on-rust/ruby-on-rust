@@ -484,6 +484,7 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
         //       punctuation_end            |
         //       c_any
         //       => { p = @ts - 1; fgoto expr_end; };
+        // 
         action_with_literal!(
             format!(r"({}=)|({})|({})|({})",
                 pattern_lit!("operator_arithmetic"),
