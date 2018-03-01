@@ -2,7 +2,7 @@ use regex::Regex;
 
 use lexer::action::Action;
 
-use parser::parser::TokenString;
+use parser::token::TokenString;
 
 pub struct InputStream {
     string: String,

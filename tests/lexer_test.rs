@@ -4,7 +4,7 @@
 extern crate ruby_on_rust;
 
 use ruby_on_rust::lexer::Lexer;
-use ruby_on_rust::parser::parser::{Token, TokenString};
+use ruby_on_rust::parser::token::{Token, TokenString};
 
 #[test]
 fn test_identifier() {

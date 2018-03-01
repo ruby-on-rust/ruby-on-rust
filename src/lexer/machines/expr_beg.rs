@@ -15,7 +15,7 @@ use lexer::matching_patterns::TMatchingPatterns;
 use lexer::shared_actions::TSharedActions;
 use lexer::literal::Literal;
 
-use parser::parser::Token;
+use parser::token::Token;
 
 pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions: &TSharedActions ) -> Vec<Box<Action>> {
     let (pattern_literals, pattern_regexs) = (*patterns).clone();

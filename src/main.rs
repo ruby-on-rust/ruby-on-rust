@@ -9,8 +9,6 @@ mod lexer;
 mod parser;
 mod shared;
 
-use parser::parser::{Parser, Token};
-
 fn main() {
 
     let mut f = File::open("tmp/a.rb").expect("cant read file");
@@ -23,15 +21,15 @@ fn main() {
 
     let tokens = lexer.tokens;
 
-    let mut parser = Parser::new(None);
-    println!("\n\n---\n\nLexer emitted tokens:");
-    for t in tokens {
-        println!("TOKEN: {:?}", t);
+    // let mut parser = Parser::new(None);
+    // println!("\n\n---\n\nLexer emitted tokens:");
+    // for t in tokens {
+    //     println!("TOKEN: {:?}", t);
 
-        parser.parse(t);
-    }
+    //     parser.parse(t);
+    // }
 
-    parser.parse(Token::EOI);
+    // parser.parse(Token::EOI);
 
-    println!("{:?}", parser.extra());
+    // println!("{:?}", parser.extra());
 }

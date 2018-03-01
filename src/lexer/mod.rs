@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use parser::parser::Token;
+use parser::token::Token;
 
 use shared::static_env::StaticEnv;
 

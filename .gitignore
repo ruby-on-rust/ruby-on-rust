@@ -12,5 +12,3 @@
 .DS_Store
 
 /tmp
-
-/vendor/lemon/lemon_rust
