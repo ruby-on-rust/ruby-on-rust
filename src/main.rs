@@ -11,25 +11,11 @@ mod shared;
 
 fn main() {
 
-    let mut f = File::open("tmp/a.rb").expect("cant read file");
+    let mut f = File::open("tmp/a.rb").expect("cant open file");
     let mut file_content = String::new();
     f.read_to_string(&mut file_content).expect("cant read file");
 
-    let mut lexer = lexer::Lexer::new(file_content);
+    let mut parser = parser::parser::Parser::new(file_content);
 
-    lexer.lex();
-
-    let tokens = lexer.tokens;
-
-    // let mut parser = Parser::new(None);
-    // println!("\n\n---\n\nLexer emitted tokens:");
-    // for t in tokens {
-    //     println!("TOKEN: {:?}", t);
-
-    //     parser.parse(t);
-    // }
-
-    // parser.parse(Token::EOI);
-
-    // println!("{:?}", parser.extra());
+    println!("{:?}", parser.parse() );
 }

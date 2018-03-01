@@ -80,26 +80,6 @@ impl Lexer {
         }
     }
 
-    // TODO return Result
-    pub fn lex(&mut self) {
-        loop {
-            println!("will advance. current p {}", self.input_stream.p);
-
-            // TODO advance and advance and advance
-            self.advance();
-
-            println!("advanced. current p {}", self.input_stream.p);
-
-            // handle eof
-            if self.input_stream.no_more() {
-                println!("no more, breaking...");
-                self.flag_breaking();
-                break;
-            }
-
-        }
-    }
-
     // return a token
     // 
     // TODO
@@ -108,11 +88,10 @@ impl Lexer {
     // 
     // TODO wrap in a Result
     // 
-
-    fn advance(&mut self) {
+    pub fn advance(&mut self) -> Option<Token> {
         // TODO token queue
 
-        println!("--- advance ---");
+        println!("--- lexer: advance ---");
 
         // TODO NOTE
         // we're using `states_stack.last()`(top of the stack) as the corresponding to `@cs`(current state)
@@ -122,6 +101,10 @@ impl Lexer {
 
         // 
         self.exec();
+
+        // TODO INCORRECT
+        // token_queue
+        Some( ( *self.tokens.last().unwrap() ).clone())
     }
 
     // match-state-invoke-action loop
