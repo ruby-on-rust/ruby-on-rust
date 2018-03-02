@@ -5,7 +5,7 @@ use parser::token::Token;
 use shared::static_env::StaticEnv;
 
 #[macro_use]
-mod lexing_state;      use self::lexing_state::LexingState;
+pub mod lexing_state;  use self::lexing_state::LexingState;
 #[macro_use]
 mod action;            use self::action::Action;
 mod input_stream;      use self::input_stream::InputStream;
@@ -136,6 +136,11 @@ impl Lexer {
             let procedure = action.procedure;
             procedure(self);
         }
+    }
+
+    // parser will use this method to set lexer's state
+    pub fn set_state(&mut self, state: LexingState) {
+        self.states_stack = vec![state];
     }
 
     fn flag_breaking(&mut self) {

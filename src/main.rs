@@ -8,6 +8,7 @@ use std::fs::File;
 mod lexer;
 mod parser;
 mod shared;
+mod ast;
 
 fn main() {
     let mut f = File::open("tmp/a.rb").expect("cant open file");

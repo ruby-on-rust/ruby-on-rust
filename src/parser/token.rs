@@ -2,7 +2,7 @@ pub type TokenString = String;
 
 #[derive( Debug, Clone, PartialEq )]
 pub enum Token {
-    T_INTEGER( i64 ),
+    T_INTEGER( isize ),
     T_GVAR( TokenString ),
     T_CONSTANT( TokenString ),
     T_IDENTIFIER( TokenString ),
