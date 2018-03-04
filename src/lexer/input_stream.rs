@@ -44,7 +44,7 @@ impl InputStream {
 
         // TODO not that elegant, use Option<Action> instead of
         let mut longest_matched_action_i: Option<usize> = None;
-        let mut longest_matched_action_len = -1; // -1 since there will be matching result with len 0 (c_eof)
+        let mut longest_matched_action_len = -1; // init as -1, since there will be matching result with len 0 (c_eof)
         for (i, action) in actions.iter().enumerate() {
 
             // println!("matching action with regex {:?}", &action.regex);
@@ -147,11 +147,12 @@ impl InputStream {
     // return matched length, starting from 1
     fn match_action_starting_from_pos(&mut self, regex: &Regex) -> Option<usize> {
 
-        // println!("    matching action starting from pos");
+        // println!("\n===\n    matching action starting from pos");
 
         let sliced_string: String = self.string.chars().skip(self.p).collect();
 
         // println!("    current sliced string: {}, (len: {})\n", sliced_string, sliced_string.len());
+        // println!("    regex: {:?}\n", regex);
 
         let captures = regex.captures(&sliced_string);
         match captures {
@@ -159,7 +160,7 @@ impl InputStream {
             Some(capture) => {
                 let match_ = capture.get(0).unwrap();
                 let matched_str = String::from(match_.as_str());
-                // println!("    matched str: {:?}", matched_str);
+                // println!("    ***** matched str: {:?}", matched_str);
                 // println!("    DEBUGGING CAPTURE: capture: {:?}", capture);
                 Some(matched_str.len())
             }
@@ -167,7 +168,7 @@ impl InputStream {
 
     }
 
-    pub fn no_more(&self) -> bool {
-        self.p >= self.string.len()
-    }
+    // pub fn no_more(&self) -> bool {
+    //     self.p >= self.string.len()
+    // }
 }

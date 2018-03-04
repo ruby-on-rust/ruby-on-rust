@@ -18,7 +18,12 @@ pub fn construct() -> TSharedActions {
         };
     }
 
-    action!("noop", |lexer: &mut Lexer|{});
+    action!("noop", |lexer: &mut Lexer|{
+        // NOTE HACKING
+        // preserve current state
+        let current_state = lexer.current_state.clone();
+        lexer.push_next_state(current_state);
+    });
 
     // original do_eof
     action!("do_eof", |lexer: &mut Lexer| {

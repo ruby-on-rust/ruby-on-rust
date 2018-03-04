@@ -20,7 +20,7 @@ use std::str::FromStr;
 // :plain_string  => lex_en_plain_string,
 // :plain_words   => lex_en_plain_string,
 
-#[derive(Debug, PartialEq, Eq, Hash)]
+#[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub enum LexingState {
     LineBegin,
     ExprDot,

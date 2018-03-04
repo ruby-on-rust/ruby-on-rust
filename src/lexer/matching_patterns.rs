@@ -22,7 +22,7 @@ pub fn construct() -> TMatchingPatterns {
     macro_rules! pattern {
         ($name:expr, $regex:expr) => {
             pattern_literals.insert($name, $regex);
-            patterns.insert($name, Regex::new( &format!(r"^{}", $regex) ).unwrap());
+            patterns.insert($name, Regex::new( &format!(r"^({})", $regex) ).unwrap());
         };
     }
 

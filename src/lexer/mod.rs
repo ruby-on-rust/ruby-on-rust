@@ -19,6 +19,7 @@ mod literal;           use self::literal::Literal;
 
 pub struct Lexer {
     states_stack: Vec<LexingState>,
+    current_state: LexingState, // NOTE like the @cs somehow
 
     tokens_tables: HashMap<&'static str, HashMap<&'static str, Token>>,
     shared_actions: TSharedActions,
@@ -56,6 +57,8 @@ impl Lexer {
 
         Lexer {
             states_stack: vec![LexingState::LineBegin],
+            current_state: LexingState::LineBegin, // NOTE setting value here is no use actually, since every time will pop one from states_stack
+
             tokens_tables: tokens_tables::construct(),
 
             shared_actions: shared_actions.clone(),
@@ -125,8 +128,8 @@ impl Lexer {
             // ===
 
             // get actions
-            let state = self.states_stack.pop().expect("states_stack is empty");
-            let actions = self.machines.get(&state).unwrap().clone();
+            self.current_state = self.states_stack.pop().expect("states_stack is empty");
+            let actions = self.machines.get(&self.current_state).unwrap().clone();
 
             // find matching action
             let action = self.input_stream.longest_matching_action(&actions).expect("cant match any action");

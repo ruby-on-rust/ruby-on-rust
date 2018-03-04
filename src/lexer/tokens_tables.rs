@@ -53,7 +53,7 @@ use parser::token::Token;
 
 pub fn construct() -> HashMap<&'static str, HashMap<&'static str, Token>> {
 
-    let punctation: HashMap<&'static str, Token> = vec![
+    let punctuation: HashMap<&'static str, Token> = vec![
         ( "=", Token::T_EQL ),
         ( "&", Token::T_AMPER2 ),
         ( "|", Token::T_PIPE ),
@@ -106,7 +106,7 @@ pub fn construct() -> HashMap<&'static str, HashMap<&'static str, Token>> {
         ( "&.", Token::T_ANDDOT ),
     ].into_iter().collect();
 
-    let punctation_begin: HashMap<&'static str, Token> = vec![
+    let punctuation_begin: HashMap<&'static str, Token> = vec![
         ( "&" , Token::T_AMPER ),
         ( "*" , Token::T_STAR ),
         ( "**", Token::T_DSTAR ),
@@ -206,8 +206,8 @@ pub fn construct() -> HashMap<&'static str, HashMap<&'static str, Token>> {
     ].into_iter().collect();
 
     let tables: HashMap<&'static str, HashMap<&str, Token>> = vec![
-        ( "punctation", punctation ),
-        ( "punctation_begin", punctation_begin ),
+        ( "punctuation", punctuation ),
+        ( "punctuation_begin", punctuation_begin ),
         ( "keywords", keywords ),
         ( "keywords_begin", keywords_begin )
     ].into_iter().collect();

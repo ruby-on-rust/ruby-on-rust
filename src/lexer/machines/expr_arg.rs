@@ -303,6 +303,7 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
         //     };
         // NOTE
         // separated into 4 actions
+        // TODO use pattern_lit!
         // 
         box Action {
             regex: Regex::new(r"^[ \t\r\f\v]*((&)|(\|)|(&&)|(\|\|)|(\^)|(\+)|(-)|(\*)|(/)|(\*\*)|(~)|(<<)|(>>)|(%))[= \n\t\r\f\v]").unwrap(),
