@@ -10,5 +10,5 @@ fn test_int() {
     let content = String::from("42");
     let mut parser = Parser::new(content);
     let node = parser.parse();
-    assert_eq!(node, Node { ntype: String::from("int"), value: 42 });
+    assert_eq!(node, Node::Int(42));
 }

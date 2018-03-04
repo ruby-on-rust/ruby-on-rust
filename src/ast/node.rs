@@ -1,5 +1,4 @@
 #[derive(Debug, PartialEq)]
-pub struct Node {
-    pub ntype: String,
-    pub value: isize
+pub enum Node {
+    Int(isize)
 }

@@ -163,7 +163,7 @@ impl Parser {
 
                 self.consume_current_token();
 
-                return Some( Node { ntype: String::from("int"), value: i } )
+                return Some(Node::Int(i));
             },
             _ => { return None; }
         }
