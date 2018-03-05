@@ -43,6 +43,10 @@ pub enum LexingState {
     InterpWords,
     PlainString,
     PlainWords,
+    InterpBackslashDelimited,
+    PlainBackslashDelimited,
+    InterpBackslashDelimitedWords,
+    PlainBackslashDelimitedWords,
 
     // TODO
     // not original states in lexer.rl,
@@ -73,6 +77,11 @@ impl FromStr for LexingState {
             "interp_words" => Ok(LexingState::InterpWords),
             "plain_string" => Ok(LexingState::PlainString),
             "plain_words" => Ok(LexingState::PlainWords),
+
+            "interp_backslash_delimited" => Ok(LexingState::InterpBackslashDelimited),
+            "plain_backslash_delimited" => Ok(LexingState::PlainBackslashDelimited),
+            "interp_backslash_delimited_words" => Ok(LexingState::InterpBackslashDelimitedWords),
+            "plain_backslash_delimited_words" => Ok(LexingState::PlainBackslashDelimitedWords),
 
             "expr_variable" => Ok(LexingState::ExprVariable),
             "leading_dot" => Ok(LexingState::LeadingDot),

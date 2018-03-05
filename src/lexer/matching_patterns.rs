@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use regex::Regex;
 
 // TODO should these be 'static ?
-type TMatchingPatternLiterals = HashMap<&'static str, &'static str>;
+type TMatchingPatternLiterals = HashMap<&'static str, String>;
 type TMatchingPatternRegexs = HashMap<&'static str, Regex>;
 pub type TMatchingPatterns = ( TMatchingPatternLiterals, TMatchingPatternRegexs );
 
@@ -13,16 +13,19 @@ pub fn construct() -> TMatchingPatterns {
 
     // NOTE
     // pattern!
-    //   1. insert regex into pattern_literals
-    //   2. insert regex plus prefix ^ into patterns
+    //   1. insert regex into pattern_literals, with wrapper ()
+    //   2. insert regex plus prefix ^ into patterns, with wrapper ()
     // 
     // use patterns.insert(^regex) directly to avoid unnecessary pattern_literal
     // 
 
     macro_rules! pattern {
-        ($name:expr, $regex:expr) => {
-            pattern_literals.insert($name, $regex);
-            patterns.insert($name, Regex::new( &format!(r"^({})", $regex) ).unwrap());
+        ($name:expr, $pattern_lit:expr) => {
+            let pattern_lit = format!(r"({})", $pattern_lit);
+            let pattern_lit_with_prefix = format!(r"^({})", $pattern_lit);
+
+            pattern_literals.insert($name, pattern_lit );
+            patterns.insert($name, Regex::new( &pattern_lit_with_prefix ).unwrap());
         };
     }
 
@@ -296,33 +299,33 @@ pub fn construct() -> TMatchingPatterns {
     //       # \377
     //       [0-7]{1,3}
     //       % { @escape = encode_escape(tok(@escape_s, p).to_i(8) % 0x100) }
-
+    // 
     //       # \xff
     //     | 'x' xdigit{1,2}
     //         % { @escape = encode_escape(tok(@escape_s + 1, p).to_i(16)) }
-
+    // 
     //       # %q[\x]
     //     | 'x' ( c_any - xdigit )
     //       % {
     //         diagnostic :fatal, :invalid_hex_escape, nil, range(@escape_s - 1, p + 2)
     //       }
-
+    // 
     //       # \u263a
     //     | 'u' xdigit{4}
     //       % { @escape = tok(@escape_s + 1, p).to_i(16).chr(Encoding::UTF_8) }
-
+    // 
     //       # \u123
     //     | 'u' xdigit{0,3}
     //       % {
     //         diagnostic :fatal, :invalid_unicode_escape, nil, range(@escape_s - 1, p)
     //       }
-
+    // 
     //       # u{not hex} or u{}
     //     | 'u{' ( c_any - xdigit - [ \t}] )* '}'
     //       % {
     //         diagnostic :fatal, :invalid_unicode_escape, nil, range(@escape_s - 1, p)
     //       }
-
+    // 
     //       # \u{  \t  123  \t 456   \t\t }
     //     | 'u{' [ \t]* ( xdigit{1,6} [ \t]+ )*
     //       (
@@ -337,38 +340,40 @@ pub fn construct() -> TMatchingPatterns {
     //           diagnostic :fatal, :unterminated_unicode, nil, range(p - 1, p)
     //         }
     //       )
-
+    // 
     //       # \C-\a \cx
     //     | ( 'C-' | 'c' ) escaped_nl?
     //       maybe_escaped_ctrl_char
-
+    // 
     //       # \M-a
     //     | 'M-' escaped_nl?
     //       maybe_escaped_char
     //       %slash_m_char
-
+    // 
     //       # \C-\M-f \M-\cf \c\M-f
     //     | ( ( 'C-'   | 'c' ) escaped_nl?   '\\M-'
     //       |   'M-\\'         escaped_nl? ( 'C-'   | 'c' ) ) escaped_nl?
     //       maybe_escaped_ctrl_char
     //       %slash_m_char
-
+    // 
     //     | 'C' c_any %invalid_complex_escape
     //     | 'M' c_any %invalid_complex_escape
     //     | ( 'M-\\C' | 'C-\\M' ) c_any %invalid_complex_escape
-
+    // 
     //     | ( c_any - [0-7xuCMc] ) %unescape_char
-
+    // 
     //     | c_eof % {
     //       diagnostic :fatal, :escape_eof, nil, range(p - 1, p)
     //     }
     //   );
+    // TODO
 
     //   # Use rules in form of `e_bs escape' when you need to parse a sequence.
     //   e_bs = '\\' % {
     //     @escape_s = p
     //     @escape   = nil
     //   };
+    pattern!("e_bs", r"\\");
 
     // #
     // # === STRING AND HEREDOC PARSING ===
@@ -414,8 +419,136 @@ pub fn construct() -> TMatchingPatterns {
     // end
     // };
     // TODO INCOMPLETE
-    // c_heredoc_nl embedded proc
+    //     e_heredoc_nl embedded proc
     pattern!("e_heredoc_nl", r"\n");
+
+    //   action extend_string {
+    //     string = tok
+
+    //     # tLABEL_END is only possible in non-cond context on >= 2.2
+    //     if @version >= 22 && !@cond.active?
+    //       lookahead = @source_buffer.slice(@te...@te+2)
+    //     end
+
+    //     current_literal = literal
+    //     if !current_literal.heredoc? &&
+    //           (token = current_literal.nest_and_try_closing(string, @ts, @te, lookahead))
+    //       if token[0] == :tLABEL_END
+    //         p += 1
+    //         pop_literal
+    //         fnext expr_labelarg;
+    //       else
+    //         fnext *pop_literal;
+    //       end
+    //       fbreak;
+    //     else
+    //       current_literal.extend_string(string, @ts, @te)
+    //     end
+    //   }
+
+    //   action extend_string_escaped {
+    //     current_literal = literal
+    //     # Get the first character after the backslash.
+    //     escaped_char = @source_buffer.slice(@escape_s).chr
+
+    //     if current_literal.munge_escape? escaped_char
+    //       # If this particular literal uses this character as an opening
+    //       # or closing delimiter, it is an escape sequence for that
+    //       # particular character. Write it without the backslash.
+
+    //       if current_literal.regexp? && REGEXP_META_CHARACTERS.match(escaped_char)
+    //         # Regular expressions should include escaped delimiters in their
+    //         # escaped form, except when the escaped character is
+    //         # a closing delimiter but not a regexp metacharacter.
+    //         #
+    //         # The backslash itself cannot be used as a closing delimiter
+    //         # at the same time as an escape symbol, but it is always munged,
+    //         # so this branch also executes for the non-closing-delimiter case
+    //         # for the backslash.
+    //         current_literal.extend_string(tok, @ts, @te)
+    //       else
+    //         current_literal.extend_string(escaped_char, @ts, @te)
+    //       end
+    //     else
+    //       # It does not. So this is an actual escape sequence, yay!
+    //       if current_literal.regexp?
+    //         # Regular expressions should include escape sequences in their
+    //         # escaped form. On the other hand, escaped newlines are removed.
+    //         current_literal.extend_string(tok.gsub("\\\n".freeze, ''.freeze), @ts, @te)
+    //       else
+    //         current_literal.extend_string(@escape || tok, @ts, @te)
+    //       end
+    //     end
+    //   }
+
+    //   # Extend a string with a newline or a EOF character.
+    //   # As heredoc closing line can immediately precede EOF, this action
+    //   # has to handle such case specially.
+    //   action extend_string_eol {
+    //     current_literal = literal
+    //     if @te == pe
+    //       diagnostic :fatal, :string_eof, nil,
+    //                  range(current_literal.str_s, current_literal.str_s + 1)
+    //     end
+
+    //     if current_literal.heredoc?
+    //       line = tok(@herebody_s, @ts).gsub(/\r+$/, ''.freeze)
+
+    //       if version?(18, 19, 20)
+    //         # See ruby:c48b4209c
+    //         line = line.gsub(/\r.*$/, ''.freeze)
+    //       end
+
+    //       # Try ending the heredoc with the complete most recently
+    //       # scanned line. @herebody_s always refers to the start of such line.
+    //       if current_literal.nest_and_try_closing(line, @herebody_s, @ts)
+    //         # Adjust @herebody_s to point to the next line.
+    //         @herebody_s = @te
+
+    //         # Continue regular lexing after the heredoc reference (<<END).
+    //         p = current_literal.heredoc_e - 1
+    //         fnext *pop_literal; fbreak;
+    //       else
+    //         # Calculate indentation level for <<~HEREDOCs.
+    //         current_literal.infer_indent_level(line)
+
+    //         # Ditto.
+    //         @herebody_s = @te
+    //       end
+    //     else
+    //       # Try ending the literal with a newline.
+    //       if current_literal.nest_and_try_closing(tok, @ts, @te)
+    //         fnext *pop_literal; fbreak;
+    //       end
+
+    //       if @herebody_s
+    //         # This is a regular literal intertwined with a heredoc. Like:
+    //         #
+    //         #     p <<-foo+"1
+    //         #     bar
+    //         #     foo
+    //         #     2"
+    //         #
+    //         # which, incidentally, evaluates to "bar\n1\n2".
+    //         p = @herebody_s - 1
+    //         @herebody_s = nil
+    //       end
+    //     end
+
+    //     if current_literal.words? && !eof_codepoint?(@source_pts[p])
+    //       current_literal.extend_space @ts, @te
+    //     else
+    //       # A literal newline is appended if the heredoc was _not_ closed
+    //       # this time (see fbreak above). See also Literal#nest_and_try_closing
+    //       # for rationale of calling #flush_string here.
+    //       current_literal.extend_string tok, @ts, @te
+    //       current_literal.flush_string
+    //     end
+    //   }
+
+    //   action extend_string_space {
+    //     literal.extend_space @ts, @te
+    //   }
 
 
     //   #
@@ -426,17 +559,15 @@ pub fn construct() -> TMatchingPatterns {
     //   # the corresponding machine.
 
     //   interp_var = '#' ( global_var | class_var_v | instance_var_v );
-
-    //   action extend_interp_var {
-    //     current_literal = literal
-    //     current_literal.flush_string
-    //     current_literal.extend_content
-
-    //     emit(:tSTRING_DVAR, nil, @ts, @ts + 1)
-
-    //     p = @ts
-    //     fcall expr_variable;
-    //   }
+    patterns.insert(
+        "interp_var",
+        Regex::new(
+            &format!(r"^#({}|{}|{})",
+            pattern_literals.get("global_var").unwrap(),
+            pattern_literals.get("class_var_v").unwrap(),
+            pattern_literals.get("instance_var_v").unwrap())
+        ).unwrap()
+    );
 
     //   # Interpolations with code blocks must match nested curly braces, as
     //   # interpolation ending is ambiguous with a block ending. So, every
@@ -451,148 +582,17 @@ pub fn construct() -> TMatchingPatterns {
     //   # braces inside the characters of a string literal is independent.
 
     //   interp_code = '#{';
+    pattern!("interp_code", r"#\{");
 
     //   e_lbrace = '{' % {
-    //     @cond.push(false); @cmdarg.push(false)
-
-    //     current_literal = literal
-    //     if current_literal
-    //       current_literal.start_interp_brace
-    //     end
+    //       NOTE embedded action moved to shared_actions
     //   };
-    // NOTE embedded action moved to shared_actions
     pattern!("e_lbrace", r"\{");
 
     //   e_rbrace = '}' % {
-    //     current_literal = literal
-    //     if current_literal
-    //       if current_literal.end_interp_brace_and_try_closing
-    //         if version?(18, 19)
-    //           emit(:tRCURLY, '}'.freeze, p - 1, p)
-    //         else
-    //           emit(:tSTRING_DEND, '}'.freeze, p - 1, p)
-    //         end
-
-    //         if current_literal.saved_herebody_s
-    //           @herebody_s = current_literal.saved_herebody_s
-    //         end
-
-    //         fhold;
-    //         fnext *stack_pop;
-    //         fbreak;
-    //       end
-    //     end
+    //       NOTE embedded action moved to shared_actions
     //   };
-    // NOTE embedded action moved to shared_actions
     pattern!("e_rbrace", r"\}");
-
-    //   action extend_interp_code {
-    //     current_literal = literal
-    //     current_literal.flush_string
-    //     current_literal.extend_content
-
-    //     emit(:tSTRING_DBEG, '#{'.freeze)
-
-    //     if current_literal.heredoc?
-    //       current_literal.saved_herebody_s = @herebody_s
-    //       @herebody_s = nil
-    //     end
-
-    //     current_literal.start_interp_brace
-    //     fcall expr_value;
-    //   }
-
-    //   # Actual string parsers are simply combined from the primitives defined
-    //   # above.
-
-    //   interp_words := |*
-    //       interp_code => extend_interp_code;
-    //       interp_var  => extend_interp_var;
-    //       e_bs escape => extend_string_escaped;
-    //       c_space+    => extend_string_space;
-    //       c_eol       => extend_string_eol;
-    //       c_any       => extend_string;
-    //   *|;
-
-    //   interp_string := |*
-    //       interp_code => extend_interp_code;
-    //       interp_var  => extend_interp_var;
-    //       e_bs escape => extend_string_escaped;
-    //       c_eol       => extend_string_eol;
-    //       c_any       => extend_string;
-    //   *|;
-
-    //   plain_words := |*
-    //       e_bs c_any  => extend_string_escaped;
-    //       c_space+    => extend_string_space;
-    //       c_eol       => extend_string_eol;
-    //       c_any       => extend_string;
-    //   *|;
-
-    //   plain_string := |*
-    //       '\\' c_nl   => extend_string_eol;
-    //       e_bs c_any  => extend_string_escaped;
-    //       c_eol       => extend_string_eol;
-    //       c_any       => extend_string;
-    //   *|;
-
-    //   interp_backslash_delimited := |*
-    //       interp_code => extend_interp_code;
-    //       interp_var  => extend_interp_var;
-    //       c_eol       => extend_string_eol;
-    //       c_any       => extend_string;
-    //   *|;
-
-    //   plain_backslash_delimited := |*
-    //       c_eol       => extend_string_eol;
-    //       c_any       => extend_string;
-    //   *|;
-
-    //   interp_backslash_delimited_words := |*
-    //       interp_code => extend_interp_code;
-    //       interp_var  => extend_interp_var;
-    //       c_space+    => extend_string_space;
-    //       c_eol       => extend_string_eol;
-    //       c_any       => extend_string;
-    //   *|;
-
-    //   plain_backslash_delimited_words := |*
-    //       c_space+    => extend_string_space;
-    //       c_eol       => extend_string_eol;
-    //       c_any       => extend_string;
-    //   *|;
-
-    //   regexp_modifiers := |*
-    //       [A-Za-z]+
-    //       => {
-    //         unknown_options = tok.scan(/[^imxouesn]/)
-    //         if unknown_options.any?
-    //           diagnostic :error, :regexp_options,
-    //                      { :options => unknown_options.join }
-    //         end
-
-    //         emit(:tREGEXP_OPT)
-
-    //         if @version < 24
-    //           fnext expr_end;
-    //         else
-    //           fnext expr_endarg;
-    //         end
-
-    //         fbreak;
-    //       };
-
-    //       any
-    //       => {
-    //         emit(:tREGEXP_OPT, tok(@ts, @te - 1), @ts, @te - 1)
-    //         fhold;
-    //         if @version < 24
-    //           fgoto expr_end;
-    //         else
-    //           fgoto expr_endarg;
-    //         end
-    //       };
-    //   *|;
 
     // #
     // # === WHITESPACE HANDLING ===
