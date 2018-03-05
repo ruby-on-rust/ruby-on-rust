@@ -3,6 +3,7 @@
 use lexer::lexing_state::LexingState;
 use lexer::Lexer;
 use parser::token::Token;
+use ast::node;
 use ast::node::Node;
 
 // TODO dont rewrite this macro here
@@ -55,7 +56,9 @@ impl Parser {
     //     Ok(token)
     // }
 
+    // match and consume one token
     // TODO REFINE
+    // TODO cant handle token with value for now
     fn match_1_token(&mut self, token: Token) -> Option<Token> {
 
         let current_token = self.current_token();
@@ -177,6 +180,58 @@ impl Parser {
         }
     }
 
+    // keyword_variable: kNIL
+    //                     {
+    //                       result = @builder.nil(val[0])
+    //                     }
+    //                 | kSELF
+    //                     {
+    //                       result = @builder.self(val[0])
+    //                     }
+    //                 | kTRUE
+    //                     {
+    //                       result = @builder.true(val[0])
+    //                     }
+    //                 | kFALSE
+    //                     {
+    //                       result = @builder.false(val[0])
+    //                     }
+    //                 | k__FILE__
+    //                     {
+    //                       result = @builder.__FILE__(val[0])
+    //                     }
+    //                 | k__LINE__
+    //                     {
+    //                       result = @builder.__LINE__(val[0])
+    //                     }
+    //                 | k__ENCODING__
+    //                     {
+    //                       result = @builder.__ENCODING__(val[0])
+    //                     }
+    // TODO INCOMPLETE
+    fn p_keyword_variable(&mut self) -> Option<Node> {
+        if let Some(_) = self.match_1_token(Token::K_NIL) { return Some(Node::Nil); }
+
+        None
+    }
+
+    //  var_ref: user_variable
+    //             {
+    //               result = @builder.accessible(val[0])
+    //             }
+    //         | keyword_variable
+    //             {
+    //               result = @builder.accessible(val[0])
+    //             }
+    // TODO INCOMPLETE
+    fn p_var_ref(&mut self) -> Option<Node> {
+        if let Some(n_user_variable) = self.p_user_variable() { return Some(node::accessible(n_user_variable)); }
+
+        if let Some(n_keyword_variable) = self.p_keyword_variable() { return Some(node::accessible(n_keyword_variable)); }
+
+        None
+    }
+
     //  arg_rhs: arg =tOP_ASGN
     //         | arg kRESCUE_MOD arg
     //             {
@@ -195,9 +250,307 @@ impl Parser {
         None
     }
 
+
+    //  primary: literal
+    //         | strings
+    //         | xstring
+    //         | regexp
+    //         | words
+    //         | qwords
+    //         | symbols
+    //         | qsymbols
+    //         | var_ref
+    //         | backref
+    //         | tFID
+    //             {
+    //               result = @builder.call_method(nil, nil, val[0])
+    //             }
+    //         | kBEGIN
+    //             {
+    //               result = @lexer.cmdarg.dup
+    //               @lexer.cmdarg.clear
+    //             }
+    //             bodystmt kEND
+    //             {
+    //               @lexer.cmdarg = val[1]
+
+    //               result = @builder.begin_keyword(val[0], val[2], val[3])
+    //             }
+    //         | tLPAREN_ARG
+    //             {
+    //               result = @lexer.cmdarg.dup
+    //               @lexer.cmdarg.clear
+    //             }
+    //             stmt
+    //             {
+    //               @lexer.state = :expr_endarg
+    //             }
+    //             rparen
+    //             {
+    //               @lexer.cmdarg = val[1]
+
+    //               result = @builder.begin(val[0], val[2], val[4])
+    //             }
+    //         | tLPAREN_ARG
+    //             {
+    //               @lexer.state = :expr_endarg
+    //             }
+    //             opt_nl tRPAREN
+    //             {
+    //               result = @builder.begin(val[0], nil, val[3])
+    //             }
+    //         | tLPAREN compstmt tRPAREN
+    //             {
+    //               result = @builder.begin(val[0], val[1], val[2])
+    //             }
+    //         | primary_value tCOLON2 tCONSTANT
+    //             {
+    //               result = @builder.const_fetch(val[0], val[1], val[2])
+    //             }
+    //         | tCOLON3 tCONSTANT
+    //             {
+    //               result = @builder.const_global(val[0], val[1])
+    //             }
+    //         | tLBRACK aref_args tRBRACK
+    //             {
+    //               result = @builder.array(val[0], val[1], val[2])
+    //             }
+    //         | tLBRACE assoc_list tRCURLY
+    //             {
+    //               result = @builder.associate(val[0], val[1], val[2])
+    //             }
+    //         | kRETURN
+    //             {
+    //               result = @builder.keyword_cmd(:return, val[0])
+    //             }
+    //         | kYIELD tLPAREN2 call_args rparen
+    //             {
+    //               result = @builder.keyword_cmd(:yield, val[0], val[1], val[2], val[3])
+    //             }
+    //         | kYIELD tLPAREN2 rparen
+    //             {
+    //               result = @builder.keyword_cmd(:yield, val[0], val[1], [], val[2])
+    //             }
+    //         | kYIELD
+    //             {
+    //               result = @builder.keyword_cmd(:yield, val[0])
+    //             }
+    //         | kDEFINED opt_nl tLPAREN2 expr rparen
+    //             {
+    //               result = @builder.keyword_cmd(:defined?, val[0],
+    //                                             val[2], [ val[3] ], val[4])
+    //             }
+    //         | kNOT tLPAREN2 expr rparen
+    //             {
+    //               result = @builder.not_op(val[0], val[1], val[2], val[3])
+    //             }
+    //         | kNOT tLPAREN2 rparen
+    //             {
+    //               result = @builder.not_op(val[0], val[1], nil, val[2])
+    //             }
+    //         | fcall brace_block
+    //             {
+    //               method_call = @builder.call_method(nil, nil, val[0])
+
+    //               begin_t, args, body, end_t = val[1]
+    //               result      = @builder.block(method_call,
+    //                               begin_t, args, body, end_t)
+    //             }
+    //         | method_call
+    //         | method_call brace_block
+    //             {
+    //               begin_t, args, body, end_t = val[1]
+    //               result      = @builder.block(val[0],
+    //                               begin_t, args, body, end_t)
+    //             }
+    //         | tLAMBDA lambda
+    //             {
+    //               lambda_call = @builder.call_lambda(val[0])
+
+    //               args, (begin_t, body, end_t) = val[1]
+    //               result      = @builder.block(lambda_call,
+    //                               begin_t, args, body, end_t)
+    //             }
+    //         | kIF expr_value then compstmt if_tail kEND
+    //             {
+    //               else_t, else_ = val[4]
+    //               result = @builder.condition(val[0], val[1], val[2],
+    //                                           val[3], else_t,
+    //                                           else_,  val[5])
+    //             }
+    //         | kUNLESS expr_value then compstmt opt_else kEND
+    //             {
+    //               else_t, else_ = val[4]
+    //               result = @builder.condition(val[0], val[1], val[2],
+    //                                           else_,  else_t,
+    //                                           val[3], val[5])
+    //             }
+    //         | kWHILE
+    //             {
+    //               @lexer.cond.push(true)
+    //             }
+    //             expr_value do
+    //             {
+    //               @lexer.cond.pop
+    //             }
+    //             compstmt kEND
+    //             {
+    //               result = @builder.loop(:while, val[0], val[2], val[3],
+    //                                      val[5], val[6])
+    //             }
+    //         | kUNTIL
+    //             {
+    //               @lexer.cond.push(true)
+    //             }
+    //             expr_value do
+    //             {
+    //               @lexer.cond.pop
+    //             }
+    //             compstmt kEND
+    //             {
+    //               result = @builder.loop(:until, val[0], val[2], val[3],
+    //                                      val[5], val[6])
+    //             }
+    //         | kCASE expr_value opt_terms case_body kEND
+    //             {
+    //               *when_bodies, (else_t, else_body) = *val[3]
+
+    //               result = @builder.case(val[0], val[1],
+    //                                      when_bodies, else_t, else_body,
+    //                                      val[4])
+    //             }
+    //         | kCASE            opt_terms case_body kEND
+    //             {
+    //               *when_bodies, (else_t, else_body) = *val[2]
+
+    //               result = @builder.case(val[0], nil,
+    //                                      when_bodies, else_t, else_body,
+    //                                      val[3])
+    //             }
+    //         | kFOR for_var kIN
+    //             {
+    //               @lexer.cond.push(true)
+    //             }
+    //             expr_value do
+    //             {
+    //               @lexer.cond.pop
+    //             }
+    //             compstmt kEND
+    //             {
+    //               result = @builder.for(val[0], val[1],
+    //                                     val[2], val[4],
+    //                                     val[5], val[7], val[8])
+    //             }
+    //         | kCLASS cpath superclass
+    //             {
+    //               @static_env.extend_static
+    //               @lexer.push_cmdarg
+    //             }
+    //             bodystmt kEND
+    //             {
+    //               if in_def?
+    //                 diagnostic :error, :class_in_def, nil, val[0]
+    //               end
+
+    //               lt_t, superclass = val[2]
+    //               result = @builder.def_class(val[0], val[1],
+    //                                           lt_t, superclass,
+    //                                           val[4], val[5])
+
+    //               @lexer.pop_cmdarg
+    //               @static_env.unextend
+    //             }
+    //         | kCLASS tLSHFT expr term
+    //             {
+    //               result = @def_level
+    //               @def_level = 0
+
+    //               @static_env.extend_static
+    //               @lexer.push_cmdarg
+    //             }
+    //             bodystmt kEND
+    //             {
+    //               result = @builder.def_sclass(val[0], val[1], val[2],
+    //                                            val[5], val[6])
+
+    //               @lexer.pop_cmdarg
+    //               @static_env.unextend
+
+    //               @def_level = val[4]
+    //             }
+    //         | kMODULE cpath
+    //             {
+    //               @static_env.extend_static
+    //               @lexer.push_cmdarg
+    //             }
+    //             bodystmt kEND
+    //             {
+    //               if in_def?
+    //                 diagnostic :error, :module_in_def, nil, val[0]
+    //               end
+
+    //               result = @builder.def_module(val[0], val[1],
+    //                                            val[3], val[4])
+
+    //               @lexer.pop_cmdarg
+    //               @static_env.unextend
+    //             }
+    //         | kDEF fname
+    //             {
+    //               @def_level += 1
+    //               @static_env.extend_static
+    //               @lexer.push_cmdarg
+    //             }
+    //             f_arglist bodystmt kEND
+    //             {
+    //               result = @builder.def_method(val[0], val[1],
+    //                           val[3], val[4], val[5])
+
+    //               @lexer.pop_cmdarg
+    //               @static_env.unextend
+    //               @def_level -= 1
+    //             }
+    //         | kDEF singleton dot_or_colon
+    //             {
+    //               @lexer.state = :expr_fname
+    //             }
+    //             fname
+    //             {
+    //               @def_level += 1
+    //               @static_env.extend_static
+    //               @lexer.push_cmdarg
+    //             }
+    //             f_arglist bodystmt kEND
+    //             {
+    //               result = @builder.def_singleton(val[0], val[1], val[2],
+    //                           val[4], val[6], val[7], val[8])
+
+    //               @lexer.pop_cmdarg
+    //               @static_env.unextend
+    //               @def_level -= 1
+    //             }
+    //         | kBREAK
+    //             {
+    //               result = @builder.keyword_cmd(:break, val[0])
+    //             }
+    //         | kNEXT
+    //             {
+    //               result = @builder.keyword_cmd(:next, val[0])
+    //             }
+    //         | kREDO
+    //             {
+    //               result = @builder.keyword_cmd(:redo, val[0])
+    //             }
+    //         | kRETRY
+    //             {
+    //               result = @builder.keyword_cmd(:retry, val[0])
+    //             }
     // TODO INCOMPLETE
     fn p_primary(&mut self) -> Option<Node> {
-        if let Some(n_literal) = self.p_numeric() { return Some(n_literal); }
+        // TODO DUMMY
+        if let Some(n_literal) = self.p_literal() { return Some(n_literal); }
+
+        if let Some(n_var_ref) = self.p_var_ref() { return Some(n_var_ref); }
 
         None
     }
@@ -264,5 +617,10 @@ impl Parser {
             },
             _ => { return None; }
         }
+    }
+
+    // TODO impl corresponding `none` rule from original grammar
+    fn p_none(&mut self) -> Option<Node> {
+        Some(Node::None)
     }
 }

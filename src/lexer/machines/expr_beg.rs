@@ -434,9 +434,18 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
         //       keyword
         //       => { p = @ts - 1
         //            fgoto expr_end; };
-        // TODO UNIMPL
-        // TODO WITH EMBEDDED ACTION ambiguous_ident_suffix <- ambiguous_fid_suffix
+        action_with_literal!(
+            format!(r"({}{})|{}",
+                pattern_lit!("bareword"), pattern_lit!("ambiguous_ident_suffix"),
+                pattern_lit!("keyword")
+            ),
+            |lexer: &mut Lexer| {
+                // TODO WITH EMBEDDED ACTION ambiguous_ident_suffix <- ambiguous_fid_suffix
 
+                lexer.input_stream.hold_current_token();
+                lexer.push_next_state(state!("expr_end"));
+            }
+        ),
 
         //       # a = 42;     a [42]: Indexing.
         //       # def a; end; a [42]: Array argument.
@@ -458,8 +467,18 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
         //         end
         //         fbreak;
         //       };
+        // NOTE w_space+ is the same with w_space, i guess?
         // TODO UNIMPL
-
+        // TODO handle embedded action
+        action_with_literal!(
+            format!(r"{}{}\(",
+                pattern_lit!("call_or_var - keyword"),
+                pattern_lit!("w_space")
+            ),
+            |lexer: &mut Lexer| {
+                panic!("UNIMPL");
+            }
+        ),
 
         //       #
         //       # WHITESPACE

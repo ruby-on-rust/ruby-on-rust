@@ -670,6 +670,7 @@ pub fn construct() -> TMatchingPatterns {
     //       [?!]    %{ tm = p }      | # a?        a?
     //       [?!]'=' %{ tm = p - 2 }    # a!=b      a != b
     //   ;
+    // TODO
 
     //   ambiguous_ident_suffix =       # actual    parsed
     //       ambiguous_fid_suffix     |
@@ -679,16 +680,20 @@ pub fn construct() -> TMatchingPatterns {
     //       '=>'    %{ tm = p - 2 }  | # a=>b      a => b
     //       '==='   %{ tm = p - 3 }    # a===b     a === b
     //   ;
+    // TODO HANDLE EMBEDDED ACTION
+    pattern!("ambiguous_ident_suffix", r"([\?!]=?)|=|(==)|(=~)|(=>)|(===)");
 
     //   ambiguous_symbol_suffix =      # actual    parsed
     //       ambiguous_ident_suffix |
     //       '==>'   %{ tm = p - 2 }    # :a==>b    :a= => b
     //   ;
+    // TODO
 
     //   # Ambiguous with 1.9 hash labels.
     //   ambiguous_const_suffix =       # actual    parsed
     //       '::'    %{ tm = p - 2 }    # A::B      A :: B
     //   ;
+    // TODO
 
 
     // # Resolving kDO/kDO_COND/kDO_BLOCK ambiguity requires embedding
@@ -716,6 +721,19 @@ pub fn construct() -> TMatchingPatterns {
     // };
     // NOTE embedded action moved to shared_actions
     pattern!("e_rparen", r"\(");
+
+    // ===
+    // additional
+    // ===
+
+    // w_space+
+    pattern!("w_space+", r"([ \t\r\f\v]+)");
+
+    // call_or_var - keyword
+    // TODO simplify, dont rewrite pattern_lits
+    pattern!("call_or_var - keyword",
+        r"[[:lower:][:alnum:]*&&[^(else)|(case)|(ensure)|(module)|(elsif)|(then)|(for)|(in)|(do)|(when)|(begin)|(class)|(and)|(or)|(rescue)|(return)|(break)|(next)|(end)|(self)|(true)|(false)|(retry)|(redo)|(nil)|(BEGIN)|(END)|(__FILE__)|(__LINE__)|(__ENCODING__)|(yield)|(super)|(not)|(defined?)|(def)|(undef)|(alias)|(if)|(unless)|(while)|(until)|(rescue)]]"
+    );
 
     (pattern_literals, patterns)
 }
