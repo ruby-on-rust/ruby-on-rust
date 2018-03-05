@@ -9,6 +9,8 @@ pub enum Node {
 
     Int(isize),
 
+    Str(String),
+
     Ident(Token),
     Assign(Box<Node>, Token, Box<Node>),
     Assignable,

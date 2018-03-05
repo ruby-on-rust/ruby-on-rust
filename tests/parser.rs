@@ -136,6 +136,10 @@ fn int() {
 //       %q{^ begin
 //         |       ^ end
 //         |~~~~~~~~ expression})
+#[test]
+fn string_plain() {
+    assert_parses!("foobar", Node::Str(String::from("foobar")));
+}
 
 //     assert_parses(
 //       s(:str, 'foobar'),
