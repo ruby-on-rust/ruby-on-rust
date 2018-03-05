@@ -8,8 +8,14 @@ use ruby_on_rust::ast::node::Node;
 
 
 // helpers
-// TODO macros
-
+macro_rules! test_parses {
+    ($content:expr, $node:expr) => {
+        let content = String::from($content);
+        let mut parser = Parser::new(content);
+        let node = parser.parse();
+        assert_eq!(node, $node);
+    };
+}
 
 //   #
 //   # Literals
@@ -37,10 +43,7 @@ use ruby_on_rust::ast::node::Node;
 //   end
 #[test]
 fn nil() {
-    let content = String::from("nil");
-    let mut parser = Parser::new(content);
-    let node = parser.parse();
-    assert_eq!(node, Node::Nil);
+    test_parses!("nil", Node::Nil);
 }
 
 //   def test_nil_expression
@@ -155,8 +158,5 @@ fn nil() {
 // TODO INCOMPLETE
 #[test]
 fn test_int() {
-    let content = String::from("42");
-    let mut parser = Parser::new(content);
-    let node = parser.parse();
-    assert_eq!(node, Node::Int(42));
+    test_parses!("42", Node::Int(42));
 }
