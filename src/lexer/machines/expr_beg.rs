@@ -221,14 +221,17 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
         // 
         // NOTE embedded action
         //          ambiguous_symbol_suffix <- ambiguous_ident_suffix <- ambiguous_fid_suffix
-        // TODO UNIMPL
-        // 
         action_with_literal!(
-            // TODO DUMMY
-            // format!(":{}{}", pattern_lit!("bareword"), pattern_lit!("ambiguous_symbol_suffix")),
-            format!(":{}", pattern_lit!("bareword")),
+            format!(":{}{}", pattern_lit!("bareword"), pattern_lit!("ambiguous_symbol_suffix")),
             |lexer: &mut Lexer| {
-                panic!("TODO");
+                lexer.invoke_proc("ambiguous_suffix");
+
+                let token = Token::T_SYMBOL(lexer.input_stream.current_token_string());
+                lexer.emit_token(token);
+
+                lexer.input_stream.p = lexer.input_stream.tm - 1;
+                lexer.push_next_state(state!("expr_end"));
+                lexer.flag_breaking();
             }
         ),
 

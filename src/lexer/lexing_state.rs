@@ -36,6 +36,15 @@ pub enum LexingState {
     ExprLabelarg,
 
     // TODO
+    // original plain_string and plain_words are merged into plain_string
+    // :plain_string  => lex_en_plain_string,
+    // :plain_words   => lex_en_plain_string,
+    InterpString,
+    InterpWords,
+    PlainString,
+    PlainWords,
+
+    // TODO
     // not original states in lexer.rl,
     // just machine
     ExprVariable,
@@ -59,6 +68,11 @@ impl FromStr for LexingState {
             "expr_endarg" => Ok(LexingState::ExprEndarg),
             "expr_endfn" => Ok(LexingState::ExprEndfn),
             "expr_labelarg" => Ok(LexingState::ExprLabelarg),
+
+            "interp_string" => Ok(LexingState::InterpString),
+            "interp_words" => Ok(LexingState::InterpWords),
+            "plain_string" => Ok(LexingState::PlainString),
+            "plain_words" => Ok(LexingState::PlainWords),
 
             "expr_variable" => Ok(LexingState::ExprVariable),
             "leading_dot" => Ok(LexingState::LeadingDot),

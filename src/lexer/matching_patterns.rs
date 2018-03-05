@@ -666,7 +666,8 @@ pub fn construct() -> TMatchingPatterns {
     //       [?!]    %{ tm = p }      | # a?        a?
     //       [?!]'=' %{ tm = p - 2 }    # a!=b      a != b
     //   ;
-    // TODO
+    // NOTE embedded action is `ambiguous_suffix`
+    pattern!("ambiguous_ident_suffix", r"[\?!]=?");
 
     //   ambiguous_ident_suffix =       # actual    parsed
     //       ambiguous_fid_suffix     |
@@ -676,20 +677,22 @@ pub fn construct() -> TMatchingPatterns {
     //       '=>'    %{ tm = p - 2 }  | # a=>b      a => b
     //       '==='   %{ tm = p - 3 }    # a===b     a === b
     //   ;
-    // TODO HANDLE EMBEDDED ACTION
+    // NOTE embedded action is `ambiguous_suffix`
     pattern!("ambiguous_ident_suffix", r"([\?!]=?)|=|(==)|(=~)|(=>)|(===)");
 
     //   ambiguous_symbol_suffix =      # actual    parsed
     //       ambiguous_ident_suffix |
     //       '==>'   %{ tm = p - 2 }    # :a==>b    :a= => b
     //   ;
-    // TODO
+    // NOTE embedded action is `ambiguous_suffix`
+    pattern!("ambiguous_symbol_suffix", r"([\?!]=?)|=|(==)|(=~)|(=>)|(===)|(==>)");
 
     //   # Ambiguous with 1.9 hash labels.
     //   ambiguous_const_suffix =       # actual    parsed
     //       '::'    %{ tm = p - 2 }    # A::B      A :: B
     //   ;
-    // TODO
+    // NOTE embedded action is `ambiguous_suffix`
+    pattern!("ambiguous_const_suffix", r"::");
 
 
     // # Resolving kDO/kDO_COND/kDO_BLOCK ambiguity requires embedding

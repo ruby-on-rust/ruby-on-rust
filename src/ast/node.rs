@@ -11,6 +11,8 @@ pub enum Node {
 
     Str(String),
 
+    Sym(String),
+
     Ident(Token),
     Assign(Box<Node>, Token, Box<Node>),
     Assignable,

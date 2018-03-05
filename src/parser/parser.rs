@@ -567,6 +567,7 @@ impl Parser {
     // TODO DUMMY
     fn p_literal(&mut self) -> Option<Node> {
         if let Some(n_numeric) = self.p_numeric() { return Some(n_numeric); }
+        if let Some(n_symbol) = self.p_symbol() { return Some(n_symbol); }
 
         None
     }
@@ -632,8 +633,26 @@ impl Parser {
         }
     }
 
-    // TODO impl corresponding `none` rule from original grammar
-    fn p_none(&mut self) -> Option<Node> {
-        Some(Node::None)
+
+    //   symbol: tSYMBOL
+    //             {
+    //               @lexer.state = :expr_endarg
+    //               result = @builder.symbol(val[0])
+    //             }
+    fn p_symbol(&mut self) -> Option<Node> {
+        if let Token::T_SYMBOL(symbol_string) = self.current_token() {
+            let _t_symbol = self.consume_current_token();
+
+            self.lexer.set_state(state!("expr_endarg"));
+
+            return Some(Node::Sym(symbol_string));
+        }
+
+        None
     }
+
+    // TODO impl corresponding `none` rule from original grammar
+    // fn p_none(&mut self) -> Option<Node> {
+    //     Some(Node::None)
+    // }
 }

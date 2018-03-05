@@ -24,6 +24,7 @@ pub struct InputStream {
     pub p: usize,
     pub ts: Option<usize>,
     pub te: Option<usize>,
+    pub tm: usize,
 }
 
 impl InputStream {
@@ -34,6 +35,7 @@ impl InputStream {
             p: 0,
             ts: None,
             te: None,
+            tm: 0
         }
     }
 

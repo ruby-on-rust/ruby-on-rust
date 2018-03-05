@@ -136,11 +136,7 @@ fn int() {
 //       %q{^ begin
 //         |       ^ end
 //         |~~~~~~~~ expression})
-#[test]
-fn string_plain() {
-    assert_parses!("foobar", Node::Str(String::from("foobar")));
-}
-
+//
 //     assert_parses(
 //       s(:str, 'foobar'),
 //       %q{%q(foobar)},
@@ -148,6 +144,10 @@ fn string_plain() {
 //         |         ^ end
 //         |~~~~~~~~~~ expression})
 //   end
+// #[test]
+// fn string_plain() {
+//     assert_parses!("foobar", Node::Str(String::from("foobar")));
+// }
 
 //   def test_string_interp
 //     assert_parses(
@@ -390,20 +390,13 @@ fn string_plain() {
 
 //   # Symbols
 
-//   def test_symbol_plain
-//     assert_parses(
-//       s(:sym, :foo),
-//       %q{:foo},
-//       %q{~ begin
-//         |~~~~ expression})
+#[test]
+fn symbol_plain() {
+    assert_parses!(":foo", Node::Sym(String::from("foo")));
 
-//     assert_parses(
-//       s(:sym, :foo),
-//       %q{:'foo'},
-//       %q{^^ begin
-//         |     ^ end
-//         |~~~~~~ expression})
-//   end
+    // TODO FAILING
+    assert_parses!(":'foo'", Node::Sym(String::from("foo")));
+}
 
 //   def test_symbol_interp
 //     assert_parses(
