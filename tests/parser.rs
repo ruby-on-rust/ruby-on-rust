@@ -2,13 +2,11 @@
 
 extern crate ruby_on_rust;
 
-use ruby_on_rust::lexer::Lexer;
 use ruby_on_rust::parser::parser::Parser;
 use ruby_on_rust::ast::node::Node;
 
-
 // helpers
-macro_rules! test_parses {
+macro_rules! assert_parses {
     ($content:expr, $node:expr) => {
         let content = String::from($content);
         let mut parser = Parser::new(content);
@@ -43,7 +41,7 @@ macro_rules! test_parses {
 //   end
 #[test]
 fn nil() {
-    test_parses!("nil", Node::Nil);
+    assert_parses!("nil", Node::Nil);
 }
 
 //   def test_nil_expression
@@ -61,6 +59,11 @@ fn nil() {
 //         |      ~~~ end
 //         |~~~~~~~~~ expression})
 //   end
+// TODO
+// #[test]
+// fn test_nil_expression() {
+//     assert_parses!
+// }
 
 //   def test_true
 //     assert_parses(
@@ -68,6 +71,7 @@ fn nil() {
 //       %q{true},
 //       %q{~~~~ expression})
 //   end
+#[test] fn test_true() { assert_parses!("true", Node::True); }
 
 //   def test_false
 //     assert_parses(
@@ -75,25 +79,33 @@ fn nil() {
 //       %q{false},
 //       %q{~~~~~ expression})
 //   end
+#[test] fn test_false() { assert_parses!("false", Node::False); }
 
 //   def test_int
 //     assert_parses(
 //       s(:int, 42),
 //       %q{42},
 //       %q{~~ expression})
-
+//
 //     assert_parses(
 //       s(:int, 42),
 //       %q{+42},
 //       %q{^ operator
 //         |~~~ expression})
-
+//
 //     assert_parses(
 //       s(:int, -42),
 //       %q{-42},
 //       %q{^ operator
 //         |~~~ expression})
 //   end
+// TODO INCOMPLETE
+#[test]
+fn int() {
+    assert_parses!("42", Node::Int(42));
+    assert_parses!("+42", Node::Int(42));
+    assert_parses!("-42", Node::Int(-42));
+}
 
 //   def test_int___LINE__
 //     assert_parses(
@@ -154,9 +166,3 @@ fn nil() {
 //       %q{~~~~~~ expression},
 //       SINCE_2_1)
 //   end
-
-// TODO INCOMPLETE
-#[test]
-fn test_int() {
-    test_parses!("42", Node::Int(42));
-}

@@ -51,7 +51,7 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
         action_with_literal!(
             format!(r"{}{}{}",
                 r"[+-]",
-                pattern_lit!("w_any"),
+                pattern_lit!("w_any*"),
                 r"[[:digit:]]"
             ), |lexer: &mut Lexer| {
                 let token = Token::T_UNARY_NUM(lexer.input_stream.token_string_from_range(lexer.input_stream.ts.unwrap(), lexer.input_stream.ts.unwrap() + 1));

@@ -654,10 +654,6 @@ pub fn construct() -> TMatchingPatterns {
     //     ;
     pattern!("w_any", r"[ \t\r\f\v]+"); // TODO INCOMPLETE
 
-    // TODO NOT CORRESPONDING
-    // NOTE cant combine current `w_any` with `*`, since it ends with `+`
-    pattern!("w_any_*", r"[ \t\r\f\v]*");
-
     //   #
     //   # === EXPRESSION PARSING ===
     //   #
@@ -727,7 +723,11 @@ pub fn construct() -> TMatchingPatterns {
     // ===
 
     // w_space+
-    pattern!("w_space+", r"([ \t\r\f\v]+)");
+    pattern!("w_space+", r"[ \t\r\f\v]+");
+
+    // TODO NOT CORRESPONDING
+    // NOTE cant combine current `w_any` with `*`, since it ends with `+`
+    pattern!("w_any*", r"[ \t\r\f\v]*");
 
     // call_or_var - keyword
     // TODO simplify, dont rewrite pattern_lits

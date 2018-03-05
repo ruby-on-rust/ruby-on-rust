@@ -48,8 +48,10 @@ impl Parser {
     }
 
     // TODO handle no more token
-    fn consume_current_token(&mut self) {
+    fn consume_current_token(&mut self) -> Token {
+        let original_p = self.current_p;
         self.current_p += 1;
+        return self.tokens.get(original_p).unwrap().clone();
     }
 
     // fn try_to_consume_token(&mut self, token: Token) -> Result<Token> {
@@ -211,6 +213,9 @@ impl Parser {
     // TODO INCOMPLETE
     fn p_keyword_variable(&mut self) -> Option<Node> {
         if let Some(_) = self.match_1_token(Token::K_NIL) { return Some(Node::Nil); }
+
+        if let Some(_) = self.match_1_token(Token::K_TRUE) { return Some(Node::True); }
+        if let Some(_) = self.match_1_token(Token::K_FALSE) { return Some(Node::False); }
 
         None
     }
@@ -570,18 +575,26 @@ impl Parser {
     //             {
     //               result = val[0]
     //             }
-    //         | tUNARY_NUM simple_numeric =tLOWEST
-    //             {
-    //               if @builder.respond_to? :negate
-    //                 # AST builder interface compatibility
-    //                 result = @builder.negate(val[0], val[1])
-    //               else
-    //                 result = @builder.unary_num(val[0], val[1])
-    //               end
-    //             }
     // TODO IMCOMPLETE
     fn p_numeric(&mut self) -> Option<Node> {
         if let Some(n_simple_numeric) = self.p_simple_numeric() { return Some(n_simple_numeric); }
+
+        //         | tUNARY_NUM simple_numeric =tLOWEST
+        //             {
+        //               if @builder.respond_to? :negate
+        //                 # AST builder interface compatibility
+        //                 result = @builder.negate(val[0], val[1])
+        //               else
+        //                 result = @builder.unary_num(val[0], val[1])
+        //               end
+        //             }
+        // TODO HANDLE %prec
+        if let Token::T_UNARY_NUM(_) = self.current_token() {
+            let t_unary_num = self.consume_current_token();
+            if let Some(n_simple_numeric) = self.p_simple_numeric() {
+                return Some(node::unary_num(t_unary_num, n_simple_numeric));
+            }
+        }
 
         None
     }
