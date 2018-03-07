@@ -20,7 +20,6 @@ mod literal;           use self::literal::Literal;
 pub struct Lexer {
     current_state: LexingState, // NOTE like the @cs somehow
     next_state: Option<LexingState>,
-    // TODO CLEANUP states_stack: Vec<LexingState>,
 
     tokens_tables: HashMap<&'static str, HashMap<&'static str, Token>>,
     shared_actions: TSharedActions,
@@ -57,7 +56,6 @@ impl Lexer {
         let shared_actions = shared_actions::construct();
 
         Lexer {
-            // TODO CLEANUP states_stack: vec![LexingState::LineBegin],
             current_state: LexingState::LineBegin, // NOTE setting value here is no use actually, since every time will pop one from states_stack
             next_state: None,
 
