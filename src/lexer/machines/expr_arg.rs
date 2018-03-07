@@ -63,7 +63,7 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
                 // TODO NOTE originally the token `tLPAREN2` contains a value '('
                 lexer.emit_token(Token::T_LPAREN_ARG);
 
-                lexer.push_next_state(state!("expr_beg"));
+                lexer.set_next_state(state!("expr_beg"));
                 lexer.flag_breaking();
             }
         },
@@ -78,7 +78,7 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
         //
         action!("e_lparen", |lexer: &mut Lexer| {
             lexer.invoke_proc("e_lparen");
-            lexer.push_next_state(state!("expr_beg"));
+            lexer.set_next_state(state!("expr_beg"));
             lexer.flag_breaking();
         }),
 
@@ -94,7 +94,7 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
             procedure: |lexer: &mut Lexer| {
                 lexer.invoke_proc("e_lbrack");
                 // TODO NOTE originally the token `tLBRACK` contains a value '['
-                lexer.push_next_state(state!("expr_beg"));
+                lexer.set_next_state(state!("expr_beg"));
                 lexer.flag_breaking();
             }
         },
@@ -122,11 +122,11 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
                 // TODO maybe unwrap()
                 if lexer.lambda_stack.is_empty() || ( lexer.lambda_stack.last().unwrap() == &lexer.paren_nest ) {
                     lexer.input_stream.hold_current_token();
-                    lexer.push_next_state(state!("expr_end"))
+                    lexer.set_next_state(state!("expr_end"))
                 } else {
                     // TODO NOTE originally the token `tLCURLY` contains a value '{'
                     lexer.emit_token(Token::T_LCURLY);
-                    lexer.push_next_state(state!("expr_value"));
+                    lexer.set_next_state(state!("expr_value"));
                     lexer.flag_breaking();
                 }
             }
@@ -148,7 +148,7 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
             regex: Regex::new(r"^\?[ \n\t\r\f\v]").unwrap(),
             procedure: |lexer: &mut Lexer| {
                 lexer.input_stream.hold_current_token();
-                lexer.push_next_state(state!("expr_end"))
+                lexer.set_next_state(state!("expr_end"))
             }
         },
 
@@ -160,7 +160,7 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
             regex: Regex::new(r"^[ \n\t\r\f\v]*\?").unwrap(),
             procedure: |lexer: &mut Lexer| {
                 lexer.input_stream.hold_current_char();
-                lexer.push_next_state(state!("expr_beg"));
+                lexer.set_next_state(state!("expr_beg"));
             }
         },
 
@@ -200,7 +200,7 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
                 }
 
                 lexer.input_stream.p = tm - 1;
-                lexer.push_next_state(state!("expr_beg"));
+                lexer.set_next_state(state!("expr_beg"));
             }
         },
 
@@ -227,7 +227,7 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
                 // TODO handle diagnostic
 
                 lexer.input_stream.p = tm - 1;
-                lexer.push_next_state(state!("expr_beg"));
+                lexer.set_next_state(state!("expr_beg"));
             }
         },
 
@@ -240,7 +240,7 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
             procedure: |lexer: &mut Lexer| {
                 lexer.input_stream.hold_current_char();
                 lexer.input_stream.hold_current_char();
-                lexer.push_next_state(state!("expr_beg"));
+                lexer.set_next_state(state!("expr_beg"));
             }
         },
 
@@ -252,7 +252,7 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
             regex: Regex::new(r"^[ \t\r\f\v]*:").unwrap(),
             procedure: |lexer: &mut Lexer| {
                 lexer.input_stream.hold_current_char();
-                lexer.push_next_state(state!("expr_beg"));
+                lexer.set_next_state(state!("expr_beg"));
             }
         },
 
@@ -262,7 +262,7 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
             regex: Regex::new(r"^[ \t\r\f\v]+[[:alpha:]][[:alnum:]]*[\?!]?:").unwrap(),
             procedure: |lexer: &mut Lexer| {
                 lexer.input_stream.hold_current_token();
-                lexer.push_next_state(state!("expr_beg"));
+                lexer.set_next_state(state!("expr_beg"));
             }
         },
 
@@ -284,7 +284,7 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
                 let tm = lexer.input_stream.ts.unwrap() + w_space_len;
 
                 lexer.input_stream.p = tm - 1;
-                lexer.push_next_state(state!("expr_end"))
+                lexer.set_next_state(state!("expr_end"))
             }
         },
 
@@ -307,19 +307,19 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
         // 
         box Action {
             regex: Regex::new(r"^[ \t\r\f\v]*((&)|(\|)|(&&)|(\|\|)|(\^)|(\+)|(-)|(\*)|(/)|(\*\*)|(~)|(<<)|(>>)|(%))[= \n\t\r\f\v]").unwrap(),
-            procedure: |lexer: &mut Lexer| { lexer.input_stream.hold_current_token(); lexer.push_next_state(state!("expr_end")) }
+            procedure: |lexer: &mut Lexer| { lexer.input_stream.hold_current_token(); lexer.set_next_state(state!("expr_end")) }
         },
         box Action {
             regex: Regex::new(r"^[ \t\r\f\v]*((if)|(unless)|(while)|(until)|(rescue))").unwrap(),
-            procedure: |lexer: &mut Lexer| { lexer.input_stream.hold_current_token(); lexer.push_next_state(state!("expr_end")) }
+            procedure: |lexer: &mut Lexer| { lexer.input_stream.hold_current_token(); lexer.set_next_state(state!("expr_end")) }
         },
         box Action {
             regex: Regex::new(r"^[ \t\r\f\v]*&\.").unwrap(),
-            procedure: |lexer: &mut Lexer| { lexer.input_stream.hold_current_token(); lexer.push_next_state(state!("expr_end")) }
+            procedure: |lexer: &mut Lexer| { lexer.input_stream.hold_current_token(); lexer.set_next_state(state!("expr_end")) }
         },
         box Action {
             regex: Regex::new(r"^[ \t\r\f\v]*((,)|(=)|(->)|(\()|(\[)|(\])|(::)|(\?)|(:)|(\.)|(\.\.)|(\.\.\.))").unwrap(),
-            procedure: |lexer: &mut Lexer| { lexer.input_stream.hold_current_token(); lexer.push_next_state(state!("expr_end")) }
+            procedure: |lexer: &mut Lexer| { lexer.input_stream.hold_current_token(); lexer.set_next_state(state!("expr_end")) }
         },
 
         //     w_space;
@@ -327,15 +327,15 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
 
         //     w_comment
         //     => { fgoto expr_end; };
-        action!("w_space", |lexer: &mut Lexer| { lexer.push_next_state(state!("expr_end")) }),
+        action!("w_space", |lexer: &mut Lexer| { lexer.set_next_state(state!("expr_end")) }),
 
         //     w_newline
         //     => { fhold; fgoto expr_end; };
-        action!("w_newline", |lexer: &mut Lexer| { lexer.push_next_state(state!("expr_end")) }),
+        action!("w_newline", |lexer: &mut Lexer| { lexer.set_next_state(state!("expr_end")) }),
 
         //     c_any
         //     => { fhold; fgoto expr_beg; };
-        action!("c_any", |lexer: &mut Lexer| { lexer.push_next_state(state!("expr_beg")); }),
+        action!("c_any", |lexer: &mut Lexer| { lexer.set_next_state(state!("expr_beg")); }),
 
         //     c_eof => do_eof;
         action!("c_eof", get_shared_action!("do_eof")),

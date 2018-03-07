@@ -47,7 +47,7 @@ pub fn construct_machine_expr_mid( patterns: &TMatchingPatterns, shared_actions:
         //          fnext expr_beg; fbreak; };
         action!("keyword_modifier", |lexer: &mut Lexer| {
             lexer.emit_token_from_table("keywords");
-            lexer.push_next_state(state!("expr_beg"));
+            lexer.set_next_state(state!("expr_beg"));
             lexer.flag_breaking();
         }),
 
@@ -55,7 +55,7 @@ pub fn construct_machine_expr_mid( patterns: &TMatchingPatterns, shared_actions:
         //     => { p = @ts - 1; fgoto expr_beg; };
         action!("bareword", |lexer: &mut Lexer| {
             lexer.input_stream.hold_current_token();
-            lexer.push_next_state(state!("expr_beg"));
+            lexer.set_next_state(state!("expr_beg"));
         }),
 
         //     w_space_comment;
@@ -65,14 +65,14 @@ pub fn construct_machine_expr_mid( patterns: &TMatchingPatterns, shared_actions:
         //     => { fhold; fgoto expr_end; };
         action!("w_newline", |lexer: &mut Lexer| {
             lexer.input_stream.hold_current_char();
-            lexer.push_next_state(state!("expr_end"));
+            lexer.set_next_state(state!("expr_end"));
         }),
 
         //     c_any
         //     => { fhold; fgoto expr_beg; };
         action!("c_any", |lexer: &mut Lexer| {
             lexer.input_stream.hold_current_char();
-            lexer.push_next_state(state!("expr_beg"));
+            lexer.set_next_state(state!("expr_beg"));
         }),
 
         //     c_eof => do_eof;

@@ -11,6 +11,8 @@ pub enum Token {
     T_FID( TokenString ),
     T_UNARY_NUM( TokenString ),
     T_SYMBOL( TokenString ),
+    T_STRING( TokenString ),
+
     K_ALIAS,
     K_AND,
     K_BEGIN,

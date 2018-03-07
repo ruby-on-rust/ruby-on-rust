@@ -120,6 +120,7 @@ pub fn construct_machine_interp_string( patterns: &TMatchingPatterns, shared_act
 //       interp_code => extend_interp_code;
 //       interp_var  => extend_interp_var;
 //       e_bs escape => extend_string_escaped;
+//           TODO NOTE e_bs embedded action
 //       c_eol       => extend_string_eol;
 //       c_any       => extend_string;
 //   *|;
@@ -166,6 +167,7 @@ pub fn construct_machine_plain_words( patterns: &TMatchingPatterns, shared_actio
 
 //   plain_words := |*
 //       e_bs c_any  => extend_string_escaped;
+//           TODO NOTE e_bs embedded action
 //       c_space+    => extend_string_space;
 //       c_eol       => extend_string_eol;
 //       c_any       => extend_string;
@@ -214,6 +216,7 @@ pub fn construct_machine_plain_string( patterns: &TMatchingPatterns, shared_acti
 //   plain_string := |*
 //       '\\' c_nl   => extend_string_eol;
 //       e_bs c_any  => extend_string_escaped;
+//           TODO NOTE e_bs embedded action
 //       c_eol       => extend_string_eol;
 //       c_any       => extend_string;
 //   *|;

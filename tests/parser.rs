@@ -131,8 +131,8 @@ fn int() {
 
 #[test]
 fn string_plain() {
+    assert_parses!(r"'foobar'", Node::Str(String::from("foobar")));
     // TODO
-    assert_parses!("\"foobar\"", Node::Str(String::from("foobar")));
     // assert_parses!(r"%q(foobar)", Node::Str(String::from("foobar")));
 }
 

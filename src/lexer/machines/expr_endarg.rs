@@ -72,7 +72,7 @@ pub fn construct_machine_expr_endarg( patterns: &TMatchingPatterns, shared_actio
             } else {
                 lexer.emit_token(Token::T_LBRACE_ARG); // TODO original token has value '{'
             }
-            lexer.push_next_state(state!("expr_value"));
+            lexer.set_next_state(state!("expr_value"));
         }),
 
         //     'do'
@@ -80,7 +80,7 @@ pub fn construct_machine_expr_endarg( patterns: &TMatchingPatterns, shared_actio
         //         fnext expr_value; fbreak; };
         action_with_literal!("do", |lexer: &mut Lexer| {
             lexer.emit_do(true);
-            lexer.push_next_state(state!("expr_value"));
+            lexer.set_next_state(state!("expr_value"));
             lexer.flag_breaking();
         }),
 
@@ -91,7 +91,7 @@ pub fn construct_machine_expr_endarg( patterns: &TMatchingPatterns, shared_actio
         //     => { fhold; fgoto expr_end; };
         action_with_literal!("c_any", |lexer: &mut Lexer| {
             lexer.input_stream.hold_current_char();
-            lexer.push_next_state(state!("expr_end"));
+            lexer.set_next_state(state!("expr_end"));
         }),
 
         //     c_eof => do_eof;

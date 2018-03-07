@@ -555,6 +555,10 @@ impl Parser {
         // TODO DUMMY
         if let Some(n_literal) = self.p_literal() { return Some(n_literal); }
 
+        // TODO DUMMY should be `strings`
+        if let Some(n_string) = self.p_string() { return Some(n_string); }
+
+
         if let Some(n_var_ref) = self.p_var_ref() { return Some(n_var_ref); }
 
         None
@@ -570,6 +574,15 @@ impl Parser {
         if let Some(n_symbol) = self.p_symbol() { return Some(n_symbol); }
 
         None
+    }
+
+    // TODO DUMMY
+    fn p_string(&mut self) -> Option<Node> {
+        if let Token::T_STRING(token_string) = self.current_token() {
+            return Some( Node::Str( token_string ) );
+        }
+
+       None
     }
 
     //  numeric: simple_numeric

@@ -45,7 +45,7 @@ pub fn construct_machine_expr_value( patterns: &TMatchingPatterns, shared_action
             format!(r"{}[^:]", pattern_lit!("label")),
             |lexer: &mut Lexer| {
                 lexer.input_stream.hold_current_token();
-                lexer.push_next_state(state!("expr_end"));
+                lexer.set_next_state(state!("expr_end"));
             }
         ),
 
@@ -63,7 +63,7 @@ pub fn construct_machine_expr_value( patterns: &TMatchingPatterns, shared_action
                 let literal = Literal::new( lit_type, lit_delimiter, lexer.input_stream.ts.unwrap() );
 
                 let next_state = lexer.push_literal(literal);
-                lexer.push_next_state(next_state);
+                lexer.set_next_state(next_state);
             }
         ),
 
@@ -72,13 +72,13 @@ pub fn construct_machine_expr_value( patterns: &TMatchingPatterns, shared_action
 
         //       w_newline
         //       => { fgoto line_begin; };
-        action!("w_newline", |lexer: &mut Lexer| { lexer.push_next_state(state!("line_begin")); }),
+        action!("w_newline", |lexer: &mut Lexer| { lexer.set_next_state(state!("line_begin")); }),
 
         //       c_any
         //       => { fhold; fgoto expr_beg; };
         action!("c_any", |lexer: &mut Lexer| {
             lexer.input_stream.hold_current_char();
-            lexer.push_next_state(state!("expr_beg"));
+            lexer.set_next_state(state!("expr_beg"));
         }),
 
         //   c_eof => do_eof;

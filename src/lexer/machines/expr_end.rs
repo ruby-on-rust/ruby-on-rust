@@ -50,7 +50,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
             lexer.emit_token(Token::T_LAMBDA);
 
             lexer.lambda_stack.push(lexer.paren_nest);
-            lexer.push_next_state(state!("expr_endfn"));
+            lexer.set_next_state(state!("expr_endfn"));
             lexer.flag_breaking();
         }),
 
@@ -97,7 +97,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
                         panic!("UNIMPL emit_do");
                     }
                 }
-                lexer.push_next_state(state!("expr_value"));
+                lexer.set_next_state(state!("expr_value"));
                 lexer.flag_breaking();
             }
         ),
@@ -111,7 +111,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //            fnext expr_fname; fbreak; };
         action!("keyword_with_fname", |lexer: &mut Lexer| {
             lexer.emit_token_from_table("keywords");
-            lexer.push_next_state(state!("expr_fname"));
+            lexer.set_next_state(state!("expr_fname"));
             lexer.flag_breaking();
         }),
 
@@ -124,7 +124,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
             |lexer: &mut Lexer| {
                 lexer.emit_token(Token::K_CLASS);
                 lexer.emit_token(Token::T_LSHFT); // TODO originally has value `<<`
-                lexer.push_next_state(state!("expr_value"));
+                lexer.set_next_state(state!("expr_value"));
                 lexer.flag_breaking();
             }
         ),
@@ -135,7 +135,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //            fnext expr_beg; fbreak; };
         action!("keyword_modifier", |lexer: &mut Lexer| {
             lexer.emit_token_from_table("keywords");
-            lexer.push_next_state(state!("expr_beg"));
+            lexer.set_next_state(state!("expr_beg"));
             lexer.flag_breaking();
         }),
 
@@ -145,7 +145,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //            fnext expr_value; fbreak; };
         action!("keyword_with_value", |lexer: &mut Lexer| {
             lexer.emit_token_from_table("keywords");
-            lexer.push_next_state(state!("expr_value"));
+            lexer.set_next_state(state!("expr_value"));
             lexer.flag_breaking();
         }),
 
@@ -154,7 +154,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //            fnext expr_mid; fbreak; };
         action!("keyword_with_mid", |lexer: &mut Lexer| {
             lexer.emit_token_from_table("keywords");
-            lexer.push_next_state(state!("expr_mid"));
+            lexer.set_next_state(state!("expr_mid"));
             lexer.flag_breaking();
         }),
 
@@ -171,7 +171,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         action!("keyword_with_arg", |lexer: &mut Lexer| {
             lexer.emit_token_from_table("keywords");
             // NOTE IGNORED version18
-            lexer.push_next_state(state!("expr_arg"));
+            lexer.set_next_state(state!("expr_arg"));
             lexer.flag_breaking();
         }),
 
@@ -332,7 +332,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //            fnext *arg_or_cmdarg; fbreak; };
         action!("constant", |lexer: &mut Lexer| {
             let next_state = lexer.arg_or_cmdarg();
-            lexer.push_next_state(next_state);
+            lexer.set_next_state(next_state);
             lexer.flag_breaking();
         }),
 
@@ -351,7 +351,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
             |lexer: &mut Lexer| {
                 lexer.input_stream.hold_current_token();
                 // TODO is this enough to simulate `fcall`?
-                lexer.push_next_state(state!("expr_variable"));
+                lexer.set_next_state(state!("expr_variable"));
             }
         ),
 
@@ -364,7 +364,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //            fnext expr_dot; fbreak; };
         action_with_literal!( r"(\.)|(&\.)|(::)", |lexer: &mut Lexer| {
             lexer.emit_token_from_table("punctuation");
-            lexer.push_next_state(state!("expr_dot"));
+            lexer.set_next_state(state!("expr_dot"));
             lexer.flag_breaking();
         }),
 
@@ -406,7 +406,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
             |lexer: &mut Lexer| {
                 lexer.invoke_proc("e_lparen");
                 lexer.emit_token_from_table("punctuation");
-                lexer.push_next_state(state!("expr_beg"));
+                lexer.set_next_state(state!("expr_beg"));
                 lexer.flag_breaking();
             }
         ),
@@ -414,7 +414,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
             format!(r"({})|({})", pattern_lit!("operator_arithmetic"), pattern_lit!("operator_rest")),
             |lexer: &mut Lexer| {
                 lexer.emit_token_from_table("punctuation");
-                lexer.push_next_state(state!("expr_beg"));
+                lexer.set_next_state(state!("expr_beg"));
                 lexer.flag_breaking();
             }
         ),
@@ -450,7 +450,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
                 // `}` `]`
                 match lexer.input_stream.current_token().unwrap().as_ref() {
                     "}" | "]" => {
-                        lexer.push_next_state(state!("expr_endarg"));
+                        lexer.set_next_state(state!("expr_endarg"));
                     },
                     _ => ()
                 };
@@ -464,7 +464,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //            fnext expr_beg; fbreak; };
         action_with_literal!( format!(r"{}=", pattern_lit!("operator_arithmetic")), |lexer: &mut Lexer| {
             lexer.emit_token(Token::T_OP_ASGN);
-            lexer.push_next_state(state!("expr_beg"));
+            lexer.set_next_state(state!("expr_beg"));
             lexer.flag_breaking();
         }),
 
@@ -474,7 +474,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //            fnext expr_value; fbreak; };
         action_with_literal!(r"\?", |lexer: &mut Lexer| {
             lexer.emit_token(Token::T_EH);
-            lexer.push_next_state(state!("expr_value"));
+            lexer.set_next_state(state!("expr_value"));
             lexer.flag_breaking();
         }),
 
@@ -484,7 +484,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         action_with_literal!(r"\[", |lexer: &mut Lexer| {
             lexer.invoke_proc("e_lbrack");
             lexer.emit_token(Token::T_LBRACK2);
-            lexer.push_next_state(state!("expr_beg"));
+            lexer.set_next_state(state!("expr_beg"));
             lexer.flag_breaking();
         }),
 
@@ -493,7 +493,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //            fnext expr_beg; fbreak; };
         action!("punctuation_end", |lexer: &mut Lexer| {
             lexer.emit_token_from_table("punctuation");
-            lexer.push_next_state(state!("expr_beg"));
+            lexer.set_next_state(state!("expr_beg"));
             lexer.flag_breaking();
         }),
 
@@ -507,7 +507,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //       w_newline
         //       => { fgoto leading_dot; };
         action!("w_newline", |lexer: &mut Lexer| {
-            lexer.push_next_state(state!("leading_dot"));
+            lexer.set_next_state(state!("leading_dot"));
         }),
 
         //       ';'
@@ -515,7 +515,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //            fnext expr_value; fbreak; };
         action_with_literal!(";", |lexer: &mut Lexer| {
             lexer.emit_token(Token::T_SEMI);
-            lexer.push_next_state(state!("expr_value"));
+            lexer.set_next_state(state!("expr_value"));
             lexer.flag_breaking();
         }),
 

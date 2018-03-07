@@ -57,7 +57,7 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
                 let token = Token::T_UNARY_NUM(lexer.input_stream.token_string_from_range(lexer.input_stream.ts.unwrap(), lexer.input_stream.ts.unwrap() + 1));
                 lexer.emit_token(token);
                 lexer.input_stream.hold_current_char();
-                lexer.push_next_state(state!("expr_end"));
+                lexer.set_next_state(state!("expr_end"));
                 lexer.flag_breaking();
             }),
 
@@ -93,10 +93,10 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
                 lexer.input_stream.hold_current_char();
 
                 // TODO can we write sth like this when NLL is available?
-                // lexer.push_next_state(lexer.push_literal(literal));
+                // lexer.set_next_state(lexer.push_literal(literal));
 
                 let next_state = lexer.push_literal(literal);
-                lexer.push_next_state(next_state);
+                lexer.set_next_state(next_state);
             }),
 
         //       # %<string>
@@ -115,7 +115,7 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
             let literal = Literal::new( lit_type, lit_delimiter, lexer.input_stream.ts.unwrap() );
 
             let next_state = lexer.push_literal(literal);
-            lexer.push_next_state(next_state);
+            lexer.set_next_state(next_state);
         }),
 
         //       # %w(we are the people)
@@ -132,7 +132,7 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
                 let lit_delimiter = current_slice.chars().last().unwrap().to_string();
                 let literal = Literal::new( lit_type, lit_delimiter, lexer.input_stream.ts.unwrap() );
                 let next_state = lexer.push_literal(literal);
-                lexer.push_next_state(next_state);
+                lexer.set_next_state(next_state);
             }),
 
         //       '%' c_eof
@@ -208,7 +208,7 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
                 let lit_delimiter = current_slice.chars().last().unwrap().to_string();
                 let literal = Literal::new( lit_type, lit_delimiter, lexer.input_stream.ts.unwrap() );
                 let next_state = lexer.push_literal(literal);
-                lexer.push_next_state(next_state);
+                lexer.set_next_state(next_state);
             }
         ),
 
@@ -230,7 +230,7 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
                 lexer.emit_token(token);
 
                 lexer.input_stream.p = lexer.input_stream.tm - 1;
-                lexer.push_next_state(state!("expr_end"));
+                lexer.set_next_state(state!("expr_end"));
                 lexer.flag_breaking();
             }
         ),
@@ -250,7 +250,7 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
             |lexer: &mut Lexer| {
                 let token = Token::T_SYMBOL( lexer.input_stream.token_string_from_range(lexer.input_stream.ts.unwrap()+1, lexer.input_stream.te.unwrap()) );
                 lexer.emit_token(token);
-                lexer.push_next_state(state!("expr_end"));
+                lexer.set_next_state(state!("expr_end"));
                 lexer.flag_breaking();
             }
         ),
@@ -314,7 +314,7 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
             format!(r"\?[A-Za-z_]{}", pattern_lit!("bareword")),
             |lexer: &mut Lexer| {
                 lexer.input_stream.hold_current_token();
-                lexer.push_next_state(state!("expr_end"));
+                lexer.set_next_state(state!("expr_end"));
             }
         ),
 
@@ -389,7 +389,7 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
         //            fnext expr_value; fbreak; };
         action!("keyword_modifier", |lexer: &mut Lexer| {
             lexer.emit_token_from_table("keywords_begin");
-            lexer.push_next_state(state!("expr_value"));
+            lexer.set_next_state(state!("expr_value"));
             lexer.flag_breaking();
         }),
 
@@ -446,7 +446,7 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
                 // TODO WITH EMBEDDED ACTION ambiguous_ident_suffix <- ambiguous_fid_suffix
 
                 lexer.input_stream.hold_current_token();
-                lexer.push_next_state(state!("expr_end"));
+                lexer.set_next_state(state!("expr_end"));
             }
         ),
 
@@ -516,7 +516,7 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
             ),
             |lexer: &mut Lexer| {
                 lexer.input_stream.hold_current_token();
-                lexer.push_next_state(state!("expr_end"));
+                lexer.set_next_state(state!("expr_end"));
             }
         ),
 

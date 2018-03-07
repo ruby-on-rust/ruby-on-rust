@@ -41,7 +41,7 @@ pub fn construct_machine_expr_dot( patterns: &TMatchingPatterns, shared_actions:
             
             // simulating `fnext *arg_or_cmdarg;`
             let next_state = lexer.arg_or_cmdarg();
-            lexer.push_next_state(next_state);
+            lexer.set_next_state(next_state);
             lexer.flag_breaking();
         }),
 
@@ -54,7 +54,7 @@ pub fn construct_machine_expr_dot( patterns: &TMatchingPatterns, shared_actions:
 
             // simulating `fnext *arg_or_cmdarg;`
             let next_state = lexer.arg_or_cmdarg();
-            lexer.push_next_state(next_state);
+            lexer.set_next_state(next_state);
             lexer.flag_breaking();
         }),
 
@@ -93,7 +93,7 @@ pub fn construct_machine_expr_dot( patterns: &TMatchingPatterns, shared_actions:
                 lexer.emit_token(token);
 
                 let next_state = lexer.arg_or_cmdarg();
-                lexer.push_next_state(next_state);
+                lexer.set_next_state(next_state);
 
                 // TODO NOTE
                 // original p = tm - 1
@@ -111,7 +111,7 @@ pub fn construct_machine_expr_dot( patterns: &TMatchingPatterns, shared_actions:
                 lexer.emit_token(token);
 
                 let next_state = lexer.arg_or_cmdarg();
-                lexer.push_next_state(next_state);
+                lexer.set_next_state(next_state);
 
                 // TODO NOTE
                 // original p = tm - 1
@@ -135,7 +135,7 @@ pub fn construct_machine_expr_dot( patterns: &TMatchingPatterns, shared_actions:
             //                   operator_fname                        _arithmetic                                                          _rest
             procedure: |lexer: &mut Lexer| {
                 lexer.emit_token_from_table("punctuation");
-                lexer.push_next_state(LexingState::ExprArg);
+                lexer.set_next_state(LexingState::ExprArg);
                 lexer.flag_breaking();
             }
         },
@@ -147,7 +147,7 @@ pub fn construct_machine_expr_dot( patterns: &TMatchingPatterns, shared_actions:
         //     => { fhold; fgoto expr_end; };
         action!("c_any", |lexer: &mut Lexer| {
             lexer.input_stream.hold_current_char();
-            lexer.push_next_state(state!("expr_end"))
+            lexer.set_next_state(state!("expr_end"))
         }),
 
         //     c_eof => do_eof;

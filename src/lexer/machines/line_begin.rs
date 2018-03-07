@@ -41,7 +41,7 @@ pub fn construct_machine_line_begin( patterns: &TMatchingPatterns, shared_action
             format!(r"=begin({}|{})", pattern_lit!("c_space"), pattern_lit!("c_nl_zlen")),
             |lexer: &mut Lexer| {
                 // TODO @eq_begin_s
-                lexer.push_next_state(state!("line_comment"));
+                lexer.set_next_state(state!("line_comment"));
             }
         ),
 
@@ -59,7 +59,7 @@ pub fn construct_machine_line_begin( patterns: &TMatchingPatterns, shared_action
         //       => { fhold; fgoto expr_value; };
         action!("c_any", |lexer: &mut Lexer| {
             lexer.input_stream.hold_current_char();
-            lexer.push_next_state(state!("expr_value"));
+            lexer.set_next_state(state!("expr_value"));
         }),
 
         //       c_eof => do_eof;

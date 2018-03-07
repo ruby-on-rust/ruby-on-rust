@@ -18,8 +18,9 @@ mod stack_state;       use self::stack_state::StackState;
 mod literal;           use self::literal::Literal;
 
 pub struct Lexer {
-    states_stack: Vec<LexingState>,
     current_state: LexingState, // NOTE like the @cs somehow
+    next_state: Option<LexingState>,
+    // TODO CLEANUP states_stack: Vec<LexingState>,
 
     tokens_tables: HashMap<&'static str, HashMap<&'static str, Token>>,
     shared_actions: TSharedActions,
@@ -56,8 +57,9 @@ impl Lexer {
         let shared_actions = shared_actions::construct();
 
         Lexer {
-            states_stack: vec![LexingState::LineBegin],
+            // TODO CLEANUP states_stack: vec![LexingState::LineBegin],
             current_state: LexingState::LineBegin, // NOTE setting value here is no use actually, since every time will pop one from states_stack
+            next_state: None,
 
             tokens_tables: tokens_tables::construct(),
 
@@ -96,18 +98,15 @@ impl Lexer {
 
         println!("--- lexer: advance ---");
 
-        // TODO NOTE
-        // we're using `states_stack.last()`(top of the stack) as the corresponding to `@cs`(current state)
-        // not sure if this will cause any issue
-        self.command_state = ( self.states_stack.last().unwrap() == &LexingState::ExprValue ) || 
-                             ( self.states_stack.last().unwrap() == &LexingState::LineBegin );
+        self.command_state = ( self.current_state == LexingState::ExprValue ) || 
+                             ( self.current_state == LexingState::LineBegin );
 
         // 
         self.exec();
 
         // TODO INCORRECT
         // token_queue
-        Some( ( *self.tokens.last().unwrap() ).clone())
+        Some( ( *self.tokens.last().expect("`tokens` is empty") ).clone())
     }
 
     // match-state-invoke-action loop
@@ -118,17 +117,21 @@ impl Lexer {
         self.is_breaking = false;
 
         loop {
-            println!("\n--- exec looping, states_stack: {:?} ---", self.states_stack);
+            println!("\n--- exec looping, current_state: {:?}, next_state: {:?}, is_breaking: {:?} ---", self.current_state, self.next_state, self.is_breaking);
 
-            if ( self.is_breaking == true ) {
+            // handle breaking
+            if self.is_breaking == true {
                 println!("breaking...");
                 break;
             }
 
-            // ===
+            // handle state transition
+            if let Some(next_state) = self.next_state.clone() {
+                self.current_state = next_state.clone();
+                self.next_state = None;
+            }
 
             // get actions
-            self.current_state = self.states_stack.pop().expect("states_stack is empty");
             let actions = self.machines.get(&self.current_state).unwrap().clone();
 
             // find matching action
@@ -143,15 +146,15 @@ impl Lexer {
 
     // parser will use this method to set lexer's state
     pub fn set_state(&mut self, state: LexingState) {
-        self.states_stack = vec![state];
+        self.current_state = state;
     }
 
     fn flag_breaking(&mut self) {
         self.is_breaking = true;
     }
 
-    fn push_next_state(&mut self, state: LexingState) {
-        self.states_stack.push(state);
+    fn set_next_state(&mut self, state: LexingState) {
+        self.next_state = Some(state);
     }
 
     fn emit_token(&mut self, token: Token) {

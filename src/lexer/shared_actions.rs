@@ -20,12 +20,7 @@ pub fn construct() -> TSharedActions {
         };
     }
 
-    action!("noop", |lexer: &mut Lexer|{
-        // NOTE HACKING
-        // preserve current state
-        let current_state = lexer.current_state.clone();
-        lexer.push_next_state(current_state);
-    });
+    action!("noop", |lexer: &mut Lexer|{});
 
     // original do_eof
     action!("do_eof", |lexer: &mut Lexer| {
@@ -268,8 +263,45 @@ pub fn construct() -> TSharedActions {
     //       current_literal.extend_string(string, @ts, @te)
     //     end
     //   }
+    // TODO INCOMPLETE
     action!("extend_string", |lexer: &mut Lexer| {
-        panic!("UNIMPL");
+        // TODO WIP
+
+        // TODO NAMING
+        let current_string = lexer.input_stream.current_token().unwrap();
+
+        // NOTE ignored ruby22-and-below case
+        // TODO      lookahead = @source_buffer.slice(@te...@te+2)
+        // TODO DUMMY
+        let lookahead = String::from("");
+
+        let mut current_literal = lexer.literal().expect("cant fetch current_literal").clone();
+        if true { // TODO heredoc?
+            if let Some(token) = current_literal.nest_and_try_closing(current_string, lexer.input_stream.ts.unwrap(), lexer.input_stream.te.unwrap(), lookahead) {
+                lexer.emit_token(token);
+
+                // TODO DUMMY
+                let next_state = lexer.pop_literal();
+                lexer.set_next_state(next_state);
+                lexer.flag_breaking();
+            }
+            // (token = current_literal.nest_and_try_closing(string, @ts, @te, lookahead)
+        }
+
+        // TODO DUMMY
+
+        // current_literal.extend_string(string, @ts, @te)
+        current_literal.extend_string(
+            lexer.input_stream.current_token().unwrap(),
+            lexer.input_stream.ts.unwrap(), lexer.input_stream.te.unwrap());
+
+        // NOTE
+        // due to limitations of borrowing in rust, we have to
+        // 1 clone current_literal
+        // 2 update it 
+        // 3 re-save it to the stack
+        lexer.literal_stack.pop();
+        lexer.literal_stack.push(current_literal);
     });
 
     //   action extend_string_escaped {
@@ -511,7 +543,7 @@ pub fn construct() -> TSharedActions {
         lexer.cmdarg.push(false);
 
         match lexer.literal() {
-            Some(literal) => {
+            Some(mut literal) => {
                 literal.start_interp_brace()
             }
             None => ()
@@ -566,11 +598,11 @@ pub fn construct() -> TSharedActions {
         };
 
         if goto_expr_endfn {
-            lexer.push_next_state(state!("expr_endfn"));
+            lexer.set_next_state(state!("expr_endfn"));
             lexer.flag_breaking();
         } else {
             let next_state = lexer.arg_or_cmdarg();
-            lexer.push_next_state(next_state);
+            lexer.set_next_state(next_state);
             lexer.flag_breaking();
         }
     });

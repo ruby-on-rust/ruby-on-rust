@@ -51,9 +51,9 @@ pub fn construct_machine_expr_labelarg( patterns: &TMatchingPatterns, shared_act
         action!("w_newline", |lexer: &mut Lexer| {
             if lexer.in_kwarg {
                 lexer.input_stream.hold_current_char();
-                lexer.push_next_state(state!("expr_end"));
+                lexer.set_next_state(state!("expr_end"));
             } else {
-                lexer.push_next_state(state!("line_begin"));
+                lexer.set_next_state(state!("line_begin"));
             }
         }),
 
@@ -61,7 +61,7 @@ pub fn construct_machine_expr_labelarg( patterns: &TMatchingPatterns, shared_act
         //   => { fhold; fgoto expr_beg; };
         action!("c_any", |lexer: &mut Lexer| {
             lexer.input_stream.hold_current_char();
-            lexer.push_next_state(state!("expr_beg"));
+            lexer.set_next_state(state!("expr_beg"));
         }),
 
         //   c_eof => do_eof;
