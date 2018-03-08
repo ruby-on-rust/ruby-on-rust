@@ -38,20 +38,28 @@ impl Parser {
     // TODO wrap in Result
     // get a new one if necessary
     fn current_token(&mut self) -> Token {
+        println!("PARSER current_token, current_p: {}", self.current_p);
+
         if self.tokens.get(self.current_p).is_none() {
             self.tokens.push(self.lexer.advance().expect("no token emitted after lexer.advance()"));
         }
 
         let token = (*self.tokens.get(self.current_p).expect("no current token for current_p")).clone();
 
+        println!("PARSER current_token, got token: {:?}", token);
+
         token
     }
 
     // TODO handle no more token
     fn consume_current_token(&mut self) -> Token {
-        let original_p = self.current_p;
+        let token_to_consume = self.tokens.get(self.current_p).unwrap().clone();
+
         self.current_p += 1;
-        return self.tokens.get(original_p).unwrap().clone();
+
+        println!("PARSER comsume_current_token: {:?}", token_to_consume);
+
+        return token_to_consume;
     }
 
     // fn try_to_consume_token(&mut self, token: Token) -> Result<Token> {
@@ -62,6 +70,7 @@ impl Parser {
     // TODO REFINE
     // TODO cant handle token with value for now
     fn match_1_token(&mut self, token: Token) -> Option<Token> {
+        println!("PARSER match_1_token, current_p: {:?}, current: {:?}, token: {:?}", self.current_p.clone(), self.current_token(), token );
 
         let current_token = self.current_token();
         if current_token == token {
@@ -558,7 +567,6 @@ impl Parser {
         // TODO DUMMY should be `strings`
         if let Some(n_string) = self.p_string() { return Some(n_string); }
 
-
         if let Some(n_var_ref) = self.p_var_ref() { return Some(n_var_ref); }
 
         None
@@ -567,11 +575,12 @@ impl Parser {
     //  literal: numeric
     //         | symbol
     //         | dsym
-    // TODO INCOMPLETE
-    // TODO DUMMY
     fn p_literal(&mut self) -> Option<Node> {
+        println!("PARSER p_literal");
+
         if let Some(n_numeric) = self.p_numeric() { return Some(n_numeric); }
         if let Some(n_symbol) = self.p_symbol() { return Some(n_symbol); }
+        if let Some(n_dsym) = self.p_dsym() { return Some(n_dsym); }
 
         None
     }
@@ -646,6 +655,79 @@ impl Parser {
         }
     }
 
+    //  string_contents: # nothing
+    //                     {
+    //                       result = []
+    //                     }
+    //                 | string_contents string_content
+    //                     {
+    //                       result = val[0] << val[1]
+    //                     }
+    fn p_string_contents(&mut self) -> Option<Node> {
+        println!("p_string_contents");
+
+        // NOTE transformed to non-recursive
+        if let Some(n_string_content) = self.p_string_content() {
+            // TODO handle list
+
+            return Some(n_string_content);
+        }
+
+        None
+    }
+
+    // xstring_contents: # nothing
+    //                     {
+    //                     result = []
+    //                     }
+    //                 | xstring_contents string_content
+    //                     {
+    //                     result = val[0] << val[1]
+    //                     }
+    // TODO INCOMPLETE DUMMY
+    fn p_xstring_contents(&mut self) -> Option<Node> {
+        println!("p_xstring_contents");
+
+        // NOTE transformed to non-recursive
+        if let Some(n_string_content) = self.p_string_content() {
+            // TODO handle list
+
+            return Some(n_string_content);
+        }
+
+        None
+    }
+
+    //   string_content: tSTRING_CONTENT
+    //                     {
+    //                       result = @builder.string_internal(val[0])
+    //                     }
+    //                 | tSTRING_DVAR string_dvar
+    //                     {
+    //                       result = val[1]
+    //                     }
+    //                 | tSTRING_DBEG
+    //                     {
+    //                       @lexer.cond.push(false)
+    //                       @lexer.cmdarg.push(false)
+    //                     }
+    //                     compstmt tSTRING_DEND
+    //                     {
+    //                       @lexer.cond.lexpop
+    //                       @lexer.cmdarg.lexpop
+    // 
+    //                       result = @builder.begin(val[0], val[2], val[3])
+    //                     }
+    // TODO INCOMPLETE
+    fn p_string_content(&mut self) -> Option<Node> {
+        println!("PARSER p_string_content");
+        if let Token::T_STRING_CONTENT(t_string_content_value) = self.current_token() {
+            self.consume_current_token();
+            return Some(Node::Str(t_string_content_value));
+        }
+
+        None
+    }
 
     //   symbol: tSYMBOL
     //             {
@@ -653,6 +735,8 @@ impl Parser {
     //               result = @builder.symbol(val[0])
     //             }
     fn p_symbol(&mut self) -> Option<Node> {
+        println!("PARSER p_symbol");
+
         if let Token::T_SYMBOL(symbol_string) = self.current_token() {
             let _t_symbol = self.consume_current_token();
 
@@ -664,6 +748,29 @@ impl Parser {
         None
     }
 
+    // dsym: tSYMBEG xstring_contents tSTRING_END
+    //         {
+    //           @lexer.state = :expr_endarg
+    //           result = @builder.symbol_compose(val[0], val[1], val[2])
+    //         }
+    fn p_dsym(&mut self) -> Option<Node> {
+        println!("PARSER p_dsym");
+        println!("{:?}", self.current_token());
+        if let Some(t_symbeg) = self.match_1_token(Token::T_SYMBEG) {
+            if let Some(n_xstring_contents) = self.p_xstring_contents() {
+                if let Some(t_string_end) = self.match_1_token(Token::T_STRING_END) {
+                    self.lexer.set_state(state!("expr_endarg"));
+                    // TODO DUMMY
+                    // return Some(node::symbol_compose(t_symbeg, n_xstring_contents, t_string_end));
+                    if let Node::Str(str_value) = n_xstring_contents { return Some(Node::Sym(str_value)); }
+                }
+            }
+        }
+
+        None
+    }
+
+    // TODO eliminate `none` rule in recursive descent parser
     // TODO impl corresponding `none` rule from original grammar
     // fn p_none(&mut self) -> Option<Node> {
     //     Some(Node::None)

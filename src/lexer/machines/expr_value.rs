@@ -60,7 +60,9 @@ pub fn construct_machine_expr_value( patterns: &TMatchingPatterns, shared_action
                 let lit_type = lexer.input_stream.current_token().unwrap();
                 let lit_delimiter = lexer.input_stream.current_token().unwrap();
 
-                let literal = Literal::new( lit_type, lit_delimiter, lexer.input_stream.ts.unwrap() );
+                let ts = lexer.input_stream.ts.unwrap();
+                let mut literal = Literal::new( lit_type, lit_delimiter, ts, None, false, false, false );
+                for token in literal.consume_tokens_to_emit() { lexer.emit_token(token); }
 
                 let next_state = lexer.push_literal(literal);
                 lexer.set_next_state(next_state);

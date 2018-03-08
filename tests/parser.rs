@@ -379,9 +379,8 @@ fn string_plain() {
 
 #[test]
 fn symbol_plain() {
-    // TODO
-    // assert_parses!(":foo", Node::Sym(String::from("foo")));
-    // assert_parses!(":'foo'", Node::Sym(String::from("foo")));
+    assert_parses!(":foo", Node::Sym(String::from("foo")));
+    assert_parses!(":'foo'", Node::Sym(String::from("foo")));
 }
 
 //   def test_symbol_interp

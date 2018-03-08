@@ -89,12 +89,14 @@ impl Lexer {
     // then the current `emit` is not correct
     // every `exec()` should emit a token
     // 
-    // TODO wrap in a Result
+    // TODO MAYBE wrap in a Result, instead of Option
     // 
     pub fn advance(&mut self) -> Option<Token> {
-        // TODO token queue
-
         println!("--- lexer: advance ---");
+
+        if !self.tokens.is_empty() {
+            return Some(self.tokens.remove(0));
+        }
 
         self.command_state = ( self.current_state == LexingState::ExprValue ) || 
                              ( self.current_state == LexingState::LineBegin );
@@ -102,9 +104,7 @@ impl Lexer {
         // 
         self.exec();
 
-        // TODO INCORRECT
-        // token_queue
-        Some( ( *self.tokens.last().expect("`tokens` is empty") ).clone())
+        return Some( self.tokens.remove(0) );
     }
 
     // match-state-invoke-action loop
@@ -156,7 +156,7 @@ impl Lexer {
     }
 
     fn emit_token(&mut self, token: Token) {
-        println!("emitting token: {:?}", token);
+        println!(">>> emitting token: {:?}", token);
 
         self.tokens.push(token);
     }

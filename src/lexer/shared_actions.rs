@@ -271,14 +271,19 @@ pub fn construct() -> TSharedActions {
         let current_string = lexer.input_stream.current_token().unwrap();
 
         // NOTE ignored ruby22-and-below case
-        // TODO      lookahead = @source_buffer.slice(@te...@te+2)
-        // TODO DUMMY
-        let lookahead = String::from("");
+        let lookahead = lexer.input_stream.slice_from_range(lexer.input_stream.te.clone().unwrap(), lexer.input_stream.te.clone().unwrap() + 2);
 
         let mut current_literal = lexer.literal().expect("cant fetch current_literal").clone();
         if true { // TODO heredoc?
-            if let Some(token) = current_literal.nest_and_try_closing(current_string, lexer.input_stream.ts.unwrap(), lexer.input_stream.te.unwrap(), lookahead) {
+
+            // calling literal.nest_and_try_closing is kinda complex, see notes before that fn for more detail
+            let final_token_emitted = current_literal.nest_and_try_closing(current_string, lexer.input_stream.ts.unwrap(), lexer.input_stream.te.unwrap(), Some(lookahead));
+            for token_to_emit in current_literal.consume_tokens_to_emit().iter() { lexer.emit_token(token_to_emit.clone()); }
+
+            if let Some(token) = final_token_emitted {
                 lexer.emit_token(token);
+
+                // TODO handle t_label_end
 
                 // TODO DUMMY
                 let next_state = lexer.pop_literal();

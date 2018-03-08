@@ -8,40 +8,10 @@
 //   class Lexer::Literal
 //     DELIMITERS = { '(' => ')', '[' => ']', '{' => '}', '<' => '>' }
 
-//     TYPES = {
-//     # type       start token     interpolate?
-//       "'"   => [ :tSTRING_BEG,   false ],
-//       "<<'" => [ :tSTRING_BEG,   false ],
-//       '%q'  => [ :tSTRING_BEG,   false ],
-//       '"'   => [ :tSTRING_BEG,   true  ],
-//       '<<"' => [ :tSTRING_BEG,   true  ],
-//       '%'   => [ :tSTRING_BEG,   true  ],
-//       '%Q'  => [ :tSTRING_BEG,   true  ],
-
-//       '%w'  => [ :tQWORDS_BEG,   false ],
-//       '%W'  => [ :tWORDS_BEG,    true  ],
-
-//       '%i'  => [ :tQSYMBOLS_BEG, false ],
-//       '%I'  => [ :tSYMBOLS_BEG,  true  ],
-
-//       ":'"  => [ :tSYMBEG,       false ],
-//       '%s'  => [ :tSYMBEG,       false ],
-//       ':"'  => [ :tSYMBEG,       true  ],
-
-//       '/'   => [ :tREGEXP_BEG,   true  ],
-//       '%r'  => [ :tREGEXP_BEG,   true  ],
-
-//       '%x'  => [ :tXSTRING_BEG,  true  ],
-//       '`'   => [ :tXSTRING_BEG,  true  ],
-//       '<<`' => [ :tXSTRING_BEG,  true  ],
-//     }
-
 //     attr_reader   :heredoc_e, :str_s, :dedent_level
 //     attr_accessor :saved_herebody_s
 
 // end
-
-use std::collections::HashMap;
 
 use lexer::Lexer;
 use lexer::LexingState;
@@ -51,7 +21,20 @@ use parser::token::Token;
 pub struct Literal {
     nesting: usize,
 
-    // TODO
+    start_tok: Token,
+    interpolate: bool,
+
+    start_delim: Option<String>,
+    end_delim: Option<String>,
+
+    heredoc_e: Option<usize>,
+    indent: bool,
+    label_allowed: bool,
+
+    dedent_body: bool,
+
+    space_emitted: bool,
+
     monolithic: bool,
 
     // # String type. For :'foo', it is :'
@@ -66,15 +49,25 @@ pub struct Literal {
     buffer: String,
     buffer_s: Option<usize>,
     buffer_e: Option<usize>,
+
+    // TODO NOTE
+    tokens_to_emit: Vec<Token>
 }
 
 impl Literal {
     //     def initialize(lexer, str_type, delimiter, str_s, heredoc_e = nil,
     //                    indent = false, dedent_body = false, label_allowed = false)
+    // TODO NOTE
+    // this fund includes tokens emitting (flush_string)
+    // have to make sure emits those tokens after lexer called this function
     pub fn new(
         str_type: String,
         delimiter: String,
         str_s: usize,
+        heredoc_e: Option<usize>, // TODO
+        indent: bool,
+        dedent_body: bool, // TODO
+        label_allowed: bool
     ) -> Literal {
         // TODO
         //       # DELIMITERS and TYPES are hashes with keys encoded in binary.
@@ -111,14 +104,101 @@ impl Literal {
         //       # Capture opening delimiter in percent-literals.
         //       @str_type += delimiter if @str_type.start_with?('%'.freeze)
         // 
-        // TODO
-        //       emit_start_tok unless @monolithic
 
-        let literal = Literal {
+
+        //     TYPES = {
+        //     # type       start token     interpolate?
+        //       "'"   => [ :tSTRING_BEG,   false ],
+        //       "<<'" => [ :tSTRING_BEG,   false ],
+        //       '%q'  => [ :tSTRING_BEG,   false ],
+        //       '"'   => [ :tSTRING_BEG,   true  ],
+        //       '<<"' => [ :tSTRING_BEG,   true  ],
+        //       '%'   => [ :tSTRING_BEG,   true  ],
+        //       '%Q'  => [ :tSTRING_BEG,   true  ],
+
+        //       '%w'  => [ :tQWORDS_BEG,   false ],
+        //       '%W'  => [ :tWORDS_BEG,    true  ],
+
+        //       '%i'  => [ :tQSYMBOLS_BEG, false ],
+        //       '%I'  => [ :tSYMBOLS_BEG,  true  ],
+
+        //       ":'"  => [ :tSYMBEG,       false ],
+        //       '%s'  => [ :tSYMBEG,       false ],
+        //       ':"'  => [ :tSYMBEG,       true  ],
+
+        //       '/'   => [ :tREGEXP_BEG,   true  ],
+        //       '%r'  => [ :tREGEXP_BEG,   true  ],
+
+        //       '%x'  => [ :tXSTRING_BEG,  true  ],
+        //       '`'   => [ :tXSTRING_BEG,  true  ],
+        //       '<<`' => [ :tXSTRING_BEG,  true  ],
+        //     }
+        let (start_tok, interpolate) = match str_type.as_ref() {
+            "'"   => ( Token::T_STRING_BEG,   false ),
+            "<<'" => ( Token::T_STRING_BEG,   false ),
+            "%q"  => ( Token::T_STRING_BEG,   false ),
+            "\""   => ( Token::T_STRING_BEG,   true  ),
+            "<<\"" => ( Token::T_STRING_BEG,   true  ),
+            "%"   => ( Token::T_STRING_BEG,   true  ),
+            "%Q"  => ( Token::T_STRING_BEG,   true  ),
+
+            "%w"  => ( Token::T_QWORDS_BEG,   false ),
+            "%W"  => ( Token::T_WORDS_BEG,    true  ),
+
+            "%i"  => ( Token::T_QSYMBOLS_BEG, false ),
+            "%I"  => ( Token::T_SYMBOLS_BEG,  true  ),
+
+            ":'"  => ( Token::T_SYMBEG,       false ),
+            "%s"  => ( Token::T_SYMBEG,       false ),
+            ":\""  => ( Token::T_SYMBEG,       true  ),
+
+            "/"   => ( Token::T_REGEXP_BEG,   true  ),
+            "%r"  => ( Token::T_REGEXP_BEG,   true  ),
+
+            "%x"  => ( Token::T_XSTRING_BEG,  true  ),
+            "`"   => ( Token::T_XSTRING_BEG,  true  ),
+            "<<`" => ( Token::T_XSTRING_BEG,  true  ),
+
+            _ => { panic!("unknown str_type"); }
+        };
+
+        //       # Monolithic strings are glued into a single token, e.g.
+        //       # tSTRING_BEG tSTRING_CONTENT tSTRING_END -> tSTRING.
+        //       @monolithic  = (@start_tok == :tSTRING_BEG  &&
+        //                       %w(' ").include?(str_type) &&
+        //                       !heredoc?)
+        // TODO handle heredoc
+        let monolithic = ( start_tok.clone() == Token::T_STRING_BEG && ( &str_type == "'" || &str_type == "\"" ) );
+
+        let mut literal = Literal {
             nesting: 1,
 
-            // TODO
-            monolithic: true,
+            //       @start_tok, @interpolate = TYPES[str_type]
+            start_tok,
+            interpolate,
+
+            //       @start_delim = DELIMITERS.include?(delimiter) ? delimiter : nil
+            start_delim: match delimiter.as_ref() {
+                "(" | "[" | "{" | "<" => Some(delimiter.clone()),
+                _ => None
+            },
+            //       @end_delim   = DELIMITERS.fetch(delimiter, delimiter)
+            end_delim: match delimiter.as_ref() {
+                "(" => Some(String::from(")")),
+                "[" => Some(String::from("]")),
+                "{" => Some(String::from("}}")),
+                "<" => Some(String::from(">")),
+                _ => Some(delimiter)
+            },
+
+            heredoc_e,
+            indent,
+            label_allowed,
+
+            dedent_body,
+
+            space_emitted: true,
+            monolithic,
 
             str_type,
             str_s,
@@ -128,7 +208,14 @@ impl Literal {
             buffer: String::from(""),
             buffer_s: None,
             buffer_e: None,
+
+            tokens_to_emit: vec![],
         };
+
+        println!("creating new literal: {:?}", literal.clone());
+
+        // emit_start_tok unless @monolithic
+        if !monolithic { literal.emit_start_tok(); }
 
         literal
     }
@@ -149,6 +236,7 @@ impl Literal {
     //     def heredoc?
     //       !!@heredoc_e
     //     end
+    fn is_heredoc(&self) -> bool { self.heredoc_e.is_some() }
 
     //     def backslash_delimited?
     //       @end_delim == '\\'.freeze
@@ -207,16 +295,91 @@ impl Literal {
     // NOTE
     // original method includes emitting token (and return the token),
     // now we will emit the returned token after invoking
-    pub fn nest_and_try_closing(&mut self, delimiter: String, ts: usize, te: usize, lookahead: String) -> Option<Token> {
-        // println!("invoking nest_and_try_closing: delimiter: {:?}", delimiter);
+    // and since we dont want to save lexer in Literal,
+    // we have to maintain a `tokens_to_emit : Vec<Token>`,
+    // 
+    // this function return the final_token only
+    // and after every time lexer called `nest_and_try_closing`, lexer have to
+    // 1. call `literal.consume_tokens_to_emit` and emit every tokens in manually, and
+    // 2. use final_token_to_emit just like the origin return value
+    // 
+    pub fn nest_and_try_closing(&mut self, delimiter: String, ts: usize, te: usize, lookahead: Option<String>) -> Option<Token> {
+        // Some("") -> None
+        let lookahead = if (lookahead.is_some() && !lookahead.clone().unwrap().is_empty()) { lookahead } else { None };
 
-        // DUMMY
-        if &delimiter == "'" {
-            let token = Token::T_STRING(self.buffer.clone());
-            return Some(token);
+        println!("### invoking `nest_and_try_closing`, delimiter: {:?}", delimiter);
+        println!("### lookahead: {:?}", lookahead);
+
+        if self.start_delim.is_some() && self.start_delim.clone().unwrap() == delimiter {
+            self.nesting += 1;
+        } else {
+            if self.is_delimiter(&delimiter) {
+                self.nesting -= 1;
+            }
+        }
+
+        println!("### self.nesting: {}", self.nesting);
+
+        if self.nesting == 0 {
+            // TODO if words?
+            // if words?
+            //   extend_space(ts, ts)
+            // end
+
+            // if lookahead && @label_allowed && lookahead[0] == ?: &&
+            //    lookahead[1] != ?: && @start_tok == :tSTRING_BEG
+            //   # This is a quoted label.
+            //   flush_string
+            //   emit(:tLABEL_END, @end_delim, ts, te + 1)
+            // elsif @monolithic
+            //   # Emit the string as a single token.
+            //   emit(:tSTRING, @buffer, @str_s, te)
+            // else
+            //   # If this is a heredoc, @buffer contains the sentinel now.
+            //   # Just throw it out. Lexer flushes the heredoc after each
+            //   # non-heredoc-terminating \n anyway, so no data will be lost.
+            //   flush_string unless heredoc?
+            //
+            //   emit(:tSTRING_END, @end_delim, ts, te)
+            // end
+            if  lookahead.is_some() &&
+                self.label_allowed &&
+                ( lookahead.clone().unwrap().chars().nth(0).unwrap() == ':' ) &&
+                ( lookahead.clone().unwrap().chars().nth(1).unwrap() != ':' ) {
+                    //   # This is a quoted label.
+                    self.flush_string();
+
+                    return Some(Token::T_LABEL_END);
+            } else {
+                if self.monolithic {
+                    //   # Emit the string as a single token.
+                    // let token = );
+                    return Some(Token::T_STRING(self.buffer.clone()));
+                } else {
+                    //   # If this is a heredoc, @buffer contains the sentinel now.
+                    //   # Just throw it out. Lexer flushes the heredoc after each
+                    //   # non-heredoc-terminating \n anyway, so no data will be lost.
+                    if !self.is_heredoc() {
+                        self.flush_string();
+                    }
+
+                    return(Some(Token::T_STRING_END));
+                }
+            }
         }
 
         None
+    }
+
+    pub fn consume_tokens_to_emit(&mut self) -> Vec<Token> {
+        let mut tokens_to_emit = vec![];
+
+        loop {
+            if self.tokens_to_emit.len() == 0 { break; }
+            tokens_to_emit.push(self.tokens_to_emit.remove(0));
+        }
+
+        tokens_to_emit
     }
 
     //     def infer_indent_level(line)
@@ -271,25 +434,48 @@ impl Literal {
     //         emit_start_tok
     //         @monolithic = false
     //       end
-
+    // 
     //       unless @buffer.empty?
     //         emit(:tSTRING_CONTENT, @buffer, @buffer_s, @buffer_e)
-
+    // 
     //         clear_buffer
     //         extend_content
     //       end
     //     end
+    // TODO NOTE FUNCTION
+    // TODO NOTE
+    // this fund includes tokens emitting (flush_string)
+    // have to make sure emits those tokens after lexer called this function
+    fn flush_string(&mut self) {
+        if self.monolithic {
+            self.emit_start_tok();
+        }
+
+        if !self.buffer.is_empty() {
+            self.tokens_to_emit.push(Token::T_STRING_CONTENT(self.buffer.clone()));
+
+            self.clear_buffer();
+            self.extend_content();
+        }
+    }
 
     //     def extend_content
     //       @space_emitted = false
     //     end
+    fn extend_content(&mut self) {
+        self.space_emitted = false;
+    }
 
+    // TODO
+    // this fund includes tokens emitting (flush_string)
+    // have to make sure emits those tokens after lexer called this function
+    // 
     //     def extend_space(ts, te)
     //       flush_string
-
+    // 
     //       unless @space_emitted
     //         emit(:tSPACE, nil, ts, te)
-
+    // 
     //         @space_emitted = true
     //       end
     //     end
@@ -303,6 +489,14 @@ impl Literal {
     //         @end_delim == delimiter
     //       end
     //     end
+    // TODO NOTE FUNCTION
+    fn is_delimiter(&self, delimiter: &String) -> bool {
+        if self.indent {
+            return self.end_delim.is_some() && ( self.end_delim.clone().unwrap() == delimiter.clone().trim_left() );
+        } else {
+            return self.end_delim.is_some() && ( self.end_delim.clone().unwrap() == delimiter.clone() );
+        }
+    }
 
     //     def coerce_encoding(string)
     //       string.dup.force_encoding(Encoding::BINARY)
@@ -329,6 +523,14 @@ impl Literal {
     //       str_e = @heredoc_e || @str_s + @str_type.length
     //       emit(@start_tok, @str_type, @str_s, str_e)
     //     end
+    fn emit_start_tok(&mut self) {
+        // TODO DUMMY haven't handle heredoc_e
+
+        // let str_e = self.str_s + self.str_type.len();
+        let token = self.start_tok.clone();
+    
+        self.tokens_to_emit.push(token);
+    }
 
     //     def emit(token, type, s, e)
     //       @lexer.send(:emit, token, type, s, e)

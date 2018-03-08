@@ -88,7 +88,10 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
             ), |lexer: &mut Lexer| {
                 let lit_type: String = lexer.input_stream.current_token().unwrap().chars().take(1).collect(); // TODO really...
                 let lit_delimiter = lit_type.clone();
-                let literal = Literal::new( lit_type, lit_delimiter, lexer.input_stream.ts.unwrap() );
+
+                let ts = lexer.input_stream.ts.unwrap();
+                let mut literal = Literal::new(lit_type, lit_delimiter, ts, None, false, false, false );
+                for token in literal.consume_tokens_to_emit() { lexer.emit_token(token); }
 
                 lexer.input_stream.hold_current_char();
 
@@ -112,7 +115,9 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
             let lit_type = String::from("%");
             let lit_delimiter = lexer.input_stream.current_token().unwrap().chars().last().unwrap().to_string();
 
-            let literal = Literal::new( lit_type, lit_delimiter, lexer.input_stream.ts.unwrap() );
+            let ts = lexer.input_stream.ts.unwrap();
+            let mut literal = Literal::new(lit_type, lit_delimiter, ts, None, false, false, false );
+            for token in literal.consume_tokens_to_emit() { lexer.emit_token(token); }
 
             let next_state = lexer.push_literal(literal);
             lexer.set_next_state(next_state);
@@ -130,7 +135,11 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
                 let current_slice = lexer.input_stream.current_token().unwrap();
                 let lit_type = String::from(&current_slice[ 0..( current_slice.len() - 1 ) ]);
                 let lit_delimiter = current_slice.chars().last().unwrap().to_string();
-                let literal = Literal::new( lit_type, lit_delimiter, lexer.input_stream.ts.unwrap() );
+
+                let ts = lexer.input_stream.ts.unwrap();
+                let mut literal = Literal::new(lit_type, lit_delimiter, ts, None, false, false, false );
+                for token in literal.consume_tokens_to_emit() { lexer.emit_token(token); }
+
                 let next_state = lexer.push_literal(literal);
                 lexer.set_next_state(next_state);
             }),
@@ -206,7 +215,11 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
                 let current_slice = lexer.input_stream.current_token().unwrap();
                 let lit_type = current_slice.clone();
                 let lit_delimiter = current_slice.chars().last().unwrap().to_string();
-                let literal = Literal::new( lit_type, lit_delimiter, lexer.input_stream.ts.unwrap() );
+
+                let ts = lexer.input_stream.ts.unwrap();
+                let mut literal = Literal::new(lit_type, lit_delimiter, ts, None, false, false, false );
+                for token in literal.consume_tokens_to_emit() { lexer.emit_token(token); }
+
                 let next_state = lexer.push_literal(literal);
                 lexer.set_next_state(next_state);
             }
