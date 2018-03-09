@@ -606,12 +606,13 @@ impl Parser {
     //             {
     //               result = val[0] << val[1]
     //             }
-    // TODO DUMMY
+    // TODO INCOMPLETE
     fn p_string(&mut self) -> Option<Node> {
         println!("PARSER p_string");
 
-        if let Token::T_STRING(token_string) = self.current_token() {
-            return Some( Node::Str( token_string ) );
+        if let Some(n_string1) = self.p_string1() {
+            // TODO handle list
+            return Some(n_string1);
         }
 
        None
@@ -631,8 +632,25 @@ impl Parser {
     //             {
     //               result = @builder.character(val[0])
     //             }
+    // TODO INCOMPLETE
     fn p_string1(&mut self) -> Option<Node> {
         println!("PARSER p_string1");
+
+        if let Some(t_string_beg) = self.match_1_token(Token::T_STRING_BEG) {
+            if let Some(n_string_contents) = self.p_string_contents() {
+                if let Some(t_string_end) = self.match_1_token(Token::T_STRING_END) {
+                    //   string = @builder.string_compose(val[0], val[1], val[2])
+                    //   result = @builder.dedent_string(string, @lexer.dedent_level)
+                    // TODO DUMMY
+                    return Some(node::string_compose(n_string_contents));
+                }
+            }
+        }
+
+        if let Token::T_STRING(token_string) = self.current_token() {
+            self.consume_current_token();
+            return Some( Node::Str( token_string ) );
+        }
 
         None
     }
