@@ -16,8 +16,6 @@ pub enum Node {
     Ident(Token),
     Assign(Box<Node>, Token, Box<Node>),
     Assignable,
-
-    None, // NOTE special Node for nothing
 }
 
 

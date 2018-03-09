@@ -829,10 +829,4 @@ impl Parser {
 
         None
     }
-
-    // TODO eliminate `none` rule in recursive descent parser
-    // TODO impl corresponding `none` rule from original grammar
-    // fn p_none(&mut self) -> Option<Node> {
-    //     Some(Node::None)
-    // }
 }
