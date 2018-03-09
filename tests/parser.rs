@@ -133,7 +133,7 @@ fn int() {
 fn string_plain() {
     assert_parses!(r"'foobar'", Node::Str(String::from("foobar")));
     // TODO
-    // assert_parses!(r"%q(foobar)", Node::Str(String::from("foobar")));
+    assert_parses!(r"%q(foobar)", Node::Str(String::from("foobar")));
 }
 
 //   def test_string_interp

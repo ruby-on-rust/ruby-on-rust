@@ -83,11 +83,7 @@ impl Lexer {
         }
     }
 
-    // return a token
-    // 
-    // TODO
-    // then the current `emit` is not correct
-    // every `exec()` should emit a token
+    // return one token
     // 
     // TODO MAYBE wrap in a Result, instead of Option
     // 
@@ -101,7 +97,6 @@ impl Lexer {
         self.command_state = ( self.current_state == LexingState::ExprValue ) || 
                              ( self.current_state == LexingState::LineBegin );
 
-        // 
         self.exec();
 
         return Some( self.tokens.remove(0) );
@@ -142,7 +137,7 @@ impl Lexer {
         }
     }
 
-    // parser will use this method to set lexer's state
+    // parser will use this method to set lexer's state directly
     pub fn set_state(&mut self, state: LexingState) {
         self.current_state = state;
     }

@@ -564,8 +564,7 @@ impl Parser {
         // TODO DUMMY
         if let Some(n_literal) = self.p_literal() { return Some(n_literal); }
 
-        // TODO DUMMY should be `strings`
-        if let Some(n_string) = self.p_string() { return Some(n_string); }
+        if let Some(n_strings) = self.p_strings() { return Some(n_strings); }
 
         if let Some(n_var_ref) = self.p_var_ref() { return Some(n_var_ref); }
 
@@ -585,13 +584,57 @@ impl Parser {
         None
     }
 
+    //  strings: string
+    //             {
+    //               result = @builder.string_compose(nil, val[0], nil)
+    //             }
+    fn p_strings(&mut self) -> Option<Node> {
+        println!("PARSER p_strings");
+
+        if let Some(n_string) = self.p_string() {
+            return Some(node::string_compose(n_string));
+        }
+
+        None
+    }
+
+    //   string: string1
+    //             {
+    //               result = [ val[0] ]
+    //             }
+    //         | string string1
+    //             {
+    //               result = val[0] << val[1]
+    //             }
     // TODO DUMMY
     fn p_string(&mut self) -> Option<Node> {
+        println!("PARSER p_string");
+
         if let Token::T_STRING(token_string) = self.current_token() {
             return Some( Node::Str( token_string ) );
         }
 
        None
+    }
+
+    //  string1: tSTRING_BEG string_contents tSTRING_END
+    //             {
+    //               string = @builder.string_compose(val[0], val[1], val[2])
+    //               result = @builder.dedent_string(string, @lexer.dedent_level)
+    //             }
+    //         | tSTRING
+    //             {
+    //               string = @builder.string(val[0])
+    //               result = @builder.dedent_string(string, @lexer.dedent_level)
+    //             }
+    //         | tCHARACTER
+    //             {
+    //               result = @builder.character(val[0])
+    //             }
+    fn p_string1(&mut self) -> Option<Node> {
+        println!("PARSER p_string1");
+
+        None
     }
 
     //  numeric: simple_numeric
@@ -664,7 +707,7 @@ impl Parser {
     //                       result = val[0] << val[1]
     //                     }
     fn p_string_contents(&mut self) -> Option<Node> {
-        println!("p_string_contents");
+        println!("PARSER p_string_contents");
 
         // NOTE transformed to non-recursive
         if let Some(n_string_content) = self.p_string_content() {
@@ -686,7 +729,7 @@ impl Parser {
     //                     }
     // TODO INCOMPLETE DUMMY
     fn p_xstring_contents(&mut self) -> Option<Node> {
-        println!("p_xstring_contents");
+        println!("PARSER p_xstring_contents");
 
         // NOTE transformed to non-recursive
         if let Some(n_string_content) = self.p_string_content() {
@@ -755,7 +798,6 @@ impl Parser {
     //         }
     fn p_dsym(&mut self) -> Option<Node> {
         println!("PARSER p_dsym");
-        println!("{:?}", self.current_token());
         if let Some(t_symbeg) = self.match_1_token(Token::T_SYMBEG) {
             if let Some(n_xstring_contents) = self.p_xstring_contents() {
                 if let Some(t_string_end) = self.match_1_token(Token::T_STRING_END) {

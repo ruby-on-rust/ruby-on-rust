@@ -95,3 +95,74 @@ pub fn unary_num(t_unary: Token, n_simple_numeric: Node) -> Node {
 pub fn accessible(node: Node) -> Node {
     node
 }
+
+// # Strings
+
+// def string(string_t)
+//   n(:str, [ string_value(string_t) ],
+//     delimited_string_map(string_t))
+// end
+
+// def string_internal(string_t)
+//   n(:str, [ string_value(string_t) ],
+//     unquoted_map(string_t))
+// end
+
+// def string_compose(begin_t, parts, end_t)
+//   if collapse_string_parts?(parts)
+//     if begin_t.nil? && end_t.nil?
+//       parts.first
+//     else
+//       n(:str, parts.first.children,
+//         string_map(begin_t, parts, end_t))
+//     end
+//   else
+//     n(:dstr, [ *parts ],
+//       string_map(begin_t, parts, end_t))
+//   end
+// end
+// TODO INCOMPLETE
+pub fn string_compose(parts: Node) -> Node {
+    // TODO DUMMY
+    if let Node::Str(string_value) = parts {
+        return Node::Str(string_value);
+    } else {
+        panic!("");
+    }
+}
+
+// def character(char_t)
+//   n(:str, [ string_value(char_t) ],
+//     prefix_string_map(char_t))
+// end
+
+// def __FILE__(__FILE__t)
+//   n0(:__FILE__,
+//     token_map(__FILE__t))
+// end
+
+// # Symbols
+
+// def symbol(symbol_t)
+//   n(:sym, [ string_value(symbol_t).to_sym ],
+//     prefix_string_map(symbol_t))
+// end
+
+// def symbol_internal(symbol_t)
+//   n(:sym, [ string_value(symbol_t).to_sym ],
+//     unquoted_map(symbol_t))
+// end
+
+// def symbol_compose(begin_t, parts, end_t)
+//   if collapse_string_parts?(parts)
+//     str = parts.first
+
+//     n(:sym, [ str.children.first.to_sym ],
+//       collection_map(begin_t, str.loc.expression, end_t))
+//   elsif @parser.version == 18 && parts.empty?
+//     diagnostic :error, :empty_symbol, nil, loc(begin_t).join(loc(end_t))
+//   else
+//     n(:dsym, [ *parts ],
+//       collection_map(begin_t, parts, end_t))
+//   end
+// end
