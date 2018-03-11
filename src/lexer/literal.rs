@@ -6,9 +6,6 @@
 // module Parser
 
 //   class Lexer::Literal
-//     DELIMITERS = { '(' => ')', '[' => ']', '{' => '}', '<' => '>' }
-
-//     attr_reader   :heredoc_e, :str_s, :dedent_level
 //     attr_accessor :saved_herebody_s
 
 // end
@@ -410,9 +407,13 @@ impl Literal {
 
     //     def end_interp_brace_and_try_closing
     //       @interp_braces -= 1
-
+    // 
     //       (@interp_braces == 0)
     //     end
+    pub fn end_interp_brace_and_try_closing(&mut self) -> bool {
+        self.interp_braces -= 1;
+        self.interp_braces == 0
+    }
 
     //     def extend_string(string, ts, te)
     //       @buffer_s ||= ts

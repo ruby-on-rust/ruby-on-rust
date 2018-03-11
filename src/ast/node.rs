@@ -13,6 +13,8 @@ pub enum Node {
 
     Sym(String),
 
+    Array(),
+
     Ident(Token),
     Assign(Box<Node>, Token, Box<Node>),
     Assignable,

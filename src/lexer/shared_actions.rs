@@ -564,11 +564,11 @@ pub fn construct() -> TSharedActions {
     //         else
     //           emit(:tSTRING_DEND, '}'.freeze, p - 1, p)
     //         end
-
+    // 
     //         if current_literal.saved_herebody_s
     //           @herebody_s = current_literal.saved_herebody_s
     //         end
-
+    // 
     //         fhold;
     //         fnext *stack_pop;
     //         fbreak;
@@ -576,7 +576,17 @@ pub fn construct() -> TSharedActions {
     //     end
     //   };
     action!("e_rbrace", |lexer: &mut Lexer| {
-        panic!("UNIMPL");
+        let mut current_literal = if lexer.literal().is_some() { lexer.literal().unwrap().clone() } else { return; };
+        if current_literal.end_interp_brace_and_try_closing() {
+            // NOTE ignored ruby-18, ruby-19 stuff
+            lexer.emit_token(Token::T_STRING_DEND);
+
+            // TODO HANDLE saved_herebody_s
+
+            lexer.input_stream.hold_current_char();
+            // TODO stack_pop
+            lexer.flag_breaking();
+        }
     });
 
     // # Ruby is context-sensitive wrt/ local identifiers.

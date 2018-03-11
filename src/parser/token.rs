@@ -25,6 +25,7 @@ pub enum Token {
     T_SYMBEG,
     T_REGEXP_BEG,
     T_XSTRING_BEG,
+    T_STRING_DEND,
 
     K_ALIAS,
     K_AND,

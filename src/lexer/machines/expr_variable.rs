@@ -41,7 +41,7 @@ pub fn construct_machine_expr_variable( patterns: &TMatchingPatterns, shared_act
         //       end
         //       fnext *stack_pop; fbreak;
         //     };
-
+        // TODO INCOMPLETE
         action!("global_var", |lexer: &mut Lexer| {
             let token = Token::T_GVAR( lexer.input_stream.current_token_string() );
             lexer.emit_token(token);
@@ -59,7 +59,7 @@ pub fn construct_machine_expr_variable( patterns: &TMatchingPatterns, shared_act
         //     end
         // TODO INCOMPLETE
         action!("class_var_v", |lexer: &mut Lexer| {
-            
+            panic!("class_var_v UNIMPL");
         }),
 
         //     instance_var_v
@@ -71,7 +71,7 @@ pub fn construct_machine_expr_variable( patterns: &TMatchingPatterns, shared_act
         //       emit(:tIVAR)
         //       fnext *stack_pop; fbreak;
         //     };
-        // TODO IMCOMPLETE
+        // TODO INCOMPLETE
         action!("instance_var_v", |lexer: &mut Lexer| {
             let token = Token::T_IVAR(lexer.input_stream.current_token_string());
             lexer.emit_token(token);

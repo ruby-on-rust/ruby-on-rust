@@ -20,6 +20,7 @@ mod literal;           use self::literal::Literal;
 pub struct Lexer {
     current_state: LexingState, // NOTE like the @cs somehow
     next_state: Option<LexingState>,
+    is_breaking: bool,
 
     tokens_tables: HashMap<&'static str, HashMap<&'static str, Token>>,
     shared_actions: TSharedActions,
@@ -27,20 +28,34 @@ pub struct Lexer {
 
     input_stream: InputStream,
 
-    is_breaking: bool,
-
-    // @literal_state
-    literal_stack: Vec<Literal>,
-
-    // @command_state
-    command_state: bool,
+    // stack: Vec<usize>,
+    // top: usize,
 
     cond: StackState,
     cmdarg: StackState,
+    // TODO
+    // cond_stack: Vec<StackState>,
+    // cmdarg_stack: Vec<StackState>,
+
+    literal_stack: Vec<Literal>,
 
     // TODO seems like a Ruby 1.9 thing
     paren_nest: usize,
     lambda_stack: Vec<usize>,
+
+    // # After encountering the closing line of <<~SQUIGGLY_HEREDOC,
+    // # we store the indentation level and give it out to the parser
+    // # on request. It is not possible to infer indentation level just
+    // # from the AST because escape sequences such as `\ ` or `\t` are
+    // # expanded inside the lexer, but count as non-whitespace for
+    // # indentation purposes.
+    // @dedent_level  = nil
+
+    // # If the lexer is in `command state' (aka expr_value)
+    // # at the entry to #advance, it will transition to expr_cmdarg
+    // # instead of expr_arg at certain points.
+    // @command_state = false
+    command_state: bool,
 
     // @in_kwarg
     // # True at the end of "def foo a:"
@@ -58,6 +73,7 @@ impl Lexer {
         Lexer {
             current_state: LexingState::LineBegin, // NOTE setting value here is no use actually, since every time will pop one from states_stack
             next_state: None,
+            is_breaking: false,
 
             tokens_tables: tokens_tables::construct(),
 
@@ -66,14 +82,18 @@ impl Lexer {
 
             input_stream: InputStream::new(input_string),
 
-            is_breaking: false,
+            // stack: vec![],
+            // top: 0,
 
-            literal_stack: vec![],
-            command_state: false,
             cond: StackState::new(),
             cmdarg: StackState::new(),
+
+            literal_stack: vec![],
+
             paren_nest: 0,
             lambda_stack: vec![],
+
+            command_state: false,
 
             in_kwarg: false,
 
@@ -171,4 +191,5 @@ impl Lexer {
         let procedure = self.shared_actions.get(proc_name).expect("no such proc in shared_actions").clone();
         procedure(self);
     }
+
 }

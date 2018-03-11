@@ -495,6 +495,13 @@ fn symbol_plain() {
 //         |     ^ end
 //         |~~~~~~ expression})
 //   end
+#[test]
+fn array_plain() {
+    // TODO
+    // assert_parses!(r"[]", Node::Array());
+    // TODO array value
+    assert_parses!(r"[1, 2]", Node::Array());
+}
 
 //   def test_array_splat
 //     assert_parses(
