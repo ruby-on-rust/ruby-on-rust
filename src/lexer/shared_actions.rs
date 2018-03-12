@@ -419,7 +419,10 @@ pub fn construct() -> TSharedActions {
     //     literal.extend_space @ts, @te
     //   }
     action!("extend_string_space", |lexer: &mut Lexer| {
-        panic!("UNIMPL");
+        let ts = lexer.input_stream.ts.unwrap().clone();
+        let te = lexer.input_stream.te.unwrap().clone();
+        let mut literal = lexer.literal().expect("can't fetch current literal");
+        literal.extend_space(ts, te);
     });
 
 

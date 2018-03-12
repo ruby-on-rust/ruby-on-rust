@@ -492,7 +492,7 @@ impl Literal {
     // have to make sure emits those tokens after lexer called this function
     // 
     // TODO NOTE FUNCTION
-    fn extend_space(&mut self, ts: usize, te: usize) {
+    pub fn extend_space(&mut self, ts: usize, te: usize) {
         self.flush_string();
         if !self.space_emitted {
             self.tokens_to_emit.push(Token::T_SPACE);
@@ -594,11 +594,14 @@ impl Lexer {
     // 
     // usually being called as `fgoto *push_literal`, implying it returns a state
     pub fn push_literal(&mut self, literal: Literal) -> LexingState {
-        // TODO DUMMY
-
         self.literal_stack.push(literal.clone());
 
-        state!("plain_string")
+        // TODO DUMMY
+        if literal.is_words {
+            state!("plain_words")
+        } else {
+            state!("plain_string")
+        }
     }
 
     //   def literal

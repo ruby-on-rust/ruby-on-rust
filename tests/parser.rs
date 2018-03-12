@@ -550,19 +550,18 @@ fn array_plain() {
 //       SINCE_1_9)
 //   end
 
-//   def test_array_words
-//     assert_parses(
-//       s(:array, s(:str, 'foo'), s(:str, 'bar')),
-//       %q{%w[foo bar]},
-//       %q{^^^ begin
-//         |          ^ end
-//         |   ~~~ expression (str)
-//         |~~~~~~~~~~~ expression})
-//   end
 #[test]
 fn array_words() {
     assert_parses!(
         r"%w[foo bar]",
+        Node::Array( vec![
+            Node::Str(String::from("foo")),
+            Node::Str(String::from("bar"))
+        ])
+    );
+
+    assert_parses!(
+        r"%w(foo bar)",
         Node::Array( vec![
             Node::Str(String::from("foo")),
             Node::Str(String::from("bar"))
