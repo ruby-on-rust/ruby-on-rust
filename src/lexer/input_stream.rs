@@ -56,7 +56,7 @@ impl InputStream {
                 Some(len) => {
                     let len = len as isize;
 
-                    // println!("matched something with length: {}", len);
+                    // println!("matched something, length: {}, regex: {:?}", len, &action.regex);
 
                     if ( len > longest_matched_action_len ) {
                         longest_matched_action_len = len as isize;
@@ -67,7 +67,7 @@ impl InputStream {
         };
 
         println!("longest_matched_action_len: {}", longest_matched_action_len);
-        println!("longest_matched_action_i: {:?}", longest_matched_action_i);
+        // println!("longest_matched_action_i: {:?}", longest_matched_action_i);
 
         match longest_matched_action_i {
             None => { None },
@@ -78,6 +78,7 @@ impl InputStream {
                 self.te = Some(self.p);
 
                 println!("matched token: {:?}", self.current_token() );
+                // println!("current ts {} p {} te {}", self.ts.unwrap(), self.p, self.te.unwrap() );
 
                 Some(actions.get(i).unwrap().clone())
             }

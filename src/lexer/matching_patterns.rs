@@ -591,7 +591,7 @@ pub fn construct() -> TMatchingPatterns {
     //     @paren_nest -= 1
     // };
     // NOTE embedded action moved to shared_actions
-    pattern!("e_rparen", r"\(");
+    pattern!("e_rparen", r"\)");
 
     // ===
     // additional

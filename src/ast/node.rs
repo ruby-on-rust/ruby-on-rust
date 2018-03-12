@@ -2,6 +2,11 @@ use parser::token::Token;
 
 #[derive(Debug, PartialEq)]
 pub enum Node {
+    // for rules which doesnot need to return a real node
+    Dummy,
+    // for rules which return a vec of nodes
+    Nodes(Vec<Node>),
+
     Nil,
 
     True,

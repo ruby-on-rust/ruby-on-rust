@@ -433,7 +433,10 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //         fbreak;
         //       };
         action_with_literal!(
-            format!(r"({})|({})|(\])", pattern_lit!("e_rbrace"), pattern_lit!("e_rparen")),
+            format!(
+                r"(({})|({})|(\]))",
+                pattern_lit!("e_rbrace"),
+                pattern_lit!("e_rparen")),
             |lexer: &mut Lexer| {
 
                 match lexer.input_stream.current_token().unwrap().as_ref() {

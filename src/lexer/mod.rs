@@ -182,7 +182,7 @@ impl Lexer {
         let token_str = self.input_stream.current_token().unwrap().clone();
 
         let tokens_table = self.tokens_tables.get(table_name).unwrap();
-        let token = tokens_table.get(token_str.as_str()).unwrap();
+        let token = tokens_table.get(token_str.as_str()).expect(&format!("no token {} from tokens_table {}", token_str, table_name));
 
         self.tokens.push((*token).clone());
     }
