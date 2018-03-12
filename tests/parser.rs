@@ -15,6 +15,18 @@ macro_rules! assert_parses {
     };
 }
 
+macro_rules! n_str {
+    ($string:expr) => {
+        Node::Str(String::from($string))
+    };
+}
+
+macro_rules! n_sym {
+    ($string:expr) => {
+        Node::Sym(String::from($string))
+    };
+}
+
 //   #
 //   # Literals
 //   #
@@ -131,8 +143,8 @@ fn int() {
 
 #[test]
 fn string_plain() {
-    assert_parses!(r"'foobar'", Node::Str(String::from("foobar")));
-    assert_parses!(r"%q(foobar)", Node::Str(String::from("foobar")));
+    assert_parses!(r"'foobar'", n_str!("foobar"));
+    assert_parses!(r"%q(foobar)", n_str!("foobar"));
 }
 
 //   def test_string_interp
@@ -378,8 +390,8 @@ fn string_plain() {
 
 #[test]
 fn symbol_plain() {
-    assert_parses!(":foo", Node::Sym(String::from("foo")));
-    assert_parses!(":'foo'", Node::Sym(String::from("foo")));
+    assert_parses!(":foo", n_sym!("foo"));
+    assert_parses!(":'foo'", n_sym!("foo"));
 }
 
 //   def test_symbol_interp
@@ -554,18 +566,12 @@ fn array_plain() {
 fn array_words() {
     assert_parses!(
         r"%w[foo bar]",
-        Node::Array( vec![
-            Node::Str(String::from("foo")),
-            Node::Str(String::from("bar"))
-        ])
+        Node::Array( vec![ n_str!("foo"), n_str!("bar") ] )
     );
 
     assert_parses!(
         r"%w(foo bar)",
-        Node::Array( vec![
-            Node::Str(String::from("foo")),
-            Node::Str(String::from("bar"))
-        ])
+        Node::Array( vec![ n_str!("foo"), n_str!("bar") ] )
     );
 }
 
