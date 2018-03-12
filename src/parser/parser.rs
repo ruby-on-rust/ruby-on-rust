@@ -1162,14 +1162,15 @@ impl Parser {
         if let Some(t_lbrack) = self.match_1_token(Token::T_LBRACK) {
             // special rule for aref_args being `none`
             if let Some(t_rbrack) = self.match_1_token(Token::T_RBRACK) {
-                return Some(Node::Array());
+                return Some(Node::Array(vec![]));
             }
 
             if let Some(n_aref_args) = self.p_aref_args() {
-                println!("n_aref_args");
                 if let Some(t_rbrack) = self.match_1_token(Token::T_RBRACK) {
-                    println!("t_rbrack");
-                    return Some(Node::Array());
+                    // TODO handle builder.array
+                    if let Node::Nodes(nodes) = n_aref_args {
+                        return Some(Node::Array(nodes));
+                    } else { panic!("cant extract nodes from n_aref_args"); }
                 }
             }
         }
