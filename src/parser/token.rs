@@ -136,4 +136,5 @@ pub enum Token {
     T_TILDE,
     T_UMINUS,
     T_UPLUS,
+    T_SPACE,
 }

@@ -48,7 +48,9 @@ pub struct Literal {
     buffer_e: Option<usize>,
 
     // TODO NOTE
-    tokens_to_emit: Vec<Token>
+    tokens_to_emit: Vec<Token>,
+
+    is_words: bool,
 }
 
 impl Literal {
@@ -171,7 +173,7 @@ impl Literal {
             nesting: 1,
 
             //       @start_tok, @interpolate = TYPES[str_type]
-            start_tok,
+            start_tok: start_tok.clone(),
             interpolate,
 
             //       @start_delim = DELIMITERS.include?(delimiter) ? delimiter : nil
@@ -207,6 +209,11 @@ impl Literal {
             buffer_e: None,
 
             tokens_to_emit: vec![],
+
+            is_words:   start_tok.clone() == Token::T_WORDS_BEG ||
+                        start_tok.clone() == Token::T_QWORDS_BEG ||
+                        start_tok.clone() == Token::T_SYMBOLS_BEG ||
+                        start_tok.clone() == Token::T_QSYMBOLS_BEG,
         };
 
         println!("creating new literal: {:?}", literal.clone());
@@ -225,6 +232,7 @@ impl Literal {
     //       type == :tWORDS_BEG || type == :tQWORDS_BEG ||
     //         type == :tSYMBOLS_BEG || type == :tQSYMBOLS_BEG
     //     end
+    // NOTE moved into self.is_words
 
     //     def regexp?
     //       type == :tREGEXP_BEG
@@ -318,10 +326,12 @@ impl Literal {
         println!("### self.nesting: {}", self.nesting);
 
         if self.nesting == 0 {
-            // TODO if words?
             // if words?
             //   extend_space(ts, ts)
             // end
+            if self.is_words {
+                self.extend_space(ts, ts);
+            }
 
             // if lookahead && @label_allowed && lookahead[0] == ?: &&
             //    lookahead[1] != ?: && @start_tok == :tSTRING_BEG
@@ -467,19 +477,28 @@ impl Literal {
         self.space_emitted = false;
     }
 
-    // TODO
+    // def extend_space(ts, te)
+    //   flush_string
+    // 
+    //   unless @space_emitted
+    //     emit(:tSPACE, nil, ts, te)
+    // 
+    //     @space_emitted = true
+    //   end
+    // end
+    // 
+    // NOTE
     // this fund includes tokens emitting (flush_string)
     // have to make sure emits those tokens after lexer called this function
     // 
-    //     def extend_space(ts, te)
-    //       flush_string
-    // 
-    //       unless @space_emitted
-    //         emit(:tSPACE, nil, ts, te)
-    // 
-    //         @space_emitted = true
-    //       end
-    //     end
+    // TODO NOTE FUNCTION
+    fn extend_space(&mut self, ts: usize, te: usize) {
+        self.flush_string();
+        if !self.space_emitted {
+            self.tokens_to_emit.push(Token::T_SPACE);
+            self.space_emitted = true;
+        }
+    }
 
     //     protected
 

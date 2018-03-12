@@ -514,7 +514,7 @@ fn array_plain() {
 //         |    ~~~~ expression (splat)
 //         |~~~~~~~~~~~~ expression},
 //       SINCE_1_9)
-
+// 
 //     assert_parses(
 //       s(:array,
 //         s(:int, 1),
@@ -525,7 +525,7 @@ fn array_plain() {
 //         |    ^ operator (splat)
 //         |    ~~~~ expression (splat)
 //         |~~~~~~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:array,
 //         s(:splat, s(:lvar, :foo))),
@@ -540,7 +540,7 @@ fn array_plain() {
 //       %q{    ~~ operator (hash.pair)
 //         |  ~~~~~~ expression (hash.pair)
 //         |  ~~~~~~ expression (hash)})
-
+// 
 //     assert_parses(
 //       s(:array,
 //         s(:int, 1),
@@ -559,6 +559,16 @@ fn array_plain() {
 //         |   ~~~ expression (str)
 //         |~~~~~~~~~~~ expression})
 //   end
+#[test]
+fn array_words() {
+    assert_parses!(
+        r"%w[foo bar]",
+        Node::Array( vec![
+            Node::Str(String::from("foo")),
+            Node::Str(String::from("bar"))
+        ])
+    );
+}
 
 //   def test_array_words_interp
 //     assert_parses(
@@ -574,7 +584,7 @@ fn array_plain() {
 //         |   ~~~ expression (str)
 //         |         ~~~ expression (dstr.begin.lvar)
 //         |~~~~~~~~~~~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:array,
 //         s(:str, 'foo'),
@@ -592,7 +602,7 @@ fn array_plain() {
 //       %q{^^^ begin
 //         |   ^ end
 //         |~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:array),
 //       %q{%W()})
@@ -624,7 +634,7 @@ fn array_plain() {
 //         |         ~~~ expression (dsym.begin.lvar)
 //         |~~~~~~~~~~~~~~ expression},
 //       SINCE_2_0)
-
+// 
 //     assert_parses(
 //       s(:array,
 //         s(:dsym,
@@ -643,7 +653,7 @@ fn array_plain() {
 //         |   ^ end
 //         |~~~~ expression},
 //       SINCE_2_0)
-
+// 
 //     assert_parses(
 //       s(:array),
 //       %q{%I()},
@@ -671,7 +681,7 @@ fn array_plain() {
 //         |    ^^ operator (pair)
 //         |  ~~~~~~ expression (pair)
 //         |~~~~~~~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:hash,
 //         s(:pair, s(:int, 1), s(:int, 2)),

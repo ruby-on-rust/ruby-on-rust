@@ -1,5 +1,7 @@
 // https based on github.com/whitequark/parser/blob/2a73841d6da04a5ab9bd270561165fd766722d43/lib/parser/ruby25.y
 
+// TODO match_token! macro
+
 use lexer::lexing_state::LexingState;
 use lexer::Lexer;
 use parser::token::Token;
@@ -8,6 +10,20 @@ use ast::node::Node;
 
 // TODO dont rewrite this macro here
 macro_rules! state { ($state_name:expr) => { $state_name.parse::<LexingState>().unwrap() }; }
+
+// helpers
+fn extract_string_content(token: Token) -> String {
+    match token {
+        Token::T_STRING(content) | Token::T_STRING_CONTENT(content) => { return content; },
+        _ => { panic!("can't extract string content"); }
+    }
+}
+
+fn extract_nodes(node: Node) -> Vec<Node> {
+    if let Node::Nodes(nodes) = node {
+        return nodes;
+    } else { panic!("can't extract nodes"); }
+}
 
 pub struct Parser {
     lexer: Lexer,
@@ -1099,6 +1115,7 @@ impl Parser {
         //         | regexp
         //         | words
         //         | qwords
+        if let Some(n_qwords) = self.p_qwords() { return Some(n_qwords); }
         //         | symbols
         //         | qsymbols
         //         | var_ref
@@ -2009,6 +2026,18 @@ impl Parser {
     //                 {
     //                   result = @builder.words_compose(val[0], val[1], val[2])
     //                 }
+    fn p_qwords(&mut self) -> Option<Node> {
+        if let Some(_t_qwords_beg) = self.match_1_token(Token::T_QWORDS_BEG) {
+            if let Some(qword_list) = self.p_qword_list() {
+                if let Some(_t_string_end) = self.match_1_token(Token::T_STRING_END) {
+                    // TODO builder.words_compose
+                    return Some(Node::Array(extract_nodes(qword_list)));
+                }
+            }
+        }
+
+        None
+    }
 
     //     qsymbols: tQSYMBOLS_BEG qsym_list tSTRING_END
     //                 {
@@ -2023,6 +2052,31 @@ impl Parser {
     //                 {
     //                   result = val[0] << @builder.string_internal(val[1])
     //                 }
+    // NOTE transformed into non-recursive form
+    fn p_qword_list(&mut self) -> Option<Node> {
+        if let Token::T_STRING_CONTENT(str_content) = self.current_token() {
+            self.consume_current_token();
+            if let Some(_t_space) = self.match_1_token(Token::T_SPACE) {
+                let mut nodes = vec![Node::Str(str_content)];
+
+                loop {
+                    if let Token::T_STRING_CONTENT(str_content) = self.current_token() {
+                        self.consume_current_token();
+                        if let Some(_t_space) = self.match_1_token(Token::T_SPACE) {
+                            nodes.push(Node::Str(str_content));
+                            continue;
+                        }
+                    }
+                    break;
+                }
+
+                // TODO builder.string_internal
+                return Some(Node::Nodes(nodes));
+            }
+        }
+
+        None
+    }
 
     //    qsym_list: # nothing
     //                 {
