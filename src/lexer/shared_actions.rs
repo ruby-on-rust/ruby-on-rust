@@ -303,6 +303,7 @@ pub fn construct() -> TSharedActions {
         // 1 clone current_literal
         // 2 modify it 
         // 3 re-save it to the stack
+        // TODO need some helper fns on literal
         lexer.literal_stack.pop();
         lexer.literal_stack.push(current_literal);
     });
@@ -488,6 +489,8 @@ pub fn construct() -> TSharedActions {
         //       @herebody_s = nil
         //     end
 
+        current_literal.start_interp_brace();
+
         lexer.literal_stack.push(current_literal);
 
         lexer.set_calling_state(state!("expr_value"));
@@ -609,7 +612,13 @@ pub fn construct() -> TSharedActions {
     //     end
     //   };
     action!("e_rbrace", |lexer: &mut Lexer| {
-        let mut current_literal = if lexer.literal().is_some() { lexer.literal().unwrap().clone() } else { return; };
+        // TODO WIP
+        println!("action e_rbrace invoked");
+
+        if lexer.literal().is_none() { return; }
+
+        let mut current_literal = lexer.literal_stack.pop().unwrap().clone();
+
         if current_literal.end_interp_brace_and_try_closing() {
             // NOTE ignored ruby-18, ruby-19 stuff
             lexer.emit_token(Token::T_STRING_DEND);
@@ -622,13 +631,15 @@ pub fn construct() -> TSharedActions {
             lexer.set_next_state(last_state);
 
             lexer.flag_breaking();
+
+            lexer.literal_stack.push(current_literal);
         }
     });
 
     // # Ruby is context-sensitive wrt/ local identifiers.
     // action local_ident {
     //     emit(:tIDENTIFIER)
-
+    // 
     //     if !@static_env.nil? && @static_env.declared?(tok)
     //     fnext expr_endfn; fbreak;
     //     else

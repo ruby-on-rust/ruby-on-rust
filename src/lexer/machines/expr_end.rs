@@ -422,15 +422,16 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //       => {
         //         emit_table(PUNCTUATION)
         //         @cond.lexpop; @cmdarg.lexpop
-
+        // 
         //         if RBRACE_OR_RBRACK.include?(tok)
         //           fnext expr_endarg;
         //         else # )
         //           # fnext expr_endfn; ?
         //         end
-
+        // 
         //         fbreak;
         //       };
+        // NOTE apparently only ']' will invoke the following action
         action_with_literal!(
             format!(
                 r"(({})|({})|(\]))",
@@ -439,15 +440,16 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
             |lexer: &mut Lexer| {
 
                 match lexer.input_stream.current_token().unwrap().as_ref() {
-                    "]" => { lexer.invoke_proc("e_rbrace"); },
-                    ")" => { lexer.invoke_proc("e_rparen"); },
-                    _ => ()
+                    "}" => { lexer.invoke_proc("e_rbrace"); return; },
+                    ")" => { lexer.invoke_proc("e_rparen"); return; },
+                    "]" | _ => ()
                 };
 
                 lexer.emit_token_from_table("punctuation");
                 lexer.cond.lexpop();
                 lexer.cmdarg.lexpop();
 
+                // TODO some branches are not possible at all
                 // RBRACE_OR_RBRACK = %w"} ]".freeze
                 // `}` `]`
                 match lexer.input_stream.current_token().unwrap().as_ref() {

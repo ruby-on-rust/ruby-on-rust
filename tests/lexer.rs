@@ -34,6 +34,17 @@ fn test_identifier() {
 //                    :tSTRING_CONTENT, " # ",        [27, 30],
 //                    :tSTRING_END,     "\"",         [30, 31])
 //   end
+// 
+// NOTE
+// so the expected result in the test case is not true for ruby25 :facepalm:
+// 
+// the result in parser::currentruby(ruby25) for the last 3 tokens are:
+//   [:tSTRING_DEND, ["}", #<Parser::Source::Range (string) 26...27>]]
+//   [:tSTRING_CONTENT, [" # ", #<Parser::Source::Range (string) 27...30>]]
+//   [:tSTRING_END, ["\"", #<Parser::Source::Range (string) 30...31>]]
+// 
+// TODO
+//
 #[test]
 fn string_double_interp() {
     let content = String::from("\"blah #x a #@a b #$b c #{3} # \"");
@@ -50,7 +61,11 @@ fn string_double_interp() {
     assert_eq!(lexer.advance().unwrap(), Token::T_STRING_CONTENT(TokenString::from(" c ")));
     assert_eq!(lexer.advance().unwrap(), Token::T_STRING_DBEG);
     assert_eq!(lexer.advance().unwrap(), Token::T_INTEGER(3));
-    assert_eq!(lexer.advance().unwrap(), Token::T_RCURLY);
+    assert_eq!(lexer.advance().unwrap(), Token::T_STRING_DEND);
     assert_eq!(lexer.advance().unwrap(), Token::T_STRING_CONTENT(TokenString::from(" # ")));
     assert_eq!(lexer.advance().unwrap(), Token::T_STRING_END);
+    // assert_eq!(lexer.advance().unwrap(), Token::T_RCURLY);
+    // assert_eq!(lexer.advance().unwrap(), Token::T_STRING_CONTENT(TokenString::from(" # ")));
+    // assert_eq!(lexer.advance().unwrap(), Token::T_STRING_END);
+    // TODO assert must be empty, impl in helper macro
 }

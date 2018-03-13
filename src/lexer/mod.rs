@@ -1,3 +1,23 @@
+// TODO NOTE
+// 
+// so when the note in the parser gem says:
+// 
+// #  * Ragel merges actions. So, if you have `e_lparen = '(' %act` and
+// #    `c_lparen = '('` and a lexer action `e_lparen | c_lparen`, the result
+// #    _will_ invoke the action `act`.
+// #
+// #    e_something stands for "something with **e**mbedded action".
+// 
+// it actually means will _only_ invoke action `act`?
+// 
+// since, apparently the rule 
+//   e_rbrace | e_rparen | ']'
+//   => {
+// will only invoke the action for e_rbrace, if the e_rbrace matches
+// 
+// TODO many rules need review
+//
+
 use std::collections::HashMap;
 
 use parser::token::Token;
@@ -149,13 +169,12 @@ impl Lexer {
             }
 
             // handle state transition
+            self.last_state = Some(self.current_state.clone());
             if let Some(calling_state) = self.calling_state.clone() {
-                self.last_state = Some(self.current_state.clone());
                 self.current_state = calling_state.clone();
                 self.calling_state = None;
             } else {
                 if let Some(next_state) = self.next_state.clone() {
-                    self.last_state = Some(self.current_state.clone());
                     self.current_state = next_state.clone();
                     self.next_state = None;
                 }
