@@ -1,6 +1,6 @@
 use parser::token::Token;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Node {
     // for rules which doesnot need to return a real node
     Dummy,
@@ -21,7 +21,7 @@ pub enum Node {
 
     Array(Vec<Node>),
 
-    Ident(Token),
+    Ident(String),
     Assign(Box<Node>, Token, Box<Node>),
     Assignable,
 }
@@ -132,11 +132,14 @@ pub fn string_compose(parts: Node) -> Node {
     if is_collapse_string_parts(&parts) {}
 
     // TODO DUMMY
-    if let Node::Str(string_value) = parts {
-        return Node::Str(string_value);
-    } else {
-        panic!("");
+    if let Node::Str(string_value) = parts { return Node::Str(string_value); }
+    if let Node::Nodes(str_nodes) = parts {
+        if let Node::Str(str_value) = (*str_nodes.get(0).unwrap()).clone() {
+            return Node::Str(str_value);
+        }
     }
+
+    panic!("string_compose UNIMPL");
 }
 
 // def character(char_t)

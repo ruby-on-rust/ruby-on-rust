@@ -165,13 +165,15 @@ pub fn construct() -> TMatchingPatterns {
     //       | '-' c_alnum
     //       )
     //   ;
-    // TODO use indoc!
-    pattern!("global_var", "\\$(
-([[:alpha:]][[:alnum:]]*)|
-([[:digit:]]+)|
-([`'\\+~\\*\\$&?!@/;,\\.=:<>\"])|
-(-[[:alnum:]])
-)");
+    // TODO use macro to combine complex pattern
+    pattern!("global_var",
+        format!(r"\$(({})|({})|({})|({}))",
+            r"[[:alpha:]][[:alnum:]]*",
+            r"[[:digit:]]+",
+            r#"[`'\+~\*$&\?!@/\\;,\.=:<>"]"#,
+            r"-[[:alnum:]]"
+        )
+    );
 
     //   # Ruby accepts (and fails on) variables with leading digit
     //   # in literal context, but not in unquoted symbol body.

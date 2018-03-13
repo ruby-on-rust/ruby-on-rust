@@ -135,7 +135,6 @@ pub fn construct_machine_interp_string( patterns: &TMatchingPatterns, shared_act
         //         panic!("UNIMPL");
         //     }
         // ),
-        action_with_literal!(format!(r"{}+", pattern_lit!("c_space")), get_shared_action!("extend_string_space")),
         action!("c_eol", get_shared_action!("extend_string_eol")),
         action!("c_any", get_shared_action!("extend_string")),
     ]

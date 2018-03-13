@@ -434,6 +434,7 @@ impl Literal {
     pub fn flush_string(&mut self) {
         if self.monolithic {
             self.emit_start_tok();
+            self.monolithic = false;
         }
 
         if !self.buffer.is_empty() {

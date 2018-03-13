@@ -350,8 +350,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
             format!("({})|({})|({})", pattern_lit!("global_var"), pattern_lit!("class_var_v"), pattern_lit!("instance_var_v")),
             |lexer: &mut Lexer| {
                 lexer.input_stream.hold_current_token();
-                // TODO is this enough to simulate `fcall`?
-                lexer.set_next_state(state!("expr_variable"));
+                lexer.set_calling_state(state!("expr_variable"));
             }
         ),
 

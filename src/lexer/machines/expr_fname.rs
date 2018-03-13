@@ -75,7 +75,7 @@ pub fn construct_machine_expr_fname( patterns: &TMatchingPatterns, shared_action
         action!("global_var", |lexer: &mut Lexer| {
             lexer.input_stream.hold_current_token();
             lexer.set_next_state(state!("expr_end"));
-            lexer.set_next_state(LexingState::ExprVariable);
+            lexer.set_calling_state(state!("expr_variable"));
         }),
 
         //     # If the handling was to be delegated to expr_end,

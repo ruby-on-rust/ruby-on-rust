@@ -46,8 +46,8 @@ pub fn construct_machine_expr_variable( patterns: &TMatchingPatterns, shared_act
             let token = Token::T_GVAR( lexer.input_stream.current_token_string() );
             lexer.emit_token(token);
 
-            // TODO NOTE `fnext *stack_pop` seems unnecessary here?
-            // since, that's what will happen, right?
+            let last_state = lexer.last_state.clone().unwrap();
+            lexer.set_next_state(last_state);
 
             lexer.flag_breaking();
         }),
@@ -76,8 +76,8 @@ pub fn construct_machine_expr_variable( patterns: &TMatchingPatterns, shared_act
             let token = Token::T_IVAR(lexer.input_stream.current_token_string());
             lexer.emit_token(token);
 
-            // TODO NOTE `fnext *stack_pop` seems unnecessary here?
-            // since, that's what will happen, right?
+            let last_state = lexer.last_state.clone().unwrap();
+            lexer.set_next_state(last_state);
 
             lexer.flag_breaking();
         }),

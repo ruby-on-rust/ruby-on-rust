@@ -18,7 +18,6 @@ fn test_identifier() {
     assert_eq!(token, Token::T_IDENTIFIER(TokenString::from("identifier")));
 }
 
-
 //   def test_string_double_interp
 //     assert_scanned("\"blah #x a \#@a b \#$b c \#{3} # \"",
 //                    :tSTRING_BEG,     "\"",         [0, 1],
@@ -43,4 +42,15 @@ fn string_double_interp() {
 
     assert_eq!(lexer.advance().unwrap(), Token::T_STRING_BEG);
     assert_eq!(lexer.advance().unwrap(), Token::T_STRING_CONTENT(TokenString::from("blah #x a ")));
+    assert_eq!(lexer.advance().unwrap(), Token::T_STRING_DVAR);
+    assert_eq!(lexer.advance().unwrap(), Token::T_IVAR(TokenString::from("@a")));
+    assert_eq!(lexer.advance().unwrap(), Token::T_STRING_CONTENT(TokenString::from(" b ")));
+    assert_eq!(lexer.advance().unwrap(), Token::T_STRING_DVAR);
+    assert_eq!(lexer.advance().unwrap(), Token::T_GVAR(TokenString::from("$b")));
+    assert_eq!(lexer.advance().unwrap(), Token::T_STRING_CONTENT(TokenString::from(" c ")));
+    assert_eq!(lexer.advance().unwrap(), Token::T_STRING_DBEG);
+    assert_eq!(lexer.advance().unwrap(), Token::T_INTEGER(3));
+    assert_eq!(lexer.advance().unwrap(), Token::T_RCURLY);
+    assert_eq!(lexer.advance().unwrap(), Token::T_STRING_CONTENT(TokenString::from(" # ")));
+    assert_eq!(lexer.advance().unwrap(), Token::T_STRING_END);
 }

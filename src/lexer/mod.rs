@@ -20,6 +20,10 @@ mod literal;           use self::literal::Literal;
 pub struct Lexer {
     current_state: LexingState, // NOTE like the @cs somehow
     next_state: Option<LexingState>,
+    // TODO NOTE simulate fcall
+    calling_state: Option<LexingState>,
+    // TODO NOTE simulate *stack_pop
+    last_state: Option<LexingState>,
     is_breaking: bool,
 
     tokens_tables: HashMap<&'static str, HashMap<&'static str, Token>>,
@@ -73,6 +77,8 @@ impl Lexer {
         Lexer {
             current_state: LexingState::LineBegin, // NOTE setting value here is no use actually, since every time will pop one from states_stack
             next_state: None,
+            calling_state: None,
+            last_state: None,
             is_breaking: false,
 
             tokens_tables: tokens_tables::construct(),
@@ -119,7 +125,11 @@ impl Lexer {
 
         self.exec();
 
-        return Some( self.tokens.remove(0) );
+        if self.tokens.is_empty() {
+            return None;
+        } else {
+            return Some( self.tokens.remove(0) );
+        }
     }
 
     // match-state-invoke-action loop
@@ -130,7 +140,7 @@ impl Lexer {
         self.is_breaking = false;
 
         loop {
-            println!("\n--- exec looping, current_state: {:?}, next_state: {:?}, is_breaking: {:?} ---", self.current_state, self.next_state, self.is_breaking);
+            println!("\n--- exec looping, current_state: {:?}, next_state: {:?}, calling_state: {:?}, is_breaking: {:?} ---", self.current_state, self.next_state, self.calling_state, self.is_breaking);
 
             // handle breaking
             if self.is_breaking == true {
@@ -139,9 +149,16 @@ impl Lexer {
             }
 
             // handle state transition
-            if let Some(next_state) = self.next_state.clone() {
-                self.current_state = next_state.clone();
-                self.next_state = None;
+            if let Some(calling_state) = self.calling_state.clone() {
+                self.last_state = Some(self.current_state.clone());
+                self.current_state = calling_state.clone();
+                self.calling_state = None;
+            } else {
+                if let Some(next_state) = self.next_state.clone() {
+                    self.last_state = Some(self.current_state.clone());
+                    self.current_state = next_state.clone();
+                    self.next_state = None;
+                }
             }
 
             // get actions
@@ -170,6 +187,10 @@ impl Lexer {
         self.next_state = Some(state);
     }
 
+    fn set_calling_state(&mut self, state: LexingState) {
+        self.calling_state = Some(state);
+    }
+
     fn emit_token(&mut self, token: Token) {
         println!(">>> emitting token: {:?}", token);
 
@@ -183,6 +204,8 @@ impl Lexer {
 
         let tokens_table = self.tokens_tables.get(table_name).unwrap();
         let token = tokens_table.get(token_str.as_str()).expect(&format!("no token {} from tokens_table {}", token_str, table_name));
+
+        println!(">>> emitting token (from table): {:?}", token);
 
         self.tokens.push((*token).clone());
     }

@@ -30,6 +30,8 @@ pub struct Parser {
 
     tokens: Vec<Token>,
     current_p: usize, // TODO NOTE
+
+    no_more_tokens: bool,
 }
 
 impl Parser {
@@ -39,6 +41,8 @@ impl Parser {
 
             tokens: vec![],
             current_p: 0,
+
+            no_more_tokens: false,
         }
     }
 
@@ -52,25 +56,24 @@ impl Parser {
         }
     }
 
-    // TODO
-    // shared match-and-consume
-    // fn match_token() -> bool {
-    // }
-
-    // TODO wrap in Result
     // get a new one if necessary
-    fn current_token(&mut self) -> Token {
+    fn current_token(&mut self) -> Option<Token> {
         // println!("PARSER current_token, current_p: {}", self.current_p);
 
-        if self.tokens.get(self.current_p).is_none() {
-            self.tokens.push(self.lexer.advance().expect("no token emitted after lexer.advance()"));
+        if self.no_more_tokens { return None; }
+
+        if let Some(token) = self.tokens.get(self.current_p) {
+            return Some(token.clone());
         }
 
-        let token = (*self.tokens.get(self.current_p).expect("no current token for current_p")).clone();
-
-        // println!("PARSER current_token, got token: {:?}", token);
-
-        token
+        // try to fetch a new one
+        if let Some(token) = self.lexer.advance() {
+            self.tokens.push(token.clone());
+            return Some(token);
+        } else {
+            self.no_more_tokens = true;
+            return None;
+        }
     }
 
     // TODO handle no more token
@@ -90,13 +93,14 @@ impl Parser {
     fn match_1_token(&mut self, token: Token) -> Option<Token> {
         println!("PARSER match_1_token, current_p: {:?}, current: {:?}, token: {:?}", self.current_p.clone(), self.current_token(), token );
 
-        let current_token = self.current_token();
-        if current_token == token {
-            self.consume_current_token();
-            Some(current_token)
-        } else {
-            None
+        if let Some(current_token) = self.current_token() {
+            if current_token == token {
+                self.consume_current_token();
+                return Some(current_token);
+            }
         }
+
+        return None;
     }
 
     // ===
@@ -1977,7 +1981,7 @@ impl Parser {
         //               string = @builder.string(val[0])
         //               result = @builder.dedent_string(string, @lexer.dedent_level)
         //             }
-        if let Token::T_STRING(token_string) = self.current_token() {
+        if let Some(Token::T_STRING(token_string)) = self.current_token() {
             self.consume_current_token();
             return Some( Node::Str( token_string ) );
         }
@@ -2086,13 +2090,13 @@ impl Parser {
     //                 }
     // NOTE transformed into non-recursive form
     fn p_qword_list(&mut self) -> Option<Node> {
-        if let Token::T_STRING_CONTENT(str_content) = self.current_token() {
+        if let Some(Token::T_STRING_CONTENT(str_content)) = self.current_token() {
             self.consume_current_token();
             if let Some(_t_space) = self.match_1_token(Token::T_SPACE) {
                 let mut nodes = vec![Node::Str(str_content)];
 
                 loop {
-                    if let Token::T_STRING_CONTENT(str_content) = self.current_token() {
+                    if let Some(Token::T_STRING_CONTENT(str_content)) = self.current_token() {
                         self.consume_current_token();
                         if let Some(_t_space) = self.match_1_token(Token::T_SPACE) {
                             nodes.push(Node::Str(str_content));
@@ -2187,7 +2191,7 @@ impl Parser {
         //                     {
         //                       result = @builder.string_internal(val[0])
         //                     }
-        if let Token::T_STRING_CONTENT(t_string_content_value) = self.current_token() {
+        if let Some(Token::T_STRING_CONTENT(t_string_content_value)) = self.current_token() {
             self.consume_current_token();
             return Some(Node::Str(t_string_content_value));
         }
@@ -2260,7 +2264,7 @@ impl Parser {
         //               end
         //             }
         // TODO HANDLE %prec
-        if let Token::T_UNARY_NUM(_) = self.current_token() {
+        if let Some(Token::T_UNARY_NUM(_)) = self.current_token() {
             let t_unary_num = self.consume_current_token();
             if let Some(n_simple_numeric) = self.p_simple_numeric() {
                 return Some(node::unary_num(t_unary_num, n_simple_numeric));
@@ -2278,7 +2282,7 @@ impl Parser {
     fn p_symbol(&mut self) -> Option<Node> {
         println!("PARSER p_symbol");
 
-        if let Token::T_SYMBOL(symbol_string) = self.current_token() {
+        if let Some(Token::T_SYMBOL(symbol_string)) = self.current_token() {
             let _t_symbol = self.consume_current_token();
 
             self.lexer.set_state(state!("expr_endarg"));
@@ -2348,7 +2352,7 @@ impl Parser {
     //                     }
     fn p_simple_numeric(&mut self) -> Option<Node> {
         match self.current_token() {
-            Token::T_INTEGER(i) => {
+            Some(Token::T_INTEGER(i)) => {
                 self.lexer.set_state(state!("expr_end"));
 
                 self.consume_current_token();
@@ -2383,10 +2387,12 @@ impl Parser {
     fn p_user_variable(&mut self) -> Option<Node> {
         let current_token = self.current_token();
 
-        match current_token {
-            Token::T_IDENTIFIER(_) => { self.consume_current_token(); return Some(Node::Ident(current_token)); },
-            _ => { return None; }
+        if let Some(Token::T_IDENTIFIER(t_id_value)) = current_token {
+            self.consume_current_token();
+            return Some(Node::Ident(t_id_value));
         }
+
+        None
     }
 
     // keyword_variable: kNIL
@@ -2419,6 +2425,8 @@ impl Parser {
     //                     }
     // TODO INCOMPLETE
     fn p_keyword_variable(&mut self) -> Option<Node> {
+        println!("p_keyword_variable");
+
         if let Some(_) = self.match_1_token(Token::K_NIL) { return Some(Node::Nil); }
 
         if let Some(_) = self.match_1_token(Token::K_TRUE) { return Some(Node::True); }

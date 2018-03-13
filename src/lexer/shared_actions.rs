@@ -438,6 +438,8 @@ pub fn construct() -> TSharedActions {
     //     fcall expr_variable;
     //   }
     action!("extend_interp_var", |lexer: &mut Lexer| {
+        println!("action extend_interp_var");
+
         let mut current_literal = lexer.literal_stack.pop().unwrap().clone();
         current_literal.flush_string();
         current_literal.extend_content();
@@ -447,12 +449,11 @@ pub fn construct() -> TSharedActions {
 
         lexer.literal_stack.push(current_literal);
 
-        // TODO NOTE
+        // TODO NOT SURE
         // so `p = @ts` becomes p = ts + 1 right?
         lexer.input_stream.p = lexer.input_stream.ts.unwrap() + 1;
 
-        // TODO is this enough to simulate `fcall`?
-        lexer.set_next_state(state!("expr_variable"));
+        lexer.set_calling_state(state!("expr_variable"));
     });
 
     //   action extend_interp_code {
@@ -471,6 +472,8 @@ pub fn construct() -> TSharedActions {
     //     fcall expr_value;
     //   }
     action!("extend_interp_code", |lexer: &mut Lexer| {
+        println!("action extend_interp_code");
+
         let mut current_literal = lexer.literal_stack.pop().unwrap().clone();
 
         current_literal.flush_string();
@@ -486,6 +489,8 @@ pub fn construct() -> TSharedActions {
         //     end
 
         lexer.literal_stack.push(current_literal);
+
+        lexer.set_calling_state(state!("expr_value"));
     });
 
 
@@ -612,7 +617,10 @@ pub fn construct() -> TSharedActions {
             // TODO HANDLE saved_herebody_s
 
             lexer.input_stream.hold_current_char();
-            // TODO stack_pop
+
+            let last_state = lexer.last_state.clone().unwrap();
+            lexer.set_next_state(last_state);
+
             lexer.flag_breaking();
         }
     });
