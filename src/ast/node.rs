@@ -15,6 +15,7 @@ pub enum Node {
     Int(isize),
 
     Str(String),
+    DStr(Vec<Node>),
 
     Sym(String),
 
@@ -128,6 +129,8 @@ pub fn accessible(node: Node) -> Node {
 // end
 // TODO INCOMPLETE
 pub fn string_compose(parts: Node) -> Node {
+    if is_collapse_string_parts(&parts) {}
+
     // TODO DUMMY
     if let Node::Str(string_value) = parts {
         return Node::Str(string_value);
@@ -1059,3 +1062,89 @@ pub fn string_compose(parts: Node) -> Node {
 //       collection_map(begin_t, [ body ], end_t))
 //   end
 // end
+
+//     #
+//     # HELPERS
+//     #
+
+//     # Extract a static string from e.g. a regular expression,
+//     # honoring the fact that MRI expands interpolations like #{""}
+//     # at parse time.
+//     def static_string(nodes)
+//       nodes.map do |node|
+//         case node.type
+//         when :str
+//           node.children[0]
+//         when :begin
+//           if (string = static_string(node.children))
+//             string
+//           else
+//             return nil
+//           end
+//         else
+//           return nil
+//         end
+//       end.join
+//     end
+
+//     def static_regexp(parts, options)
+//       source = static_string(parts)
+//       return nil if source.nil?
+
+//       source = case
+//       when options.children.include?(:u)
+//         source.encode(Encoding::UTF_8)
+//       when options.children.include?(:e)
+//         source.encode(Encoding::EUC_JP)
+//       when options.children.include?(:s)
+//         source.encode(Encoding::WINDOWS_31J)
+//       when options.children.include?(:n)
+//         source.encode(Encoding::BINARY)
+//       else
+//         source
+//       end
+
+//       Regexp.new(source, (Regexp::EXTENDED if options.children.include?(:x)))
+//     end
+
+//     def static_regexp_node(node)
+//       if node.type == :regexp
+//         parts, options = node.children[0..-2], node.children[-1]
+//         static_regexp(parts, options)
+//       end
+//     end
+
+//     def collapse_string_parts?(parts)
+//       parts.one? &&
+//           [:str, :dstr].include?(parts.first.type)
+//     end
+fn is_collapse_string_parts(parts: &Node) -> bool {
+    true
+}
+
+//     def value(token)
+//       token[0]
+//     end
+
+//     def string_value(token)
+//       unless token[0].valid_encoding?
+//         diagnostic(:error, :invalid_encoding, nil, token[1])
+//       end
+
+//       token[0]
+//     end
+
+//     def loc(token)
+//       # Pass through `nil`s and return nil for tNL.
+//       token[1] if token && token[0]
+//     end
+
+//     def diagnostic(type, reason, arguments, location, highlights=[])
+//       @parser.diagnostics.process(
+//           Diagnostic.new(type, reason, arguments, location, highlights))
+
+//       if type == :error
+//         @parser.send :yyerror
+//       end
+//     end
+//   end

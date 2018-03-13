@@ -31,8 +31,8 @@ pub struct Lexer {
     // stack: Vec<usize>,
     // top: usize,
 
-    cond: StackState,
-    cmdarg: StackState,
+    pub cond: StackState,
+    pub cmdarg: StackState,
     // TODO
     // cond_stack: Vec<StackState>,
     // cmdarg_stack: Vec<StackState>,

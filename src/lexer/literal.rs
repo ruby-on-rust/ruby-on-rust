@@ -104,34 +104,6 @@ impl Literal {
         //       @str_type += delimiter if @str_type.start_with?('%'.freeze)
         // 
 
-
-        //     TYPES = {
-        //     # type       start token     interpolate?
-        //       "'"   => [ :tSTRING_BEG,   false ],
-        //       "<<'" => [ :tSTRING_BEG,   false ],
-        //       '%q'  => [ :tSTRING_BEG,   false ],
-        //       '"'   => [ :tSTRING_BEG,   true  ],
-        //       '<<"' => [ :tSTRING_BEG,   true  ],
-        //       '%'   => [ :tSTRING_BEG,   true  ],
-        //       '%Q'  => [ :tSTRING_BEG,   true  ],
-
-        //       '%w'  => [ :tQWORDS_BEG,   false ],
-        //       '%W'  => [ :tWORDS_BEG,    true  ],
-
-        //       '%i'  => [ :tQSYMBOLS_BEG, false ],
-        //       '%I'  => [ :tSYMBOLS_BEG,  true  ],
-
-        //       ":'"  => [ :tSYMBEG,       false ],
-        //       '%s'  => [ :tSYMBEG,       false ],
-        //       ':"'  => [ :tSYMBEG,       true  ],
-
-        //       '/'   => [ :tREGEXP_BEG,   true  ],
-        //       '%r'  => [ :tREGEXP_BEG,   true  ],
-
-        //       '%x'  => [ :tXSTRING_BEG,  true  ],
-        //       '`'   => [ :tXSTRING_BEG,  true  ],
-        //       '<<`' => [ :tXSTRING_BEG,  true  ],
-        //     }
         let (start_tok, interpolate) = match str_type.as_ref() {
             "'"   => ( Token::T_STRING_BEG,   false ),
             "<<'" => ( Token::T_STRING_BEG,   false ),
@@ -227,12 +199,13 @@ impl Literal {
     //     def interpolate?
     //       @interpolate
     //     end
+    // NOTE use self.interpolate instead
 
     //     def words?
     //       type == :tWORDS_BEG || type == :tQWORDS_BEG ||
     //         type == :tSYMBOLS_BEG || type == :tQSYMBOLS_BEG
     //     end
-    // NOTE moved into self.is_words
+    // NOTE use self.is_words instead
 
     //     def regexp?
     //       type == :tREGEXP_BEG
@@ -246,6 +219,7 @@ impl Literal {
     //     def backslash_delimited?
     //       @end_delim == '\\'.freeze
     //     end
+    fn is_backslash_delimited(&self) -> bool { self.end_delim.clone().unwrap() == String::from(r"\") }
 
     //     def type
     //       @start_tok
@@ -457,7 +431,7 @@ impl Literal {
     // TODO NOTE
     // this fund includes tokens emitting (flush_string)
     // have to make sure emits those tokens after lexer called this function
-    fn flush_string(&mut self) {
+    pub fn flush_string(&mut self) {
         if self.monolithic {
             self.emit_start_tok();
         }
@@ -473,7 +447,7 @@ impl Literal {
     //     def extend_content
     //       @space_emitted = false
     //     end
-    fn extend_content(&mut self) {
+    pub fn extend_content(&mut self) {
         self.space_emitted = false;
     }
 
@@ -596,11 +570,36 @@ impl Lexer {
     pub fn push_literal(&mut self, literal: Literal) -> LexingState {
         self.literal_stack.push(literal.clone());
 
-        // TODO DUMMY
-        if literal.is_words {
-            state!("plain_words")
+        let literal = literal.clone();
+
+        if literal.is_words && literal.is_backslash_delimited() {
+            if literal.interpolate {
+                return state!("interp_backslash_delimited_words");
+            } else {
+                return state!("plain_backslash_delimited_words");
+            }
+        }
+
+        if literal.is_words && !literal.is_backslash_delimited() {
+            if literal.interpolate {
+                return state!("interp_words");
+            } else {
+                return state!("plain_words");
+            }
+        }
+
+        if !literal.is_words && literal.is_backslash_delimited() {
+            if literal.interpolate {
+                return state!("interp_backslash_delimited");
+            } else {
+                return state!("plain_backslash_delimited");
+            }
+        }
+
+        if literal.interpolate {
+            return state!("interp_string");
         } else {
-            state!("plain_string")
+            return state!("plain_string");
         }
     }
 

@@ -265,8 +265,6 @@ pub fn construct() -> TSharedActions {
     //   }
     // TODO INCOMPLETE
     action!("extend_string", |lexer: &mut Lexer| {
-        // TODO WIP
-
         // TODO NAMING
         let current_string = lexer.input_stream.current_token().unwrap();
 
@@ -303,7 +301,7 @@ pub fn construct() -> TSharedActions {
         // NOTE
         // due to limitations of borrowing in rust, we have to
         // 1 clone current_literal
-        // 2 update it 
+        // 2 modify it 
         // 3 re-save it to the stack
         lexer.literal_stack.pop();
         lexer.literal_stack.push(current_literal);
@@ -421,8 +419,7 @@ pub fn construct() -> TSharedActions {
     action!("extend_string_space", |lexer: &mut Lexer| {
         let ts = lexer.input_stream.ts.unwrap().clone();
         let te = lexer.input_stream.te.unwrap().clone();
-        let mut literal = lexer.literal().expect("can't fetch current literal");
-        literal.extend_space(ts, te);
+        lexer.literal().expect("can't fetch current literal").extend_space(ts, te);
     });
 
 
@@ -441,7 +438,21 @@ pub fn construct() -> TSharedActions {
     //     fcall expr_variable;
     //   }
     action!("extend_interp_var", |lexer: &mut Lexer| {
-        panic!("UNIMPL");
+        let mut current_literal = lexer.literal_stack.pop().unwrap().clone();
+        current_literal.flush_string();
+        current_literal.extend_content();
+
+        for token_to_emit in current_literal.consume_tokens_to_emit().iter() { lexer.emit_token(token_to_emit.clone()); }
+        lexer.emit_token(Token::T_STRING_DVAR);
+
+        lexer.literal_stack.push(current_literal);
+
+        // TODO NOTE
+        // so `p = @ts` becomes p = ts + 1 right?
+        lexer.input_stream.p = lexer.input_stream.ts.unwrap() + 1;
+
+        // TODO is this enough to simulate `fcall`?
+        lexer.set_next_state(state!("expr_variable"));
     });
 
     //   action extend_interp_code {
@@ -460,7 +471,21 @@ pub fn construct() -> TSharedActions {
     //     fcall expr_value;
     //   }
     action!("extend_interp_code", |lexer: &mut Lexer| {
-        panic!("UNIMPL");
+        let mut current_literal = lexer.literal_stack.pop().unwrap().clone();
+
+        current_literal.flush_string();
+        for token_to_emit in current_literal.consume_tokens_to_emit().iter() { lexer.emit_token(token_to_emit.clone()); }
+        current_literal.extend_content();
+
+        lexer.emit_token(Token::T_STRING_DBEG);
+
+        // TODO handle heredoc
+        //     if current_literal.heredoc?
+        //       current_literal.saved_herebody_s = @herebody_s
+        //       @herebody_s = nil
+        //     end
+
+        lexer.literal_stack.push(current_literal);
     });
 
 

@@ -161,6 +161,16 @@ fn string_plain() {
 //         |    ~~~~~~ expression (begin)
 //         |~~~~~~~~~~~~~~ expression})
 //   end
+#[test]
+fn string_interp() {
+    // TODO
+    assert_parses!(
+        "\"foo#{bar}baz\"",
+        Node::DStr(vec![
+            n_str!("foo"),
+        ])
+    );
+}
 
 //   def test_string_dvar
 //     assert_parses(
@@ -600,18 +610,20 @@ fn array_words() {
 //       %q{%W[foo #{bar}foo#@baz]})
 //   end
 
-//   def test_array_words_empty
-//     assert_parses(
-//       s(:array),
-//       %q{%w[]},
-//       %q{^^^ begin
-//         |   ^ end
-//         |~~~~ expression})
-// 
-//     assert_parses(
-//       s(:array),
-//       %q{%W()})
-//   end
+#[test]
+fn array_words_empty() {
+    // TODO
+    // assert_parses!(
+    //     r"%w[]",
+    //     Node::Array(vec![])
+    // );
+
+    // TODO
+    // assert_parses!(
+    //     r"%W[]",
+    //     Node::Array(vec![])
+    // );
+}
 
 //   def test_array_symbols
 //     assert_parses(

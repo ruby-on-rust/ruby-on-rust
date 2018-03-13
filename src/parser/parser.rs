@@ -141,6 +141,12 @@ impl Parser {
     //             {
     //               result = @builder.compstmt(val[0])
     //             }
+    fn p_compstmt(&mut self) -> Option<Node> {
+        // TODO DUMMY
+        return self.p_stmt();
+
+        None
+    }
 
     //    stmts: # nothing
     //             {
@@ -1112,6 +1118,7 @@ impl Parser {
         //         | strings
         if let Some(n_strings) = self.p_strings() { return Some(n_strings); }
         //         | xstring
+        // if let Some(n_xstring) = self.p_xstring() { return Some(n_xstring); }
         //         | regexp
         //         | words
         //         | qwords
@@ -1924,36 +1931,36 @@ impl Parser {
     //             {
     //               result = val[0] << val[1]
     //             }
-    // TODO INCOMPLETE
+    // NOTE transformed into non-recursive form
     fn p_string(&mut self) -> Option<Node> {
         println!("PARSER p_string");
 
         if let Some(n_string1) = self.p_string1() {
-            // TODO handle list
-            return Some(n_string1);
+            let mut string1s = vec![n_string1];
+
+            loop {
+                if let Some(n_string1) = self.p_string1() {
+                    string1s.push(n_string1);
+                } else {
+                    break;
+                }
+            }
+
+            return Some(Node::Nodes(string1s));
         }
 
-       None
+        None
     }
 
-    //  string1: tSTRING_BEG string_contents tSTRING_END
-    //             {
-    //               string = @builder.string_compose(val[0], val[1], val[2])
-    //               result = @builder.dedent_string(string, @lexer.dedent_level)
-    //             }
-    //         | tSTRING
-    //             {
-    //               string = @builder.string(val[0])
-    //               result = @builder.dedent_string(string, @lexer.dedent_level)
-    //             }
-    //         | tCHARACTER
-    //             {
-    //               result = @builder.character(val[0])
-    //             }
     // TODO INCOMPLETE
     fn p_string1(&mut self) -> Option<Node> {
         println!("PARSER p_string1");
 
+        //  string1: tSTRING_BEG string_contents tSTRING_END
+        //             {
+        //               string = @builder.string_compose(val[0], val[1], val[2])
+        //               result = @builder.dedent_string(string, @lexer.dedent_level)
+        //             }
         if let Some(t_string_beg) = self.match_1_token(Token::T_STRING_BEG) {
             if let Some(n_string_contents) = self.p_string_contents() {
                 if let Some(t_string_end) = self.match_1_token(Token::T_STRING_END) {
@@ -1965,10 +1972,21 @@ impl Parser {
             }
         }
 
+        //         | tSTRING
+        //             {
+        //               string = @builder.string(val[0])
+        //               result = @builder.dedent_string(string, @lexer.dedent_level)
+        //             }
         if let Token::T_STRING(token_string) = self.current_token() {
             self.consume_current_token();
             return Some( Node::Str( token_string ) );
         }
+
+        //         | tCHARACTER
+        //             {
+        //               result = @builder.character(val[0])
+        //             }
+        // TODO
 
         None
     }
@@ -1978,6 +1996,14 @@ impl Parser {
     //                   string = @builder.xstring_compose(val[0], val[1], val[2])
     //                   result = @builder.dedent_string(string, @lexer.dedent_level)
     //                 }
+    // fn p_xstring(&mut self) -> Option<Node> {
+    //     if let Token::T_XSTRING_BEG = self.current_token() {
+    //         self.consume_current_token();
+    //         panic!("p_xstring UNIMPL");
+    //     }
+    // 
+    //     None
+    // }
 
     //       regexp: tREGEXP_BEG regexp_contents tSTRING_END tREGEXP_OPT
     //                 {
@@ -2028,6 +2054,12 @@ impl Parser {
     //                 }
     fn p_qwords(&mut self) -> Option<Node> {
         if let Some(_t_qwords_beg) = self.match_1_token(Token::T_QWORDS_BEG) {
+            // handle qword_list being `none`
+            if let Some(_t_string_end) = self.match_1_token(Token::T_STRING_END) {
+                // TODO builder.words_compose
+                return Some(Node::Array(vec![]));
+            }
+
             if let Some(qword_list) = self.p_qword_list() {
                 if let Some(_t_string_end) = self.match_1_token(Token::T_STRING_END) {
                     // TODO builder.words_compose
@@ -2095,14 +2127,22 @@ impl Parser {
     //                     {
     //                       result = val[0] << val[1]
     //                     }
+    // NOTE transformed to non-recursive
     fn p_string_contents(&mut self) -> Option<Node> {
         println!("PARSER p_string_contents");
 
-        // NOTE transformed to non-recursive
         if let Some(n_string_content) = self.p_string_content() {
-            // TODO handle list
+            let mut string_contents = vec![n_string_content];
 
-            return Some(n_string_content);
+            loop {
+                if let Some(n_string_content)  = self.p_string_content() {
+                    string_contents.push(n_string_content);
+                } else {
+                    break;
+                }
+            }
+
+            return Some(Node::Nodes(string_contents));
         }
 
         None
@@ -2139,32 +2179,50 @@ impl Parser {
     //                       result = val[0] << val[1]
     //                     }
 
-    //   string_content: tSTRING_CONTENT
-    //                     {
-    //                       result = @builder.string_internal(val[0])
-    //                     }
-    //                 | tSTRING_DVAR string_dvar
-    //                     {
-    //                       result = val[1]
-    //                     }
-    //                 | tSTRING_DBEG
-    //                     {
-    //                       @lexer.cond.push(false)
-    //                       @lexer.cmdarg.push(false)
-    //                     }
-    //                     compstmt tSTRING_DEND
-    //                     {
-    //                       @lexer.cond.lexpop
-    //                       @lexer.cmdarg.lexpop
-    // 
-    //                       result = @builder.begin(val[0], val[2], val[3])
-    //                     }
     // TODO INCOMPLETE
     fn p_string_content(&mut self) -> Option<Node> {
         println!("PARSER p_string_content");
+
+        //   string_content: tSTRING_CONTENT
+        //                     {
+        //                       result = @builder.string_internal(val[0])
+        //                     }
         if let Token::T_STRING_CONTENT(t_string_content_value) = self.current_token() {
             self.consume_current_token();
             return Some(Node::Str(t_string_content_value));
+        }
+
+        //                 | tSTRING_DVAR string_dvar
+        //                     {
+        //                       result = val[1]
+        //                     }
+        // TODO
+
+        //                 | tSTRING_DBEG
+        //                     {
+        //                       @lexer.cond.push(false)
+        //                       @lexer.cmdarg.push(false)
+        //                     }
+        //                     compstmt tSTRING_DEND
+        //                     {
+        //                       @lexer.cond.lexpop
+        //                       @lexer.cmdarg.lexpop
+        // 
+        //                       result = @builder.begin(val[0], val[2], val[3])
+        //                     }
+        // TODO NOTE embedded action
+        if let Some(t_string_dbeg) = self.match_1_token(Token::T_STRING_DBEG) {
+            self.lexer.cond.push(false);
+            self.lexer.cmdarg.push(false);
+            if let Some(n_compstmt) = self.p_compstmt() {
+                if let Some(t_string_dend) = self.match_1_token(Token::T_STRING_DEND) {
+                    self.lexer.cond.lexpop();
+                    self.lexer.cmdarg.lexpop();
+
+                    // TODO builder.begin
+                    panic!("WIP");
+                }
+            }
         }
 
         None
