@@ -809,8 +809,8 @@ fn array_words_empty() {
 //       %q{self},
 //       %q{~~~~ expression})
 //   end
-// #[test]
-// fn test_self() { assert_parses!("self", Node::Self); }
+#[test]
+fn test_self() { assert_parses!("self", Node::NSelf); }
 
 //   def test_lvar
 //     assert_parses(

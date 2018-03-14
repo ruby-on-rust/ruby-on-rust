@@ -21,6 +21,8 @@ pub enum Node {
 
     Array(Vec<Node>),
 
+    NSelf,
+
     Ident(String),
     Assign(Box<Node>, Token, Box<Node>),
     Assignable,

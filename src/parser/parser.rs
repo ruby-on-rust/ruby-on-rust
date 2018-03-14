@@ -2433,43 +2433,46 @@ impl Parser {
         None
     }
 
-    // keyword_variable: kNIL
-    //                     {
-    //                       result = @builder.nil(val[0])
-    //                     }
-    //                 | kSELF
-    //                     {
-    //                       result = @builder.self(val[0])
-    //                     }
-    //                 | kTRUE
-    //                     {
-    //                       result = @builder.true(val[0])
-    //                     }
-    //                 | kFALSE
-    //                     {
-    //                       result = @builder.false(val[0])
-    //                     }
-    //                 | k__FILE__
-    //                     {
-    //                       result = @builder.__FILE__(val[0])
-    //                     }
-    //                 | k__LINE__
-    //                     {
-    //                       result = @builder.__LINE__(val[0])
-    //                     }
-    //                 | k__ENCODING__
-    //                     {
-    //                       result = @builder.__ENCODING__(val[0])
-    //                     }
     // TODO INCOMPLETE
     fn p_keyword_variable(&mut self) -> Option<Node> {
         println!("p_keyword_variable");
 
+        // keyword_variable: kNIL
+        //                     {
+        //                       result = @builder.nil(val[0])
+        //                     }
         if let Some(_) = self.match_1_token(Token::K_NIL) { return Some(Node::Nil); }
 
+        //                 | kSELF
+        //                     {
+        //                       result = @builder.self(val[0])
+        //                     }
+        if let Some(_) = self.match_1_token(Token::K_SELF) { return Some(Node::NSelf); }
+
+        //                 | kTRUE
+        //                     {
+        //                       result = @builder.true(val[0])
+        //                     }
         if let Some(_) = self.match_1_token(Token::K_TRUE) { return Some(Node::True); }
+
+        //                 | kFALSE
+        //                     {
+        //                       result = @builder.false(val[0])
+        //                     }
         if let Some(_) = self.match_1_token(Token::K_FALSE) { return Some(Node::False); }
 
+        //                 | k__FILE__
+        //                     {
+        //                       result = @builder.__FILE__(val[0])
+        //                     }
+        //                 | k__LINE__
+        //                     {
+        //                       result = @builder.__LINE__(val[0])
+        //                     }
+        //                 | k__ENCODING__
+        //                     {
+        //                       result = @builder.__ENCODING__(val[0])
+        //                     }
         None
     }
 
