@@ -161,16 +161,16 @@ fn string_plain() {
 //         |    ~~~~~~ expression (begin)
 //         |~~~~~~~~~~~~~~ expression})
 //   end
-#[test]
-fn string_interp() {
-    // TODO
-    assert_parses!(
-        "\"foo#{bar}baz\"",
-        Node::DStr(vec![
-            n_str!("foo"),
-        ])
-    );
-}
+// #[test]
+// fn string_interp() {
+//     // TODO
+//     assert_parses!(
+//         "\"foo#{bar}baz\"",
+//         Node::DStr(vec![
+//             n_str!("foo"),
+//         ])
+//     );
+// }
 
 //   def test_string_dvar
 //     assert_parses(
