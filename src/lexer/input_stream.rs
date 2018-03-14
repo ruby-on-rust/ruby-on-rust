@@ -56,11 +56,15 @@ impl InputStream {
         // TODO not that elegant, use Option<Action> instead of
         let mut longest_matched_action_i: Option<usize> = None;
         let mut longest_matched_action_len = -1; // init as -1, since there will be matching result with len 0 (c_eof)
+
+        let starting_pos = ( if self.entering_machine { self.p } else { self.p + 1 } ) as usize;
+        let sliced_string: String = self.string.chars().skip(starting_pos).collect();
+
         for (i, action) in actions.iter().enumerate() {
 
             // println!("matching action with regex {:?}", &action.regex);
 
-            match self.match_action_starting_from_pos(&action.regex) {
+            match self.match_action_starting_from_pos(&sliced_string, &action.regex) {
                 None => {},
                 Some(len) => {
                     let len = len as isize;
@@ -75,7 +79,7 @@ impl InputStream {
             };
         };
 
-        println!("longest_matched_action_len: {}", longest_matched_action_len);
+        // println!("longest_matched_action_len: {}", longest_matched_action_len);
         // println!("longest_matched_action_i: {:?}", longest_matched_action_i);
 
         match longest_matched_action_i {
@@ -92,9 +96,7 @@ impl InputStream {
                     self.te = Some((self.p + 1) as usize);
                 }
 
-                println!("WTF updated: p{:?} ts{:?} te{:?}", self.p, self.ts, self.te);
-
-                // println!("matched token: {:?}", self.current_token() );
+                println!("matched token: {:?}", self.current_token() );
                 // println!("current ts {} p {} te {}", self.ts.unwrap(), self.p, self.te.unwrap() );
 
                 return Some(actions.get(i).unwrap().clone());
@@ -161,20 +163,16 @@ impl InputStream {
         }
     }
 
-    // return matched length, starting from 1
-    fn match_action_starting_from_pos(&mut self, regex: &Regex) -> Option<usize> {
+    fn match_action_starting_from_pos(&mut self, current_slice: &String, regex: &Regex) -> Option<usize> {
 
         // println!("\n===\n    matching action starting from pos");
 
-        let starting_pos = ( if self.entering_machine { self.p } else { self.p + 1 } ) as usize;
-        let sliced_string: String = self.string.chars().skip(starting_pos).collect();
-
-        println!("    current entering machine: {}", self.entering_machine);
-        println!("    current starting pos: {}", starting_pos);
-        println!("    current sliced string: {}, (len: {})", sliced_string, sliced_string.len());
+        // println!("    current entering machine: {}", self.entering_machine);
+        // println!("    current starting pos: {}", starting_pos);
+        // println!("    current sliced string: {}, (len: {})", sliced_string, sliced_string.len());
         // println!("    regex: {:?}", regex);
 
-        let captures = regex.captures(&sliced_string);
+        let captures = regex.captures(current_slice);
         match captures {
             None => None,
             Some(capture) => {
