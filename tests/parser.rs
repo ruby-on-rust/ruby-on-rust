@@ -818,6 +818,8 @@ fn test_self() { assert_parses!("self", Node::NSelf); }
 //       %q{foo},
 //       %q{~~~ expression})
 //   end
+#[test]
+fn lvar() { assert_parses!("foo", Node::LVAR(String::from("foo"))); }
 
 //   def test_ivar
 //     assert_parses(
