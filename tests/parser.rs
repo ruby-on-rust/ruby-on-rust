@@ -612,17 +612,15 @@ fn array_words() {
 
 #[test]
 fn array_words_empty() {
-    // TODO
-    // assert_parses!(
-    //     r"%w[]",
-    //     Node::Array(vec![])
-    // );
+    assert_parses!(
+        r"%w[]",
+        Node::Array(vec![])
+    );
 
-    // TODO
-    // assert_parses!(
-    //     r"%W[]",
-    //     Node::Array(vec![])
-    // );
+    assert_parses!(
+        r"%W[]",
+        Node::Array(vec![])
+    );
 }
 
 //   def test_array_symbols

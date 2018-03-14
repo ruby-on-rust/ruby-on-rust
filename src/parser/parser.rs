@@ -1125,6 +1125,7 @@ impl Parser {
         // if let Some(n_xstring) = self.p_xstring() { return Some(n_xstring); }
         //         | regexp
         //         | words
+        if let Some(n_words) = self.p_words() { return Some(n_words); }
         //         | qwords
         if let Some(n_qwords) = self.p_qwords() { return Some(n_qwords); }
         //         | symbols
@@ -2019,6 +2020,22 @@ impl Parser {
     //                 {
     //                   result = @builder.words_compose(val[0], val[1], val[2])
     //                 }
+    fn p_words(&mut self) -> Option<Node> {
+        if let Some(t_words_beg) = self.match_1_token(Token::T_WORDS_BEG) {
+            // handle word_list being none
+            if let Some(t_string_end) = self.match_1_token(Token::T_STRING_END) {
+                return Some(Node::Array(vec![]));
+            }
+
+            if let Some(n_word_list) = self.p_word_list() {
+                if let Some(t_string_end) = self.match_1_token(Token::T_STRING_END) {
+                    if let Node::Nodes(nodes) = n_word_list { return Some(Node::Array(nodes)); }
+                }
+            }
+        }
+
+        None
+    }
 
     //    word_list: # nothing
     //                 {
@@ -2028,6 +2045,16 @@ impl Parser {
     //                 {
     //                   result = val[0] << @builder.word(val[1])
     //                 }
+    // NOTE transformed into non-recursive form
+    fn p_word_list(&mut self) -> Option<Node> {
+        if let Some(n_word) = self.p_word() {
+            let mut n_words = vec![n_word];
+            loop { if let Some(n_word) = self.p_word() { n_words.push(n_word); } else { break; } }
+            return Some(Node::Nodes(n_words));
+        }
+
+        None
+    }
 
     //         word: string_content
     //                 {
@@ -2037,6 +2064,17 @@ impl Parser {
     //                 {
     //                   result = val[0] << val[1]
     //                 }
+    // TODO NOTE transformed to non-recursive form
+    fn p_word(&mut self) -> Option<Node> {
+        if let Some(n_string_content) = self.p_string_content() {
+            let mut n_words = vec![n_string_content];
+            // TODO properly handle node children
+            loop { if let Some(n_string_content) = self.p_string_content() { n_words.push(n_string_content); } else { break; } }
+            return Some(Node::Nodes(n_words));
+        }
+
+        None
+    }
 
     //      symbols: tSYMBOLS_BEG symbol_list tSTRING_END
     //                 {
