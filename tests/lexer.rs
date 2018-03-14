@@ -9,7 +9,7 @@ use ruby_on_rust::lexer::Lexer;
 use ruby_on_rust::parser::token::{Token, TokenString};
 
 #[test]
-fn test_identifier() {
+fn identifier() {
     let content = String::from("identifier");
 
     let mut lexer = Lexer::new(content);
@@ -38,10 +38,8 @@ fn test_identifier() {
 // NOTE
 // so the expected result in the test case is not true for ruby25 :facepalm:
 // 
-// the result in parser::currentruby(ruby25) for the last 3 tokens are:
+// the result in parser::currentruby(ruby25) for the last token tRCURLY is actually:
 //   [:tSTRING_DEND, ["}", #<Parser::Source::Range (string) 26...27>]]
-//   [:tSTRING_CONTENT, [" # ", #<Parser::Source::Range (string) 27...30>]]
-//   [:tSTRING_END, ["\"", #<Parser::Source::Range (string) 30...31>]]
 // 
 // TODO
 //
@@ -61,11 +59,9 @@ fn string_double_interp() {
     assert_eq!(lexer.advance().unwrap(), Token::T_STRING_CONTENT(TokenString::from(" c ")));
     assert_eq!(lexer.advance().unwrap(), Token::T_STRING_DBEG);
     assert_eq!(lexer.advance().unwrap(), Token::T_INTEGER(3));
+    // assert_eq!(lexer.advance().unwrap(), Token::T_RCURLY);
     assert_eq!(lexer.advance().unwrap(), Token::T_STRING_DEND);
     assert_eq!(lexer.advance().unwrap(), Token::T_STRING_CONTENT(TokenString::from(" # ")));
     assert_eq!(lexer.advance().unwrap(), Token::T_STRING_END);
-    // assert_eq!(lexer.advance().unwrap(), Token::T_RCURLY);
-    // assert_eq!(lexer.advance().unwrap(), Token::T_STRING_CONTENT(TokenString::from(" # ")));
-    // assert_eq!(lexer.advance().unwrap(), Token::T_STRING_END);
     // TODO assert must be empty, impl in helper macro
 }

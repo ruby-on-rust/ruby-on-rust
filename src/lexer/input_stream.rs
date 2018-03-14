@@ -21,10 +21,16 @@ pub struct InputStream {
     // 
     // TODO refine naming
     // TODO use a range for ts..te
-    pub p: usize,
+    // 
+    // TODO NOTE p, ts, te are actually more complex
+    // 
+    pub p: isize,
     pub ts: Option<usize>,
     pub te: Option<usize>,
     pub tm: usize,
+
+    // TODO NOTE
+    pub entering_machine: bool,
 }
 
 impl InputStream {
@@ -35,7 +41,9 @@ impl InputStream {
             p: 0,
             ts: None,
             te: None,
-            tm: 0
+            tm: 0,
+
+            entering_machine: true,
         }
     }
 
@@ -43,6 +51,7 @@ impl InputStream {
     pub fn longest_matching_action(&mut self, actions: &Vec<Box<Action>>) -> Option<Box<Action>> {
 
         println!("finding longest matching action..., current p: {}", self.p);
+        // println!("actions: {:?}", actions);
 
         // TODO not that elegant, use Option<Action> instead of
         let mut longest_matched_action_i: Option<usize> = None;
@@ -70,17 +79,25 @@ impl InputStream {
         // println!("longest_matched_action_i: {:?}", longest_matched_action_i);
 
         match longest_matched_action_i {
-            None => { None },
+            None => { return None; },
             Some(i) => {
                 // update p, ts, te
-                self.ts = Some(self.p);
-                self.p += longest_matched_action_len as usize;
-                self.te = Some(self.p);
+                if self.entering_machine {
+                    self.ts = Some(self.p as usize);
+                    self.p += longest_matched_action_len - 1;
+                    self.te = Some((self.p + 1) as usize);
+                } else {
+                    self.ts = Some((self.p + 1) as usize);
+                    self.p += longest_matched_action_len;
+                    self.te = Some((self.p + 1) as usize);
+                }
 
-                println!("matched token: {:?}", self.current_token() );
+                println!("WTF updated: p{:?} ts{:?} te{:?}", self.p, self.ts, self.te);
+
+                // println!("matched token: {:?}", self.current_token() );
                 // println!("current ts {} p {} te {}", self.ts.unwrap(), self.p, self.te.unwrap() );
 
-                Some(actions.get(i).unwrap().clone())
+                return Some(actions.get(i).unwrap().clone());
             }
         }
     }
@@ -110,6 +127,7 @@ impl InputStream {
     }
 
     // NOTE fhold in ragel
+    // TODO refine
     pub fn hold_current_char(&mut self) {
         // println!("\n>>> invoking fhold");
 
@@ -135,15 +153,11 @@ impl InputStream {
     // TODO renaming hold_current_slice
 
     pub fn hold_current_token(&mut self) {
-        // println!("\n>>> invoking hold_current_token");
+        println!(">>> hold_current_token invoking, p {:?} ts {:?} te {:?}", self.p, self.ts, self.te);
 
         match ( self.ts, self.te ) {
-            ( Some(ts), Some(te) ) => {
-                self.p = ts;
-            },
-            _ => {
-                // println!("    no current token");
-            }
+            ( Some(ts), Some(te) ) => { self.p = ( ts as isize ) - 1; }
+            _ => { panic!("can't hold current slice"); }
         }
     }
 
@@ -152,10 +166,13 @@ impl InputStream {
 
         // println!("\n===\n    matching action starting from pos");
 
-        let sliced_string: String = self.string.chars().skip(self.p).collect();
+        let starting_pos = ( if self.entering_machine { self.p } else { self.p + 1 } ) as usize;
+        let sliced_string: String = self.string.chars().skip(starting_pos).collect();
 
-        // println!("    current sliced string: {}, (len: {})\n", sliced_string, sliced_string.len());
-        // println!("    regex: {:?}\n", regex);
+        println!("    current entering machine: {}", self.entering_machine);
+        println!("    current starting pos: {}", starting_pos);
+        println!("    current sliced string: {}, (len: {})", sliced_string, sliced_string.len());
+        // println!("    regex: {:?}", regex);
 
         let captures = regex.captures(&sliced_string);
         match captures {
@@ -163,15 +180,12 @@ impl InputStream {
             Some(capture) => {
                 let match_ = capture.get(0).unwrap();
                 let matched_str = String::from(match_.as_str());
-                // println!("    ***** matched str: {:?}", matched_str);
+                println!("    ***** matched str: {:?}", matched_str);
                 // println!("    DEBUGGING CAPTURE: capture: {:?}", capture);
-                Some(matched_str.len())
+                return Some(matched_str.len());
             }
         }
 
     }
 
-    // pub fn no_more(&self) -> bool {
-    //     self.p >= self.string.len()
-    // }
 }

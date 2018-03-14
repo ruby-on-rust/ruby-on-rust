@@ -57,6 +57,7 @@ pub fn construct_machine_expr_value( patterns: &TMatchingPatterns, shared_action
         action_with_literal!(
             "['\"]",
             |lexer: &mut Lexer| {
+                println!("WTF current_token {:?}", lexer.input_stream.current_token());
                 let lit_type = lexer.input_stream.current_token().unwrap();
                 let lit_delimiter = lexer.input_stream.current_token().unwrap();
 

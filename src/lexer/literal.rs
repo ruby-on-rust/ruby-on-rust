@@ -68,6 +68,7 @@ impl Literal {
         dedent_body: bool, // TODO
         label_allowed: bool
     ) -> Literal {
+        println!("creating new literal with: str_type: {:?}", str_type);
         // TODO
         //       # DELIMITERS and TYPES are hashes with keys encoded in binary.
         //       # Coerce incoming data to the same encoding.
@@ -407,12 +408,14 @@ impl Literal {
     //       @buffer << string
     //     end
     pub fn extend_string(&mut self, string: String, ts: usize, te: usize) {
+        println!("invoking literal.extend_string, string: {:?}", string);
+
         if self.buffer_s.is_none() { self.buffer_s = Some(ts); }
         self.buffer_e = Some(te);
 
         self.buffer += &string;
 
-        println!("invoked `extend_string`, now buffer: {:?}", self.buffer);
+        println!("invoked literal.extend_string, now buffer: {:?}", self.buffer);
     }
 
     //     def flush_string

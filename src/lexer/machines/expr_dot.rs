@@ -89,7 +89,7 @@ pub fn construct_machine_expr_dot( patterns: &TMatchingPatterns, shared_actions:
             procedure: |lexer: &mut Lexer| {
                 let tm = lexer.input_stream.p;
 
-                let token = Token::T_FID(lexer.input_stream.token_string_from_range( lexer.input_stream.ts.unwrap(), tm ));
+                let token = Token::T_FID(lexer.input_stream.token_string_from_range( lexer.input_stream.ts.unwrap(), tm as usize ));
                 lexer.emit_token(token);
 
                 let next_state = lexer.arg_or_cmdarg();
@@ -107,7 +107,7 @@ pub fn construct_machine_expr_dot( patterns: &TMatchingPatterns, shared_actions:
             procedure: |lexer: &mut Lexer| {
                 let tm = lexer.input_stream.p - 2;
 
-                let token = Token::T_FID(lexer.input_stream.token_string_from_range( lexer.input_stream.ts.unwrap(), tm ));
+                let token = Token::T_FID(lexer.input_stream.token_string_from_range( lexer.input_stream.ts.unwrap(), tm as usize ));
                 lexer.emit_token(token);
 
                 let next_state = lexer.arg_or_cmdarg();

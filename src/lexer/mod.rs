@@ -158,6 +158,7 @@ impl Lexer {
     // 
     fn exec(&mut self) {
         self.is_breaking = false;
+        self.input_stream.entering_machine = true;
 
         loop {
             println!("\n--- exec looping, current_state: {:?}, next_state: {:?}, calling_state: {:?}, is_breaking: {:?} ---", self.current_state, self.next_state, self.calling_state, self.is_breaking);
@@ -180,6 +181,8 @@ impl Lexer {
                 }
             }
 
+            println!("state trans-ed; current_state: {:?}, next_state: {:?}, calling_state: {:?}, is_breaking: {:?} ---", self.current_state, self.next_state, self.calling_state, self.is_breaking);
+
             // get actions
             let actions = self.machines.get(&self.current_state).unwrap().clone();
 
@@ -190,6 +193,8 @@ impl Lexer {
             // invoke proc
             let procedure = action.procedure;
             procedure(self);
+
+            self.input_stream.entering_machine = false;
         }
     }
 
@@ -199,6 +204,7 @@ impl Lexer {
     }
 
     fn flag_breaking(&mut self) {
+        self.input_stream.p += 1;
         self.is_breaking = true;
     }
 

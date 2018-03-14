@@ -265,6 +265,8 @@ pub fn construct() -> TSharedActions {
     //   }
     // TODO INCOMPLETE
     action!("extend_string", |lexer: &mut Lexer| {
+        println!("action `extend_string` invoking. current_token: {:?}", lexer.input_stream.current_token());
+
         // TODO NAMING
         let current_string = lexer.input_stream.current_token().unwrap();
 
@@ -450,9 +452,7 @@ pub fn construct() -> TSharedActions {
 
         lexer.literal_stack.push(current_literal);
 
-        // TODO NOT SURE
-        // so `p = @ts` becomes p = ts + 1 right?
-        lexer.input_stream.p = lexer.input_stream.ts.unwrap() + 1;
+        lexer.input_stream.p = lexer.input_stream.ts.unwrap() as isize;
 
         lexer.set_calling_state(state!("expr_variable"));
     });
@@ -529,15 +529,15 @@ pub fn construct() -> TSharedActions {
     action!("ambiguous_suffix", |lexer: &mut Lexer| {
         let current_slice = lexer.input_stream.current_token().unwrap();
 
-        if let Some(capture) = Regex::new(r"^===").unwrap().captures(&current_slice) { lexer.input_stream.tm = lexer.input_stream.p - 3; return; }
-        if let Some(capture) = Regex::new(r"^==>").unwrap().captures(&current_slice) { lexer.input_stream.tm = lexer.input_stream.p - 2; return; }
-        if let Some(capture) = Regex::new(r"^[?!]=").unwrap().captures(&current_slice) { lexer.input_stream.tm = lexer.input_stream.p - 2; return; }
-        if let Some(capture) = Regex::new(r"^==").unwrap().captures(&current_slice) { lexer.input_stream.tm = lexer.input_stream.p - 2; return; }
-        if let Some(capture) = Regex::new(r"^=~").unwrap().captures(&current_slice) { lexer.input_stream.tm = lexer.input_stream.p - 2; return; }
-        if let Some(capture) = Regex::new(r"^=>").unwrap().captures(&current_slice) { lexer.input_stream.tm = lexer.input_stream.p - 2; return; }
-        if let Some(capture) = Regex::new(r"^::").unwrap().captures(&current_slice) { lexer.input_stream.tm = lexer.input_stream.p - 2; return; }
-        if let Some(capture) = Regex::new(r"^[?!]").unwrap().captures(&current_slice) { lexer.input_stream.tm = lexer.input_stream.p; return; }
-        if let Some(capture) = Regex::new(r"^=").unwrap().captures(&current_slice) { lexer.input_stream.tm = lexer.input_stream.p; return; }
+        if let Some(capture) = Regex::new(r"^===").unwrap().captures(&current_slice) { lexer.input_stream.tm = ( lexer.input_stream.p - 3) as usize; return; }
+        if let Some(capture) = Regex::new(r"^==>").unwrap().captures(&current_slice) { lexer.input_stream.tm = ( lexer.input_stream.p - 2) as usize; return; }
+        if let Some(capture) = Regex::new(r"^[?!]=").unwrap().captures(&current_slice) { lexer.input_stream.tm = ( lexer.input_stream.p - 2) as usize; return; }
+        if let Some(capture) = Regex::new(r"^==").unwrap().captures(&current_slice) { lexer.input_stream.tm = ( lexer.input_stream.p - 2) as usize; return; }
+        if let Some(capture) = Regex::new(r"^=~").unwrap().captures(&current_slice) { lexer.input_stream.tm = ( lexer.input_stream.p - 2) as usize; return; }
+        if let Some(capture) = Regex::new(r"^=>").unwrap().captures(&current_slice) { lexer.input_stream.tm = ( lexer.input_stream.p - 2) as usize; return; }
+        if let Some(capture) = Regex::new(r"^::").unwrap().captures(&current_slice) { lexer.input_stream.tm = ( lexer.input_stream.p - 2) as usize; return; }
+        if let Some(capture) = Regex::new(r"^[?!]").unwrap().captures(&current_slice) { lexer.input_stream.tm = ( lexer.input_stream.p as usize ); return; }
+        if let Some(capture) = Regex::new(r"^=").unwrap().captures(&current_slice) { lexer.input_stream.tm = ( lexer.input_stream.p as usize ); return; }
     });
 
     // # Resolving kDO/kDO_COND/kDO_BLOCK ambiguity requires embedding

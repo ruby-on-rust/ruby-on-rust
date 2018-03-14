@@ -7,18 +7,18 @@
 //           diagnostic :error, :regexp_options,
 //                      { :options => unknown_options.join }
 //         end
-
+// 
 //         emit(:tREGEXP_OPT)
-
+// 
 //         if @version < 24
 //           fnext expr_end;
 //         else
 //           fnext expr_endarg;
 //         end
-
+// 
 //         fbreak;
 //       };
-
+// 
 //       any
 //       => {
 //         emit(:tREGEXP_OPT, tok(@ts, @te - 1), @ts, @te - 1)

@@ -242,7 +242,7 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
                 let token = Token::T_SYMBOL(lexer.input_stream.current_token_string());
                 lexer.emit_token(token);
 
-                lexer.input_stream.p = lexer.input_stream.tm - 1;
+                lexer.input_stream.p = lexer.input_stream.tm as isize - 1;
                 lexer.set_next_state(state!("expr_end"));
                 lexer.flag_breaking();
             }

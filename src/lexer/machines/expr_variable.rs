@@ -67,7 +67,7 @@ pub fn construct_machine_expr_variable( patterns: &TMatchingPatterns, shared_act
         //       if tok =~ /^@[0-9]/
         //         diagnostic :error, :ivar_name, { :name => tok }
         //       end
-
+        // 
         //       emit(:tIVAR)
         //       fnext *stack_pop; fbreak;
         //     };

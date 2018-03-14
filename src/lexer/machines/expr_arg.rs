@@ -199,7 +199,7 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
                     panic!("TODO");
                 }
 
-                lexer.input_stream.p = tm - 1;
+                lexer.input_stream.p = ( tm - 1 ) as isize;
                 lexer.set_next_state(state!("expr_beg"));
             }
         },
@@ -226,7 +226,7 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
 
                 // TODO handle diagnostic
 
-                lexer.input_stream.p = tm - 1;
+                lexer.input_stream.p = ( tm - 1 ) as isize;
                 lexer.set_next_state(state!("expr_beg"));
             }
         },
@@ -283,7 +283,7 @@ pub fn construct_machine_expr_arg( patterns: &TMatchingPatterns, shared_actions:
                 let w_space_len = w_space_regex.captures(&current_slice).unwrap().get(0).unwrap().as_str().chars().count();
                 let tm = lexer.input_stream.ts.unwrap() + w_space_len;
 
-                lexer.input_stream.p = tm - 1;
+                lexer.input_stream.p = ( tm - 1 ) as isize;
                 lexer.set_next_state(state!("expr_end"))
             }
         },
