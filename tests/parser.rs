@@ -686,6 +686,13 @@ fn array_words_empty() {
 //         |  ^ end
 //         |~~~ expression})
 //   end
+#[test]
+fn hash_empty() {
+    assert_parses!(
+        "{ }",
+        Node::Hash(vec![])
+    );
+}
 
 //   def test_hash_hashrocket
 //     assert_parses(

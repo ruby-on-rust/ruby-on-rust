@@ -21,6 +21,9 @@ pub enum Node {
 
     Array(Vec<Node>),
 
+    Pair { key: String, value: String },
+    Hash(Vec<Node>), // TODO Hash(Vec<Node::Pair>) after enum variants become types
+
     Ident(String),
     Assign(Box<Node>, Token, Box<Node>),
     Assignable,
