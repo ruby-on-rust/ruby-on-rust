@@ -24,6 +24,9 @@ pub enum Node {
     Pair { key: String, value: String },
     Hash(Vec<Node>), // TODO Hash(Vec<Node::Pair>) after enum variants become types
 
+    NSelf,
+    LVar(String),
+
     Ident(String),
     Assign(Box<Node>, Token, Box<Node>),
     Assignable,
@@ -61,48 +64,6 @@ pub fn unary_num(t_unary: Token, n_simple_numeric: Node) -> Node {
     } else { panic!(); }
 
     return Node::Int(numeric_value);
-}
-
-// def accessible(node)
-//   case node.type
-//   when :__FILE__
-//     if @emit_file_line_as_literals
-//       n(:str, [ node.loc.expression.source_buffer.name ],
-//         node.loc.dup)
-//     else
-//       node
-//     end
-//
-//   when :__LINE__
-//     if @emit_file_line_as_literals
-//       n(:int, [ node.loc.expression.line ],
-//         node.loc.dup)
-//     else
-//       node
-//     end
-//
-//   when :__ENCODING__
-//     n(:const, [ n(:const, [ nil, :Encoding], nil), :UTF_8 ],
-//       node.loc.dup)
-//
-//   when :ident
-//     name, = *node
-//
-//     if @parser.static_env.declared?(name)
-//       node.updated(:lvar)
-//     else
-//       name, = *node
-//       n(:send, [ nil, name ],
-//         var_send_map(node))
-//     end
-//
-//   else
-//     node
-//   end
-// end
-// TODO
-pub fn accessible(node: Node) -> Node {
-    node
 }
 
 // # Strings
@@ -388,7 +349,7 @@ pub fn string_compose(parts: Node) -> Node {
 //     else
 //       node
 //     end
-
+// 
 //   when :__LINE__
 //     if @emit_file_line_as_literals
 //       n(:int, [ node.loc.expression.line ],
@@ -396,14 +357,14 @@ pub fn string_compose(parts: Node) -> Node {
 //     else
 //       node
 //     end
-
+// 
 //   when :__ENCODING__
 //     n(:const, [ n(:const, [ nil, :Encoding], nil), :UTF_8 ],
 //       node.loc.dup)
-
+// 
 //   when :ident
 //     name, = *node
-
+// 
 //     if @parser.static_env.declared?(name)
 //       node.updated(:lvar)
 //     else
@@ -411,11 +372,24 @@ pub fn string_compose(parts: Node) -> Node {
 //       n(:send, [ nil, name ],
 //         var_send_map(node))
 //     end
-
+// 
 //   else
 //     node
 //   end
 // end
+// TODO INCOMPLETE
+pub fn accessible(node: Node) -> Node {
+    println!("building node:accessible, node: {:?}", node);
+    return match node {
+        Node::Ident(n_ident_value) => {
+            // TODO DUMMY
+            // TODO handle static_env
+            let node = Node::LVar(n_ident_value);
+            return node;
+        }
+        _ => node
+    };
+}
 
 // def const(name_t)
 //   n(:const, [ nil, value(name_t).to_sym ],

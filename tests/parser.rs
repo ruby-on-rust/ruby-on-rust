@@ -161,16 +161,16 @@ fn string_plain() {
 //         |    ~~~~~~ expression (begin)
 //         |~~~~~~~~~~~~~~ expression})
 //   end
-#[test]
-fn string_interp() {
-    // TODO
-    assert_parses!(
-        "\"foo#{bar}baz\"",
-        Node::DStr(vec![
-            n_str!("foo"),
-        ])
-    );
-}
+// #[test]
+// fn string_interp() {
+//     // TODO
+//     assert_parses!(
+//         "\"foo#{bar}baz\"",
+//         Node::DStr(vec![
+//             n_str!("foo"),
+//         ])
+//     );
+// }
 
 //   def test_string_dvar
 //     assert_parses(
@@ -816,8 +816,8 @@ fn hash_empty() {
 //       %q{self},
 //       %q{~~~~ expression})
 //   end
-// #[test]
-// fn test_self() { assert_parses!("self", Node::Self); }
+#[test]
+fn test_self() { assert_parses!("self", Node::NSelf); }
 
 //   def test_lvar
 //     assert_parses(
@@ -825,6 +825,8 @@ fn hash_empty() {
 //       %q{foo},
 //       %q{~~~ expression})
 //   end
+#[test]
+fn lvar() { assert_parses!("foo", Node::LVar(String::from("foo"))); }
 
 //   def test_ivar
 //     assert_parses(
@@ -832,6 +834,8 @@ fn hash_empty() {
 //       %q{@foo},
 //       %q{~~~~ expression})
 //   end
+// #[test]
+// fn ivar() {  }
 
 //   def test_cvar
 //     assert_parses(
