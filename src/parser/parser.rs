@@ -1282,10 +1282,30 @@ impl Parser {
             }
         }
         self.current_p = p;
+
         //         | tLBRACE assoc_list tRCURLY
         //             {
         //               result = @builder.associate(val[0], val[1], val[2])
         //             }
+        if let Some(t_lbrace) = self.match_1_token(Token::T_LBRACE) {
+            // special rule for assoc_list being `none`
+            if let Some(t_rcurly) = self.match_1_token(Token::T_RCURLY) {
+                self.decurse();
+                return Some(Node::Hash(vec![]));
+            }
+
+
+            if let Some(n_assoc_list) = self.p_assoc_list() {
+                if let Some(t_rcurly) = self.match_1_token(Token::T_RCURLY) {
+                    let nodes = extract_nodes(n_assoc_list);
+
+                    self.decurse();
+                    return Some(Node::Hash(nodes));
+                }
+            }
+        }
+        self.current_p = p;
+
         //         | kRETURN
         //             {
         //               result = @builder.keyword_cmd(:return, val[0])
@@ -2991,6 +3011,29 @@ impl Parser {
     //                       result = []
     //                     }
     //                 | assocs trailer
+    // NOTE being none handled by parent rule
+    fn p_assoc_list(&mut self) -> Option<Node> {
+        self.recurse("p_assoc_list");
+        let p = self.current_p;
+
+        if let Some(n_assocs) = self.p_assocs() {
+            let p = self.current_p;
+            if let Some(n_trailer) = self.p_trailer() {
+                self.decurse();
+                // well i guess the default result is this...
+                return Some(n_assocs);
+            }
+            self.current_p = p;
+
+            // handle trailer being none
+            self.decurse();
+            return Some(n_assocs);
+        }
+        self.current_p = p;
+
+        self.decurse();
+        None
+    }
 
     //           assocs: assoc
     //                     {
@@ -3000,14 +3043,27 @@ impl Parser {
     //                     {
     //                       result = val[0] << val[2]
     //                     }
+    // TODO INCOMPLETE
     // NOTE transformed into non-recursive form
     fn p_assocs(&mut self) -> Option<Node> {
         self.recurse("p_assocs");
         let p = self.current_p;
-        panic!("p_assocs UNIMPL");
 
-        // if let Some(n_assoc) = self.p_assoc() {
-        // }
+        if let Some(n_assoc) = self.p_assoc() {
+            let mut nodes = vec![n_assoc];
+
+            loop {
+                if let Some(n_assoc) = self.p_assoc() {
+                    nodes.push(n_assoc);
+                } else {
+                    break;
+                }
+            }
+
+            self.decurse();
+            return Some(Node::Nodes(nodes));
+        }
+        self.current_p = p;
 
         self.decurse();
         None
@@ -3033,7 +3089,17 @@ impl Parser {
     fn p_assoc(&mut self) -> Option<Node> {
         self.recurse("p_assoc");
         let p = self.current_p;
-        panic!("p_assoc UNIMPL");
+
+        if let Some(n_arg_value_0) = self.p_arg_value() {
+            if let Some(t_assoc) = self.match_1_token(Token::T_ASSOC) {
+                if let Some(n_arg_value_2) = self.p_arg_value() {
+                    self.decurse();
+                    return Some(Node::Pair {key: box n_arg_value_0, value: box n_arg_value_2 });
+                }
+            }
+        }
+        self.current_p = p;
+
         self.decurse();
         None
     }

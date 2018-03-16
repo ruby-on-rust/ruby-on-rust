@@ -21,7 +21,7 @@ pub enum Node {
 
     Array(Vec<Node>),
 
-    Pair { key: String, value: String },
+    Pair { key: Box<Node>, value: Box<Node> },
     Hash(Vec<Node>), // TODO Hash(Vec<Node::Pair>) after enum variants become types
 
     NSelf,
