@@ -374,10 +374,18 @@ pub fn string_compose(parts: Node) -> Node {
 //     node
 //   end
 // end
-// TODO
+// TODO INCOMPLETE
 pub fn accessible(node: Node) -> Node {
-    panic!("aaaa");
-    node
+    println!("building node:accessible, node: {:?}", node);
+    return match node {
+        Node::Ident(n_ident_value) => {
+            // TODO DUMMY
+            // TODO handle static_env
+            let node = Node::LVar(n_ident_value);
+            return node;
+        }
+        _ => node
+    };
 }
 
 // def const(name_t)

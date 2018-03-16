@@ -2,6 +2,11 @@
 
 // TODO match_token! macro
 
+// TODO PRIMARY
+// handle token pushing back
+// eventually we should done such work automatically
+// 1. log the recursion path, check every rule
+
 use lexer::lexing_state::LexingState;
 use lexer::Lexer;
 use parser::token::Token;
@@ -31,7 +36,7 @@ pub struct Parser {
     tokens: Vec<Token>,
     current_p: usize, // TODO NOTE
 
-    no_more_tokens: bool,
+    recursion_stack: Vec<String>, // TODO &str is enough
 }
 
 impl Parser {
@@ -42,7 +47,7 @@ impl Parser {
             tokens: vec![],
             current_p: 0,
 
-            no_more_tokens: false,
+            recursion_stack: vec![],
         }
     }
 
@@ -60,8 +65,6 @@ impl Parser {
     fn current_token(&mut self) -> Option<Token> {
         // println!("PARSER current_token, current_p: {}", self.current_p);
 
-        if self.no_more_tokens { return None; }
-
         if let Some(token) = self.tokens.get(self.current_p) {
             return Some(token.clone());
         }
@@ -71,7 +74,6 @@ impl Parser {
             self.tokens.push(token.clone());
             return Some(token);
         } else {
-            self.no_more_tokens = true;
             return None;
         }
     }
@@ -82,16 +84,19 @@ impl Parser {
 
         self.current_p += 1;
 
-        println!("PARSER comsume_current_token: {:?}", token_to_consume);
+        // println!("PARSER comsume_current_token: {:?}", token_to_consume);
+        println!("consumed token {:?}, current stack: {:?}", token_to_consume, self.recursion_stack);
 
         return token_to_consume;
     }
 
     // match and consume one token
     // TODO REFINE
-    // TODO cant handle token with value for now
+    // TODO
+    // cant handle token with value (say Token::Ident(ident_value)) for now
+    // until rust treats enum variants like types
     fn match_1_token(&mut self, token: Token) -> Option<Token> {
-        println!("PARSER match_1_token, current_p: {:?}, current: {:?}, token: {:?}", self.current_p.clone(), self.current_token(), token );
+        // println!("PARSER match_1_token, current_p: {:?}, current: {:?}, token: {:?}", self.current_p.clone(), self.current_token(), token );
 
         if let Some(current_token) = self.current_token() {
             if current_token == token {
@@ -103,11 +108,38 @@ impl Parser {
         return None;
     }
 
+    // TODO note about tokens pushing back
+    fn push_back_token(&mut self) {
+        println!("pushing back token, current stack: {:?}", self.recursion_stack);
+
+        self.current_p -= 1;
+    }
+
+    // TODO
+    fn recurse(&mut self, fn_name: &str) {
+        let fn_name = String::from(fn_name);
+        self.recursion_stack.push(fn_name.clone());
+        println!("recursed. stack: {:?}", self.recursion_stack);
+    }
+
+    // TODO NOTE
+    // currently functions will only `decurse` when returning None
+    fn decurse(&mut self) {
+        self.recursion_stack.pop();
+        println!("decursed. stack: {:?}", self.recursion_stack);
+    }
+
     // ===
 
     //  program: top_compstmt
     // TODO
-    fn p_program(&mut self) -> Option<Node> { self.p_stmt() }
+    fn p_program(&mut self) -> Option<Node> {
+        self.recurse("p_program");
+        let p = self.current_p;
+        if let Some(n_stmt) = self.p_stmt() { return Some(n_stmt); }
+        self.decurse();
+        None
+    }
 
     // top_compstmt: top_stmts opt_terms
     //                 {
@@ -146,9 +178,13 @@ impl Parser {
     //               result = @builder.compstmt(val[0])
     //             }
     fn p_compstmt(&mut self) -> Option<Node> {
+        self.recurse("p_compstmt");
+        let p = self.current_p;
+
         // TODO DUMMY
         return self.p_stmt();
 
+        self.decurse();
         None
     }
 
@@ -257,13 +293,17 @@ impl Parser {
     //         {
     //           result = @builder.multi_assign(val[0], val[1], val[2])
     //         }
-    //     | expr
+    //     | expr 
     // TODO INCOMPLETE
     fn p_stmt(&mut self) -> Option<Node> {
+        self.recurse("p_stmt");
+        let p = self.current_p;
 
         // expr
-        if let Some(n_expr) = self.p_expr() { return Some(n_expr); }
+        if let Some(n_expr) = self.p_expr() { self.decurse(); return Some(n_expr); }
+        self.current_p = p;
 
+        self.decurse();
         None
     }
 
@@ -346,7 +386,13 @@ impl Parser {
     //             | arg
     // TODO INCOMPLETE
     fn p_expr(&mut self) -> Option<Node> {
-        if let Some(n_arg) = self.p_arg() { return Some(n_arg); }
+        self.recurse("p_expr");
+        let p = self.current_p;
+
+        if let Some(n_arg) = self.p_arg() { self.decurse(); return Some(n_arg); }
+        self.current_p = p;
+
+        self.decurse();
         None
     }
 
@@ -378,7 +424,7 @@ impl Parser {
     //                     {
     //                       method_call = @builder.call_method(nil, nil, val[0],
     //                                         nil, val[1], nil)
-
+    // 
     //                       begin_t, args, body, end_t = val[2]
     //                       result      = @builder.block(method_call,
     //                                       begin_t, args, body, end_t)
@@ -392,7 +438,7 @@ impl Parser {
     //                     {
     //                       method_call = @builder.call_method(val[0], val[1], val[2],
     //                                         nil, val[3], nil)
-
+    // 
     //                       begin_t, args, body, end_t = val[4]
     //                       result      = @builder.block(method_call,
     //                                       begin_t, args, body, end_t)
@@ -406,7 +452,7 @@ impl Parser {
     //                     {
     //                       method_call = @builder.call_method(val[0], val[1], val[2],
     //                                         nil, val[3], nil)
-
+    // 
     //                       begin_t, args, body, end_t = val[4]
     //                       result      = @builder.block(method_call,
     //                                       begin_t, args, body, end_t)
@@ -605,15 +651,20 @@ impl Parser {
     //         }
     // TODO INCOMPLETE
     fn p_lhs(&mut self) -> Option<Node> {
+        self.recurse("p_lhs");
+        let p = self.current_p;
+
         //  user_variable
         //         {
         //           result = @builder.assignable(val[0])
         //         }
         if let Some(n_user_variable) = self.p_user_variable() {
             // TODO value in assignable
-            return Some(Node::Assignable);
+            self.decurse(); return Some(Node::Assignable);
         }
+        self.current_p = p;
 
+        self.decurse();
         None
     }
 
@@ -680,18 +731,23 @@ impl Parser {
 
     // TODO INCOMPLETE
     fn p_arg(&mut self) -> Option<Node> {
+        self.recurse("p_arg");
+        let p = self.current_p;
 
         //  arg: lhs tEQL arg_rhs
         //         {
         //           result = @builder.assign(val[0], val[1], val[2])
         //         }
         if let Some(n_lhs) = self.p_lhs() {
-            if let Some(_) = self.match_1_token(Token::T_EQL) {
+            if let Some(t_eql) = self.match_1_token(Token::T_EQL) {
                 if let Some(n_arg_rhs) = self.p_arg_rhs() {
-                    return Some(Node::Assign( box n_lhs, Token::T_EQL, box n_arg_rhs ));
+                    self.decurse(); return Some(Node::Assign( box n_lhs, Token::T_EQL, box n_arg_rhs ));
                 }
             }
+            // TODO else put back token
         }
+        self.current_p = p;
+
         //     | var_lhs tOP_ASGN arg_rhs
         //         {
         //           result = @builder.op_assign(val[0], val[1], val[2])
@@ -857,8 +913,10 @@ impl Parser {
         //                                     val[2], val[4], val[5])
         //         }
         //     | primary
-        if let Some(n_primary) = self.p_primary() { return Some(n_primary); }
+        if let Some(n_primary) = self.p_primary() { self.decurse(); return Some(n_primary); }
+        self.current_p = p;
 
+        self.decurse();
         None
     }
 
@@ -875,10 +933,13 @@ impl Parser {
 
     //    arg_value: arg
     fn p_arg_value(&mut self) -> Option<Node> {
-        println!("p_arg_value");
+        self.recurse("p_arg_value");
+        let p = self.current_p;
 
-        if let Some(n_arg) = self.p_arg() { return Some(n_arg); }
+        if let Some(n_arg) = self.p_arg() { self.decurse(); return Some(n_arg); }
+        self.current_p = p;
 
+        self.decurse();
         None
     }
 
@@ -895,17 +956,20 @@ impl Parser {
     // NOTE the rule `none` will be handled by parent rule
     // TODO WIP INCOMPLETE
     fn p_aref_args(&mut self) -> Option<Node> {
-        println!("p_aref_args");
+        self.recurse("p_aref_args");
+        let p = self.current_p;
 
         if let Some(n_args) = self.p_args() {
             if let Some(n_trailer) = self.p_trailer() {
-                return Some(Node::Dummy);
+                self.decurse(); return Some(Node::Dummy);
             }
 
             // trailer being none
-            return Some(n_args);
+            self.decurse(); return Some(n_args);
         }
+        self.current_p = p;
 
+        self.decurse();
         None
     }
 
@@ -921,9 +985,14 @@ impl Parser {
     // TODO INCOMPLETE
     // TODO handle %prec
     fn p_arg_rhs(&mut self) -> Option<Node> {
-        // TODO DUMMY
-        if let Some(n_primary) = self.p_primary() { return Some(n_primary); }
+        self.recurse("p_arg_rhs");
+        let p = self.current_p;
 
+        // TODO DUMMY
+        if let Some(n_primary) = self.p_primary() { self.decurse(); return Some(n_primary); }
+        self.current_p = p;
+
+        self.decurse();
         None
     }
 
@@ -1031,7 +1100,8 @@ impl Parser {
     //    | *a [, a | , * a] 
     // 
     fn p_args(&mut self) -> Option<Node> {
-        println!("p_args");
+        self.recurse("p_args");
+        let p = self.current_p;
 
         if let Some(n_arg_value) = self.p_arg_value() {
             let mut nodes = vec![n_arg_value];
@@ -1056,8 +1126,9 @@ impl Parser {
                 }
             }
 
-            return Some( Node::Nodes( nodes ) );
+            self.decurse(); return Some( Node::Nodes( nodes ) );
         }
+        self.current_p = p;
 
         if let Some(t_star) = self.match_1_token(Token::T_STAR) {
             if let Some(n_arg_value) = self.p_arg_value() {
@@ -1086,11 +1157,12 @@ impl Parser {
                 //     }
                 // }
 
-                // return Some( Node::Nodes( nodes ) );
+                // self.decurse(); return Some( Node::Nodes( nodes ) );
             }
         }
+        self.current_p = p;
 
-
+        self.decurse();
         None
     }
 
@@ -1116,22 +1188,29 @@ impl Parser {
 
     // TODO INCOMPLETE
     fn p_primary(&mut self) -> Option<Node> {
+        self.recurse("p_primary");
+        let p = self.current_p;
 
         //  primary: literal
-        if let Some(n_literal) = self.p_literal() { return Some(n_literal); }
+        if let Some(n_literal) = self.p_literal() { self.decurse(); return Some(n_literal); }
+        self.current_p = p;
         //         | strings
-        if let Some(n_strings) = self.p_strings() { return Some(n_strings); }
+        if let Some(n_strings) = self.p_strings() { self.decurse(); return Some(n_strings); }
+        self.current_p = p;
         //         | xstring
-        // if let Some(n_xstring) = self.p_xstring() { return Some(n_xstring); }
+        // if let Some(n_xstring) = self.p_xstring() { self.decurse(); return Some(n_xstring); }
         //         | regexp
         //         | words
-        if let Some(n_words) = self.p_words() { return Some(n_words); }
+        if let Some(n_words) = self.p_words() { self.decurse(); return Some(n_words); }
+        self.current_p = p;
         //         | qwords
-        if let Some(n_qwords) = self.p_qwords() { return Some(n_qwords); }
+        if let Some(n_qwords) = self.p_qwords() { self.decurse(); return Some(n_qwords); }
+        self.current_p = p;
         //         | symbols
         //         | qsymbols
         //         | var_ref
-        if let Some(n_var_ref) = self.p_var_ref() { return Some(n_var_ref); }
+        if let Some(n_var_ref) = self.p_var_ref() { self.decurse(); return Some(n_var_ref); }
+        self.current_p = p;
         //         | backref
         //         | tFID
         //             {
@@ -1187,22 +1266,22 @@ impl Parser {
         //             {
         //               result = @builder.array(val[0], val[1], val[2])
         //             }
-        // TODO WIP
         if let Some(t_lbrack) = self.match_1_token(Token::T_LBRACK) {
             // special rule for aref_args being `none`
             if let Some(t_rbrack) = self.match_1_token(Token::T_RBRACK) {
-                return Some(Node::Array(vec![]));
+                self.decurse(); return Some(Node::Array(vec![]));
             }
 
             if let Some(n_aref_args) = self.p_aref_args() {
                 if let Some(t_rbrack) = self.match_1_token(Token::T_RBRACK) {
                     // TODO handle builder.array
                     if let Node::Nodes(nodes) = n_aref_args {
-                        return Some(Node::Array(nodes));
+                        self.decurse(); return Some(Node::Array(nodes));
                     } else { panic!("cant extract nodes from n_aref_args"); }
                 }
             }
         }
+        self.current_p = p;
         //         | tLBRACE assoc_list tRCURLY
         //             {
         //               result = @builder.associate(val[0], val[1], val[2])
@@ -1434,6 +1513,7 @@ impl Parser {
         //               result = @builder.keyword_cmd(:retry, val[0])
         //             }
 
+        self.decurse();
         None
     }
 
@@ -1905,12 +1985,14 @@ impl Parser {
     //         | symbol
     //         | dsym
     fn p_literal(&mut self) -> Option<Node> {
-        println!("PARSER p_literal");
+        self.recurse("p_literal");
+        let p = self.current_p;
 
-        if let Some(n_numeric) = self.p_numeric() { return Some(n_numeric); }
-        if let Some(n_symbol) = self.p_symbol() { return Some(n_symbol); }
-        if let Some(n_dsym) = self.p_dsym() { return Some(n_dsym); }
+        if let Some(n_numeric) = self.p_numeric() { self.decurse(); return Some(n_numeric); }
+        if let Some(n_symbol) = self.p_symbol() { self.decurse(); return Some(n_symbol); }
+        if let Some(n_dsym) = self.p_dsym() { self.decurse(); return Some(n_dsym); }
 
+        self.decurse();
         None
     }
 
@@ -1919,12 +2001,14 @@ impl Parser {
     //               result = @builder.string_compose(nil, val[0], nil)
     //             }
     fn p_strings(&mut self) -> Option<Node> {
-        println!("PARSER p_strings");
+        self.recurse("p_strings");
+        let p = self.current_p;
 
         if let Some(n_string) = self.p_string() {
-            return Some(node::string_compose(n_string));
+            self.decurse(); return Some(node::string_compose(n_string));
         }
 
+        self.decurse();
         None
     }
 
@@ -1938,7 +2022,8 @@ impl Parser {
     //             }
     // NOTE transformed into non-recursive form
     fn p_string(&mut self) -> Option<Node> {
-        println!("PARSER p_string");
+        self.recurse("p_string");
+        let p = self.current_p;
 
         if let Some(n_string1) = self.p_string1() {
             let mut string1s = vec![n_string1];
@@ -1951,15 +2036,18 @@ impl Parser {
                 }
             }
 
-            return Some(Node::Nodes(string1s));
+            self.decurse(); return Some(Node::Nodes(string1s));
         }
+        self.current_p = p;
 
+        self.decurse();
         None
     }
 
     // TODO INCOMPLETE
     fn p_string1(&mut self) -> Option<Node> {
-        println!("PARSER p_string1");
+        self.recurse("p_string1");
+        let p = self.current_p;
 
         //  string1: tSTRING_BEG string_contents tSTRING_END
         //             {
@@ -1972,10 +2060,11 @@ impl Parser {
                     //   string = @builder.string_compose(val[0], val[1], val[2])
                     //   result = @builder.dedent_string(string, @lexer.dedent_level)
                     // TODO DUMMY
-                    return Some(node::string_compose(n_string_contents));
+                    self.decurse(); return Some(node::string_compose(n_string_contents));
                 }
             }
         }
+        self.current_p = p;
 
         //         | tSTRING
         //             {
@@ -1984,8 +2073,9 @@ impl Parser {
         //             }
         if let Some(Token::T_STRING(token_string)) = self.current_token() {
             self.consume_current_token();
-            return Some( Node::Str( token_string ) );
+            self.decurse(); return Some( Node::Str( token_string ) );
         }
+        self.current_p = p;
 
         //         | tCHARACTER
         //             {
@@ -1993,6 +2083,7 @@ impl Parser {
         //             }
         // TODO
 
+        self.decurse();
         None
     }
 
@@ -2021,19 +2112,24 @@ impl Parser {
     //                   result = @builder.words_compose(val[0], val[1], val[2])
     //                 }
     fn p_words(&mut self) -> Option<Node> {
+        self.recurse("p_words");
+        let p = self.current_p;
+
         if let Some(t_words_beg) = self.match_1_token(Token::T_WORDS_BEG) {
             // handle word_list being none
             if let Some(t_string_end) = self.match_1_token(Token::T_STRING_END) {
-                return Some(Node::Array(vec![]));
+                self.decurse(); return Some(Node::Array(vec![]));
             }
 
             if let Some(n_word_list) = self.p_word_list() {
                 if let Some(t_string_end) = self.match_1_token(Token::T_STRING_END) {
-                    if let Node::Nodes(nodes) = n_word_list { return Some(Node::Array(nodes)); }
+                    if let Node::Nodes(nodes) = n_word_list { self.decurse(); return Some(Node::Array(nodes)); }
                 }
             }
         }
+        self.current_p = p;
 
+        self.decurse();
         None
     }
 
@@ -2047,12 +2143,17 @@ impl Parser {
     //                 }
     // NOTE transformed into non-recursive form
     fn p_word_list(&mut self) -> Option<Node> {
+        self.recurse("p_word_list");
+        let p = self.current_p;
+
         if let Some(n_word) = self.p_word() {
             let mut n_words = vec![n_word];
             loop { if let Some(n_word) = self.p_word() { n_words.push(n_word); } else { break; } }
-            return Some(Node::Nodes(n_words));
+            self.decurse(); return Some(Node::Nodes(n_words));
         }
+        self.current_p = p;
 
+        self.decurse();
         None
     }
 
@@ -2066,13 +2167,18 @@ impl Parser {
     //                 }
     // TODO NOTE transformed to non-recursive form
     fn p_word(&mut self) -> Option<Node> {
+        self.recurse("p_word");
+        let p = self.current_p;
+
         if let Some(n_string_content) = self.p_string_content() {
             let mut n_words = vec![n_string_content];
             // TODO properly handle node children
             loop { if let Some(n_string_content) = self.p_string_content() { n_words.push(n_string_content); } else { break; } }
-            return Some(Node::Nodes(n_words));
+            self.decurse(); return Some(Node::Nodes(n_words));
         }
+        self.current_p = p;
 
+        self.decurse();
         None
     }
 
@@ -2095,21 +2201,26 @@ impl Parser {
     //                   result = @builder.words_compose(val[0], val[1], val[2])
     //                 }
     fn p_qwords(&mut self) -> Option<Node> {
+        self.recurse("p_qwords");
+        let p = self.current_p;
+
         if let Some(_t_qwords_beg) = self.match_1_token(Token::T_QWORDS_BEG) {
             // handle qword_list being `none`
             if let Some(_t_string_end) = self.match_1_token(Token::T_STRING_END) {
                 // TODO builder.words_compose
-                return Some(Node::Array(vec![]));
+                self.decurse(); return Some(Node::Array(vec![]));
             }
 
             if let Some(qword_list) = self.p_qword_list() {
                 if let Some(_t_string_end) = self.match_1_token(Token::T_STRING_END) {
                     // TODO builder.words_compose
-                    return Some(Node::Array(extract_nodes(qword_list)));
+                    self.decurse(); return Some(Node::Array(extract_nodes(qword_list)));
                 }
             }
         }
+        self.current_p = p;
 
+        self.decurse();
         None
     }
 
@@ -2128,6 +2239,9 @@ impl Parser {
     //                 }
     // NOTE transformed into non-recursive form
     fn p_qword_list(&mut self) -> Option<Node> {
+        self.recurse("p_qwords");
+        let p = self.current_p;
+
         if let Some(Token::T_STRING_CONTENT(str_content)) = self.current_token() {
             self.consume_current_token();
             if let Some(_t_space) = self.match_1_token(Token::T_SPACE) {
@@ -2145,10 +2259,12 @@ impl Parser {
                 }
 
                 // TODO builder.string_internal
-                return Some(Node::Nodes(nodes));
+                self.decurse(); return Some(Node::Nodes(nodes));
             }
         }
+        self.current_p = p;
 
+        self.decurse();
         None
     }
 
@@ -2171,7 +2287,8 @@ impl Parser {
     //                     }
     // NOTE transformed to non-recursive
     fn p_string_contents(&mut self) -> Option<Node> {
-        println!("PARSER p_string_contents");
+        self.recurse("p_string_contents");
+        let p = self.current_p;
 
         if let Some(n_string_content) = self.p_string_content() {
             let mut string_contents = vec![n_string_content];
@@ -2184,9 +2301,11 @@ impl Parser {
                 }
             }
 
-            return Some(Node::Nodes(string_contents));
+            self.decurse(); return Some(Node::Nodes(string_contents));
         }
+        self.current_p = p;
 
+        self.decurse();
         None
     }
 
@@ -2200,15 +2319,18 @@ impl Parser {
     //                     }
     // TODO INCOMPLETE DUMMY
     fn p_xstring_contents(&mut self) -> Option<Node> {
-        println!("PARSER p_xstring_contents");
+        self.recurse("p_xstring_contents");
+        let p = self.current_p;
 
         // NOTE transformed to non-recursive
         if let Some(n_string_content) = self.p_string_content() {
             // TODO handle list
 
-            return Some(n_string_content);
+            self.decurse(); return Some(n_string_content);
         }
+        self.current_p = p;
 
+        self.decurse();
         None
     }
 
@@ -2223,7 +2345,8 @@ impl Parser {
 
     // TODO INCOMPLETE
     fn p_string_content(&mut self) -> Option<Node> {
-        println!("PARSER p_string_content");
+        self.recurse("p_string_content");
+        let p = self.current_p;
 
         //   string_content: tSTRING_CONTENT
         //                     {
@@ -2231,8 +2354,9 @@ impl Parser {
         //                     }
         if let Some(Token::T_STRING_CONTENT(t_string_content_value)) = self.current_token() {
             self.consume_current_token();
-            return Some(Node::Str(t_string_content_value));
+            self.decurse(); return Some(Node::Str(t_string_content_value));
         }
+        self.current_p = p;
 
         //                 | tSTRING_DVAR string_dvar
         //                     {
@@ -2266,7 +2390,9 @@ impl Parser {
                 }
             }
         }
+        self.current_p = p;
 
+        self.decurse();
         None
     }
 
@@ -2290,7 +2416,11 @@ impl Parser {
     //             }
     // TODO IMCOMPLETE
     fn p_numeric(&mut self) -> Option<Node> {
-        if let Some(n_simple_numeric) = self.p_simple_numeric() { return Some(n_simple_numeric); }
+        self.recurse("p_numeric");
+        let p = self.current_p;
+
+        if let Some(n_simple_numeric) = self.p_simple_numeric() { self.decurse(); return Some(n_simple_numeric); }
+        self.current_p = p;
 
         //         | tUNARY_NUM simple_numeric =tLOWEST
         //             {
@@ -2305,10 +2435,12 @@ impl Parser {
         if let Some(Token::T_UNARY_NUM(_)) = self.current_token() {
             let t_unary_num = self.consume_current_token();
             if let Some(n_simple_numeric) = self.p_simple_numeric() {
-                return Some(node::unary_num(t_unary_num, n_simple_numeric));
+                self.decurse(); return Some(node::unary_num(t_unary_num, n_simple_numeric));
             }
         }
+        self.current_p = p;
 
+        self.decurse();
         None
     }
 
@@ -2318,16 +2450,19 @@ impl Parser {
     //               result = @builder.symbol(val[0])
     //             }
     fn p_symbol(&mut self) -> Option<Node> {
-        println!("PARSER p_symbol");
+        self.recurse("p_symbol");
+        let p = self.current_p;
 
         if let Some(Token::T_SYMBOL(symbol_string)) = self.current_token() {
             let _t_symbol = self.consume_current_token();
 
             self.lexer.set_state(state!("expr_endarg"));
 
-            return Some(Node::Sym(symbol_string));
+            self.decurse(); return Some(Node::Sym(symbol_string));
         }
+        self.current_p = p;
 
+        self.decurse();
         None
     }
 
@@ -2337,18 +2472,22 @@ impl Parser {
     //           result = @builder.symbol_compose(val[0], val[1], val[2])
     //         }
     fn p_dsym(&mut self) -> Option<Node> {
-        println!("PARSER p_dsym");
+        self.recurse("p_dsym");
+        let p = self.current_p;
+
         if let Some(t_symbeg) = self.match_1_token(Token::T_SYMBEG) {
             if let Some(n_xstring_contents) = self.p_xstring_contents() {
                 if let Some(t_string_end) = self.match_1_token(Token::T_STRING_END) {
                     self.lexer.set_state(state!("expr_endarg"));
                     // TODO DUMMY
-                    // return Some(node::symbol_compose(t_symbeg, n_xstring_contents, t_string_end));
-                    if let Node::Str(str_value) = n_xstring_contents { return Some(Node::Sym(str_value)); }
+                    // self.decurse(); return Some(node::symbol_compose(t_symbeg, n_xstring_contents, t_string_end));
+                    if let Node::Str(str_value) = n_xstring_contents { self.decurse(); return Some(Node::Sym(str_value)); }
                 }
             }
         }
+        self.current_p = p;
 
+        self.decurse();
         None
     }
 
@@ -2389,13 +2528,15 @@ impl Parser {
     //                       result = @builder.complex(val[0])
     //                     }
     fn p_simple_numeric(&mut self) -> Option<Node> {
+        self.recurse("p_simple_numeric");
+
         match self.current_token() {
             Some(Token::T_INTEGER(i)) => {
                 self.lexer.set_state(state!("expr_end"));
 
                 self.consume_current_token();
 
-                return Some(Node::Int(i));
+                self.decurse(); return Some(Node::Int(i));
             },
             _ => { return None; }
         }
@@ -2422,44 +2563,56 @@ impl Parser {
     //                       result = @builder.cvar(val[0])
     //                     }
     // TODO INCOMPLETE
+    // NOTE may consume token
     fn p_user_variable(&mut self) -> Option<Node> {
+        self.recurse("p_user_variable");
+        let p = self.current_p;
+
         let current_token = self.current_token();
 
         if let Some(Token::T_IDENTIFIER(t_id_value)) = current_token {
             self.consume_current_token();
-            return Some(Node::Ident(t_id_value));
+            self.decurse(); return Some(Node::Ident(t_id_value));
         }
+        self.current_p = p;
 
+        self.decurse();
         None
     }
 
     // TODO INCOMPLETE
+    // NOTE may consume token
     fn p_keyword_variable(&mut self) -> Option<Node> {
-        println!("p_keyword_variable");
+        self.recurse("p_keyword_variable");
+        let p = self.current_p;
 
         // keyword_variable: kNIL
         //                     {
         //                       result = @builder.nil(val[0])
         //                     }
-        if let Some(_) = self.match_1_token(Token::K_NIL) { return Some(Node::Nil); }
+        if let Some(_) = self.match_1_token(Token::K_NIL) { self.decurse(); return Some(Node::Nil); }
+        self.current_p = p;
 
         //                 | kSELF
         //                     {
         //                       result = @builder.self(val[0])
         //                     }
-        if let Some(_) = self.match_1_token(Token::K_SELF) { return Some(Node::NSelf); }
+        if let Some(_) = self.match_1_token(Token::K_SELF) { self.decurse(); return Some(Node::NSelf); }
+        self.current_p = p;
 
         //                 | kTRUE
         //                     {
         //                       result = @builder.true(val[0])
         //                     }
-        if let Some(_) = self.match_1_token(Token::K_TRUE) { return Some(Node::True); }
+        if let Some(_) = self.match_1_token(Token::K_TRUE) { self.decurse(); return Some(Node::True); }
+        self.current_p = p;
 
         //                 | kFALSE
         //                     {
         //                       result = @builder.false(val[0])
         //                     }
-        if let Some(_) = self.match_1_token(Token::K_FALSE) { return Some(Node::False); }
+        if let Some(_) = self.match_1_token(Token::K_FALSE) { self.decurse(); return Some(Node::False); }
+        self.current_p = p;
 
         //                 | k__FILE__
         //                     {
@@ -2473,6 +2626,7 @@ impl Parser {
         //                     {
         //                       result = @builder.__ENCODING__(val[0])
         //                     }
+        self.decurse();
         None
     }
 
@@ -2484,12 +2638,17 @@ impl Parser {
     //             {
     //               result = @builder.accessible(val[0])
     //             }
-    // TODO INCOMPLETE
     fn p_var_ref(&mut self) -> Option<Node> {
-        if let Some(n_user_variable) = self.p_user_variable() { return Some(node::accessible(n_user_variable)); }
+        self.recurse("p_var_ref");
+        let p = self.current_p;
 
-        if let Some(n_keyword_variable) = self.p_keyword_variable() { return Some(node::accessible(n_keyword_variable)); }
+        if let Some(n_user_variable) = self.p_user_variable() { self.decurse(); return Some(node::accessible(n_user_variable)); }
+        self.current_p = p;
 
+        if let Some(n_keyword_variable) = self.p_keyword_variable() { self.decurse(); return Some(node::accessible(n_keyword_variable)); }
+        self.current_p = p;
+
+        self.decurse();
         None
     }
 
@@ -2501,7 +2660,7 @@ impl Parser {
     //                     {
     //                       result = @builder.assignable(val[0])
     //                     }
-
+    // 
     //          backref: tNTH_REF
     //                     {
     //                       result = @builder.nth_ref(val[0])
@@ -2843,12 +3002,14 @@ impl Parser {
     //                     }
     // NOTE transformed into non-recursive form
     fn p_assocs(&mut self) -> Option<Node> {
-        println!("p_assocs");
+        self.recurse("p_assocs");
+        let p = self.current_p;
         panic!("p_assocs UNIMPL");
 
         // if let Some(n_assoc) = self.p_assoc() {
         // }
 
+        self.decurse();
         None
     }
 
@@ -2870,8 +3031,10 @@ impl Parser {
     //                     }
     // TODO INCOMPLETE
     fn p_assoc(&mut self) -> Option<Node> {
-        println!("p_assoc");
+        self.recurse("p_assoc");
+        let p = self.current_p;
         panic!("p_assoc UNIMPL");
+        self.decurse();
         None
     }
 
@@ -2900,9 +3063,18 @@ impl Parser {
     // 
     //          trailer:  | tNL | tCOMMA
     // TODO handle option none
+    // NOTE consume token
     fn p_trailer(&mut self) -> Option<Node> {
-        if let Some(t_nl) = self.match_1_token(Token::T_NL) { return Some(Node::Dummy); }
-        if let Some(t_tomma) = self.match_1_token(Token::T_COMMA) { return Some(Node::Dummy); }
+        self.recurse("p_trailer");
+        let p = self.current_p;
+
+        if let Some(t_nl) = self.match_1_token(Token::T_NL) { self.decurse(); return Some(Node::Dummy); }
+        self.current_p = p;
+
+        if let Some(t_tomma) = self.match_1_token(Token::T_COMMA) { self.decurse(); return Some(Node::Dummy); }
+        self.current_p = p;
+
+        self.decurse();
         None
     }
 

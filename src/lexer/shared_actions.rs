@@ -265,7 +265,7 @@ pub fn construct() -> TSharedActions {
     //   }
     // TODO INCOMPLETE
     action!("extend_string", |lexer: &mut Lexer| {
-        println!("action `extend_string` invoking. current_token: {:?}", lexer.input_stream.current_token());
+        // println!("action `extend_string` invoking. current_token: {:?}", lexer.input_stream.current_token());
 
         // TODO NAMING
         let current_string = lexer.input_stream.current_token().unwrap();
@@ -441,7 +441,7 @@ pub fn construct() -> TSharedActions {
     //     fcall expr_variable;
     //   }
     action!("extend_interp_var", |lexer: &mut Lexer| {
-        println!("action extend_interp_var");
+        // println!("action extend_interp_var");
 
         let mut current_literal = lexer.literal_stack.pop().unwrap().clone();
         current_literal.flush_string();
@@ -473,7 +473,7 @@ pub fn construct() -> TSharedActions {
     //     fcall expr_value;
     //   }
     action!("extend_interp_code", |lexer: &mut Lexer| {
-        println!("action extend_interp_code");
+        // println!("action extend_interp_code");
 
         let mut current_literal = lexer.literal_stack.pop().unwrap().clone();
 
@@ -613,7 +613,7 @@ pub fn construct() -> TSharedActions {
     //   };
     action!("e_rbrace", |lexer: &mut Lexer| {
         // TODO WIP
-        println!("action e_rbrace invoked");
+        // println!("action e_rbrace invoked");
 
         if lexer.literal().is_none() { return; }
 
@@ -647,7 +647,7 @@ pub fn construct() -> TSharedActions {
     //     end
     // }
     action!("local_ident", |lexer: &mut Lexer| {
-        println!("shared action local_ident invoked");
+        // println!("shared action local_ident invoked");
 
         let token = Token::T_IDENTIFIER(lexer.input_stream.current_token_string());
         lexer.emit_token(token);

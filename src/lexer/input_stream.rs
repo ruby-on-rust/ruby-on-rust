@@ -50,7 +50,7 @@ impl InputStream {
     // starting from pos
     pub fn longest_matching_action(&mut self, actions: &Vec<Box<Action>>) -> Option<Box<Action>> {
 
-        println!("finding longest matching action..., current p: {}", self.p);
+        // println!("finding longest matching action..., current p: {}", self.p);
         // println!("actions: {:?}", actions);
 
         // TODO not that elegant, use Option<Action> instead of
@@ -96,7 +96,7 @@ impl InputStream {
                     self.te = Some((self.p + 1) as usize);
                 }
 
-                println!("matched token: {:?}", self.current_token() );
+                // println!("matched token: {:?}", self.current_token() );
                 // println!("current ts {} p {} te {}", self.ts.unwrap(), self.p, self.te.unwrap() );
 
                 return Some(actions.get(i).unwrap().clone());
@@ -155,7 +155,7 @@ impl InputStream {
     // TODO renaming hold_current_slice
 
     pub fn hold_current_token(&mut self) {
-        println!(">>> hold_current_token invoking, p {:?} ts {:?} te {:?}", self.p, self.ts, self.te);
+        // println!(">>> hold_current_token invoking, p {:?} ts {:?} te {:?}", self.p, self.ts, self.te);
 
         match ( self.ts, self.te ) {
             ( Some(ts), Some(te) ) => { self.p = ( ts as isize ) - 1; }
@@ -178,7 +178,7 @@ impl InputStream {
             Some(capture) => {
                 let match_ = capture.get(0).unwrap();
                 let matched_str = String::from(match_.as_str());
-                println!("    ***** matched str: {:?}", matched_str);
+                // println!("    ***** matched str: {:?}", matched_str);
                 // println!("    DEBUGGING CAPTURE: capture: {:?}", capture);
                 return Some(matched_str.len());
             }

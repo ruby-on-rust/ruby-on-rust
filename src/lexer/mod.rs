@@ -134,7 +134,7 @@ impl Lexer {
     // TODO MAYBE wrap in a Result, instead of Option
     // 
     pub fn advance(&mut self) -> Option<Token> {
-        println!("--- lexer: advance ---");
+        // println!("--- lexer: advance ---");
 
         if !self.tokens.is_empty() {
             return Some(self.tokens.remove(0));
@@ -161,11 +161,11 @@ impl Lexer {
         self.input_stream.entering_machine = true;
 
         loop {
-            println!("\n--- exec looping, current_state: {:?}, next_state: {:?}, calling_state: {:?}, is_breaking: {:?} ---", self.current_state, self.next_state, self.calling_state, self.is_breaking);
+            // println!("\n--- exec looping, current_state: {:?}, next_state: {:?}, calling_state: {:?}, is_breaking: {:?} ---", self.current_state, self.next_state, self.calling_state, self.is_breaking);
 
             // handle breaking
             if self.is_breaking == true {
-                println!("breaking...");
+                // println!("breaking...");
                 break;
             }
 
@@ -181,14 +181,14 @@ impl Lexer {
                 }
             }
 
-            println!("state trans-ed; current_state: {:?}, next_state: {:?}, calling_state: {:?}, is_breaking: {:?} ---", self.current_state, self.next_state, self.calling_state, self.is_breaking);
+            // println!("state trans-ed; current_state: {:?}, next_state: {:?}, calling_state: {:?}, is_breaking: {:?} ---", self.current_state, self.next_state, self.calling_state, self.is_breaking);
 
             // get actions
             let actions = self.machines.get(&self.current_state).unwrap().clone();
 
             // find matching action
             let action = self.input_stream.longest_matching_action(&actions).expect("cant match any action");
-            println!("matched action: {:?}", action.regex);
+            // println!("matched action: {:?}", action.regex);
 
             // invoke proc
             let procedure = action.procedure;
@@ -217,7 +217,7 @@ impl Lexer {
     }
 
     fn emit_token(&mut self, token: Token) {
-        println!(">>> emitting token: {:?}", token);
+        // println!(">>> emitting token: {:?}", token);
 
         self.tokens.push(token);
     }
@@ -230,7 +230,7 @@ impl Lexer {
         let tokens_table = self.tokens_tables.get(table_name).unwrap();
         let token = tokens_table.get(token_str.as_str()).expect(&format!("no token {} from tokens_table {}", token_str, table_name));
 
-        println!(">>> emitting token (from table): {:?}", token);
+        // println!(">>> emitting token (from table): {:?}", token);
 
         self.tokens.push((*token).clone());
     }
