@@ -431,7 +431,6 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         // 
         //         fbreak;
         //       };
-        // NOTE apparently only ']' will invoke the following action
         action_with_literal!(
             format!(
                 r"(({})|({})|(\]))",
@@ -440,8 +439,8 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
             |lexer: &mut Lexer| {
 
                 match lexer.input_stream.current_token().unwrap().as_ref() {
-                    "}" => { lexer.invoke_proc("e_rbrace"); return; },
-                    ")" => { lexer.invoke_proc("e_rparen"); return; },
+                    "}" => { lexer.invoke_proc("e_rbrace"); },
+                    ")" => { lexer.invoke_proc("e_rparen"); },
                     "]" | _ => ()
                 };
 

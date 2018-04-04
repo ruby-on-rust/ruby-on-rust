@@ -1267,10 +1267,12 @@ impl Parser {
         //               result = @builder.array(val[0], val[1], val[2])
         //             }
         if let Some(t_lbrack) = self.match_1_token(Token::T_LBRACK) {
+            let p = self.current_p;
             // special rule for aref_args being `none`
             if let Some(t_rbrack) = self.match_1_token(Token::T_RBRACK) {
                 self.decurse(); return Some(Node::Array(vec![]));
             }
+            self.current_p = p;
 
             if let Some(n_aref_args) = self.p_aref_args() {
                 if let Some(t_rbrack) = self.match_1_token(Token::T_RBRACK) {
@@ -1288,12 +1290,13 @@ impl Parser {
         //               result = @builder.associate(val[0], val[1], val[2])
         //             }
         if let Some(t_lbrace) = self.match_1_token(Token::T_LBRACE) {
+            let p = self.current_p;
             // special rule for assoc_list being `none`
             if let Some(t_rcurly) = self.match_1_token(Token::T_RCURLY) {
                 self.decurse();
                 return Some(Node::Hash(vec![]));
             }
-
+            self.current_p = p;
 
             if let Some(n_assoc_list) = self.p_assoc_list() {
                 if let Some(t_rcurly) = self.match_1_token(Token::T_RCURLY) {

@@ -68,3 +68,24 @@ fn string_double_interp() {
     // assert_eq!(lexer.advance().unwrap(), Token::T_STRING_END);
     // // TODO assert must be empty, impl in helper macro
 }
+
+
+//   def test_rbracket
+//     assert_scanned "]", :tRBRACK, "]", [0, 1]
+//   end
+#[test]
+fn rbarcket() {
+    let content = String::from("]");
+    let mut lexer = Lexer::new(content);
+    assert_eq!(lexer.advance().unwrap(), Token::T_RBRACK);
+}
+
+//   def test_rcurly
+//     assert_scanned "}", :tRCURLY, "}", [0, 1]
+//   end
+#[test]
+fn rcurly() {
+    let content = String::from("}");
+    let mut lexer = Lexer::new(content);
+    assert_eq!(lexer.advance().unwrap(), Token::T_RCURLY);
+}

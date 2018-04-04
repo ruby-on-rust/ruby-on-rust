@@ -1,21 +1,9 @@
 // TODO NOTE
 // 
-// so when the note in the parser gem says:
+// handle % aciton, will be invoked instead of the ordinal action, as a `leaving action`
 // 
-// #  * Ragel merges actions. So, if you have `e_lparen = '(' %act` and
-// #    `c_lparen = '('` and a lexer action `e_lparen | c_lparen`, the result
-// #    _will_ invoke the action `act`.
-// #
-// #    e_something stands for "something with **e**mbedded action".
-// 
-// it actually means will _only_ invoke action `act`?
-// 
-// since, apparently the rule 
-//   e_rbrace | e_rparen | ']'
-//   => {
-// will only invoke the action for e_rbrace, if the e_rbrace matches
-// 
-// TODO many rules need review
+// The leaving action operator queues an action for embedding into the transitions that go out of a machine via a final state. 
+// The action is first stored in the machine’s final states and is later transferred to any transitions that are made going out of the machine by a kleene star or concatenation operation.
 //
 
 use std::collections::HashMap;
@@ -134,7 +122,7 @@ impl Lexer {
     // TODO MAYBE wrap in a Result, instead of Option
     // 
     pub fn advance(&mut self) -> Option<Token> {
-        // println!("--- lexer: advance ---");
+        println!("--- lexer: advance ---");
 
         if !self.tokens.is_empty() {
             return Some(self.tokens.remove(0));
@@ -161,8 +149,6 @@ impl Lexer {
         self.input_stream.entering_machine = true;
 
         loop {
-            // println!("\n--- exec looping, current_state: {:?}, next_state: {:?}, calling_state: {:?}, is_breaking: {:?} ---", self.current_state, self.next_state, self.calling_state, self.is_breaking);
-
             // handle breaking
             if self.is_breaking == true {
                 // println!("breaking...");
@@ -181,6 +167,7 @@ impl Lexer {
                 }
             }
 
+            println!("\n--- exec looping\ncurrent_state: {:?}\nnext_state: {:?}\ncalling_state: {:?}\nis_breaking: {:?}\n---", self.current_state, self.next_state, self.calling_state, self.is_breaking);
             // println!("state trans-ed; current_state: {:?}, next_state: {:?}, calling_state: {:?}, is_breaking: {:?} ---", self.current_state, self.next_state, self.calling_state, self.is_breaking);
 
             // get actions
@@ -217,7 +204,7 @@ impl Lexer {
     }
 
     fn emit_token(&mut self, token: Token) {
-        // println!(">>> emitting token: {:?}", token);
+        println!(">>> emitting token: {:?}", token);
 
         self.tokens.push(token);
     }
@@ -230,7 +217,7 @@ impl Lexer {
         let tokens_table = self.tokens_tables.get(table_name).unwrap();
         let token = tokens_table.get(token_str.as_str()).expect(&format!("no token {} from tokens_table {}", token_str, table_name));
 
-        // println!(">>> emitting token (from table): {:?}", token);
+        println!(">>> emitting token (from table): {:?}", token);
 
         self.tokens.push((*token).clone());
     }

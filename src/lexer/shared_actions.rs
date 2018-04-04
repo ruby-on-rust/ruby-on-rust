@@ -612,8 +612,7 @@ pub fn construct() -> TSharedActions {
     //     end
     //   };
     action!("e_rbrace", |lexer: &mut Lexer| {
-        // TODO WIP
-        // println!("action e_rbrace invoked");
+        println!("action e_rbrace invoked");
 
         if lexer.literal().is_none() { return; }
 
