@@ -1,8 +1,5 @@
 use parser::token::Token;
 
-
-// TODO emm we should make Node::Nodes an alias of Vec[Nodes], instead of the current impl
-
 #[derive(Debug, PartialEq, Clone)]
 pub enum Node {
     // for rules which doesnot need to return a real node
