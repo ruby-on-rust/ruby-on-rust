@@ -1,11 +1,16 @@
 use parser::token::Token;
 
+
+// TODO emm we should make Node::Nodes an alias of Vec[Nodes], instead of the current impl
+
 #[derive(Debug, PartialEq, Clone)]
 pub enum Node {
     // for rules which doesnot need to return a real node
     Dummy,
-    // for rules which return a vec of nodes
+    // for rules which returns a vec of nodes
     Nodes(Vec<Node>),
+    // for rules which may returns a result being `nil`, when the rule is applied so we cannot return a None, i guess. still not sure about this.
+    Null,
 
     Nil,
 
@@ -30,6 +35,8 @@ pub enum Node {
     Ident(String),
     Assign(Box<Node>, Token, Box<Node>),
     Assignable,
+
+    Begin(Box<Node>), // TODO Node::Nodes only
 }
 
 
@@ -1008,6 +1015,21 @@ pub fn accessible(node: Node) -> Node {
 //       collection_map(nil, statements, nil))
 //   end
 // end
+pub fn compstmt(nodes: Node) -> Node {
+    println!("DEBUGGING node::compstmt: {:?}", nodes);
+
+    if let Node::Nodes(extracted_nodes) = nodes {
+        println!("DEBUGGING node::compstmt: {:?}", extracted_nodes.len());
+        match extracted_nodes.len() {
+            0 => { return Node::Null; }
+            1 => { return extracted_nodes.get(0).unwrap().clone(); }
+            // TODO collection_map
+            _ => { return Node::Begin(box Node::Nodes(extracted_nodes)); }
+        }
+    } else {
+        panic!("compstmt: should pass in a Node::Nodes")
+    }
+}
 
 // def begin(begin_t, body, end_t)
 //   if body.nil?

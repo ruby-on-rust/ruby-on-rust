@@ -949,6 +949,12 @@ fn lvar() { assert_parses!("foo", Node::LVar(String::from("foo"))); }
 //         })
 //   end
 
+// TODO WIP
+#[test]
+fn lvasgn() {
+    assert_parses!("var = 10; var", Node::LVar(String::from("foo")));
+}
+
 //   def test_ivasgn
 //     assert_parses(
 //       s(:ivasgn, :@var, s(:int, 10)),

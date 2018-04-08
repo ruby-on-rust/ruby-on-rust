@@ -108,13 +108,6 @@ impl Parser {
         return None;
     }
 
-    // TODO note about tokens pushing back
-    fn push_back_token(&mut self) {
-        println!("pushing back token, current stack: {:?}", self.recursion_stack);
-
-        self.current_p -= 1;
-    }
-
     // TODO
     fn recurse(&mut self, fn_name: &str) {
         let fn_name = String::from(fn_name);
@@ -132,11 +125,14 @@ impl Parser {
     // ===
 
     //  program: top_compstmt
-    // TODO
+    // TODO cleanup decursing stuff, since this is the top level
     fn p_program(&mut self) -> Option<Node> {
         self.recurse("p_program");
         let p = self.current_p;
-        if let Some(n_stmt) = self.p_stmt() { return Some(n_stmt); }
+
+        if let Some(n_top_compstmt) = self.p_top_compstmt() { self.decurse(); return Some(n_top_compstmt); }
+        self.current_p = p;
+
         self.decurse();
         None
     }
@@ -145,17 +141,110 @@ impl Parser {
     //                 {
     //                   result = @builder.compstmt(val[0])
     //                 }
-    // fn p_top_compstmt(&mut self) -> Node {
-    // }
+    // TODO handle top_stmts being none
+    // TODO handle opt_terms being none
+    fn p_top_compstmt(&mut self) -> Option<Node> {
+        self.recurse("p_top_compstmt");
+        let p = self.current_p;
 
-    // fn p_top_stmts(&mut self) -> Node {
-    // }
+        if let Some(n_top_stmts) = self.p_top_stmts() {
+            if let Some(n_opt_terms) = self.p_opt_terms() {
+                // branch: both top_stmts and opt_terms exists
+                self.decurse(); return Some( node::compstmt( Node::Nodes(vec![n_top_stmts])) );
+            }
+            self.current_p = p;
+
+            // branch: top_stmts exists and opt_temrs is none
+            self.decurse(); return Some( node::compstmt( Node::Nodes(vec![n_top_stmts])) );
+        }
+        self.current_p = p;
+
+        // TODO incomplete branches
+
+        self.decurse();
+        None
+    }
+
+    //    top_stmts: # nothing
+    //                 {
+    //                   result = []
+    //                 }
+    //             | top_stmt
+    //                 {
+    //                   result = [ val[0] ]
+    //                 }
+    //             | top_stmts terms top_stmt
+    //                 {
+    //                   result = val[0] << val[2]
+    //                 }
+    //             | error top_stmt
+    //                 {
+    //                   result = [ val[1] ]
+    //                 }
+    // TODO INCOMPLETE
+    // TODO HANDLE nothing (in parent node)
+    // TODO WIP transfer into non-recursive form
+    //     none | top_stmt | top_stmts terms top_stmt
+    //                    ==>
+    //     top_stmt [ terms top_stmt ]
+    // 
+    // TODO handle branch: `error top_stmt`
+    // 
+    fn p_top_stmts(&mut self) -> Option<Node> {
+        self.recurse("p_top_stmts");
+        let p = self.current_p;
+
+        if let Some(n_top_stmt) = self.p_top_stmt() {
+            let mut nodes = vec![n_top_stmt];
+
+            loop {
+                let p = self.current_p;
+                let mut matched = false;
+
+                if let Some(n_terms) = self.p_terms() {
+                    if let Some(n_top_stmt) = self.p_top_stmt() {
+                        matched = true;
+                        nodes.push(n_top_stmt);
+                    }
+                }
+
+                if !matched {
+                    self.current_p = p;
+                    break;
+                }
+            }
+
+            self.decurse();
+            return Some(Node::Nodes(nodes));
+        }
+        self.current_p = p;
+
+        self.decurse();
+        None
+    }
 
     // top_stmt: stmt
     //         | klBEGIN tLCURLY top_compstmt tRCURLY
     //             {
     //               result = @builder.preexe(val[0], val[1], val[2], val[3])
     //             }
+    // TODO
+    fn p_top_stmt(&mut self) -> Option<Node> {
+        self.recurse("p_top_stmt");
+        let p = self.current_p;
+
+        if let Some(n_stmt) = self.p_stmt() {
+            self.decurse();
+            return Some(n_stmt);
+        }
+        self.current_p = p;
+
+        // TODO | klBEGIN tLCURLY top_compstmt tRCURLY
+        panic!("UNIMPL");
+
+        self.decurse();
+        None
+    }
 
     // bodystmt: compstmt opt_rescue opt_else opt_ensure
     //             {
@@ -2604,7 +2693,6 @@ impl Parser {
     }
 
     // TODO INCOMPLETE
-    // NOTE may consume token
     fn p_keyword_variable(&mut self) -> Option<Node> {
         self.recurse("p_keyword_variable");
         let p = self.current_p;
@@ -3119,7 +3207,22 @@ impl Parser {
     //                     {
     //                       result = [:anddot, val[0][1]]
     //                     }
+
     //        opt_terms:  | terms
+    // NOTE the null branch will be handled in parent node
+    fn p_opt_terms(&mut self) -> Option<Node> {
+        self.recurse("p_opt_terms");
+        let p = self.current_p;
+
+        if let Some(n_terms) = self.p_terms() {
+            self.decurse(); return Some(n_terms);
+        }
+        self.current_p = p;
+
+        self.decurse();
+        None
+    }
+
     //           opt_nl:  | tNL
     //           rparen: opt_nl tRPAREN
     //                     {
@@ -3152,7 +3255,57 @@ impl Parser {
     //                     yyerrok
     //                   }
     //                 | tNL
+    // TODO handle `yyerrok`
+    fn p_term(&mut self) -> Option<Node> {
+        self.recurse("p_term");
+        let p = self.current_p;
+
+        if let Some(t_semi) = self.match_1_token(Token::T_SEMI) {
+            self.decurse(); return Some(Node::Dummy);
+        }
+        self.current_p = p;
+
+        if let Some(t_nl) = self.match_1_token(Token::T_NL) {
+            self.decurse(); return Some(Node::Dummy);
+        }
+        self.current_p = p;
+
+        self.decurse();
+        None
+    }
 
     //            terms: term
     //                 | terms tSEMI
+    // NOTE TODO transfer into non-recursive: term + (tSEMI + temrs) * n
+    // 
+    fn p_terms(&mut self) -> Option<Node> {
+        self.recurse("p_terms");
+        let p = self.current_p;
+
+        if let Some(n_term) = self.p_term() {
+            let mut n_terms = vec![n_term];
+            loop {
+                let p = self.current_p;
+                let mut matched = false;
+
+                if let Some(t_semi) = self.match_1_token(Token::T_SEMI) {
+                    if let Some(n_term) = self.p_term() {
+                        matched = true;
+                        n_terms.push(n_term);
+                    }
+                }
+
+                if !matched {
+                    self.current_p = p;
+                    break;
+                }
+            }
+            self.decurse(); return Some(Node::Nodes(n_terms));
+        }
+        self.current_p = p;
+
+        self.decurse();
+        None
+    }
+
 }
