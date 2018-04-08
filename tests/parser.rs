@@ -1,5 +1,7 @@
 // BASED ON https://github.com/whitequark/parser/blob/2a73841d6da04a5ab9bd270561165fd766722d43/test/test_parser.rb
 
+#![feature(box_syntax, box_patterns)]
+
 extern crate ruby_on_rust;
 
 use ruby_on_rust::parser::parser::Parser;
@@ -949,10 +951,18 @@ fn lvar() { assert_parses!("foo", Node::LVar(String::from("foo"))); }
 //         })
 //   end
 
-// TODO WIP
+// TODO use a helper macro for constructing Node::Nodes
+// WIP
 #[test]
 fn lvasgn() {
-    assert_parses!("var = 10; var", Node::LVar(String::from("foo")));
+    assert_parses!(
+        "var = 10; var",
+        Node::Begin( box Node::Nodes ( vec! [
+            Node::Assign( box Node::Nodes ( vec! [
+                WIP
+            ] ))
+        ] ))
+    );
 }
 
 //   def test_ivasgn

@@ -425,30 +425,30 @@ pub fn accessible(node: Node) -> Node {
 //   case node.type
 //   when :cvar
 //     node.updated(:cvasgn)
-
+// 
 //   when :ivar
 //     node.updated(:ivasgn)
-
+// 
 //   when :gvar
 //     node.updated(:gvasgn)
-
+// 
 //   when :const
 //     if @parser.in_def?
 //       diagnostic :error, :dynamic_const, nil, node.loc.expression
 //     end
-
+// 
 //     node.updated(:casgn)
-
+// 
 //   when :ident
 //     name, = *node
 //     @parser.static_env.declare(name)
-
+// 
 //     node.updated(:lvasgn)
-
+// 
 //   when :nil, :self, :true, :false,
 //        :__FILE__, :__LINE__, :__ENCODING__
 //     diagnostic :error, :invalid_assignment, nil, node.loc.expression
-
+// 
 //   when :back_ref, :nth_ref
 //     diagnostic :error, :backref_assignment, nil, node.loc.expression
 //   end
@@ -1013,10 +1013,7 @@ pub fn accessible(node: Node) -> Node {
 //   end
 // end
 pub fn compstmt(nodes: Node) -> Node {
-    println!("DEBUGGING node::compstmt: {:?}", nodes);
-
     if let Node::Nodes(extracted_nodes) = nodes {
-        println!("DEBUGGING node::compstmt: {:?}", extracted_nodes.len());
         match extracted_nodes.len() {
             0 => { return Node::Null; }
             1 => { return extracted_nodes.get(0).unwrap().clone(); }

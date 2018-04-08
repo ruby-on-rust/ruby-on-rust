@@ -143,6 +143,7 @@ impl Parser {
     //                 }
     // TODO handle top_stmts being none
     // TODO handle opt_terms being none
+    // NOTE returns Node::Nodes only
     fn p_top_compstmt(&mut self) -> Option<Node> {
         self.recurse("p_top_compstmt");
         let p = self.current_p;
@@ -150,12 +151,12 @@ impl Parser {
         if let Some(n_top_stmts) = self.p_top_stmts() {
             if let Some(n_opt_terms) = self.p_opt_terms() {
                 // branch: both top_stmts and opt_terms exists
-                self.decurse(); return Some( node::compstmt( Node::Nodes(vec![n_top_stmts])) );
+                self.decurse(); return Some( node::compstmt( n_top_stmts ) );
             }
             self.current_p = p;
 
             // branch: top_stmts exists and opt_temrs is none
-            self.decurse(); return Some( node::compstmt( Node::Nodes(vec![n_top_stmts])) );
+            self.decurse(); return Some( node::compstmt( n_top_stmts ) );
         }
         self.current_p = p;
 
@@ -190,6 +191,7 @@ impl Parser {
     // 
     // TODO handle branch: `error top_stmt`
     // 
+    // NOTE returns Node::Nodes only
     fn p_top_stmts(&mut self) -> Option<Node> {
         self.recurse("p_top_stmts");
         let p = self.current_p;
