@@ -11,17 +11,17 @@ pub struct Node {
 #[derive(Debug, PartialEq, Clone)]
 // TODO CLEANUP
 pub enum NodeType {
-    // // for rules which doesnot need to return a real node
-    // Dummy,
-    // for rules which returns a vec of nodes
+    // for rules which doesnot need to return a real node
+    Dummy,
+    // for rules which returns a list of nodes
     Nodes,
     // // for rules which may returns a result being `nil`, when the rule is applied so we cannot return a None, i guess. still not sure about this.
     // Null,
 
     // Nil,
 
-    // True,
-    // False,
+    True,
+    False,
 
     Int,
 
@@ -33,6 +33,7 @@ pub enum NodeType {
     Array,
 
     // Pair { key: Box<Node>, value: Box<Node> },
+    Pair,
     // Hash(Vec<Node>), // TODO Hash(Vec<Node::Pair>) after enum variants become types
 
     // NSelf,
@@ -54,6 +55,50 @@ pub enum NodeChild {
     Str(String),
     Int(isize),
 }
+
+// NOTE "dummy" -> NodeType::Dummy
+#[macro_export]
+macro_rules! n_type {
+    ($node_type:expr) => {
+        // TODO refine
+        match $node_type {
+            "dummy" => { NodeType::Dummy },
+            "nodes" => { NodeType::Nodes },
+
+            "true" => { NodeType::True },
+            "false" => { NodeType::False },
+
+            _ => {panic!("UNIMPL in n!");}
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! n {
+    ($node_type:expr, $children:expr) => {
+        {
+            let ntype = n_type!($node_type);
+            Node {
+                ntype,
+                children: $children
+            }
+        }
+    };
+}
+
+// NOTE node with empty array
+#[macro_export]
+macro_rules! n0 { ($node_type:expr) => { n!("dummy", vec![]) }; }
+
+#[macro_export]
+macro_rules! n_dummy { () => { n0!("dummy") }; }
+
+#[macro_export]
+macro_rules! n_nodes { ( $children:expr ) => { n!("nodes", $children) }; }
+
+// NOTE Vec<Node> -> Vec<NodeChild::Node>
+#[macro_export]
+macro_rules! n_children { ( $children:expr ) => { $children.iter().map(|&n| NodeChild::Node(n) ).collect() }; }
 
 // def unary_num(unary_t, numeric)
 //   value, = *numeric
@@ -77,7 +122,7 @@ pub enum NodeChild {
 pub fn unary_num(t_unary: Token, n_numeric: Node) -> Node {
     // let mut numeric_value = if let Node::Int(int_value) = n_simple_numeric { int_value } else { panic!(); };
 
-    assert_eq!(n_numeric.type, NodeType::Int);
+    assert_eq!(n_numeric.ntype, NodeType::Int);
 
     let mut numeric_value = n_numeric.children.get(0).unwrap();
     if let Token::T_UNARY_NUM(polarty) = t_unary {
@@ -88,8 +133,8 @@ pub fn unary_num(t_unary: Token, n_numeric: Node) -> Node {
         }
     } else { panic!(); }
 
-    return Node { type: NodeType:: }
-    return Node::Int(numeric_value);
+    // return Node { type: NodeType:: }
+    // return Node::Int(numeric_value);
 }
 
 // # Strings

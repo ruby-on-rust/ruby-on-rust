@@ -32,33 +32,6 @@ macro_rules! state { ($state_name:expr) => { $state_name.parse::<LexingState>().
 //     } else { panic!("can't extract nodes"); }
 // }
 
-// TODO refine
-macro_rules! n {
-    ($node_type:expr, $children:expr) => {
-        {
-            Node {
-                ntype: match $node_type {
-                    "" => {NodeType::Nodes},
-                    _ => {panic!("n! UNIMPL");}
-                },
-                children: $children
-            }
-        }
-    };
-}
-
-// macro_rules! vec {
-//     ( $( $x:expr ),* ) => {
-//         {
-//             let mut temp_vec = Vec::new();
-//             $(
-//                 temp_vec.push($x);
-//             )*
-//             temp_vec
-//         }
-//     };
-// }
-
 pub struct Parser {
     lexer: Lexer,
 
@@ -2752,7 +2725,7 @@ impl Parser {
         //                     {
         //                       result = @builder.false(val[0])
         //                     }
-        if let Some(_) = self.match_1_token(Token::K_FALSE) { self.decurse(); return Some(Node::False); }
+        if let Some(_) = self.match_1_token(Token::K_FALSE) { self.decurse(); return Some(n0!("false")); }
         self.current_p = p;
 
         //                 | k__FILE__
@@ -3181,8 +3154,7 @@ impl Parser {
                 }
             }
 
-            self.decurse();
-            return Some(Node::Nodes(nodes));
+            self.decurse(); return Some(n_nodes!(n_children!(nodes)));
         }
         self.current_p = p;
 
@@ -3270,10 +3242,10 @@ impl Parser {
         self.recurse("p_trailer");
         let p = self.current_p;
 
-        if let Some(t_nl) = self.match_1_token(Token::T_NL) { self.decurse(); return Some(Node::Dummy); }
+        if let Some(t_nl) = self.match_1_token(Token::T_NL) { self.decurse(); return Some(n_dummy!); }
         self.current_p = p;
 
-        if let Some(t_tomma) = self.match_1_token(Token::T_COMMA) { self.decurse(); return Some(Node::Dummy); }
+        if let Some(t_tomma) = self.match_1_token(Token::T_COMMA) { self.decurse(); return Some(n_dummy!); }
         self.current_p = p;
 
         self.decurse();
@@ -3291,12 +3263,12 @@ impl Parser {
         let p = self.current_p;
 
         if let Some(t_semi) = self.match_1_token(Token::T_SEMI) {
-            self.decurse(); return Some(Node::Dummy);
+            self.decurse(); return Some(n_dummy!);
         }
         self.current_p = p;
 
         if let Some(t_nl) = self.match_1_token(Token::T_NL) {
-            self.decurse(); return Some(Node::Dummy);
+            self.decurse(); return Some(n_dummy!);
         }
         self.current_p = p;
 
@@ -3330,7 +3302,7 @@ impl Parser {
                     break;
                 }
             }
-            self.decurse(); return Some(Node::Nodes(n_terms));
+            self.decurse(); return Some(n_dummy!);
         }
         self.current_p = p;
 
