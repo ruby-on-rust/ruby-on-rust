@@ -17,18 +17,47 @@ use ast::node::Node;
 macro_rules! state { ($state_name:expr) => { $state_name.parse::<LexingState>().unwrap() }; }
 
 // helpers
-fn extract_string_content(token: Token) -> String {
-    match token {
-        Token::T_STRING(content) | Token::T_STRING_CONTENT(content) => { return content; },
-        _ => { panic!("can't extract string content"); }
-    }
+// TODO CLEANUP
+// fn extract_string_content(token: Token) -> String {
+//     match token {
+//         Token::T_STRING(content) | Token::T_STRING_CONTENT(content) => { return content; },
+//         _ => { panic!("can't extract string content"); }
+//     }
+// }
+
+// TODO CLEANUP
+// fn extract_nodes(node: Node) -> Vec<Node> {
+//     if let Node::Nodes(nodes) = node {
+//         return nodes;
+//     } else { panic!("can't extract nodes"); }
+// }
+
+// TODO refine
+macro_rules! n {
+    ($node_type:expr, $children:expr) => {
+        {
+            Node {
+                ntype: match $node_type {
+                    "" => {NodeType::Nodes},
+                    _ => {panic!("n! UNIMPL");}
+                },
+                children: $children
+            }
+        }
+    };
 }
 
-fn extract_nodes(node: Node) -> Vec<Node> {
-    if let Node::Nodes(nodes) = node {
-        return nodes;
-    } else { panic!("can't extract nodes"); }
-}
+// macro_rules! vec {
+//     ( $( $x:expr ),* ) => {
+//         {
+//             let mut temp_vec = Vec::new();
+//             $(
+//                 temp_vec.push($x);
+//             )*
+//             temp_vec
+//         }
+//     };
+// }
 
 pub struct Parser {
     lexer: Lexer,
@@ -217,7 +246,7 @@ impl Parser {
             }
 
             self.decurse();
-            return Some(Node::Nodes(nodes));
+            return Some(n!("nodes", nodes));
         }
         self.current_p = p;
 
@@ -832,7 +861,6 @@ impl Parser {
             if let Some(t_eql) = self.match_1_token(Token::T_EQL) {
                 if let Some(n_arg_rhs) = self.p_arg_rhs() {
                     self.decurse(); return Some(node::assign(n_lhs, Token::T_EQL, n_arg_rhs));
-                    // return Some(Node::Assign( box n_lhs, Token::T_EQL, box n_arg_rhs ));
                 }
             }
             // TODO else put back token
@@ -1052,7 +1080,7 @@ impl Parser {
 
         if let Some(n_args) = self.p_args() {
             if let Some(n_trailer) = self.p_trailer() {
-                self.decurse(); return Some(Node::Dummy);
+                self.decurse(); return Some(n_args);
             }
 
             // trailer being none
@@ -1217,7 +1245,7 @@ impl Parser {
                 }
             }
 
-            self.decurse(); return Some( Node::Nodes( nodes ) );
+            self.decurse(); return Some( n!("nodes", nodes) );
         }
         self.current_p = p;
 
@@ -1361,7 +1389,7 @@ impl Parser {
             let p = self.current_p;
             // special rule for aref_args being `none`
             if let Some(t_rbrack) = self.match_1_token(Token::T_RBRACK) {
-                self.decurse(); return Some(Node::Array(vec![]));
+                self.decurse(); return Some(n!("array", vec![]));
             }
             self.current_p = p;
 
@@ -1369,7 +1397,7 @@ impl Parser {
                 if let Some(t_rbrack) = self.match_1_token(Token::T_RBRACK) {
                     // TODO handle builder.array
                     if let Node::Nodes(nodes) = n_aref_args {
-                        self.decurse(); return Some(Node::Array(nodes));
+                        self.decurse(); return Some(n!("array", nodes));
                     } else { panic!("cant extract nodes from n_aref_args"); }
                 }
             }

@@ -3,55 +3,69 @@
 use parser::token::Token;
 
 #[derive(Debug, PartialEq, Clone)]
-pub enum Node {
-    // for rules which doesnot need to return a real node
-    Dummy,
-    // for rules which returns a vec of nodes
-    Nodes(Vec<Node>),
-    // for rules which may returns a result being `nil`, when the rule is applied so we cannot return a None, i guess. still not sure about this.
-    Null,
-
-    Nil,
-
-    True,
-    False,
-
-    Int(isize),
-
-    Str(String),
-    DStr(Vec<Node>),
-
-    Sym(String),
-
-    Array(Vec<Node>),
-
-    Pair { key: Box<Node>, value: Box<Node> },
-    Hash(Vec<Node>), // TODO Hash(Vec<Node::Pair>) after enum variants become types
-
-    NSelf,
-    LVar(String),
-
-    Ident(String),
-    Assign(Box<Node>, Token, Box<Node>), // TODO a dummy NodeType for builder.assign
-
-    // assignable
-    LVasgn(String, Vec<Node>),
-
-    Begin(Vec<Node>),
+pub struct Node {
+    ntype: NodeType,
+    children: Vec<NodeChild>
 }
 
+#[derive(Debug, PartialEq, Clone)]
+// TODO CLEANUP
+pub enum NodeType {
+    // // for rules which doesnot need to return a real node
+    // Dummy,
+    // for rules which returns a vec of nodes
+    Nodes,
+    // // for rules which may returns a result being `nil`, when the rule is applied so we cannot return a None, i guess. still not sure about this.
+    // Null,
+
+    // Nil,
+
+    // True,
+    // False,
+
+    Int,
+
+    // Str(String),
+    // DStr(Vec<Node>),
+
+    // Sym(String),
+
+    Array,
+
+    // Pair { key: Box<Node>, value: Box<Node> },
+    // Hash(Vec<Node>), // TODO Hash(Vec<Node::Pair>) after enum variants become types
+
+    // NSelf,
+    // LVar(String),
+
+    // Ident(String),
+    // Assign(Box<Node>, Token, Box<Node>), // TODO a dummy NodeType for builder.assign
+
+    // // assignable
+    // LVasgn(String, Vec<Node>),
+
+    // Begin(Vec<Node>),
+}
+
+#[derive(Debug, PartialEq, Clone)]
+pub enum NodeChild {
+    Node(Node),
+    Token(Token),
+    Str(String),
+    Int(isize),
+}
 
 // def unary_num(unary_t, numeric)
 //   value, = *numeric
 //   operator_loc = loc(unary_t)
-
+// 
 //   case value(unary_t)
 //   when '+'
 //     value = +value
 //   when '-'
 //     value = -value
 //   end
-
+// 
 //   numeric.updated(nil, [ value ],
 //     :location =>
 //       Source::Map::Operator.new(
@@ -59,10 +73,13 @@ pub enum Node {
 //         operator_loc.join(numeric.loc.expression)))
 // end
 // TODO INCOMPLETE
-// DUMMY ALWAYS Node::Int
-pub fn unary_num(t_unary: Token, n_simple_numeric: Node) -> Node {
-    let mut numeric_value = if let Node::Int(int_value) = n_simple_numeric { int_value } else { panic!(); };
+// DUMMY always Int
+pub fn unary_num(t_unary: Token, n_numeric: Node) -> Node {
+    // let mut numeric_value = if let Node::Int(int_value) = n_simple_numeric { int_value } else { panic!(); };
 
+    assert_eq!(n_numeric.type, NodeType::Int);
+
+    let mut numeric_value = n_numeric.children.get(0).unwrap();
     if let Token::T_UNARY_NUM(polarty) = t_unary {
         match polarty.as_ref() {
             "+" => (),
@@ -71,6 +88,7 @@ pub fn unary_num(t_unary: Token, n_simple_numeric: Node) -> Node {
         }
     } else { panic!(); }
 
+    return Node { type: NodeType:: }
     return Node::Int(numeric_value);
 }
 

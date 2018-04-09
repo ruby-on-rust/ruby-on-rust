@@ -1,4 +1,5 @@
 #![feature(box_syntax, box_patterns)]
+#![feature(concat_idents)]
 
 extern crate regex;
 
