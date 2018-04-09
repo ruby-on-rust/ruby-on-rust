@@ -30,10 +30,12 @@ pub enum Node {
     LVar(String),
 
     Ident(String),
-    Assign(Box<Node>, Token, Box<Node>),
-    Assignable,
+    Assign(Box<Node>, Token, Box<Node>), // TODO a dummy NodeType for builder.assign
 
-    Begin(Box<Node>), // TODO Node::Nodes only
+    // assignable
+    LVasgn(String, Vec<Node>),
+
+    Begin(Vec<Node>),
 }
 
 
@@ -443,7 +445,7 @@ pub fn accessible(node: Node) -> Node {
 //     name, = *node
 //     @parser.static_env.declare(name)
 // 
-//     node.updated(:lvasgn)
+//     node.updated(:lVasgn)
 // 
 //   when :nil, :self, :true, :false,
 //        :__FILE__, :__LINE__, :__ENCODING__
@@ -453,6 +455,23 @@ pub fn accessible(node: Node) -> Node {
 //     diagnostic :error, :backref_assignment, nil, node.loc.expression
 //   end
 // end
+// TODO INCOMPLETE
+pub fn assignable(node: Node) -> Node {
+    println!("DEBUGGING node::assignable: {:?}", node);
+    match node {
+        Node::Ident(ident) => {
+            //     name, = *node
+            //     @parser.static_env.declare(name)
+            // 
+            //     node.updated(:lVasgn)
+
+            // TODO handle appending nodes list
+            // TODO handle static_env
+            return Node::LVasgn(ident, vec![]);
+        },
+        _ => { panic!("node::assignable: UNIMPL branch"); }
+    }
+}
 
 // def const_op_assignable(node)
 //   node.updated(:casgn)
@@ -464,15 +483,25 @@ pub fn accessible(node: Node) -> Node {
 //       with_operator(loc(eql_t)).
 //       with_expression(join_exprs(lhs, rhs)))
 // end
+// TODO INCOMPLETE
+pub fn assign(lhs_node: Node, token: Token, rhs_node: Node) -> Node {
+    match lhs_node {
+        Node::LVasgn(var_str, mut nodes) => {
+            nodes.push(rhs_node);
+            return Node::LVasgn(var_str, nodes);
+        },
+        _ => { panic!("node::assign UNIMPL"); }
+    }
+}
 
 // def op_assign(lhs, op_t, rhs)
 //   case lhs.type
-//   when :gvasgn, :ivasgn, :lvasgn, :cvasgn, :casgn, :send, :csend
+//   when :gvasgn, :ivasgn, :lVasgn, :cvasgn, :casgn, :send, :csend
 //     operator   = value(op_t)[0..-1].to_sym
 //     source_map = lhs.loc.
 //                     with_operator(loc(op_t)).
 //                     with_expression(join_exprs(lhs, rhs))
-
+// 
 //     case operator
 //     when :'&&'
 //       n(:and_asgn, [ lhs, rhs ], source_map)
@@ -481,7 +510,7 @@ pub fn accessible(node: Node) -> Node {
 //     else
 //       n(:op_asgn, [ lhs, operator, rhs ], source_map)
 //     end
-
+// 
 //   when :back_ref, :nth_ref
 //     diagnostic :error, :backref_assignment, nil, lhs.loc.expression
 //   end
@@ -628,7 +657,7 @@ pub fn accessible(node: Node) -> Node {
 // # Ruby 1.8 block arguments
 
 // def arg_expr(expr)
-//   if expr.type == :lvasgn
+//   if expr.type == :lVasgn
 //     expr.updated(:arg)
 //   else
 //     n(:arg_expr, [ expr ],
@@ -639,7 +668,7 @@ pub fn accessible(node: Node) -> Node {
 // def restarg_expr(star_t, expr=nil)
 //   if expr.nil?
 //     n0(:restarg, token_map(star_t))
-//   elsif expr.type == :lvasgn
+//   elsif expr.type == :lVasgn
 //     expr.updated(:restarg)
 //   else
 //     n(:restarg_expr, [ expr ],
@@ -648,7 +677,7 @@ pub fn accessible(node: Node) -> Node {
 // end
 
 // def blockarg_expr(amper_t, expr)
-//   if expr.type == :lvasgn
+//   if expr.type == :lVasgn
 //     expr.updated(:blockarg)
 //   else
 //     n(:blockarg_expr, [ expr ],
@@ -817,7 +846,7 @@ pub fn accessible(node: Node) -> Node {
 //       @parser.static_env.declare(name)
 //     end
 
-//     n(:match_with_lvasgn, [ receiver, arg ],
+//     n(:match_with_lVasgn, [ receiver, arg ],
 //       source_map)
 //   else
 //     n(:send, [ receiver, :=~, arg ],
@@ -1018,7 +1047,7 @@ pub fn compstmt(nodes: Node) -> Node {
             0 => { return Node::Null; }
             1 => { return extracted_nodes.get(0).unwrap().clone(); }
             // TODO collection_map
-            _ => { return Node::Begin(box Node::Nodes(extracted_nodes)); }
+            _ => { return Node::Begin(extracted_nodes); }
         }
     } else {
         panic!("compstmt: should pass in a Node::Nodes")

@@ -750,8 +750,7 @@ impl Parser {
         //           result = @builder.assignable(val[0])
         //         }
         if let Some(n_user_variable) = self.p_user_variable() {
-            // TODO value in assignable
-            self.decurse(); return Some(Node::Assignable);
+            self.decurse(); return Some(node::assignable(n_user_variable));
         }
         self.current_p = p;
 
@@ -832,7 +831,8 @@ impl Parser {
         if let Some(n_lhs) = self.p_lhs() {
             if let Some(t_eql) = self.match_1_token(Token::T_EQL) {
                 if let Some(n_arg_rhs) = self.p_arg_rhs() {
-                    self.decurse(); return Some(Node::Assign( box n_lhs, Token::T_EQL, box n_arg_rhs ));
+                    self.decurse(); return Some(node::assign(n_lhs, Token::T_EQL, n_arg_rhs));
+                    // return Some(Node::Assign( box n_lhs, Token::T_EQL, box n_arg_rhs ));
                 }
             }
             // TODO else put back token

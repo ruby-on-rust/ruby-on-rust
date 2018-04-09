@@ -951,17 +951,15 @@ fn lvar() { assert_parses!("foo", Node::LVar(String::from("foo"))); }
 //         })
 //   end
 
-// TODO use a helper macro for constructing Node::Nodes
-// WIP
+// TODO use a helper macro n_begin! for constructing Node::Begin
 #[test]
 fn lvasgn() {
     assert_parses!(
         "var = 10; var",
-        Node::Begin( box Node::Nodes ( vec! [
-            Node::Assign( box Node::Nodes ( vec! [
-                WIP
-            ] ))
-        ] ))
+        Node::Begin(vec![
+            Node::LVasgn(String::from("var"), vec![ Node::Int(10) ]),
+            Node::LVar(String::from("var"))
+        ])
     );
 }
 
