@@ -1,3 +1,5 @@
+// https://raw.githubusercontent.com/whitequark/parser/2a73841d6da04a5ab9bd270561165fd766722d43/lib/parser/builders/default.rb
+
 use parser::token::Token;
 
 #[derive(Debug, PartialEq, Clone)]
