@@ -69,7 +69,7 @@ impl InputStream {
                 Some(len) => {
                     let len = len as isize;
 
-                    // println!("matched something, length: {}, regex: {:?}", len, &action.regex);
+                    println!("matched something, length: {}, regex: {:?}", len, &action.regex);
 
                     if ( len > longest_matched_action_len ) {
                         longest_matched_action_len = len as isize;
@@ -168,8 +168,9 @@ impl InputStream {
         // println!("\n===\n    matching action starting from pos");
 
         // println!("    current entering machine: {}", self.entering_machine);
-        // println!("    current starting pos: {}", starting_pos);
-        // println!("    current sliced string: {}, (len: {})", sliced_string, sliced_string.len());
+        // // println!("    current starting pos: {}", starting_pos);
+        // // println!("    current sliced string: {}, (len: {})", sliced_string, sliced_string.len());
+        // println!("    current slice: {}, (len: {})", current_slice, current_slice.len());
         // println!("    regex: {:?}", regex);
 
         let captures = regex.captures(current_slice);

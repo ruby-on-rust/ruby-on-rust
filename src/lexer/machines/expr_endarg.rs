@@ -89,7 +89,7 @@ pub fn construct_machine_expr_endarg( patterns: &TMatchingPatterns, shared_actio
 
         //     c_any
         //     => { fhold; fgoto expr_end; };
-        action_with_literal!("c_any", |lexer: &mut Lexer| {
+        action!("c_any", |lexer: &mut Lexer| {
             lexer.input_stream.hold_current_char();
             lexer.set_next_state(state!("expr_end"));
         }),

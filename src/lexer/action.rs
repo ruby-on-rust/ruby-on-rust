@@ -18,6 +18,7 @@ pub struct Action {
 //     }
 // }
 
+// TODO NOTE
 macro_rules! action_with_literal {
     ($pattern_literal:expr, $procedure:expr) => {
         box Action {

@@ -361,7 +361,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //       '.' | '&.' | '::'
         //       => { emit_table(PUNCTUATION)
         //            fnext expr_dot; fbreak; };
-        action_with_literal!( r"(\.)|(&\.)|(::)", |lexer: &mut Lexer| {
+        action_with_literal!( r"((\.)|(&\.)|(::))", |lexer: &mut Lexer| {
             lexer.emit_token_from_table("punctuation");
             lexer.set_next_state(state!("expr_dot"));
             lexer.flag_breaking();

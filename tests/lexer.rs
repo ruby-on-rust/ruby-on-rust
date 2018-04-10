@@ -89,3 +89,20 @@ fn rcurly() {
     let mut lexer = Lexer::new(content);
     assert_eq!(lexer.advance().unwrap(), Token::T_RCURLY);
 }
+
+//   def test_colon2
+//     assert_scanned("A::B",
+//                    :tCONSTANT, "A",  [0, 1],
+//                    :tCOLON2,   "::", [1, 3],
+//                    :tCONSTANT, "B",  [3, 4])
+// 
+//     @lex.state = :expr_arg
+//     assert_scanned("::Array",
+//                    :tCOLON2,   "::",    [0, 2],
+//                    :tCONSTANT, "Array", [2, 7])
+//   end
+#[test]
+fn colon2() {
+    let mut lexer = Lexer::new(String::from("A::B"));
+    assert_eq!(lexer.advance().unwrap(), Token::T_CONSTANT(String::from("A")));
+}
