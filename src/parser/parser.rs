@@ -108,15 +108,13 @@ impl Parser {
         return None;
     }
 
-    // TODO
     fn recurse(&mut self, fn_name: &str) {
         let fn_name = String::from(fn_name);
         self.recursion_stack.push(fn_name.clone());
+        // println!("recursed {:?}.\nstack: {:?}", fn_name, self.recursion_stack);
         println!("recursed. stack: {:?}", self.recursion_stack);
     }
 
-    // TODO NOTE
-    // currently functions will only `decurse` when returning None
     fn decurse(&mut self) {
         self.recursion_stack.pop();
         println!("decursed. stack: {:?}", self.recursion_stack);
@@ -230,7 +228,7 @@ impl Parser {
     //             {
     //               result = @builder.preexe(val[0], val[1], val[2], val[3])
     //             }
-    // TODO
+    // TODO INCOMPLETE
     fn p_top_stmt(&mut self) -> Option<Node> {
         self.recurse("p_top_stmt");
         let p = self.current_p;
@@ -268,6 +266,7 @@ impl Parser {
     //             {
     //               result = @builder.compstmt(val[0])
     //             }
+    // TODO INCOMPLETE
     fn p_compstmt(&mut self) -> Option<Node> {
         self.recurse("p_compstmt");
         let p = self.current_p;
@@ -386,6 +385,7 @@ impl Parser {
     //         }
     //     | expr 
     // TODO INCOMPLETE
+    // TODO transform into non-recursive form
     fn p_stmt(&mut self) -> Option<Node> {
         self.recurse("p_stmt");
         let p = self.current_p;
@@ -1285,9 +1285,11 @@ impl Parser {
         //  primary: literal
         if let Some(n_literal) = self.p_literal() { self.decurse(); return Some(n_literal); }
         self.current_p = p;
+
         //         | strings
         if let Some(n_strings) = self.p_strings() { self.decurse(); return Some(n_strings); }
         self.current_p = p;
+
         //         | xstring
         // if let Some(n_xstring) = self.p_xstring() { self.decurse(); return Some(n_xstring); }
         //         | regexp
@@ -1349,10 +1351,28 @@ impl Parser {
         //             {
         //               result = @builder.const_fetch(val[0], val[1], val[2])
         //             }
+        // if let Some(n_primary_value) = self.p_primary_value() {
+        //     if let Some(t_colon2) = self.match_1_token(Token::T_COLON2) {
+        //         if let Some(Token::T_CONSTANT(t_const_str)) = self.current_token() {
+        //             self.consume_current_token();
+        //             self.decurse(); return Some( node::const_fetch( n_primary_value ) );
+        //         }
+        //     }
+        // }
+        // self.current_p = p;
+
         //         | tCOLON3 tCONSTANT
         //             {
         //               result = @builder.const_global(val[0], val[1])
         //             }
+        if let Some(t_colon3) = self.match_1_token(Token::T_COLON3) {
+            if let Some(Token::T_CONSTANT(_)) = self.current_token() {
+                let t_const = self.consume_current_token();
+                self.decurse(); return Some( node::const_global( t_colon3, t_const ) );
+            }
+        }
+        self.current_p = p;
+
         //         | tLBRACK aref_args tRBRACK
         //             {
         //               result = @builder.array(val[0], val[1], val[2])
@@ -1632,6 +1652,9 @@ impl Parser {
     }
 
     //    primary_value: primary
+    fn p_primary_value(&mut self) -> Option<Node> {
+        panic!("WIP");
+    }
 
     //             then: term
     //                 | kTHEN
@@ -2103,8 +2126,13 @@ impl Parser {
         let p = self.current_p;
 
         if let Some(n_numeric) = self.p_numeric() { self.decurse(); return Some(n_numeric); }
+        self.current_p = p;
+
         if let Some(n_symbol) = self.p_symbol() { self.decurse(); return Some(n_symbol); }
+        self.current_p = p;
+
         if let Some(n_dsym) = self.p_dsym() { self.decurse(); return Some(n_dsym); }
+        self.current_p = p;
 
         self.decurse();
         None
@@ -2643,6 +2671,7 @@ impl Parser {
     //                     }
     fn p_simple_numeric(&mut self) -> Option<Node> {
         self.recurse("p_simple_numeric");
+        let p = self.current_p;
 
         match self.current_token() {
             Some(Token::T_INTEGER(i)) => {
@@ -2652,7 +2681,10 @@ impl Parser {
 
                 self.decurse(); return Some(Node::Int(i));
             },
-            _ => { return None; }
+            _ => {
+                self.current_p = p;
+                self.decurse(); return None;
+            }
         }
     }
 
@@ -2677,7 +2709,6 @@ impl Parser {
     //                       result = @builder.cvar(val[0])
     //                     }
     // TODO INCOMPLETE
-    // NOTE may consume token
     fn p_user_variable(&mut self) -> Option<Node> {
         self.recurse("p_user_variable");
         let p = self.current_p;

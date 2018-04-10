@@ -885,6 +885,13 @@ fn lvar() { assert_parses!("foo", Node::LVar(String::from("foo"))); }
 //         |~~ double_colon
 //         |~~~~~ expression})
 //   end
+#[test]
+fn const_toplevel() {
+    assert_parses!(
+        r"::Foo",
+        Node::Const { scope: box Node::CBase, name: String::from("Foo") }
+    );
+}
 
 //   def test_const_scoped
 //     assert_parses(
@@ -1647,6 +1654,11 @@ fn lvasgn() {
 //         |       ~~~ name
 //         |            ~~~ end})
 //   end
+// pub fn module() {
+//     assert_parses!(
+//         "module Foo; end",
+//     );
+// }
 
 //   def test_module_invalid
 //     assert_diagnoses(

@@ -384,7 +384,7 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
         //       => { emit_table(PUNCTUATION_BEGIN)
         //            fbreak; };
         action!("punctuation_begin", |lexer: &mut Lexer| {
-            lexer.emit_token_from_table("puncuation_begin");
+            lexer.emit_token_from_table("punctuation_begin");
             lexer.flag_breaking();
         }),
 

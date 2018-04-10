@@ -8,7 +8,8 @@ pub enum Node {
     Dummy,
     // for rules which returns a vec of nodes
     Nodes(Vec<Node>),
-    // for rules which may returns a result being `nil`, when the rule is applied so we cannot return a None, i guess. still not sure about this.
+
+    // for rules which may returns a result being `nil`, and the rule is acutally applied so we cannot return a None, i guess. still not sure about this.
     Null,
 
     Nil,
@@ -29,17 +30,27 @@ pub enum Node {
     Hash(Vec<Node>), // TODO Hash(Vec<Node::Pair>) after enum variants become types
 
     NSelf,
+
     LVar(String),
 
+    // IVar TODO
+
+    Const { scope: Box<Node>, name: String },
+    //                 ^ CBase/Lvar
+
+    CBase, // :: in ::Foo
+
     Ident(String),
+
     Assign(Box<Node>, Token, Box<Node>), // TODO a dummy NodeType for builder.assign
 
     // assignable
     LVasgn(String, Vec<Node>),
 
     Begin(Vec<Node>),
-}
 
+    Module()
+}
 
 // def unary_num(unary_t, numeric)
 //   value, = *numeric
@@ -406,15 +417,33 @@ pub fn accessible(node: Node) -> Node {
 
 // def const_global(t_colon3, name_t)
 //   cbase = n0(:cbase, token_map(t_colon3))
-
+// 
 //   n(:const, [ cbase, value(name_t).to_sym ],
 //     constant_map(cbase, t_colon3, name_t))
 // end
+// NOTE top level const like ::Foo
+pub fn const_global(t_colon3: Token, name: Token ) -> Node {
+    if let Token::T_CONSTANT(const_name) = name {
+        return Node::Const {
+            scope: box Node::CBase,
+            name: const_name
+        }
+    }
+    panic!("you came too far");
+}
 
 // def const_fetch(scope, t_colon2, name_t)
 //   n(:const, [ scope, value(name_t).to_sym ],
 //     constant_map(scope, t_colon2, name_t))
 // end
+// pub fn const_fetch(scope: Option<Node>, token: Token, name: Token) -> Node {
+//     if let Token::T_CONSTANT(const_name) = name {
+//         return Node::Const {
+//             scope,
+//             const_name
+//         }
+//     }
+// }
 
 // def __ENCODING__(__ENCODING__t)
 //   n0(:__ENCODING__,

@@ -1,5 +1,6 @@
 #![feature(io)]
 #![feature(box_syntax, box_patterns)]
+#![feature(type_ascription)]
 
 extern crate regex;
 

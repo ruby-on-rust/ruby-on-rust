@@ -133,6 +133,9 @@ impl Lexer {
 
         self.exec();
 
+        println!("lexer: after exec ---");
+        println!("tokens: {:?}", self.tokens);
+
         if self.tokens.is_empty() {
             return None;
         } else {
@@ -151,7 +154,7 @@ impl Lexer {
         loop {
             // handle breaking
             if self.is_breaking == true {
-                // println!("breaking...");
+                println!("breaking...");
                 break;
             }
 
