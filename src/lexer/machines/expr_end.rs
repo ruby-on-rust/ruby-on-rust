@@ -331,6 +331,9 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //       => { emit(:tCONSTANT)
         //            fnext *arg_or_cmdarg; fbreak; };
         action!("constant", |lexer: &mut Lexer| {
+            let const_token = Token::T_CONSTANT(lexer.input_stream.current_token_string());
+            lexer.emit_token(const_token);
+
             let next_state = lexer.arg_or_cmdarg();
             lexer.set_next_state(next_state);
             lexer.flag_breaking();
