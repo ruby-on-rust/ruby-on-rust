@@ -889,7 +889,7 @@ fn lvar() { assert_parses!("foo", Node::LVar(String::from("foo"))); }
 fn const_toplevel() {
     assert_parses!(
         r"::Foo",
-        Node::Const { scope: box Node::CBase, name: String::from("Foo") }
+        Node::Const { scope: Some(box Node::CBase), name: String::from("Foo") }
     );
 }
 
@@ -901,6 +901,13 @@ fn const_toplevel() {
 //         |   ~~ double_colon
 //         |~~~~~~~~ expression})
 //   end
+// #[test]
+// fn const_scoped() {
+//     assert_parses!(
+//         r"Bar::Foo",
+//         Node::Const { scope: box Node::CBase, name: String::from("Foo") }
+//     );
+// }
 
 //   def test_const_unscoped
 //     assert_parses(

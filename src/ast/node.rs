@@ -35,8 +35,9 @@ pub enum Node {
 
     // IVar TODO
 
-    Const { scope: Box<Node>, name: String },
-    //                 ^ CBase/Lvar
+    Const { scope: Option<Box<Node>>, name: String },
+    //                        ^ CBase/Lvar
+    //             ^ None means unscoped
 
     CBase, // :: in ::Foo
 
@@ -425,7 +426,7 @@ pub fn accessible(node: Node) -> Node {
 pub fn const_global(t_colon3: Token, name: Token ) -> Node {
     if let Token::T_CONSTANT(const_name) = name {
         return Node::Const {
-            scope: box Node::CBase,
+            scope: Some(box Node::CBase),
             name: const_name
         }
     }
