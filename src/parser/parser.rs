@@ -1347,19 +1347,21 @@ impl Parser {
         //             {
         //               result = @builder.begin(val[0], val[1], val[2])
         //             }
+
         //         | primary_value tCOLON2 tCONSTANT
         //             {
         //               result = @builder.const_fetch(val[0], val[1], val[2])
         //             }
-        // if let Some(n_primary_value) = self.p_primary_value() {
-        //     if let Some(t_colon2) = self.match_1_token(Token::T_COLON2) {
-        //         if let Some(Token::T_CONSTANT(t_const_str)) = self.current_token() {
-        //             self.consume_current_token();
-        //             self.decurse(); return Some( node::const_fetch( n_primary_value ) );
-        //         }
-        //     }
-        // }
-        // self.current_p = p;
+        // TODO WIP NOTE transformed into non-recursive form, since primary_value -> primary
+        if let Some(n_primary_value) = self.p_primary_value() {
+            if let Some(t_colon2) = self.match_1_token(Token::T_COLON2) {
+                if let Some(Token::T_CONSTANT(_)) = self.current_token() {
+                    let t_const = self.consume_current_token();
+                    self.decurse(); return Some( node::const_fetch( n_primary_value, t_colon2, t_const ) );
+                }
+            }
+        }
+        self.current_p = p;
 
         //         | tCOLON3 tCONSTANT
         //             {
@@ -1653,7 +1655,14 @@ impl Parser {
 
     //    primary_value: primary
     fn p_primary_value(&mut self) -> Option<Node> {
-        panic!("WIP");
+        self.recurse("p_primary_value");
+        let p = self.current_p;
+
+        if let Some(n_primary) = self.p_primary() { self.decurse(); return Some(n_primary); }
+        self.current_p = p;
+
+        self.decurse();
+        None
     }
 
     //             then: term
@@ -1919,9 +1928,9 @@ impl Parser {
     //                     {
     //                       @lexer.cmdarg = val[2]
     //                       @lexer.cmdarg.lexpop
-
+    // 
     //                       result = [ val[1], val[3] ]
-
+    // 
     //                       @static_env.unextend
     //                     }
 
@@ -2084,11 +2093,11 @@ impl Parser {
     //       opt_rescue: kRESCUE exc_list exc_var then compstmt opt_rescue
     //                     {
     //                       assoc_t, exc_var = val[2]
-
+    // 
     //                       if val[1]
     //                         exc_list = @builder.array(nil, val[1], nil)
     //                       end
-
+    // 
     //                       result = [ @builder.rescue_body(val[0],
     //                                       exc_list, assoc_t, exc_var,
     //                                       val[3], val[4]),
@@ -2688,41 +2697,47 @@ impl Parser {
         }
     }
 
-    //    user_variable: tIDENTIFIER
-    //                     {
-    //                       result = @builder.ident(val[0])
-    //                     }
-    //                 | tIVAR
-    //                     {
-    //                       result = @builder.ivar(val[0])
-    //                     }
-    //                 | tGVAR
-    //                     {
-    //                       result = @builder.gvar(val[0])
-    //                     }
-    //                 | tCONSTANT
-    //                     {
-    //                       result = @builder.const(val[0])
-    //                     }
-    //                 | tCVAR
-    //                     {
-    //                       result = @builder.cvar(val[0])
-    //                     }
+
     // TODO INCOMPLETE
     fn p_user_variable(&mut self) -> Option<Node> {
         self.recurse("p_user_variable");
         let p = self.current_p;
 
-        let current_token = self.current_token();
-
-        if let Some(Token::T_IDENTIFIER(t_id_value)) = current_token {
-            self.consume_current_token();
-            self.decurse(); return Some(Node::Ident(t_id_value));
+        match self.current_token() {
+            //    user_variable: tIDENTIFIER
+            //                     {
+            //                       result = @builder.ident(val[0])
+            //                     }
+            Some(Token::T_IDENTIFIER(t_id_value)) => {
+                self.consume_current_token();
+                self.decurse(); return Some(Node::Ident(t_id_value));
+            },
+            //                 | tIVAR
+            //                     {
+            //                       result = @builder.ivar(val[0])
+            //                     }
+            //                 | tGVAR
+            //                     {
+            //                       result = @builder.gvar(val[0])
+            //                     }
+            //                 | tCONSTANT
+            //                     {
+            //                       result = @builder.const(val[0])
+            //                     }
+            Some(Token::T_CONSTANT(_)) => {
+                let t_const = self.consume_current_token();
+                self.decurse(); return Some( node::build_const(t_const) );
+            },
+            //                 | tCVAR
+            //                     {
+            //                       result = @builder.cvar(val[0])
+            //                     }
+            _ => {
+                self.current_p = p;
+                self.decurse();
+                None
+            }
         }
-        self.current_p = p;
-
-        self.decurse();
-        None
     }
 
     // TODO INCOMPLETE

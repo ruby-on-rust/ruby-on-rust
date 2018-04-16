@@ -38,8 +38,10 @@ pub enum Node {
     Const { scope: Option<Box<Node>>, name: String },
     //                        ^ CBase/Lvar
     //             ^ None means unscoped
-
     CBase, // :: in ::Foo
+
+    // Const -> CAsgn
+    CAsgn { scope: Option<Box<Node>>, name: String },
 
     Ident(String),
 
@@ -415,6 +417,16 @@ pub fn accessible(node: Node) -> Node {
 //   n(:const, [ nil, value(name_t).to_sym ],
 //     constant_map(nil, nil, name_t))
 // end
+// NOTE unscoped (scope being None) const
+pub fn build_const(name: Token) -> Node {
+    if let Token::T_CONSTANT(const_name) = name {
+        return Node::Const {
+            scope: None,
+            name: const_name
+        }
+    }
+    panic!("you came too far");
+}
 
 // def const_global(t_colon3, name_t)
 //   cbase = n0(:cbase, token_map(t_colon3))
@@ -437,14 +449,15 @@ pub fn const_global(t_colon3: Token, name: Token ) -> Node {
 //   n(:const, [ scope, value(name_t).to_sym ],
 //     constant_map(scope, t_colon2, name_t))
 // end
-// pub fn const_fetch(scope: Option<Node>, token: Token, name: Token) -> Node {
-//     if let Token::T_CONSTANT(const_name) = name {
-//         return Node::Const {
-//             scope,
-//             const_name
-//         }
-//     }
-// }
+pub fn const_fetch(scope: Node, token: Token, name: Token) -> Node {
+    panic!("WIP");
+    // if let Token::T_CONSTANT(const_name) = name {
+    //     return Node::Const {
+    //         scope,
+    //         const_name
+    //     }
+    // }
+}
 
 // def __ENCODING__(__ENCODING__t)
 //   n0(:__ENCODING__,
@@ -489,14 +502,25 @@ pub fn const_global(t_colon3: Token, name: Token ) -> Node {
 // end
 // TODO INCOMPLETE
 pub fn assignable(node: Node) -> Node {
-    println!("DEBUGGING node::assignable: {:?}", node);
+    // println!("DEBUGGING node::assignable: {:?}", node);
     match node {
-        Node::Ident(ident) => {
-            //     name, = *node
-            //     @parser.static_env.declare(name)
-            // 
-            //     node.updated(:lVasgn)
+        //   when :const
+        //     if @parser.in_def?
+        //       diagnostic :error, :dynamic_const, nil, node.loc.expression
+        //     end
+        // 
+        //     node.updated(:casgn)
+        Node::Const { scope: scope, name: name } => {
+            // TODO handle `in_def?`
+            return Node::CAsgn { scope, name };
+        },
 
+        //   when :ident
+        //     name, = *node
+        //     @parser.static_env.declare(name)
+        // 
+        //     node.updated(:lVasgn)
+        Node::Ident(ident) => {
             // TODO handle appending nodes list
             // TODO handle static_env
             return Node::LVasgn(ident, vec![]);

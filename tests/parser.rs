@@ -901,13 +901,16 @@ fn const_toplevel() {
 //         |   ~~ double_colon
 //         |~~~~~~~~ expression})
 //   end
-// #[test]
-// fn const_scoped() {
-//     assert_parses!(
-//         r"Bar::Foo",
-//         Node::Const { scope: box Node::CBase, name: String::from("Foo") }
-//     );
-// }
+#[test]
+fn const_scoped() {
+    assert_parses!(
+        r"Bar::Foo",
+        Node::Const {
+            scope: Some(box Node::Const { scope: None, name: String::from("Bar") } ),
+            name: String::from("Foo")
+        }
+    );
+}
 
 //   def test_const_unscoped
 //     assert_parses(
