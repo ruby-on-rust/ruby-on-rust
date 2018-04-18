@@ -231,3 +231,11 @@ impl Lexer {
     }
 
 }
+
+impl Iterator for Lexer {
+    type Item = Token;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.advance()
+    }
+}

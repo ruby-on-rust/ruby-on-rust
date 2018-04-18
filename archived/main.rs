@@ -1,6 +1,8 @@
 #![feature(box_syntax, box_patterns)]
+#![feature(use_extern_macros)]
 
 extern crate regex;
+extern crate plex;
 
 use std::io::prelude::*;
 use std::fs::File;

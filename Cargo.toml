@@ -5,3 +5,4 @@ authors = ["Nami.WANG <namiheike@gmail.com>"]
 
 [dependencies]
 regex = "0.2"
+plex = "0.2.1"
