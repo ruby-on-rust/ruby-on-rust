@@ -128,7 +128,9 @@ impl Parser {
         self.recurse("p_program");
         let p = self.current_p;
 
-        if let Some(n_top_compstmt) = self.p_top_compstmt() { self.decurse(); return Some(n_top_compstmt); }
+        if let Some(n_top_compstmt) = self.p_top_compstmt() {
+            self.decurse(); return Some(n_top_compstmt);
+        }
         self.current_p = p;
 
         self.decurse();
@@ -1352,16 +1354,18 @@ impl Parser {
         //             {
         //               result = @builder.const_fetch(val[0], val[1], val[2])
         //             }
-        // TODO WIP NOTE transformed into non-recursive form, since primary_value -> primary
-        if let Some(n_primary_value) = self.p_primary_value() {
-            if let Some(t_colon2) = self.match_1_token(Token::T_COLON2) {
-                if let Some(Token::T_CONSTANT(_)) = self.current_token() {
-                    let t_const = self.consume_current_token();
-                    self.decurse(); return Some( node::const_fetch( n_primary_value, t_colon2, t_const ) );
+        // TODO NOTE HACK dirty-infinite-looping-prevention
+        if !self.recursion_stack.contains(&String::from("p_primary")) {
+            if let Some(n_primary_value) = self.p_primary_value() {
+                if let Some(t_colon2) = self.match_1_token(Token::T_COLON2) {
+                    if let Some(Token::T_CONSTANT(_)) = self.current_token() {
+                        let t_const = self.consume_current_token();
+                        self.decurse(); return Some( node::const_fetch( n_primary_value, t_colon2, t_const ) );
+                    }
                 }
             }
+            self.current_p = p;
         }
-        self.current_p = p;
 
         //         | tCOLON3 tCONSTANT
         //             {
