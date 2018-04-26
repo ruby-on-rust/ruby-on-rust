@@ -1,0 +1,29 @@
+// use lexer::lexing_state::LexingState;
+// use lexer::Lexer;
+use parser::token;
+use ast::node;
+// use ast::node::Node;
+
+grammar;
+
+extern {
+    type Location = usize;
+    // type Error = lexer::LexicalError;
+    type Error = String;
+
+    enum token::Token {
+        T_INTEGER => token::Token::T_INTEGER(<isize>),
+    }
+}
+
+pub Program: node::Node = {
+    // Num => node::Node::Dummy
+    T_INTEGER => node::Node::Dummy
+};
+
+// Num: node::Node = {
+//     // T_INTEGER => { 
+//     //     panic!("WIP");
+//     //     node::Node::Dummy
+//     // }
+// };

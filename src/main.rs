@@ -15,8 +15,12 @@ fn main() {
     let mut file_content = String::new();
     f.read_to_string(&mut file_content).expect("cant read file");
 
-    let mut parser = parser::parser::Parser::new(file_content);
+    let lexer = lexer::Lexer::new(file_content);
+    // let mut parser = parser::parser::Parser::new(file_content);
+    let expr = parser::parser::ProgramParser::new()
+        .parse(lexer)
+        .unwrap();
 
-    let node = parser.parse();
-    println!("====== parser parsed node:\n{:?}", node );
+    // let node = parser.parse();
+    println!("====== parser parsed node:\n{:?}", expr);
 }

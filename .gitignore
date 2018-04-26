@@ -12,3 +12,5 @@
 .DS_Store
 
 /tmp
+
+/src/parser/parser.rs

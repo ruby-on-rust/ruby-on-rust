@@ -231,3 +231,14 @@ impl Lexer {
     }
 
 }
+
+impl Iterator for Lexer {
+    type Item = Result<(usize, Token, usize), String>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let token = self.advance().unwrap();
+
+        // DUMMY
+        Some( Result::Ok( ( 0, token, 0 ) ) )
+    }
+}

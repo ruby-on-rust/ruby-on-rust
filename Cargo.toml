@@ -3,5 +3,9 @@ name = "ruby_on_rust"
 version = "0.0.0"
 authors = ["Nami.WANG <namiheike@gmail.com>"]
 
+[build-dependencies]
+lalrpop = "0.15.1"
+
 [dependencies]
-regex = "0.2"
+regex = "0.2.1"
+lalrpop-util = "0.15.1"
