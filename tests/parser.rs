@@ -1,3 +1,13 @@
+extern crate ruby_on_rust;
+use ruby_on_rust::parser::parser::Parser;
+
+#[test]
+fn it_works() {
+    let mut parser = Parser::new();
+
+    let result = parser.parse("2 + 2 * 2");
+}
+
 // // BASED ON https://github.com/whitequark/parser/blob/2a73841d6da04a5ab9bd270561165fd766722d43/test/test_parser.rb
 
 // #![feature(box_syntax, box_patterns)]
