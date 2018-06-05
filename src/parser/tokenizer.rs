@@ -180,7 +180,7 @@ use parser::token::Token;
 //
 //         let pad = ::std::iter::repeat(" ")
 //             .take(column as usize)
-//             .collect::<String>();
+//             .collect::<String>()ß;
 //
 //         let line_data = format!("\n\n{}\n{}^\n", line_source, pad);
 //
@@ -325,13 +325,13 @@ impl Tokenizer {
     }
 
     pub fn get_next_token(&mut self) -> Token {
-        println!("get_next_token");
+        // println!("get_next_token");
 
         self.count += 1;
 
         let token = match self.count {
             1 => Token {
-                kind: 1,
+                kind: 14,
                 value: "123",
 
                 start_offset: 0,
@@ -342,8 +342,8 @@ impl Tokenizer {
                 end_column: 0,
             },
             2 => Token {
-                kind: 2,
-                value: "$",
+                kind: 15,
+                value: "\n",
 
                 start_offset: 0,
                 end_offset: 0,
@@ -353,7 +353,7 @@ impl Tokenizer {
                 end_column: 0,
             },
             _ => Token {
-                kind: 6,
+                kind: 16,
                 value: "$",
 
                 start_offset: 0,
@@ -365,7 +365,7 @@ impl Tokenizer {
             },
         };
 
-        println!("token: {:?}", token);
+        // println!("token: {:?}", token);
 
         token
     }

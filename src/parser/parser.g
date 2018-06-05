@@ -33,29 +33,20 @@ pub type TResult = Node;
 
 %%
 
-simple_numeric
-    :
-    tINTEGER {
-        || -> Node;
-
-        $$ = Node::Dummy
-    }
-;
-
 //          program: top_compstmt
-// program: top_compstmt;
+program: top_compstmt;
 
 //     top_compstmt: top_stmts opt_terms
 //                     {
 //                       result = @builder.compstmt(val[0])
 //                     }
-// TODO
-// top_compstmt
-//     // : simple_numeric opt_terms {
-//     //     $$ = $1;
-//     // }
-//     : simple_numeric
-// ;
+top_compstmt
+    : top_stmts opt_terms {
+        |$1: Node; $2: Token| -> Node;
+
+        $$ = Node::Dummy;
+    }
+;
 
 //        top_stmts: # nothing
 //                     {
@@ -73,12 +64,28 @@ simple_numeric
 //                     {
 //                       result = [ val[1] ]
 //                     }
+// TODO
+top_stmts
+    // nothing
+    // : {
+    //     panic!
+    // }
+    : top_stmt {
+        |$1: Node| -> Node;
+
+        $$ = Node::Dummy
+    }
+;
 
 //         top_stmt: stmt
 //                 | klBEGIN tLCURLY top_compstmt tRCURLY
 //                     {
 //                       result = @builder.preexe(val[0], val[1], val[2], val[3])
 //                     }
+top_stmt
+    : stmt
+    // | TODO
+;
 
 //         bodystmt: compstmt opt_rescue opt_else opt_ensure
 //                     {
@@ -175,7 +182,7 @@ simple_numeric
 //                       rescue_body = @builder.rescue_body(val[1],
 //                                         nil, nil, nil,
 //                                         nil, val[2])
-
+// 
 //                       result = @builder.begin_body(val[0], [ rescue_body ])
 //                     }
 //                 | klEND tLCURLY compstmt tRCURLY
@@ -197,6 +204,10 @@ simple_numeric
 //                       result = @builder.multi_assign(val[0], val[1], val[2])
 //                     }
 //                 | expr
+// TODO
+stmt
+    : expr
+;
 
 //     command_asgn: lhs tEQL command_rhs
 //                     {
@@ -274,6 +285,10 @@ simple_numeric
 //                       result = @builder.not_op(val[0], nil, val[1], nil)
 //                     }
 //                 | arg
+// TODO
+expr
+    : arg
+;
 
 //       expr_value: expr
 
@@ -759,6 +774,10 @@ simple_numeric
 //                                                 val[2], val[4], val[5])
 //                     }
 //                 | primary
+// TODO
+arg
+    : primary
+;
 
 //            relop: tGT | tLT | tGEQ | tLEQ
 
@@ -906,6 +925,10 @@ simple_numeric
 //                     }
 
 //          primary: literal
+// TODO
+primary
+    : literal
+;
 //                 | strings
 //                 | xstring
 //                 | regexp
@@ -927,7 +950,7 @@ simple_numeric
 //                     bodystmt kEND
 //                     {
 //                       @lexer.cmdarg = val[1]
-
+// 
 //                       result = @builder.begin_keyword(val[0], val[2], val[3])
 //                     }
 //                 | tLPAREN_ARG
@@ -942,7 +965,7 @@ simple_numeric
 //                     rparen
 //                     {
 //                       @lexer.cmdarg = val[1]
-
+// 
 //                       result = @builder.begin(val[0], val[2], val[4])
 //                     }
 //                 | tLPAREN_ARG
@@ -1005,7 +1028,7 @@ simple_numeric
 //                 | fcall brace_block
 //                     {
 //                       method_call = @builder.call_method(nil, nil, val[0])
-
+// 
 //                       begin_t, args, body, end_t = val[1]
 //                       result      = @builder.block(method_call,
 //                                       begin_t, args, body, end_t)
@@ -1020,7 +1043,7 @@ simple_numeric
 //                 | tLAMBDA lambda
 //                     {
 //                       lambda_call = @builder.call_lambda(val[0])
-
+// 
 //                       args, (begin_t, body, end_t) = val[1]
 //                       result      = @builder.block(lambda_call,
 //                                       begin_t, args, body, end_t)
@@ -1068,7 +1091,7 @@ simple_numeric
 //                 | kCASE expr_value opt_terms case_body kEND
 //                     {
 //                       *when_bodies, (else_t, else_body) = *val[3]
-
+// 
 //                       result = @builder.case(val[0], val[1],
 //                                              when_bodies, else_t, else_body,
 //                                              val[4])
@@ -1076,7 +1099,7 @@ simple_numeric
 //                 | kCASE            opt_terms case_body kEND
 //                     {
 //                       *when_bodies, (else_t, else_body) = *val[2]
-
+// 
 //                       result = @builder.case(val[0], nil,
 //                                              when_bodies, else_t, else_body,
 //                                              val[3])
@@ -1118,7 +1141,7 @@ simple_numeric
 //                     {
 //                       result = @def_level
 //                       @def_level = 0
-
+// 
 //                       @static_env.extend_static
 //                       @lexer.push_cmdarg
 //                     }
@@ -1126,10 +1149,10 @@ simple_numeric
 //                     {
 //                       result = @builder.def_sclass(val[0], val[1], val[2],
 //                                                    val[5], val[6])
-
+// 
 //                       @lexer.pop_cmdarg
 //                       @static_env.unextend
-
+// 
 //                       @def_level = val[4]
 //                     }
 //                 | kMODULE cpath
@@ -1142,10 +1165,10 @@ simple_numeric
 //                       if in_def?
 //                         diagnostic :error, :module_in_def, nil, val[0]
 //                       end
-
+// 
 //                       result = @builder.def_module(val[0], val[1],
 //                                                    val[3], val[4])
-
+// 
 //                       @lexer.pop_cmdarg
 //                       @static_env.unextend
 //                     }
@@ -1159,7 +1182,7 @@ simple_numeric
 //                     {
 //                       result = @builder.def_method(val[0], val[1],
 //                                   val[3], val[4], val[5])
-
+// 
 //                       @lexer.pop_cmdarg
 //                       @static_env.unextend
 //                       @def_level -= 1
@@ -1178,7 +1201,7 @@ simple_numeric
 //                     {
 //                       result = @builder.def_singleton(val[0], val[1], val[2],
 //                                   val[4], val[6], val[7], val[8])
-
+// 
 //                       @lexer.pop_cmdarg
 //                       @static_env.unextend
 //                       @def_level -= 1
@@ -1199,6 +1222,7 @@ simple_numeric
 //                     {
 //                       result = @builder.keyword_cmd(:retry, val[0])
 //                     }
+// TODO
 
 //    primary_value: primary
 
@@ -1667,6 +1691,10 @@ simple_numeric
 //          literal: numeric
 //                 | symbol
 //                 | dsym
+// TODO
+literal
+    : numeric
+;
 
 //          strings: string
 //                     {
@@ -1862,20 +1890,29 @@ simple_numeric
 //                         result = @builder.unary_num(val[0], val[1])
 //                       end
 //                     }
+// TODO
+numeric
+    : simple_numeric {
+        |$1: Node| -> Node;
+
+        $$ = Node::Dummy
+    }
+;
 
 //   simple_numeric: tINTEGER
 //                     {
 //                       @lexer.state = :expr_endarg
 //                       result = @builder.integer(val[0])
 //                     }
-// simple_numeric
-//     :
-//     tINTEGER {
-//         |$1: Node| -> Node;
+// TODO
+simple_numeric
+    :
+    tINTEGER {
+        || -> Node;
 
-//         $$ = Node::Dummy;
-//     }
-// ;
+        $$ = Node::Dummy;
+    }
+;
 //                 | tFLOAT
 //                     {
 //                       @lexer.state = :expr_endarg
@@ -2332,9 +2369,10 @@ simple_numeric
 
 //        opt_terms:  | terms
 // TODO
-// opt_terms
-//     : tNL
-// ;
+opt_terms
+// TODO handle nothing
+    : terms
+;
 
 //           opt_nl:  | tNL
 //           rparen: opt_nl tRPAREN
@@ -2352,9 +2390,17 @@ simple_numeric
 //                     yyerrok
 //                   }
 //                 | tNL
+term
+    // TODO tSEMI
+    : tNL
+;
 
 //            terms: term
 //                 | terms tSEMI
+terms
+    : term
+    // TODO
+;
 
 //             none: # nothing
 //                   {
