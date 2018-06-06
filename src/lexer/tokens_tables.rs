@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use parser::token::Token;
+use parser::token::InteriorToken as Token;
 
 // 
 // mapping tables of strings literal -> token

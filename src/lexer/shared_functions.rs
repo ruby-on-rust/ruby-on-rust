@@ -1,7 +1,7 @@
 use lexer::Lexer;
 use lexer::LexingState;
 
-use parser::token::Token;
+use parser::token::InteriorToken as Token;
 
 impl Lexer {
     // def arg_or_cmdarg

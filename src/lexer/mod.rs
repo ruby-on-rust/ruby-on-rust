@@ -8,7 +8,7 @@
 
 use std::collections::HashMap;
 
-use parser::token::Token;
+use parser::token::InteriorToken as Token;
 
 use shared::static_env::StaticEnv;
 

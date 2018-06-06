@@ -6,7 +6,7 @@ use lexer::LexingState;
 use lexer::Lexer;
 use lexer::action::{ActionProc};
 
-use parser::token::Token;
+use parser::token::InteriorToken as Token;
 
 pub type TSharedActions = HashMap<&'static str, ActionProc>;
 

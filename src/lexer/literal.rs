@@ -12,7 +12,7 @@
 
 use lexer::Lexer;
 use lexer::LexingState;
-use parser::token::Token;
+use parser::token::InteriorToken as Token;
 
 #[derive(Debug, Clone)]
 pub struct Literal {

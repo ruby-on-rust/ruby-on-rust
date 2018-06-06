@@ -236,7 +236,7 @@ impl Parser {
         self.states_stack.push(0);
 
         let mut token = self.tokenizer.get_next_token();
-        let mut shifted_token = token;
+        let mut shifted_token = token.clone();
 
         loop {
             let state = *self.states_stack.last().unwrap();
@@ -254,7 +254,7 @@ impl Parser {
                 // Shift a token, go to state.
                 &TE::Shift(next_state) => {
                     // Push token.
-                    self.values_stack.push(SV::_0(token));
+                    self.values_stack.push(SV::_0(token.clone()));
 
                     // Push next state number: "s5" -> 5
                     self.states_stack.push(next_state as usize);

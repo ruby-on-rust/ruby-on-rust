@@ -13,7 +13,7 @@ use lexer::action::{Action};
 use lexer::matching_patterns::TMatchingPatterns;
 use lexer::shared_actions::TSharedActions;
 
-use parser::token::Token;
+use parser::token::InteriorToken as Token;
 
 pub fn construct_machine_expr_cmdarg( patterns: &TMatchingPatterns, shared_actions: &TSharedActions ) -> Vec<Box<Action>> {
     let (pattern_literals, pattern_regexs) = (*patterns).clone();

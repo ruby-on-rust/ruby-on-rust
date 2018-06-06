@@ -9,7 +9,7 @@ use lexer::matching_patterns::TMatchingPatterns;
 use lexer::shared_actions::TSharedActions;
 use lexer::literal::Literal;
 
-use parser::token::Token;
+use parser::token::InteriorToken as Token;
 
 pub fn construct_machine_expr_value( patterns: &TMatchingPatterns, shared_actions: &TSharedActions ) -> Vec<Box<Action>> {
     let (pattern_literals, pattern_regexs) = (*patterns).clone();

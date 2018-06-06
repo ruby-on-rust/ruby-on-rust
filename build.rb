@@ -23,10 +23,42 @@ extern crate lazy_static;
 
 content.gsub! /(^\/\*\*$\n^ \* Generic tokenizer used by the parser in the Syntax tool)(.*)(^\/\/ Parser\.)/m, ''
 
+#
+# since we removed Copy trait from the original Token
+#
+content.gsub! 'let mut shifted_token = token;', 'let mut shifted_token = token.clone();'
+content.gsub! 'self.values_stack.push(SV::_0(token));', 'self.values_stack.push(SV::_0(token.clone()));'
+
 File.open parser_file, "w" do |file|
   file.puts content
 end
 
+
+#
+# tokens map
+#
+# NOTE
+# { "tINTEGER" => 14, "tNL" => 15, "$" => 16 }
+# to
+# { "T_INTEGER" => 14, ... }
+
+original_map_str = File.read('src/parser/parser.rs').scan(/hashmap!\ \{.*\};/).last.delete_prefix('hashmap! ').delete_suffix(';')
+original_map = eval original_map_str
+tokens_map = original_map.transform_keys do |k|
+  case
+  when k.start_with?('t')
+    'T_' + k.delete_prefix('t')
+  when k.start_with?('k')
+    'K_' + k.delete_prefix('k')
+  when k == '$'
+    k
+  end
+end
+
+token_file = 'src/parser/token.rs'
+content = File.read token_file
+content.gsub! /(\/\/\ STARTING\ OF\ TOKENS_MAP)(.*)(\/\/\ END\ OF\ TOKENS_MAP\n)/m, "// STARTING OF TOKENS_MAP\n" + "let tokens_map: HashMap<&str, isize> = hashmap! #{tokens_map.to_s};" + "\n// END OF TOKENS_MAP\n"
+File.open token_file, "w" do |file| file.puts content end
 
 # TODO
 
