@@ -69,9 +69,9 @@ macro_rules! assert_parses {
 // //     assert_parses!
 // // }
 
-// #[test] fn test_true() { assert_parses!("true", Node::True); }
+#[test] fn test_true() { assert_parses!("true", Node::True); }
 
-// #[test] fn test_false() { assert_parses!("false", Node::False); }
+#[test] fn test_false() { assert_parses!("false", Node::False); }
 
 #[test]
 fn int() {

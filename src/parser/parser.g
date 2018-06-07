@@ -2006,7 +2006,6 @@ simple_numeric
 // TODO
 keyword_variable
     : kNIL { || -> Node; $$ = Node::Nil; }
-;
 //                 | kSELF
 //                     {
 //                       result = @builder.self(val[0])
@@ -2015,10 +2014,13 @@ keyword_variable
 //                     {
 //                       result = @builder.true(val[0])
 //                     }
+    | kTRUE { || -> Node; $$ = Node::True; }
 //                 | kFALSE
 //                     {
 //                       result = @builder.false(val[0])
 //                     }
+    | kFALSE { || -> Node; $$ = Node::False; }
+;
 //                 | k__FILE__
 //                     {
 //                       result = @builder.__FILE__(val[0])
