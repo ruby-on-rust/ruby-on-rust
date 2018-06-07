@@ -1909,14 +1909,10 @@ simple_numeric
         // or make a macro
         let $$;
         if let SV::_0(token) = $1 {
-            if let Some(box InteriorToken::T_INTEGER(value)) = token.interior_token {
+            if let box InteriorToken::T_INTEGER(value) = token.interior_token {
                 <REMOVE THIS LET>$$ = Node::Int(value);
-            } else {
-                unreachable!();
-            }
-        } else {
-            unreachable!();
-        }
+            } else { unreachable!(); }
+        } else { unreachable!(); }
     }
 ;
 //                 | tFLOAT

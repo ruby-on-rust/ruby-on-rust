@@ -447,14 +447,10 @@ let mut _1 = self.values_stack.pop().unwrap();
         // or make a macro
         let __;
         if let SV::_0(token) = _1 {
-            if let Some(box InteriorToken::T_INTEGER(value)) = token.interior_token {
+            if let box InteriorToken::T_INTEGER(value) = token.interior_token {
                 __ = Node::Int(value);
-            } else {
-                unreachable!();
-            }
-        } else {
-            unreachable!();
-        };
+            } else { unreachable!(); }
+        } else { unreachable!(); };
 SV::_1(__)
 }
 

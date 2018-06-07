@@ -139,6 +139,10 @@ pub enum InteriorToken {
     T_UMINUS,
     T_UPLUS,
     T_SPACE,
+
+    // NOTE
+    // dummy token, so we dont have to use `interior_token: Option<Token>`
+    T_EOF,
 }
 
 use std::collections::HashMap;
@@ -158,7 +162,7 @@ let tokens_map: HashMap<&str, isize> = hashmap! {"T_INTEGER"=>14, "T_NL"=>15, "$
             kind: *kind as i32,
             value: "",
 
-            interior_token: Some(box self.clone()),
+            interior_token: box self.clone(),
 
             start_offset: 0,
             end_offset: 0,
@@ -176,7 +180,7 @@ pub struct Token {
     pub kind: i32,
     pub value: &'static str,
 
-    pub interior_token: Option<Box<InteriorToken>>,
+    pub interior_token: Box<InteriorToken>,
 
     pub start_offset: i32,
     pub end_offset: i32,
@@ -195,7 +199,7 @@ let tokens_map: HashMap<&str, isize> = hashmap! {"T_INTEGER"=>14, "T_NL"=>15, "$
         kind: *tokens_map.get("$").unwrap() as i32,
         value: "$",
 
-        interior_token: None,
+        interior_token: box InteriorToken::T_EOF,
 
         start_offset: 0,
         end_offset: 0,
