@@ -64,7 +64,7 @@ macro_rules! pop {
  *
  * 0 - encoded non-terminal, 1 - length of RHS to pop from the stack
  */
-static PRODUCTIONS : [[i32; 2]; 17] = [
+static PRODUCTIONS : [[i32; 2]; 20] = [
     [-1, 1],
     [0, 1],
     [1, 2],
@@ -75,13 +75,16 @@ static PRODUCTIONS : [[i32; 2]; 17] = [
     [5, 1],
     [6, 1],
     [7, 1],
+    [7, 1],
     [8, 1],
     [9, 1],
     [10, 1],
-    [11, 0],
     [11, 1],
     [12, 1],
-    [13, 1]
+    [13, 0],
+    [13, 1],
+    [14, 1],
+    [15, 1]
 ];
 
 /**
@@ -110,7 +113,7 @@ lazy_static! {
      * Maps a string name of a token type to its encoded number (the first
      * token number starts after all numbers for non-terminal).
      */
-    static ref TOKENS_MAP: HashMap<&'static str, i32> = hashmap! { "tINTEGER" => 14, "tNL" => 15, "$" => 16 };
+    static ref TOKENS_MAP: HashMap<&'static str, i32> = hashmap! { "tINTEGER" => 16, "kNIL" => 17, "tNL" => 18, "$" => 19 };
 
     /**
      * Parsing table.
@@ -119,23 +122,26 @@ lazy_static! {
      * from an encoded symbol to table entry (TE).
      */
     static ref TABLE: Vec<HashMap<i32, TE>>= vec![
-    hashmap! { 0 => TE::Transit(1), 1 => TE::Transit(2), 2 => TE::Transit(3), 3 => TE::Transit(4), 4 => TE::Transit(5), 5 => TE::Transit(6), 6 => TE::Transit(7), 7 => TE::Transit(8), 8 => TE::Transit(9), 9 => TE::Transit(10), 10 => TE::Transit(11), 14 => TE::Shift(12), 15 => TE::Reduce(3), 16 => TE::Reduce(3) },
-    hashmap! { 16 => TE::Accept },
-    hashmap! { 16 => TE::Reduce(1) },
-    hashmap! { 11 => TE::Transit(13), 12 => TE::Transit(15), 13 => TE::Transit(14), 15 => TE::Shift(16), 16 => TE::Reduce(13) },
-    hashmap! { 15 => TE::Reduce(4), 16 => TE::Reduce(4) },
-    hashmap! { 15 => TE::Reduce(5), 16 => TE::Reduce(5) },
-    hashmap! { 15 => TE::Reduce(6), 16 => TE::Reduce(6) },
-    hashmap! { 15 => TE::Reduce(7), 16 => TE::Reduce(7) },
-    hashmap! { 15 => TE::Reduce(8), 16 => TE::Reduce(8) },
-    hashmap! { 15 => TE::Reduce(9), 16 => TE::Reduce(9) },
-    hashmap! { 15 => TE::Reduce(10), 16 => TE::Reduce(10) },
-    hashmap! { 15 => TE::Reduce(11), 16 => TE::Reduce(11) },
-    hashmap! { 15 => TE::Reduce(12), 16 => TE::Reduce(12) },
-    hashmap! { 16 => TE::Reduce(2) },
-    hashmap! { 16 => TE::Reduce(14) },
-    hashmap! { 16 => TE::Reduce(16) },
-    hashmap! { 16 => TE::Reduce(15) }
+    hashmap! { 0 => TE::Transit(1), 1 => TE::Transit(2), 2 => TE::Transit(3), 3 => TE::Transit(4), 4 => TE::Transit(5), 5 => TE::Transit(6), 6 => TE::Transit(7), 7 => TE::Transit(8), 8 => TE::Transit(9), 9 => TE::Transit(11), 10 => TE::Transit(12), 11 => TE::Transit(14), 12 => TE::Transit(10), 16 => TE::Shift(13), 17 => TE::Shift(15), 18 => TE::Reduce(3), 19 => TE::Reduce(3) },
+    hashmap! { 19 => TE::Accept },
+    hashmap! { 19 => TE::Reduce(1) },
+    hashmap! { 13 => TE::Transit(16), 14 => TE::Transit(18), 15 => TE::Transit(17), 18 => TE::Shift(19), 19 => TE::Reduce(16) },
+    hashmap! { 18 => TE::Reduce(4), 19 => TE::Reduce(4) },
+    hashmap! { 18 => TE::Reduce(5), 19 => TE::Reduce(5) },
+    hashmap! { 18 => TE::Reduce(6), 19 => TE::Reduce(6) },
+    hashmap! { 18 => TE::Reduce(7), 19 => TE::Reduce(7) },
+    hashmap! { 18 => TE::Reduce(8), 19 => TE::Reduce(8) },
+    hashmap! { 18 => TE::Reduce(9), 19 => TE::Reduce(9) },
+    hashmap! { 18 => TE::Reduce(10), 19 => TE::Reduce(10) },
+    hashmap! { 18 => TE::Reduce(11), 19 => TE::Reduce(11) },
+    hashmap! { 18 => TE::Reduce(12), 19 => TE::Reduce(12) },
+    hashmap! { 18 => TE::Reduce(13), 19 => TE::Reduce(13) },
+    hashmap! { 18 => TE::Reduce(15), 19 => TE::Reduce(15) },
+    hashmap! { 18 => TE::Reduce(14), 19 => TE::Reduce(14) },
+    hashmap! { 19 => TE::Reduce(2) },
+    hashmap! { 19 => TE::Reduce(17) },
+    hashmap! { 19 => TE::Reduce(19) },
+    hashmap! { 19 => TE::Reduce(18) }
 ];
 }
 
@@ -190,7 +196,7 @@ pub struct Parser {
     /**
      * Semantic action handlers.
      */
-    handlers: [fn(&mut Parser) -> SV; 17],
+    handlers: [fn(&mut Parser) -> SV; 20],
 }
 
 impl Parser {
@@ -222,7 +228,10 @@ impl Parser {
     Parser::_handler13,
     Parser::_handler14,
     Parser::_handler15,
-    Parser::_handler16
+    Parser::_handler16,
+    Parser::_handler17,
+    Parser::_handler18,
+    Parser::_handler19
 ],
         }
     }
@@ -518,6 +527,18 @@ fn _handler12(&mut self) -> SV {
   // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
+let __ = _1;
+__
+}
+
+
+fn _handler13(&mut self) -> SV {
+
+    println!("   *** PARSER: _handler13");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
+let mut _1 = self.values_stack.pop().unwrap();
+
 // TODO so not proper, open an issue
         // or make a macro
         let __;
@@ -530,9 +551,45 @@ SV::_1(__)
 }
 
 
-fn _handler13(&mut self) -> SV {
+fn _handler14(&mut self) -> SV {
 
-    println!("   *** PARSER: _handler13");
+    println!("   *** PARSER: _handler14");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
+self.values_stack.pop();
+
+let __ = Node::Nil;
+SV::_1(__)
+}
+
+
+fn _handler15(&mut self) -> SV {
+
+    println!("   *** PARSER: _handler15");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
+let mut _1 = pop!(self.values_stack, _1);
+
+// TODO so not proper, open an issue
+        // or make a macro
+        // TODO NOTE
+        // this is a different from the other `so not proper` stuff
+        // note about how to extract values
+        // 
+        // |_1:Node| means a `pop` and `unwrap`, so `_1` is already Node
+        // 
+        let __ = node::accessible(_1);
+        // let __;
+        // if let SV::_1(node) = _1 {
+        //     __ = node::accessible(node);
+        // } else { unreachable!(); };
+SV::_1(__)
+}
+
+
+fn _handler16(&mut self) -> SV {
+
+    println!("   *** PARSER: _handler16");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 // self.values_stack.pop();
@@ -542,9 +599,9 @@ __
 }
 
 
-fn _handler14(&mut self) -> SV {
+fn _handler17(&mut self) -> SV {
 
-    println!("   *** PARSER: _handler14");
+    println!("   *** PARSER: _handler17");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
@@ -554,9 +611,9 @@ __
 }
 
 
-fn _handler15(&mut self) -> SV {
+fn _handler18(&mut self) -> SV {
 
-    println!("   *** PARSER: _handler15");
+    println!("   *** PARSER: _handler18");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
@@ -566,9 +623,9 @@ __
 }
 
 
-fn _handler16(&mut self) -> SV {
+fn _handler19(&mut self) -> SV {
 
-    println!("   *** PARSER: _handler16");
+    println!("   *** PARSER: _handler19");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();

@@ -1,3 +1,46 @@
+// note about extracting values(token/node) in production
+// 
+// example 1
+// 
+// simple_numeric
+//     :
+//     tINTEGER {
+//         || -> Node;
+// 
+//         let $$;
+//         if let SV::_0(token) = $1 {
+//             if let box InteriorToken::T_INTEGER(value) = token.interior_token {
+//                 <REMOVE THIS LET>$$ = Node::Int(value);
+//             } else { unreachable!(); }
+//         } else { unreachable!(); }
+//     }
+// ;
+// 
+// `|| -> Node` means `$1` is unwrapped, so have to do the matching manually
+// 
+// TODO <REMOVE THIS LET> is another issue here
+// 
+// 
+// example 2
+// 
+// var_ref
+//     : keyword_variable {
+//         |$1:Node| -> Node;
+// 
+//         $$ = node::accessible($1);
+//     }
+// ;
+// 
+// `|$1:Node|` means a `pop` and an `unwrap`, so `$1` is already a `Node` unwrapped from `SV`
+// 
+// TODO make macros
+// 
+
+// 
+// TODO there's an issue with empty production, currently we have to comment `pop` lines in those productions manually
+// https://github.com/DmitrySoshnikov/syntax/issues/60
+// 
+
 %right    tBANG tTILDE tUPLUS
 %right    tPOW
 %right    tUNARY_NUM tUMINUS
@@ -933,7 +976,6 @@ arg
 // TODO
 primary
     : literal
-;
 //                 | strings
 //                 | xstring
 //                 | regexp
@@ -942,6 +984,8 @@ primary
 //                 | symbols
 //                 | qsymbols
 //                 | var_ref
+    | var_ref
+;
 //                 | backref
 //                 | tFID
 //                     {
@@ -1910,8 +1954,6 @@ simple_numeric
     tINTEGER {
         || -> Node;
 
-        // TODO so not proper, open an issue
-        // or make a macro
         let $$;
         if let SV::_0(token) = $1 {
             if let box InteriorToken::T_INTEGER(value) = token.interior_token {
@@ -1961,6 +2003,10 @@ simple_numeric
 //                     {
 //                       result = @builder.nil(val[0])
 //                     }
+// TODO
+keyword_variable
+    : kNIL { || -> Node; $$ = Node::Nil; }
+;
 //                 | kSELF
 //                     {
 //                       result = @builder.self(val[0])
@@ -1994,6 +2040,26 @@ simple_numeric
 //                     {
 //                       result = @builder.accessible(val[0])
 //                     }
+// TODO
+var_ref
+    : keyword_variable {
+        |$1:Node| -> Node;
+
+        // TODO so not proper, open an issue
+        // or make a macro
+        // TODO NOTE
+        // this is a different from the other `so not proper` stuff
+        // note about how to extract values
+        // 
+        // |$1:Node| means a `pop` and `unwrap`, so `$1` is already Node
+        // 
+        $$ = node::accessible($1);
+        // let $$;
+        // if let SV::_1(node) = $1 {
+        //     <REMOVE THIS LET>$$ = node::accessible(node);
+        // } else { unreachable!(); }
+    }
+;
 
 //          var_lhs: user_variable
 //                     {

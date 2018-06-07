@@ -46,7 +46,7 @@ macro_rules! assert_parses {
 // //     assert_eq!(node, Node::None);
 // // }
 
-// #[test] fn nil() { assert_parses!("nil", Node::Nil); }
+#[test] fn nil() { assert_parses!("nil", Node::Nil); }
 
 // //   def test_nil_expression
 // //     assert_parses(
