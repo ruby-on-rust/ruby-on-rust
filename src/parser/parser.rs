@@ -7,7 +7,10 @@ use std::collections::HashMap;
 /**
  * Stack value.
  */
+
+#[derive(Debug)]
 enum SV {
+
     Undefined,
     _0(Token),
     _1(Node)
@@ -256,49 +259,72 @@ impl Parser {
 
             match entry {
 
+                
+                // Shift a token, go to state.
+
                 // Shift a token, go to state.
                 &TE::Shift(next_state) => {
+                    println!("");
+                    println!("*** PARSER: SHIFT!");
+                
                     // Push token.
                     self.values_stack.push(SV::_0(token.clone()));
-
+                
                     // Push next state number: "s5" -> 5
                     self.states_stack.push(next_state as usize);
-
+                
                     shifted_token = token;
                     token = self.tokenizer.get_next_token();
+                
+                    println!("*** PARSER: shifted_token: {:?}", shifted_token);
+                    println!("*** PARSER: next token: {:?}", token.value);
+                    println!("*** PARSER: values_stack: {:?}", self.values_stack);
                 },
-
+                
+                
                 // Reduce by production.
-                &TE::Reduce(production_number) => {
-                    let production = PRODUCTIONS[production_number];
 
+                &TE::Reduce(production_number) => {
+                    println!("");
+                    println!("*** PARSER: REDUCE!");
+    
+                    let production = PRODUCTIONS[production_number];
+    
+                    // println!("production: {:?}", production);
+    
                     self.tokenizer.yytext = shifted_token.value;
                     self.tokenizer.yyleng = shifted_token.value.len();
-
+    
                     let mut rhs_length = production[1];
                     while rhs_length > 0 {
                         self.states_stack.pop();
                         rhs_length = rhs_length - 1;
                     }
-
+    
                     // Call the handler, push result onto the stack.
                     let result_value = self.handlers[production_number](self);
 
+                    println!("*** PARSER: handler: {:?}", production_number );
+                    println!("*** PARSER: result_value: {:?}", result_value);
+    
                     let previous_state = *self.states_stack.last().unwrap();
                     let symbol_to_reduce_with = production[0];
-
+    
                     // Then push LHS onto the stack.
                     self.values_stack.push(result_value);
-
+    
                     let next_state = match &TABLE[previous_state][&symbol_to_reduce_with] {
                         &TE::Transit(next_state) => next_state,
                         _ => unreachable!(),
                     };
-
+    
                     self.states_stack.push(next_state);
+
+                    println!("*** PARSER: values_stack: {:?}", self.values_stack);
                 },
 
                 // Accept the string.
+
                 &TE::Accept => {
                     // Pop state number.
                     self.states_stack.pop();
@@ -348,17 +374,25 @@ let __ = _1;
 __
 }
 
+
 fn _handler1(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler1");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler2(&mut self) -> SV {
-// Semantic values prologue.
-let mut _2 = pop!(self.values_stack, _0);
+
+    println!("   *** PARSER: _handler2");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
+self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 // TODO builder.compstmt
@@ -366,16 +400,25 @@ let mut _1 = pop!(self.values_stack, _1);
 SV::_1(__)
 }
 
+
 fn _handler3(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler3");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
-let __ = SV::Undefined;
-__
+// TODO result = []
+        let __ = Node::Dummy;
+SV::_1(__)
 }
 
+
 fn _handler4(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler4");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _1);
 
 // TODO [ val[0] ]
@@ -383,64 +426,96 @@ let mut _1 = pop!(self.values_stack, _1);
 SV::_1(__)
 }
 
+
 fn _handler5(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler5");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler6(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler6");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler7(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler7");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler8(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler8");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler9(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler9");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler10(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler10");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler11(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler11");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler12(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler12");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 // TODO so not proper, open an issue
@@ -454,32 +529,48 @@ let mut _1 = self.values_stack.pop().unwrap();
 SV::_1(__)
 }
 
+
 fn _handler13(&mut self) -> SV {
-// Semantic values prologue.
-self.values_stack.pop();
+
+    println!("   *** PARSER: _handler13");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
+// self.values_stack.pop();
 
 let __ = SV::Undefined;
 __
 }
 
+
 fn _handler14(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler14");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler15(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler15");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler16(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler16");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;

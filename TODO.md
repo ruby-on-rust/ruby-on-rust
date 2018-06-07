@@ -1,3 +1,8 @@
+- parser
+  - https://github.com/DmitrySoshnikov/syntax/issues/60
+
+--- LEGACY BELOW ---
+
 #
 
 - mechanism of ragel

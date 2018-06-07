@@ -75,8 +75,7 @@ macro_rules! assert_parses {
 
 #[test]
 fn int() {
-    // TODO remove \n
-    assert_parses!("42\n", Node::Int(42));
+    assert_parses!("42", Node::Int(42));
     // TODO
     // assert_parses!("+42", Node::Int(42));
     // assert_parses!("-42", Node::Int(-42));

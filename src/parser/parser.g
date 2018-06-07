@@ -43,7 +43,7 @@ program: top_compstmt;
 //                     }
 top_compstmt
     : top_stmts opt_terms {
-        |$1: Node; $2: Token| -> Node;
+        |$1: Node| -> Node;
 
         // TODO builder.compstmt
         $$ = $1
@@ -68,7 +68,12 @@ top_compstmt
 //                     }
 // TODO
 top_stmts
-    : // TODO result = []
+    : {
+        || -> Node;
+
+        // TODO result = []
+        $$ = Node::Dummy
+    }
     | top_stmt {
         |$1: Node| -> Node;
 
@@ -2369,7 +2374,7 @@ simple_numeric
 //                       result = [:anddot, val[0][1]]
 //                     }
 
-opt_terms: | terms ;
+opt_terms:  | terms ;
 
 //           opt_nl:  | tNL
 //           rparen: opt_nl tRPAREN
