@@ -188,7 +188,7 @@ pub struct Token {
 
 pub fn get_an_eof_token() -> Token {
 // STARTING OF TOKENS_MAP
-    let tokens_map: HashMap<&str, isize> = hashmap! {"T_INTEGER"=>14, "T_NL"=>15, "$"=>16};
+let tokens_map: HashMap<&str, isize> = hashmap! {"T_INTEGER"=>14, "T_NL"=>15, "$"=>16};
 // END OF TOKENS_MAP
 
     Token {

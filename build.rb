@@ -57,7 +57,7 @@ end
 
 token_file = 'src/parser/token.rs'
 content = File.read token_file
-content.gsub! /(\/\/\ STARTING\ OF\ TOKENS_MAP)(.*)(\/\/\ END\ OF\ TOKENS_MAP\n)/m, "// STARTING OF TOKENS_MAP\n" + "let tokens_map: HashMap<&str, isize> = hashmap! #{tokens_map.to_s};" + "\n// END OF TOKENS_MAP\n"
+content.gsub! /(\/\/\ STARTING\ OF\ TOKENS_MAP)(.*?)(\/\/\ END\ OF\ TOKENS_MAP\n)/m, "// STARTING OF TOKENS_MAP\n" + "let tokens_map: HashMap<&str, isize> = hashmap! #{tokens_map.to_s};" + "\n// END OF TOKENS_MAP\n"
 File.open token_file, "w" do |file| file.puts content end
 
 # TODO
