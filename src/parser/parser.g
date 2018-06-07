@@ -121,7 +121,7 @@ top_stmts
         |$1: Node| -> Node;
 
         // TODO [ val[0] ]
-        $$ = $1
+        $$ = $1;
     }
 ;
 
@@ -140,11 +140,11 @@ top_stmt
 //                       rescue_bodies     = val[1]
 //                       else_t,   else_   = val[2]
 //                       ensure_t, ensure_ = val[3]
-
+// 
 //                       if rescue_bodies.empty? && !else_.nil?
 //                         diagnostic :warning, :useless_else, nil, else_t
 //                       end
-
+// 
 //                       result = @builder.begin_body(val[0],
 //                                   rescue_bodies,
 //                                   else_t,   else_,
@@ -977,6 +977,7 @@ arg
 primary
     : literal
 //                 | strings
+    | strings
 //                 | xstring
 //                 | regexp
 //                 | words
@@ -1749,6 +1750,14 @@ literal
 //                     {
 //                       result = @builder.string_compose(nil, val[0], nil)
 //                     }
+// TODO
+strings
+    : string {
+        |$1:Node| -> Node;
+
+        $$ = node::string_compose($1);
+    }
+;
 
 //           string: string1
 //                     {
@@ -1758,6 +1767,15 @@ literal
 //                     {
 //                       result = val[0] << val[1]
 //                     }
+// TODO
+string
+    :string1 {
+        |$1:Node| -> Node;
+
+        $$ = Node::Nodes(vec![$1]);
+    }
+    // TODO
+;
 
 //          string1: tSTRING_BEG string_contents tSTRING_END
 //                     {
@@ -1773,6 +1791,21 @@ literal
 //                     {
 //                       result = @builder.character(val[0])
 //                     }
+string1
+    // TODO
+    // : tSTRING_BEG string_contents tSTRING_END {
+    //     |$1:Token, $2:Node, $3:Token| -> Node
+    // }
+    : tSTRING {
+        |$1:Token| -> Node;
+
+        let $$;
+        if let box InteriorToken::T_STRING(string_value) = $1.interior_token {
+            <REMOVE THIS LET>$$ = Node::Str(string_value);
+        } else { unreachable!(); }
+
+    }
+;
 
 //          xstring: tXSTRING_BEG xstring_contents tSTRING_END
 //                     {

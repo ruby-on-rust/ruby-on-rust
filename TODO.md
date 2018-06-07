@@ -1,6 +1,9 @@
 - parser
   - https://github.com/DmitrySoshnikov/syntax/issues/60
 
+- lexer
+  - checkout ragel in spack
+
 --- LEGACY BELOW ---
 
 #

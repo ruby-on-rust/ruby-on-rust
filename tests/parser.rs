@@ -16,11 +16,11 @@ macro_rules! assert_parses {
     };
 }
 
-// macro_rules! n_str {
-//     ($string:expr) => {
-//         Node::Str(String::from($string))
-//     };
-// }
+macro_rules! n_str {
+    ($string:expr) => {
+        Node::Str(String::from($string))
+    };
+}
 
 // macro_rules! n_sym {
 //     ($string:expr) => {
@@ -141,13 +141,14 @@ fn int() {
 // //       SINCE_2_1)
 // //   end
 
-// //   # Strings
+//   # Strings
 
-// #[test]
-// fn string_plain() {
-//     assert_parses!(r"'foobar'", n_str!("foobar"));
-//     assert_parses!(r"%q(foobar)", n_str!("foobar"));
-// }
+#[test]
+fn string_plain() {
+    assert_parses!(r"'foobar'", n_str!("foobar"));
+    // TODO WIP
+    // assert_parses!(r"%q(foobar)", n_str!("foobar"));
+}
 
 // //   def test_string_interp
 // //     assert_parses(
