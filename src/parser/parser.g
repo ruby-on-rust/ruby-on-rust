@@ -23,9 +23,10 @@
 
 %{
 
-use parser::token::Token;
+use parser::token::{ InteriorToken, Token };
 use parser::tokenizer::Tokenizer;
-use parser::node::Node;
+use ast::node;
+use ast::node::Node;
 
 pub type TResult = Node;
 
@@ -44,7 +45,8 @@ top_compstmt
     : top_stmts opt_terms {
         |$1: Node; $2: Token| -> Node;
 
-        $$ = Node::Dummy;
+        // TODO builder.compstmt
+        $$ = $1
     }
 ;
 
@@ -66,14 +68,12 @@ top_compstmt
 //                     }
 // TODO
 top_stmts
-    // nothing
-    // : {
-    //     panic!
-    // }
-    : top_stmt {
+    : // TODO result = []
+    | top_stmt {
         |$1: Node| -> Node;
 
-        $$ = Node::Dummy
+        // TODO [ val[0] ]
+        $$ = $1
     }
 ;
 
@@ -1892,11 +1892,7 @@ literal
 //                     }
 // TODO
 numeric
-    : simple_numeric {
-        |$1: Node| -> Node;
-
-        $$ = Node::Dummy
-    }
+    : simple_numeric
 ;
 
 //   simple_numeric: tINTEGER
@@ -1904,13 +1900,23 @@ numeric
 //                       @lexer.state = :expr_endarg
 //                       result = @builder.integer(val[0])
 //                     }
-// TODO
 simple_numeric
     :
     tINTEGER {
         || -> Node;
 
-        $$ = Node::Dummy;
+        // TODO so not proper, open an issue
+        // or make a macro
+        let $$;
+        if let SV::_0(token) = $1 {
+            if let Some(box InteriorToken::T_INTEGER(value)) = token.interior_token {
+                <REMOVE THIS LET>$$ = Node::Int(value);
+            } else {
+                unreachable!();
+            }
+        } else {
+            unreachable!();
+        }
     }
 ;
 //                 | tFLOAT
@@ -2367,12 +2373,7 @@ simple_numeric
 //                       result = [:anddot, val[0][1]]
 //                     }
 
-//        opt_terms:  | terms
-// TODO
-opt_terms
-// TODO handle nothing
-    : terms
-;
+opt_terms: | terms ;
 
 //           opt_nl:  | tNL
 //           rparen: opt_nl tRPAREN

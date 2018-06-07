@@ -61,10 +61,11 @@ macro_rules! pop {
  *
  * 0 - encoded non-terminal, 1 - length of RHS to pop from the stack
  */
-static PRODUCTIONS : [[i32; 2]; 15] = [
+static PRODUCTIONS : [[i32; 2]; 17] = [
     [-1, 1],
     [0, 1],
     [1, 2],
+    [2, 0],
     [2, 1],
     [3, 1],
     [4, 1],
@@ -74,6 +75,7 @@ static PRODUCTIONS : [[i32; 2]; 15] = [
     [8, 1],
     [9, 1],
     [10, 1],
+    [11, 0],
     [11, 1],
     [12, 1],
     [13, 1]
@@ -114,23 +116,23 @@ lazy_static! {
      * from an encoded symbol to table entry (TE).
      */
     static ref TABLE: Vec<HashMap<i32, TE>>= vec![
-    hashmap! { 0 => TE::Transit(1), 1 => TE::Transit(2), 2 => TE::Transit(3), 3 => TE::Transit(4), 4 => TE::Transit(5), 5 => TE::Transit(6), 6 => TE::Transit(7), 7 => TE::Transit(8), 8 => TE::Transit(9), 9 => TE::Transit(10), 10 => TE::Transit(11), 14 => TE::Shift(12) },
+    hashmap! { 0 => TE::Transit(1), 1 => TE::Transit(2), 2 => TE::Transit(3), 3 => TE::Transit(4), 4 => TE::Transit(5), 5 => TE::Transit(6), 6 => TE::Transit(7), 7 => TE::Transit(8), 8 => TE::Transit(9), 9 => TE::Transit(10), 10 => TE::Transit(11), 14 => TE::Shift(12), 15 => TE::Reduce(3), 16 => TE::Reduce(3) },
     hashmap! { 16 => TE::Accept },
     hashmap! { 16 => TE::Reduce(1) },
-    hashmap! { 11 => TE::Transit(13), 12 => TE::Transit(15), 13 => TE::Transit(14), 15 => TE::Shift(16) },
-    hashmap! { 15 => TE::Reduce(3) },
-    hashmap! { 15 => TE::Reduce(4) },
-    hashmap! { 15 => TE::Reduce(5) },
-    hashmap! { 15 => TE::Reduce(6) },
-    hashmap! { 15 => TE::Reduce(7) },
-    hashmap! { 15 => TE::Reduce(8) },
-    hashmap! { 15 => TE::Reduce(9) },
-    hashmap! { 15 => TE::Reduce(10) },
-    hashmap! { 15 => TE::Reduce(11) },
+    hashmap! { 11 => TE::Transit(13), 12 => TE::Transit(15), 13 => TE::Transit(14), 15 => TE::Shift(16), 16 => TE::Reduce(13) },
+    hashmap! { 15 => TE::Reduce(4), 16 => TE::Reduce(4) },
+    hashmap! { 15 => TE::Reduce(5), 16 => TE::Reduce(5) },
+    hashmap! { 15 => TE::Reduce(6), 16 => TE::Reduce(6) },
+    hashmap! { 15 => TE::Reduce(7), 16 => TE::Reduce(7) },
+    hashmap! { 15 => TE::Reduce(8), 16 => TE::Reduce(8) },
+    hashmap! { 15 => TE::Reduce(9), 16 => TE::Reduce(9) },
+    hashmap! { 15 => TE::Reduce(10), 16 => TE::Reduce(10) },
+    hashmap! { 15 => TE::Reduce(11), 16 => TE::Reduce(11) },
+    hashmap! { 15 => TE::Reduce(12), 16 => TE::Reduce(12) },
     hashmap! { 16 => TE::Reduce(2) },
-    hashmap! { 16 => TE::Reduce(12) },
     hashmap! { 16 => TE::Reduce(14) },
-    hashmap! { 16 => TE::Reduce(13) }
+    hashmap! { 16 => TE::Reduce(16) },
+    hashmap! { 16 => TE::Reduce(15) }
 ];
 }
 
@@ -152,9 +154,10 @@ lazy_static! {
 //   }
 //
 
-use parser::token::Token;
+use parser::token::{ InteriorToken, Token };
 use parser::tokenizer::Tokenizer;
-use parser::node::Node;
+use ast::node;
+use ast::node::Node;
 
 pub type TResult = Node;
 
@@ -184,7 +187,7 @@ pub struct Parser {
     /**
      * Semantic action handlers.
      */
-    handlers: [fn(&mut Parser) -> SV; 15],
+    handlers: [fn(&mut Parser) -> SV; 17],
 }
 
 impl Parser {
@@ -214,7 +217,9 @@ impl Parser {
     Parser::_handler11,
     Parser::_handler12,
     Parser::_handler13,
-    Parser::_handler14
+    Parser::_handler14,
+    Parser::_handler15,
+    Parser::_handler16
 ],
         }
     }
@@ -356,24 +361,26 @@ fn _handler2(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _0);
 let mut _1 = pop!(self.values_stack, _1);
 
-let __ = Node::Dummy;
+// TODO builder.compstmt
+        let __ = _1;
 SV::_1(__)
 }
 
 fn _handler3(&mut self) -> SV {
 // Semantic values prologue.
-let mut _1 = pop!(self.values_stack, _1);
+self.values_stack.pop();
 
-let __ = Node::Dummy;
-SV::_1(__)
+let __ = SV::Undefined;
+__
 }
 
 fn _handler4(&mut self) -> SV {
 // Semantic values prologue.
-let mut _1 = self.values_stack.pop().unwrap();
+let mut _1 = pop!(self.values_stack, _1);
 
-let __ = _1;
-__
+// TODO [ val[0] ]
+        let __ = _1;
+SV::_1(__)
 }
 
 fn _handler5(&mut self) -> SV {
@@ -418,29 +425,48 @@ __
 
 fn _handler10(&mut self) -> SV {
 // Semantic values prologue.
-let mut _1 = pop!(self.values_stack, _1);
+let mut _1 = self.values_stack.pop().unwrap();
 
-let __ = Node::Dummy;
-SV::_1(__)
+let __ = _1;
+__
 }
 
 fn _handler11(&mut self) -> SV {
 // Semantic values prologue.
-self.values_stack.pop();
+let mut _1 = self.values_stack.pop().unwrap();
 
-let __ = Node::Dummy;
-SV::_1(__)
+let __ = _1;
+__
 }
 
 fn _handler12(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
-let __ = _1;
-__
+// TODO so not proper, open an issue
+        // or make a macro
+        let __;
+        if let SV::_0(token) = _1 {
+            if let Some(box InteriorToken::T_INTEGER(value)) = token.interior_token {
+                __ = Node::Int(value);
+            } else {
+                unreachable!();
+            }
+        } else {
+            unreachable!();
+        };
+SV::_1(__)
 }
 
 fn _handler13(&mut self) -> SV {
+// Semantic values prologue.
+self.values_stack.pop();
+
+let __ = SV::Undefined;
+__
+}
+
+fn _handler14(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
@@ -448,7 +474,15 @@ let __ = _1;
 __
 }
 
-fn _handler14(&mut self) -> SV {
+fn _handler15(&mut self) -> SV {
+// Semantic values prologue.
+let mut _1 = self.values_stack.pop().unwrap();
+
+let __ = _1;
+__
+}
+
+fn _handler16(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 

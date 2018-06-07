@@ -8,7 +8,6 @@ extern crate regex;
 #[macro_use] extern crate strum_macros;
 
 mod shared;
-// pub mod ast;
+pub mod ast;
 pub mod lexer;
 pub mod parser;
-// // pub use parser::parser::{Parser, Token};

@@ -29,10 +29,12 @@ content.gsub! /(^\/\*\*$\n^ \* Generic tokenizer used by the parser in the Synta
 content.gsub! 'let mut shifted_token = token;', 'let mut shifted_token = token.clone();'
 content.gsub! 'self.values_stack.push(SV::_0(token));', 'self.values_stack.push(SV::_0(token.clone()));'
 
-File.open parser_file, "w" do |file|
-  file.puts content
-end
+#
+# `let $$ =` -> `$$ =`
+#
+content.gsub! '<REMOVE THIS LET>let ', ''
 
+File.open parser_file, "w" do |file| file.puts content end
 
 #
 # tokens map

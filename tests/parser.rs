@@ -1,31 +1,20 @@
-extern crate ruby_on_rust;
-use ruby_on_rust::parser::parser::Parser;
-
-#[test]
-fn it_works() {
-    let mut parser = Parser::new();
-
-    let result = parser.parse("2\n");
-}
-
 // // BASED ON https://github.com/whitequark/parser/blob/2a73841d6da04a5ab9bd270561165fd766722d43/test/test_parser.rb
 
 // #![feature(box_syntax, box_patterns)]
 
-// extern crate ruby_on_rust;
+extern crate ruby_on_rust;
 
-// use ruby_on_rust::parser::parser::Parser;
-// use ruby_on_rust::ast::node::Node;
+use ruby_on_rust::parser::parser::Parser;
+use ruby_on_rust::ast::node::Node;
 
-// // helpers
-// macro_rules! assert_parses {
-//     ($content:expr, $node:expr) => {
-//         let content = String::from($content);
-//         let mut parser = Parser::new(content);
-//         let node = parser.parse();
-//         assert_eq!(node, $node);
-//     };
-// }
+// helpers
+macro_rules! assert_parses {
+    ($content:expr, $node:expr) => {
+        let mut parser = Parser::new();
+        let node = parser.parse($content);
+        assert_eq!(node, $node);
+    };
+}
 
 // macro_rules! n_str {
 //     ($string:expr) => {
@@ -84,12 +73,14 @@ fn it_works() {
 
 // #[test] fn test_false() { assert_parses!("false", Node::False); }
 
-// #[test]
-// fn int() {
-//     assert_parses!("42", Node::Int(42));
-//     assert_parses!("+42", Node::Int(42));
-//     assert_parses!("-42", Node::Int(-42));
-// }
+#[test]
+fn int() {
+    // TODO remove \n
+    assert_parses!("42\n", Node::Int(42));
+    // TODO
+    // assert_parses!("+42", Node::Int(42));
+    // assert_parses!("-42", Node::Int(-42));
+}
 
 // //   def test_int___LINE__
 // //     assert_parses(
