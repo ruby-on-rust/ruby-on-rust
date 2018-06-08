@@ -224,6 +224,14 @@ pub fn string_compose(parts: Node) -> Node {
 //   n(:array, elements,
 //     collection_map(begin_t, elements, end_t))
 // end
+// TODO INCOMPLETE
+// elements: Node::Nodes
+pub fn array(elements: Node) -> Node {
+    if let Node::Nodes(nodes) = elements {
+        return Node::Array(nodes);
+    }
+    unreachable!();
+}
 
 // def splat(star_t, arg=nil)
 //   if arg.nil?

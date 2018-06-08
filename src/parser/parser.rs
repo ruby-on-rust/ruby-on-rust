@@ -64,7 +64,7 @@ macro_rules! pop {
  *
  * 0 - encoded non-terminal, 1 - length of RHS to pop from the stack
  */
-static PRODUCTIONS : [[i32; 2]; 30] = [
+static PRODUCTIONS : [[i32; 2]; 39] = [
     [-1, 1],
     [0, 1],
     [1, 2],
@@ -75,26 +75,35 @@ static PRODUCTIONS : [[i32; 2]; 30] = [
     [5, 1],
     [6, 1],
     [7, 1],
-    [7, 1],
-    [7, 1],
-    [8, 1],
+    [8, 0],
+    [8, 2],
     [9, 1],
+    [9, 3],
     [10, 1],
-    [11, 3],
+    [10, 1],
+    [10, 1],
+    [10, 3],
     [11, 1],
-    [12, 0],
-    [12, 2],
+    [12, 1],
     [13, 1],
+    [14, 3],
     [14, 1],
-    [15, 1],
-    [16, 1],
-    [16, 1],
+    [15, 0],
+    [15, 2],
     [16, 1],
     [17, 1],
-    [18, 0],
     [18, 1],
     [19, 1],
-    [20, 1]
+    [19, 1],
+    [19, 1],
+    [20, 1],
+    [21, 0],
+    [21, 1],
+    [22, 0],
+    [22, 1],
+    [22, 1],
+    [23, 1],
+    [24, 1]
 ];
 
 /**
@@ -123,7 +132,7 @@ lazy_static! {
      * Maps a string name of a token type to its encoded number (the first
      * token number starts after all numbers for non-terminal).
      */
-    static ref TOKENS_MAP: HashMap<&'static str, i32> = hashmap! { "tSTRING_BEG" => 21, "tSTRING_END" => 22, "tSTRING" => 23, "tSTRING_CONTENT" => 24, "tINTEGER" => 25, "kNIL" => 26, "kTRUE" => 27, "kFALSE" => 28, "tNL" => 29, "$" => 30 };
+    static ref TOKENS_MAP: HashMap<&'static str, i32> = hashmap! { "tCOMMA" => 25, "tLBRACK" => 26, "tRBRACK" => 27, "tSTRING_BEG" => 28, "tSTRING_END" => 29, "tSTRING" => 30, "tSTRING_CONTENT" => 31, "tINTEGER" => 32, "kNIL" => 33, "kTRUE" => 34, "kFALSE" => 35, "tNL" => 36, "$" => 37 };
 
     /**
      * Parsing table.
@@ -132,37 +141,47 @@ lazy_static! {
      * from an encoded symbol to table entry (TE).
      */
     static ref TABLE: Vec<HashMap<i32, TE>>= vec![
-    hashmap! { 0 => TE::Transit(1), 1 => TE::Transit(2), 2 => TE::Transit(3), 3 => TE::Transit(4), 4 => TE::Transit(5), 5 => TE::Transit(6), 6 => TE::Transit(7), 7 => TE::Transit(8), 8 => TE::Transit(9), 9 => TE::Transit(10), 10 => TE::Transit(15), 11 => TE::Transit(16), 14 => TE::Transit(12), 15 => TE::Transit(13), 16 => TE::Transit(19), 17 => TE::Transit(11), 21 => TE::Shift(17), 23 => TE::Shift(18), 25 => TE::Shift(14), 26 => TE::Shift(20), 27 => TE::Shift(21), 28 => TE::Shift(22), 29 => TE::Reduce(3), 30 => TE::Reduce(3) },
-    hashmap! { 30 => TE::Accept },
-    hashmap! { 30 => TE::Reduce(1) },
-    hashmap! { 18 => TE::Transit(23), 19 => TE::Transit(25), 20 => TE::Transit(24), 29 => TE::Shift(26), 30 => TE::Reduce(26) },
-    hashmap! { 29 => TE::Reduce(4), 30 => TE::Reduce(4) },
-    hashmap! { 29 => TE::Reduce(5), 30 => TE::Reduce(5) },
-    hashmap! { 29 => TE::Reduce(6), 30 => TE::Reduce(6) },
-    hashmap! { 29 => TE::Reduce(7), 30 => TE::Reduce(7) },
-    hashmap! { 29 => TE::Reduce(8), 30 => TE::Reduce(8) },
-    hashmap! { 29 => TE::Reduce(9), 30 => TE::Reduce(9) },
-    hashmap! { 29 => TE::Reduce(10), 30 => TE::Reduce(10) },
-    hashmap! { 29 => TE::Reduce(11), 30 => TE::Reduce(11) },
-    hashmap! { 29 => TE::Reduce(12), 30 => TE::Reduce(12) },
-    hashmap! { 29 => TE::Reduce(20), 30 => TE::Reduce(20) },
-    hashmap! { 29 => TE::Reduce(21), 30 => TE::Reduce(21) },
-    hashmap! { 29 => TE::Reduce(13), 30 => TE::Reduce(13) },
-    hashmap! { 29 => TE::Reduce(14), 30 => TE::Reduce(14) },
-    hashmap! { 12 => TE::Transit(27), 22 => TE::Reduce(17), 24 => TE::Reduce(17) },
-    hashmap! { 29 => TE::Reduce(16), 30 => TE::Reduce(16) },
-    hashmap! { 29 => TE::Reduce(25), 30 => TE::Reduce(25) },
-    hashmap! { 29 => TE::Reduce(22), 30 => TE::Reduce(22) },
-    hashmap! { 29 => TE::Reduce(23), 30 => TE::Reduce(23) },
-    hashmap! { 29 => TE::Reduce(24), 30 => TE::Reduce(24) },
-    hashmap! { 30 => TE::Reduce(2) },
-    hashmap! { 30 => TE::Reduce(27) },
-    hashmap! { 30 => TE::Reduce(29) },
-    hashmap! { 30 => TE::Reduce(28) },
-    hashmap! { 13 => TE::Transit(29), 22 => TE::Shift(28), 24 => TE::Shift(30) },
-    hashmap! { 29 => TE::Reduce(15), 30 => TE::Reduce(15) },
-    hashmap! { 22 => TE::Reduce(18), 24 => TE::Reduce(18) },
-    hashmap! { 22 => TE::Reduce(19), 24 => TE::Reduce(19) }
+    hashmap! { 0 => TE::Transit(1), 1 => TE::Transit(2), 2 => TE::Transit(3), 3 => TE::Transit(4), 4 => TE::Transit(5), 5 => TE::Transit(6), 6 => TE::Transit(7), 10 => TE::Transit(8), 11 => TE::Transit(9), 12 => TE::Transit(10), 13 => TE::Transit(16), 14 => TE::Transit(17), 17 => TE::Transit(13), 18 => TE::Transit(14), 19 => TE::Transit(20), 20 => TE::Transit(11), 26 => TE::Shift(12), 28 => TE::Shift(18), 30 => TE::Shift(19), 32 => TE::Shift(15), 33 => TE::Shift(21), 34 => TE::Shift(22), 35 => TE::Shift(23), 36 => TE::Reduce(3), 37 => TE::Reduce(3) },
+    hashmap! { 37 => TE::Accept },
+    hashmap! { 37 => TE::Reduce(1) },
+    hashmap! { 21 => TE::Transit(24), 23 => TE::Transit(26), 24 => TE::Transit(25), 36 => TE::Shift(27), 37 => TE::Reduce(32) },
+    hashmap! { 36 => TE::Reduce(4), 37 => TE::Reduce(4) },
+    hashmap! { 36 => TE::Reduce(5), 37 => TE::Reduce(5) },
+    hashmap! { 36 => TE::Reduce(6), 37 => TE::Reduce(6) },
+    hashmap! { 36 => TE::Reduce(7), 37 => TE::Reduce(7) },
+    hashmap! { 25 => TE::Reduce(8), 27 => TE::Reduce(8), 36 => TE::Reduce(8), 37 => TE::Reduce(8) },
+    hashmap! { 25 => TE::Reduce(14), 27 => TE::Reduce(14), 36 => TE::Reduce(14), 37 => TE::Reduce(14) },
+    hashmap! { 25 => TE::Reduce(15), 27 => TE::Reduce(15), 36 => TE::Reduce(15), 37 => TE::Reduce(15) },
+    hashmap! { 25 => TE::Reduce(16), 27 => TE::Reduce(16), 36 => TE::Reduce(16), 37 => TE::Reduce(16) },
+    hashmap! { 6 => TE::Transit(31), 7 => TE::Transit(30), 8 => TE::Transit(28), 9 => TE::Transit(29), 10 => TE::Transit(8), 11 => TE::Transit(9), 12 => TE::Transit(10), 13 => TE::Transit(16), 14 => TE::Transit(17), 17 => TE::Transit(13), 18 => TE::Transit(14), 19 => TE::Transit(20), 20 => TE::Transit(11), 26 => TE::Shift(12), 27 => TE::Reduce(10), 28 => TE::Shift(18), 30 => TE::Shift(19), 32 => TE::Shift(15), 33 => TE::Shift(21), 34 => TE::Shift(22), 35 => TE::Shift(23) },
+    hashmap! { 25 => TE::Reduce(18), 27 => TE::Reduce(18), 36 => TE::Reduce(18), 37 => TE::Reduce(18) },
+    hashmap! { 25 => TE::Reduce(26), 27 => TE::Reduce(26), 36 => TE::Reduce(26), 37 => TE::Reduce(26) },
+    hashmap! { 25 => TE::Reduce(27), 27 => TE::Reduce(27), 36 => TE::Reduce(27), 37 => TE::Reduce(27) },
+    hashmap! { 25 => TE::Reduce(19), 27 => TE::Reduce(19), 36 => TE::Reduce(19), 37 => TE::Reduce(19) },
+    hashmap! { 25 => TE::Reduce(20), 27 => TE::Reduce(20), 36 => TE::Reduce(20), 37 => TE::Reduce(20) },
+    hashmap! { 15 => TE::Transit(37), 29 => TE::Reduce(23), 31 => TE::Reduce(23) },
+    hashmap! { 25 => TE::Reduce(22), 27 => TE::Reduce(22), 36 => TE::Reduce(22), 37 => TE::Reduce(22) },
+    hashmap! { 25 => TE::Reduce(31), 27 => TE::Reduce(31), 36 => TE::Reduce(31), 37 => TE::Reduce(31) },
+    hashmap! { 25 => TE::Reduce(28), 27 => TE::Reduce(28), 36 => TE::Reduce(28), 37 => TE::Reduce(28) },
+    hashmap! { 25 => TE::Reduce(29), 27 => TE::Reduce(29), 36 => TE::Reduce(29), 37 => TE::Reduce(29) },
+    hashmap! { 25 => TE::Reduce(30), 27 => TE::Reduce(30), 36 => TE::Reduce(30), 37 => TE::Reduce(30) },
+    hashmap! { 37 => TE::Reduce(2) },
+    hashmap! { 37 => TE::Reduce(33) },
+    hashmap! { 37 => TE::Reduce(38) },
+    hashmap! { 37 => TE::Reduce(37) },
+    hashmap! { 27 => TE::Shift(32) },
+    hashmap! { 22 => TE::Transit(33), 25 => TE::Shift(34), 27 => TE::Reduce(34), 36 => TE::Shift(35) },
+    hashmap! { 25 => TE::Reduce(12), 27 => TE::Reduce(12), 36 => TE::Reduce(12) },
+    hashmap! { 25 => TE::Reduce(9), 27 => TE::Reduce(9), 36 => TE::Reduce(9) },
+    hashmap! { 25 => TE::Reduce(17), 27 => TE::Reduce(17), 36 => TE::Reduce(17), 37 => TE::Reduce(17) },
+    hashmap! { 27 => TE::Reduce(11) },
+    hashmap! { 6 => TE::Transit(31), 7 => TE::Transit(36), 10 => TE::Transit(8), 11 => TE::Transit(9), 12 => TE::Transit(10), 13 => TE::Transit(16), 14 => TE::Transit(17), 17 => TE::Transit(13), 18 => TE::Transit(14), 19 => TE::Transit(20), 20 => TE::Transit(11), 26 => TE::Shift(12), 27 => TE::Reduce(36), 28 => TE::Shift(18), 30 => TE::Shift(19), 32 => TE::Shift(15), 33 => TE::Shift(21), 34 => TE::Shift(22), 35 => TE::Shift(23) },
+    hashmap! { 27 => TE::Reduce(35) },
+    hashmap! { 25 => TE::Reduce(13), 27 => TE::Reduce(13), 36 => TE::Reduce(13) },
+    hashmap! { 16 => TE::Transit(39), 29 => TE::Shift(38), 31 => TE::Shift(40) },
+    hashmap! { 25 => TE::Reduce(21), 27 => TE::Reduce(21), 36 => TE::Reduce(21), 37 => TE::Reduce(21) },
+    hashmap! { 29 => TE::Reduce(24), 31 => TE::Reduce(24) },
+    hashmap! { 29 => TE::Reduce(25), 31 => TE::Reduce(25) }
 ];
 }
 
@@ -217,7 +236,7 @@ pub struct Parser {
     /**
      * Semantic action handlers.
      */
-    handlers: [fn(&mut Parser) -> SV; 30],
+    handlers: [fn(&mut Parser) -> SV; 39],
 }
 
 impl Parser {
@@ -262,7 +281,16 @@ impl Parser {
     Parser::_handler26,
     Parser::_handler27,
     Parser::_handler28,
-    Parser::_handler29
+    Parser::_handler29,
+    Parser::_handler30,
+    Parser::_handler31,
+    Parser::_handler32,
+    Parser::_handler33,
+    Parser::_handler34,
+    Parser::_handler35,
+    Parser::_handler36,
+    Parser::_handler37,
+    Parser::_handler38
 ],
         }
     }
@@ -532,10 +560,12 @@ fn _handler10(&mut self) -> SV {
     println!("   *** PARSER: _handler10");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-let mut _1 = self.values_stack.pop().unwrap();
+// //self.values_stack.pop();
 
-let __ = _1;
-__
+
+        // TODO shared macro
+        let __ = Node::Nodes(vec![]);
+SV::_1(__)
 }
 
 
@@ -544,6 +574,7 @@ fn _handler11(&mut self) -> SV {
     println!("   *** PARSER: _handler11");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
+self.values_stack.pop();
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
@@ -556,10 +587,10 @@ fn _handler12(&mut self) -> SV {
     println!("   *** PARSER: _handler12");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-let mut _1 = self.values_stack.pop().unwrap();
+let mut _1 = pop!(self.values_stack, _1);
 
-let __ = _1;
-__
+let __ = Node::Nodes(vec![_1]);
+SV::_1(__)
 }
 
 
@@ -568,9 +599,17 @@ fn _handler13(&mut self) -> SV {
     println!("   *** PARSER: _handler13");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
+let mut _3 = pop!(self.values_stack, _1);
+let mut _2 = pop!(self.values_stack, _0);
 let mut _1 = pop!(self.values_stack, _1);
 
-let __ = node::string_compose(_1);
+// Node::Nodes, , Node
+
+        let __;
+        if let Node::Nodes(mut nodes) = _1 {
+            nodes.push(_3);
+            __ = Node::Nodes(nodes);
+        } else {unreachable!();};
 SV::_1(__)
 }
 
@@ -580,6 +619,80 @@ fn _handler14(&mut self) -> SV {
     println!("   *** PARSER: _handler14");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
+let mut _1 = self.values_stack.pop().unwrap();
+
+let __ = _1;
+__
+}
+
+
+fn _handler15(&mut self) -> SV {
+
+    println!("   *** PARSER: _handler15");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
+let mut _1 = self.values_stack.pop().unwrap();
+
+let __ = _1;
+__
+}
+
+
+fn _handler16(&mut self) -> SV {
+
+    println!("   *** PARSER: _handler16");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
+let mut _1 = self.values_stack.pop().unwrap();
+
+let __ = _1;
+__
+}
+
+
+fn _handler17(&mut self) -> SV {
+
+    println!("   *** PARSER: _handler17");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
+let mut _3 = pop!(self.values_stack, _0);
+let mut _2 = pop!(self.values_stack, _1);
+let mut _1 = pop!(self.values_stack, _0);
+
+let __ = node::array(_2);
+SV::_1(__)
+}
+
+
+fn _handler18(&mut self) -> SV {
+
+    println!("   *** PARSER: _handler18");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
+let mut _1 = self.values_stack.pop().unwrap();
+
+let __ = _1;
+__
+}
+
+
+fn _handler19(&mut self) -> SV {
+
+    println!("   *** PARSER: _handler19");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
+let mut _1 = pop!(self.values_stack, _1);
+
+let __ = node::string_compose(_1);
+SV::_1(__)
+}
+
+
+fn _handler20(&mut self) -> SV {
+
+    println!("   *** PARSER: _handler20");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = Node::Nodes(vec![_1]);
@@ -587,9 +700,9 @@ SV::_1(__)
 }
 
 
-fn _handler15(&mut self) -> SV {
+fn _handler21(&mut self) -> SV {
 
-    println!("   *** PARSER: _handler15");
+    println!("   *** PARSER: _handler21");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _0);
@@ -607,9 +720,9 @@ SV::_1(__)
 }
 
 
-fn _handler16(&mut self) -> SV {
+fn _handler22(&mut self) -> SV {
 
-    println!("   *** PARSER: _handler16");
+    println!("   *** PARSER: _handler22");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _0);
@@ -623,9 +736,9 @@ SV::_1(__)
 }
 
 
-fn _handler17(&mut self) -> SV {
+fn _handler23(&mut self) -> SV {
 
-    println!("   *** PARSER: _handler17");
+    println!("   *** PARSER: _handler23");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 // //self.values_stack.pop();
@@ -636,9 +749,9 @@ SV::_1(__)
 }
 
 
-fn _handler18(&mut self) -> SV {
+fn _handler24(&mut self) -> SV {
 
-    println!("   *** PARSER: _handler18");
+    println!("   *** PARSER: _handler24");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
@@ -656,16 +769,14 @@ SV::_1(__)
 }
 
 
-fn _handler19(&mut self) -> SV {
+fn _handler25(&mut self) -> SV {
 
-    println!("   *** PARSER: _handler19");
+    println!("   *** PARSER: _handler25");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _0);
 
-println!(">>>>>> {:?}", _1);
-        // TODO builder.string_internal
-        let __;
+let __;
         if let box InteriorToken::T_STRING_CONTENT(string_value) = _1.interior_token {
             __ = Node::Str(string_value);
         } else { unreachable!(); };
@@ -673,9 +784,9 @@ SV::_1(__)
 }
 
 
-fn _handler20(&mut self) -> SV {
+fn _handler26(&mut self) -> SV {
 
-    println!("   *** PARSER: _handler20");
+    println!("   *** PARSER: _handler26");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
@@ -685,9 +796,9 @@ __
 }
 
 
-fn _handler21(&mut self) -> SV {
+fn _handler27(&mut self) -> SV {
 
-    println!("   *** PARSER: _handler21");
+    println!("   *** PARSER: _handler27");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
@@ -702,9 +813,9 @@ SV::_1(__)
 }
 
 
-fn _handler22(&mut self) -> SV {
+fn _handler28(&mut self) -> SV {
 
-    println!("   *** PARSER: _handler22");
+    println!("   *** PARSER: _handler28");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 // self.values_stack.pop();
@@ -714,9 +825,9 @@ SV::_1(__)
 }
 
 
-fn _handler23(&mut self) -> SV {
+fn _handler29(&mut self) -> SV {
 
-    println!("   *** PARSER: _handler23");
+    println!("   *** PARSER: _handler29");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 // self.values_stack.pop();
@@ -726,9 +837,9 @@ SV::_1(__)
 }
 
 
-fn _handler24(&mut self) -> SV {
+fn _handler30(&mut self) -> SV {
 
-    println!("   *** PARSER: _handler24");
+    println!("   *** PARSER: _handler30");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 // self.values_stack.pop();
@@ -738,9 +849,9 @@ SV::_1(__)
 }
 
 
-fn _handler25(&mut self) -> SV {
+fn _handler31(&mut self) -> SV {
 
-    println!("   *** PARSER: _handler25");
+    println!("   *** PARSER: _handler31");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _1);
@@ -762,9 +873,9 @@ SV::_1(__)
 }
 
 
-fn _handler26(&mut self) -> SV {
+fn _handler32(&mut self) -> SV {
 
-    println!("   *** PARSER: _handler26");
+    println!("   *** PARSER: _handler32");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 // self.values_stack.pop();
@@ -774,9 +885,9 @@ __
 }
 
 
-fn _handler27(&mut self) -> SV {
+fn _handler33(&mut self) -> SV {
 
-    println!("   *** PARSER: _handler27");
+    println!("   *** PARSER: _handler33");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
@@ -786,9 +897,21 @@ __
 }
 
 
-fn _handler28(&mut self) -> SV {
+fn _handler34(&mut self) -> SV {
 
-    println!("   *** PARSER: _handler28");
+    println!("   *** PARSER: _handler34");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
+// self.values_stack.pop();
+
+let __ = SV::Undefined;
+__
+}
+
+
+fn _handler35(&mut self) -> SV {
+
+    println!("   *** PARSER: _handler35");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
@@ -798,9 +921,33 @@ __
 }
 
 
-fn _handler29(&mut self) -> SV {
+fn _handler36(&mut self) -> SV {
 
-    println!("   *** PARSER: _handler29");
+    println!("   *** PARSER: _handler36");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
+let mut _1 = self.values_stack.pop().unwrap();
+
+let __ = _1;
+__
+}
+
+
+fn _handler37(&mut self) -> SV {
+
+    println!("   *** PARSER: _handler37");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
+let mut _1 = self.values_stack.pop().unwrap();
+
+let __ = _1;
+__
+}
+
+
+fn _handler38(&mut self) -> SV {
+
+    println!("   *** PARSER: _handler38");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();

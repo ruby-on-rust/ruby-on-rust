@@ -839,6 +839,7 @@ arg
 //                     }
 
 //        arg_value: arg
+arg_value: arg;
 
 //        aref_args: none
 //                 | args trailer
@@ -850,6 +851,17 @@ arg
 //                     {
 //                       result = [ @builder.associate(nil, val[0], nil) ]
 //                     }
+// TODO
+aref_args
+    : {
+        <EMPTY PRODUCTION>
+        || -> Node;
+
+        // TODO shared macro
+        $$ = Node::Nodes(vec![]);
+    }
+    | args trailer { $$ = $1; }
+;
 
 //          arg_rhs: arg =tOP_ASGN
 //                 | arg kRESCUE_MOD arg
@@ -952,6 +964,23 @@ arg
 //                     {
 //                       result = val[0] << @builder.splat(val[2], val[3])
 //                     }
+// TODO INCOMPLETE
+args
+    : arg_value {
+        |$1:Node| -> Node;
+        $$ = Node::Nodes(vec![$1]);
+    }
+    | args tCOMMA arg_value {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        // Node::Nodes, , Node
+
+        let $$;
+        if let Node::Nodes(mut nodes) = $1 {
+            nodes.push($3);
+            <REMOVE THIS LET>$$ = Node::Nodes(nodes);
+        } else {unreachable!();}
+    }
+;
 
 //         mrhs_arg: mrhs
 //                     {
@@ -986,7 +1015,6 @@ primary
 //                 | qsymbols
 //                 | var_ref
     | var_ref
-;
 //                 | backref
 //                 | tFID
 //                     {
@@ -1042,6 +1070,12 @@ primary
 //                     {
 //                       result = @builder.array(val[0], val[1], val[2])
 //                     }
+    | tLBRACK aref_args tRBRACK {
+        |$1:Token, $2:Node, $3:Token| -> Node;
+
+        $$ = node::array($2);
+    }
+;
 //                 | tLBRACE assoc_list tRCURLY
 //                     {
 //                       result = @builder.associate(val[0], val[1], val[2])
@@ -2519,15 +2553,19 @@ var_ref
 opt_terms:  | terms ;
 
 //           opt_nl:  | tNL
+
 //           rparen: opt_nl tRPAREN
 //                     {
 //                       result = val[1]
 //                     }
+
 //         rbracket: opt_nl tRBRACK
 //                     {
 //                       result = val[1]
 //                     }
+
 //          trailer:  | tNL | tCOMMA
+trailer:  | tNL | tCOMMA ;
 
 //             term: tSEMI
 //                   {

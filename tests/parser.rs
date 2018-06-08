@@ -509,21 +509,21 @@ fn string_plain() {
 // //       SINCE_1_9)
 // //   end
 
-// //   # Arrays
+//   # Arrays
 
-// //   def test_array_plain
-// //     assert_parses(
-// //       s(:array, s(:int, 1), s(:int, 2)),
-// //       %q{[1, 2]},
-// //       %q{^ begin
-// //         |     ^ end
-// //         |~~~~~~ expression})
-// //   end
-// #[test]
-// fn array_plain() {
-//     assert_parses!(r"[]", Node::Array(vec![]));
-//     assert_parses!(r"[1, 2]", Node::Array(vec![ Node::Int(1), Node::Int(2) ]));
-// }
+//   def test_array_plain
+//     assert_parses(
+//       s(:array, s(:int, 1), s(:int, 2)),
+//       %q{[1, 2]},
+//       %q{^ begin
+//         |     ^ end
+//         |~~~~~~ expression})
+//   end
+#[test]
+fn array_plain() {
+    assert_parses!(r"[]", Node::Array(vec![]));
+    assert_parses!(r"[1, 2]", Node::Array(vec![ Node::Int(1), Node::Int(2) ]));
+}
 
 // //   def test_array_splat
 // //     assert_parses(
