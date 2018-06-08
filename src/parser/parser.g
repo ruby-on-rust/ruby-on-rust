@@ -1780,6 +1780,7 @@ primary
 // TODO
 literal
     : numeric
+    | symbol
 ;
 
 //          strings: string
@@ -2080,6 +2081,14 @@ string_content
 //                       @lexer.state = :expr_endarg
 //                       result = @builder.symbol(val[0])
 //                     }
+symbol
+    : tSYMBOL {
+        |$1:Token| -> Node;
+
+        // TODO lexer.state
+        $$ = node::symbol(*$1.interior_token);
+    }
+;
 
 //             dsym: tSYMBEG xstring_contents tSTRING_END
 //                     {

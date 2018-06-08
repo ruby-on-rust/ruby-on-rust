@@ -22,11 +22,11 @@ macro_rules! n_str {
     };
 }
 
-// macro_rules! n_sym {
-//     ($string:expr) => {
-//         Node::Sym(String::from($string))
-//     };
-// }
+macro_rules! n_sym {
+    ($string:expr) => {
+        Node::Sym(String::from($string))
+    };
+}
 
 // //   #
 // //   # Literals
@@ -400,11 +400,11 @@ fn string_plain() {
 
 // //   # Symbols
 
-// #[test]
-// fn symbol_plain() {
-//     assert_parses!(":foo", n_sym!("foo"));
-//     assert_parses!(":'foo'", n_sym!("foo"));
-// }
+#[test]
+fn symbol_plain() {
+    assert_parses!(":foo", n_sym!("foo"));
+    // TODO assert_parses!(":'foo'", n_sym!("foo"));
+}
 
 // //   def test_symbol_interp
 // //     assert_parses(

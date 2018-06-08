@@ -153,6 +153,16 @@ pub fn string_compose(parts: Node) -> Node {
 //   n(:sym, [ string_value(symbol_t).to_sym ],
 //     prefix_string_map(symbol_t))
 // end
+// TODO INCOMPLETE
+pub fn symbol(symbol_t: Token) -> Node {
+    // symbol_t: Token:T_SYMBOL
+
+    if let Token::T_SYMBOL(symbol_string) = symbol_t {
+        return Node::Sym(symbol_string);
+    }
+
+    unreachable!();
+}
 
 // def symbol_internal(symbol_t)
 //   n(:sym, [ string_value(symbol_t).to_sym ],
