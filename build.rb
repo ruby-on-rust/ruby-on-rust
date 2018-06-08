@@ -5,7 +5,8 @@ puts "invoking generator..."
 puts "validating grammar..."
 puts `syntax-cli -g src/parser/parser.g -m LALR1 --validate`
 
-puts `syntax-cli -g src/parser/parser.g -m lalr1 -t -s first`
+puts table = `syntax-cli -g src/parser/parser.g -m lalr1 -t -s first`
+File.write './src/parser/table', table
 
 puts `syntax-cli -g src/parser/parser.g -m LALR1 -o src/parser/parser.rs`
 

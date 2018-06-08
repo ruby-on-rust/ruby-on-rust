@@ -58,14 +58,14 @@ pub enum Node {
 // def unary_num(unary_t, numeric)
 //   value, = *numeric
 //   operator_loc = loc(unary_t)
-
+// 
 //   case value(unary_t)
 //   when '+'
 //     value = +value
 //   when '-'
 //     value = -value
 //   end
-
+// 
 //   numeric.updated(nil, [ value ],
 //     :location =>
 //       Source::Map::Operator.new(

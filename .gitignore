@@ -12,3 +12,5 @@
 .DS_Store
 
 /tmp
+
+/src/parser/table
