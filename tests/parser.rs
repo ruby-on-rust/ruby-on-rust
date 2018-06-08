@@ -145,9 +145,9 @@ fn int() {
 
 #[test]
 fn string_plain() {
-    assert_parses!(r"'foobar'", n_str!("foobar"));
-    // TODO WIP
-    // assert_parses!(r"%q(foobar)", n_str!("foobar"));
+    // TODO
+    // assert_parses!(r"'foobar'", n_str!("foobar"));
+    assert_parses!(r"%q(foobar)", n_str!("foobar"));
 }
 
 // //   def test_string_interp

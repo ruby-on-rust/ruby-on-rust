@@ -107,6 +107,32 @@ content.gsub! /(\/\/ Reduce by production\.)(.*)(\/\/ Accept the string\.)/m, %q
                 // Accept the string.
 ]
 
+# 
+# an issue about empty production handler
+# remove pop in those handlers
+# 
+
+# fn _handler26(&mut self) -> SV {
+# // Semantic values prologue.
+# self.values_stack.pop();
+
+
+(1..99).each do |i|
+  content.gsub! %Q[fn _handler#{i}(&mut self) -> SV {
+// Semantic values prologue.
+self.values_stack.pop();
+
+], %Q[fn _handler#{i}(&mut self) -> SV {
+// Semantic values prologue.
+// self.values_stack.pop();
+
+]
+end
+content.gsub! %q[self.values_stack.pop();
+
+<EMPTY PRODUCTION>], %q[//self.values_stack.pop();
+]
+
 #
 # since we removed Copy trait from the original Token
 #

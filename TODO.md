@@ -1,5 +1,6 @@
 - parser
   - https://github.com/DmitrySoshnikov/syntax/issues/60
+    - after resolve: remove related code in build.rb
 
 - lexer
   - checkout ragel in spack

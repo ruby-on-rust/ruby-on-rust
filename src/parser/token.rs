@@ -152,7 +152,7 @@ impl InteriorToken {
         // TODO
 
 // STARTING OF TOKENS_MAP
-let tokens_map: HashMap<&str, isize> = hashmap! {"T_STRING"=>19, "T_INTEGER"=>20, "K_NIL"=>21, "K_TRUE"=>22, "K_FALSE"=>23, "T_NL"=>24, "$"=>25};
+let tokens_map: HashMap<&str, isize> = hashmap! {"T_STRING_BEG"=>21, "T_STRING_END"=>22, "T_STRING"=>23, "T_STRING_CONTENT"=>24, "T_INTEGER"=>25, "K_NIL"=>26, "K_TRUE"=>27, "K_FALSE"=>28, "T_NL"=>29, "$"=>30};
 // END OF TOKENS_MAP
 
         let token_variant = self.as_ref();
@@ -192,7 +192,7 @@ pub struct Token {
 
 pub fn get_an_eof_token() -> Token {
 // STARTING OF TOKENS_MAP
-let tokens_map: HashMap<&str, isize> = hashmap! {"T_STRING"=>19, "T_INTEGER"=>20, "K_NIL"=>21, "K_TRUE"=>22, "K_FALSE"=>23, "T_NL"=>24, "$"=>25};
+let tokens_map: HashMap<&str, isize> = hashmap! {"T_STRING_BEG"=>21, "T_STRING_END"=>22, "T_STRING"=>23, "T_STRING_CONTENT"=>24, "T_INTEGER"=>25, "K_NIL"=>26, "K_TRUE"=>27, "K_FALSE"=>28, "T_NL"=>29, "$"=>30};
 // END OF TOKENS_MAP
 
     Token {

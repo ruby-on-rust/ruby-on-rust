@@ -1791,19 +1791,27 @@ string
 //                     {
 //                       result = @builder.character(val[0])
 //                     }
+// TODO
 string1
-    // TODO
-    // : tSTRING_BEG string_contents tSTRING_END {
-    //     |$1:Token, $2:Node, $3:Token| -> Node
-    // }
-    : tSTRING {
+    : tSTRING_BEG string_contents tSTRING_END {
+        |$1:Token, $2:Node, $3:Token| -> Node;
+
+        $$ = node::string_compose($2);
+        // TODO dedent_string
+
+        // let $$;
+        // if let Node::Nodes(n_strs) = $2 {
+        //     <REMOVE THIS LET>$$ = node::string_compose
+        // } else { unreachable!(); }
+    }
+    | tSTRING {
         |$1:Token| -> Node;
 
         let $$;
         if let box InteriorToken::T_STRING(string_value) = $1.interior_token {
             <REMOVE THIS LET>$$ = Node::Str(string_value);
         } else { unreachable!(); }
-
+        // TODO builder.dedent_string
     }
 ;
 
@@ -1892,6 +1900,28 @@ string1
 //                     {
 //                       result = val[0] << val[1]
 //                     }
+// TODO
+string_contents
+    : {
+        <EMPTY PRODUCTION>
+
+        || -> Node;
+
+        $$ = Node::Nodes(vec![]);
+    }
+    | string_contents string_content {
+        |$1:Node, $2:Node| -> Node;
+
+        // string_contents: Node::Nodes
+        // string_content: Node::Str
+
+        let $$;
+        if let Node::Nodes(mut n_strs) = $1 {
+            n_strs.push($2);
+            <REMOVE THIS LET>$$ = Node::Nodes(n_strs);
+        } else { unreachable!(); }
+    }
+;
 
 // xstring_contents: # nothing
 //                     {
@@ -1928,9 +1958,20 @@ string1
 //                     {
 //                       @lexer.cond.lexpop
 //                       @lexer.cmdarg.lexpop
-
+// 
 //                       result = @builder.begin(val[0], val[2], val[3])
 //                     }
+// TODO
+string_content
+    : tSTRING_CONTENT {
+        |$1:Token| -> Node;
+
+        let $$;
+        if let box InteriorToken::T_STRING_CONTENT(string_value) = $1.interior_token {
+            <REMOVE THIS LET>$$ = Node::Str(string_value);
+        } else { unreachable!(); } 
+    }
+;
 
 //      string_dvar: tGVAR
 //                     {
