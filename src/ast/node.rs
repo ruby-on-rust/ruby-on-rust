@@ -23,6 +23,7 @@ pub enum Node {
     DStr(Vec<Node>),
 
     Sym(String),
+    DSym(Vec<Node>),
 
     Array(Vec<Node>),
 
@@ -182,6 +183,17 @@ pub fn symbol(symbol_t: Token) -> Node {
 //       collection_map(begin_t, parts, end_t))
 //   end
 // end
+// TODO INCOMPLETE
+pub fn symbol_compose(parts: Node) -> Node {
+    // parts: Node::Nodes<Node::Str>
+
+    // TODO collapse_string_parts
+    if let Node::Nodes(nodes) = parts {
+        return Node::DSym(nodes);
+    }
+
+    unreachable!();
+}
 
 // # Executable strings
 

@@ -402,11 +402,11 @@ fn string_plain() {
 
 #[test]
 fn symbol_plain() {
-    assert_parses!(":foo", n_sym!("foo"));
-    // TODO assert_parses!(":'foo'", n_sym!("foo"));
+    // assert_parses!(":foo", n_sym!("foo"));
+    assert_parses!(":'foo'", n_sym!("foo"));
 }
 
-// //   def test_symbol_interp
+// //   def test_symbol_interpa
 // //     assert_parses(
 // //       s(:dsym,
 // //         s(:str, 'foo'),

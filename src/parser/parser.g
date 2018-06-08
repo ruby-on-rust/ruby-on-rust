@@ -310,7 +310,7 @@ stmt
 //                       rescue_body = @builder.rescue_body(val[1],
 //                                         nil, nil, nil,
 //                                         nil, val[2])
-
+// 
 //                       result = @builder.begin_body(val[0], [ rescue_body ])
 //                     }
 //                 | command_asgn
@@ -1777,10 +1777,10 @@ primary
 //          literal: numeric
 //                 | symbol
 //                 | dsym
-// TODO
 literal
     : numeric
     | symbol
+    | dsym
 ;
 
 //          strings: string
@@ -2019,6 +2019,21 @@ string_contents
 //                     {
 //                       result = val[0] << val[1]
 //                     }
+xstring_contents
+    : {
+        <EMPTY PRODUCTION>
+        || -> Node;
+        $$ = Node::Nodes(vec![]);
+    }
+    | xstring_contents string_content {
+        |$1:Node, $2:Node| -> Node;
+        let $$;
+        if let Node::Nodes(mut nodes) = $1 {
+            nodes.push($2);
+            <REMOVE THIS LET>$$ = Node::Nodes(nodes);
+        } else { unreachable!(); }
+    }
+;
 
 // regexp_contents: # nothing
 //                     {
@@ -2095,6 +2110,14 @@ symbol
 //                       @lexer.state = :expr_endarg
 //                       result = @builder.symbol_compose(val[0], val[1], val[2])
 //                     }
+dsym
+    : tSYMBEG xstring_contents tSTRING_END {
+        |$1:Token, $2:Node, $3:Token| -> Node;
+
+        // TODO lexer.state
+        $$ = node::symbol_compose($2);
+    }
+;
 
 //          numeric: simple_numeric
 //                     {
