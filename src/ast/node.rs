@@ -100,6 +100,15 @@ pub fn unary_num(t_unary: Token, n_simple_numeric: Node) -> Node {
 //     unquoted_map(string_t))
 // end
 
+// TODO INCOMPLETE
+// string_t: Token::T_STRING_CONTENT
+pub fn string_internal(string_t: Token) -> Node {
+    if let Token::T_STRING_CONTENT(string_value) = string_t {
+        return Node::Str(string_value);
+    }
+    unreachable!();
+}
+
 // def string_compose(begin_t, parts, end_t)
 //   if collapse_string_parts?(parts)
 //     if begin_t.nil? && end_t.nil?
@@ -256,6 +265,12 @@ pub fn array(elements: Node) -> Node {
 //   n(:array, [ *parts ],
 //     collection_map(begin_t, parts, end_t))
 // end
+pub fn words_compose(parts: Node) -> Node {
+    // part: Node::Nodes
+    // 
+    if let Node::Nodes(nodes) = parts { return Node::Array(nodes); }
+    unreachable!();
+}
 
 // def symbols_compose(begin_t, parts, end_t)
 //   parts = parts.map do |part|

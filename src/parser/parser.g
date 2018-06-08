@@ -1010,7 +1010,9 @@ primary
 //                 | xstring
 //                 | regexp
 //                 | words
+    | words
 //                 | qwords
+    | qwords
 //                 | symbols
 //                 | qsymbols
 //                 | var_ref
@@ -1832,11 +1834,6 @@ string1
 
         $$ = node::string_compose($2);
         // TODO dedent_string
-
-        // let $$;
-        // if let Node::Nodes(n_strs) = $2 {
-        //     <REMOVE THIS LET>$$ = node::string_compose
-        // } else { unreachable!(); }
     }
     | tSTRING {
         |$1:Token| -> Node;
@@ -1865,6 +1862,13 @@ string1
 //                     {
 //                       result = @builder.words_compose(val[0], val[1], val[2])
 //                     }
+words
+    : tWORDS_BEG word_list tSTRING_END {
+        |$2:Node| -> Node;
+
+        $$ = node::words_compose($2);
+    }
+;
 
 //        word_list: # nothing
 //                     {
@@ -1874,6 +1878,21 @@ string1
 //                     {
 //                       result = val[0] << @builder.word(val[1])
 //                     }
+word_list
+    : {
+        <EMPTY PRODUCTION>
+        || -> Node;
+        $$ = Node::Nodes(vec![]);
+    }
+    | word_list word tSPACE {
+        |$1:Node, $2:Node, $3:Token| -> Node;
+        let $$;
+        if let Node::Nodes(mut nodes) = $1 {
+            nodes.push($2);
+            <REMOVE THIS LET>$$ = Node::Nodes(nodes);
+        } else {unreachable!();}
+    }
+;
 
 //             word: string_content
 //                     {
@@ -1883,6 +1902,20 @@ string1
 //                     {
 //                       result = val[0] << val[1]
 //                     }
+word
+    : string_content {
+        |$1:Node| -> Node;
+        $$ = Node::Nodes(vec![$1]);
+    }
+    | word string_content {
+        |$1:Node, $2:Node| -> Node;
+        let $$;
+        if let Node::Nodes(mut nodes) = $1 {
+            nodes.push($2);
+            <REMOVE THIS LET>$$ = Node::Nodes(nodes);
+        } else { unreachable!(); }
+    }
+;
 
 //          symbols: tSYMBOLS_BEG symbol_list tSTRING_END
 //                     {
@@ -1902,6 +1935,11 @@ string1
 //                     {
 //                       result = @builder.words_compose(val[0], val[1], val[2])
 //                     }
+qwords: tQWORDS_BEG qword_list tSTRING_END {
+    |$2:Node| -> Node;
+
+    $$ = node::words_compose($2);
+};
 
 //         qsymbols: tQSYMBOLS_BEG qsym_list tSTRING_END
 //                     {
@@ -1916,6 +1954,21 @@ string1
 //                     {
 //                       result = val[0] << @builder.string_internal(val[1])
 //                     }
+qword_list
+    : {
+        <EMPTY PRODUCTION>
+        || -> Node;
+        $$ = Node::Nodes(vec![]);
+    }
+    | qword_list tSTRING_CONTENT tSPACE {
+        |$1:Node, $2:Token, $3:Token| -> Node;
+        let $$;
+        if let Node::Nodes(mut nodes) = $1 {
+            nodes.push(node::string_internal(*$2.interior_token));
+            <REMOVE THIS LET>$$ = Node::Nodes(nodes);
+        } else {unreachable!();}
+    }
+;
 
 //        qsym_list: # nothing
 //                     {

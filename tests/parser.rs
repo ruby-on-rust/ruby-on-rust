@@ -574,18 +574,18 @@ fn array_plain() {
 // //       SINCE_1_9)
 // //   end
 
-// #[test]
-// fn array_words() {
-//     assert_parses!(
-//         r"%w[foo bar]",
-//         Node::Array( vec![ n_str!("foo"), n_str!("bar") ] )
-//     );
+#[test]
+fn array_words() {
+    assert_parses!(
+        r"%w[foo bar]",
+        Node::Array( vec![ n_str!("foo"), n_str!("bar") ] )
+    );
 
-//     assert_parses!(
-//         r"%w(foo bar)",
-//         Node::Array( vec![ n_str!("foo"), n_str!("bar") ] )
-//     );
-// }
+    assert_parses!(
+        r"%w(foo bar)",
+        Node::Array( vec![ n_str!("foo"), n_str!("bar") ] )
+    );
+}
 
 // //   def test_array_words_interp
 // //     assert_parses(
@@ -612,18 +612,18 @@ fn array_plain() {
 // //       %q{%W[foo #{bar}foo#@baz]})
 // //   end
 
-// #[test]
-// fn array_words_empty() {
-//     assert_parses!(
-//         r"%w[]",
-//         Node::Array(vec![])
-//     );
+#[test]
+fn array_words_empty() {
+    assert_parses!(
+        r"%w[]",
+        Node::Array(vec![])
+    );
 
-//     assert_parses!(
-//         r"%W[]",
-//         Node::Array(vec![])
-//     );
-// }
+    assert_parses!(
+        r"%W[]",
+        Node::Array(vec![])
+    );
+}
 
 // //   def test_array_symbols
 // //     assert_parses(
