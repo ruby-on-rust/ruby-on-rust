@@ -830,14 +830,14 @@ fn test_self() { assert_parses!("self", Node::NSelf); }
 #[test]
 fn lvar() { assert_parses!("foo", Node::LVar(String::from("foo"))); }
 
-// //   def test_ivar
-// //     assert_parses(
-// //       s(:ivar, :@foo),
-// //       %q{@foo},
-// //       %q{~~~~ expression})
-// //   end
-// // #[test]
-// // fn ivar() {  }
+//   def test_ivar
+//     assert_parses(
+//       s(:ivar, :@foo),
+//       %q{@foo},
+//       %q{~~~~ expression})
+//   end
+#[test]
+fn ivar() { assert_parses!("@foo", Node::IVar(String::from("foo"))); }
 
 // //   def test_cvar
 // //     assert_parses(

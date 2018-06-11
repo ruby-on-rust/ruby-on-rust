@@ -2198,6 +2198,11 @@ user_variable
 
         $$ = node::ident(*$1.interior_token);
     }
+    | tIVAR {
+        |$1:Token| -> Node;
+
+        $$ = node::ivar(*$1.interior_token);
+    }
 ;
 
 // keyword_variable: kNIL

@@ -33,8 +33,7 @@ pub enum Node {
     NSelf,
 
     LVar(String),
-
-    // IVar TODO
+    IVar(String),
 
     Const { scope: Option<Box<Node>>, name: String },
     //                        ^ CBase/Lvar
@@ -404,6 +403,15 @@ pub fn ident(token: Token) -> Node {
 //   n(:ivar, [ value(token).to_sym ],
 //     variable_map(token))
 // end
+pub fn ivar(token: Token) -> Node {
+    // token: Token::T_IVAR
+
+    if let Token::T_IVAR(var_str) = token {
+        // TODO variable_map
+        return Node::IVar(var_str);
+    }
+    unreachable!();
+}
 
 // def gvar(token)
 //   n(:gvar, [ value(token).to_sym ],
