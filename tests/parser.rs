@@ -821,14 +821,14 @@ fn array_words_empty() {
 #[test]
 fn test_self() { assert_parses!("self", Node::NSelf); }
 
-// //   def test_lvar
-// //     assert_parses(
-// //       s(:lvar, :foo),
-// //       %q{foo},
-// //       %q{~~~ expression})
-// //   end
-// #[test]
-// fn lvar() { assert_parses!("foo", Node::LVar(String::from("foo"))); }
+//   def test_lvar
+//     assert_parses(
+//       s(:lvar, :foo),
+//       %q{foo},
+//       %q{~~~ expression})
+//   end
+#[test]
+fn lvar() { assert_parses!("foo", Node::LVar(String::from("foo"))); }
 
 // //   def test_ivar
 // //     assert_parses(

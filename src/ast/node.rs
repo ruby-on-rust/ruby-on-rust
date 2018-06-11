@@ -390,6 +390,15 @@ pub fn words_compose(parts: Node) -> Node {
 //   n(:ident, [ value(token).to_sym ],
 //     variable_map(token))
 // end
+pub fn ident(token: Token) -> Node {
+    // token: Token::T_IDENTIFIER
+
+    if let Token::T_IDENTIFIER(id) = token {
+        // TODO variable_map
+        return Node::Ident(id);
+    }
+    unreachable!();
+}
 
 // def ivar(token)
 //   n(:ivar, [ value(token).to_sym ],

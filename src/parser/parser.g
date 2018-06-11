@@ -2191,6 +2191,14 @@ simple_numeric
 //                     {
 //                       result = @builder.cvar(val[0])
 //                     }
+// TODO
+user_variable
+    : tIDENTIFIER {
+        |$1:Token| -> Node;
+
+        $$ = node::ident(*$1.interior_token);
+    }
+;
 
 // keyword_variable: kNIL
 //                     {
@@ -2198,21 +2206,25 @@ simple_numeric
 //                     }
 // TODO
 keyword_variable
+    // TODO builder.nil
     : kNIL { || -> Node; $$ = Node::Nil; }
 //                 | kSELF
 //                     {
 //                       result = @builder.self(val[0])
 //                     }
+    // TODO builder.self
     | kSELF { || -> Node; $$ = Node::NSelf; }
 //                 | kTRUE
 //                     {
 //                       result = @builder.true(val[0])
 //                     }
+    // TODO builder.true
     | kTRUE { || -> Node; $$ = Node::True; }
 //                 | kFALSE
 //                     {
 //                       result = @builder.false(val[0])
 //                     }
+    // TODO builder.false
     | kFALSE { || -> Node; $$ = Node::False; }
 ;
 //                 | k__FILE__
@@ -2236,24 +2248,14 @@ keyword_variable
 //                     {
 //                       result = @builder.accessible(val[0])
 //                     }
-// TODO
 var_ref
-    : keyword_variable {
+    : user_variable {
         |$1:Node| -> Node;
-
-        // TODO so not proper, open an issue
-        // or make a macro
-        // TODO NOTE
-        // this is a different from the other `so not proper` stuff
-        // note about how to extract values
-        // 
-        // |$1:Node| means a `pop` and `unwrap`, so `$1` is already Node
-        // 
         $$ = node::accessible($1);
-        // let $$;
-        // if let SV::_1(node) = $1 {
-        //     <REMOVE THIS LET>$$ = node::accessible(node);
-        // } else { unreachable!(); }
+    }
+    | keyword_variable {
+        |$1:Node| -> Node;
+        $$ = node::accessible($1);
     }
 ;
 
