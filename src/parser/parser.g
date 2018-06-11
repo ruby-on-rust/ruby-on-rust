@@ -2203,6 +2203,7 @@ keyword_variable
 //                     {
 //                       result = @builder.self(val[0])
 //                     }
+    | kSELF { || -> Node; $$ = Node::NSelf; }
 //                 | kTRUE
 //                     {
 //                       result = @builder.true(val[0])

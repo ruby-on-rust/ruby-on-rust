@@ -64,7 +64,7 @@ macro_rules! pop {
  *
  * 0 - encoded non-terminal, 1 - length of RHS to pop from the stack
  */
-static PRODUCTIONS : [[i32; 2]; 55] = [
+static PRODUCTIONS : [[i32; 2]; 56] = [
     [-1, 1],
     [0, 1],
     [1, 2],
@@ -112,6 +112,7 @@ static PRODUCTIONS : [[i32; 2]; 55] = [
     [27, 1],
     [27, 1],
     [27, 1],
+    [27, 1],
     [28, 1],
     [29, 0],
     [29, 1],
@@ -148,7 +149,7 @@ lazy_static! {
      * Maps a string name of a token type to its encoded number (the first
      * token number starts after all numbers for non-terminal).
      */
-    static ref TOKENS_MAP: HashMap<&'static str, i32> = hashmap! { "tCOMMA" => 33, "tLBRACK" => 34, "tRBRACK" => 35, "tSTRING_BEG" => 36, "tSTRING_END" => 37, "tSTRING" => 38, "tWORDS_BEG" => 39, "tSPACE" => 40, "tQWORDS_BEG" => 41, "tSTRING_CONTENT" => 42, "tSYMBOL" => 43, "tSYMBEG" => 44, "tINTEGER" => 45, "kNIL" => 46, "kTRUE" => 47, "kFALSE" => 48, "tNL" => 49, "$" => 50 };
+    static ref TOKENS_MAP: HashMap<&'static str, i32> = hashmap! { "tCOMMA" => 33, "tLBRACK" => 34, "tRBRACK" => 35, "tSTRING_BEG" => 36, "tSTRING_END" => 37, "tSTRING" => 38, "tWORDS_BEG" => 39, "tSPACE" => 40, "tQWORDS_BEG" => 41, "tSTRING_CONTENT" => 42, "tSYMBOL" => 43, "tSYMBEG" => 44, "tINTEGER" => 45, "kNIL" => 46, "kSELF" => 47, "kTRUE" => 48, "kFALSE" => 49, "tNL" => 50, "$" => 51 };
 
     /**
      * Parsing table.
@@ -157,67 +158,68 @@ lazy_static! {
      * from an encoded symbol to table entry (TE).
      */
     static ref TABLE: Vec<HashMap<i32, TE>>= vec![
-    hashmap! { 0 => TE::Transit(1), 1 => TE::Transit(2), 2 => TE::Transit(3), 3 => TE::Transit(4), 4 => TE::Transit(5), 5 => TE::Transit(6), 6 => TE::Transit(7), 10 => TE::Transit(8), 11 => TE::Transit(9), 12 => TE::Transit(10), 13 => TE::Transit(22), 14 => TE::Transit(23), 15 => TE::Transit(11), 18 => TE::Transit(12), 23 => TE::Transit(16), 24 => TE::Transit(17), 25 => TE::Transit(15), 26 => TE::Transit(18), 27 => TE::Transit(28), 28 => TE::Transit(13), 34 => TE::Shift(14), 36 => TE::Shift(24), 38 => TE::Shift(25), 39 => TE::Shift(26), 41 => TE::Shift(27), 43 => TE::Shift(20), 44 => TE::Shift(21), 45 => TE::Shift(19), 46 => TE::Shift(29), 47 => TE::Shift(30), 48 => TE::Shift(31), 49 => TE::Reduce(3), 50 => TE::Reduce(3) },
-    hashmap! { 50 => TE::Accept },
-    hashmap! { 50 => TE::Reduce(1) },
-    hashmap! { 29 => TE::Transit(32), 31 => TE::Transit(34), 32 => TE::Transit(33), 49 => TE::Shift(35), 50 => TE::Reduce(48) },
-    hashmap! { 49 => TE::Reduce(4), 50 => TE::Reduce(4) },
-    hashmap! { 49 => TE::Reduce(5), 50 => TE::Reduce(5) },
-    hashmap! { 49 => TE::Reduce(6), 50 => TE::Reduce(6) },
-    hashmap! { 49 => TE::Reduce(7), 50 => TE::Reduce(7) },
-    hashmap! { 33 => TE::Reduce(8), 35 => TE::Reduce(8), 49 => TE::Reduce(8), 50 => TE::Reduce(8) },
-    hashmap! { 33 => TE::Reduce(14), 35 => TE::Reduce(14), 49 => TE::Reduce(14), 50 => TE::Reduce(14) },
-    hashmap! { 33 => TE::Reduce(15), 35 => TE::Reduce(15), 49 => TE::Reduce(15), 50 => TE::Reduce(15) },
-    hashmap! { 33 => TE::Reduce(16), 35 => TE::Reduce(16), 49 => TE::Reduce(16), 50 => TE::Reduce(16) },
-    hashmap! { 33 => TE::Reduce(17), 35 => TE::Reduce(17), 49 => TE::Reduce(17), 50 => TE::Reduce(17) },
-    hashmap! { 33 => TE::Reduce(18), 35 => TE::Reduce(18), 49 => TE::Reduce(18), 50 => TE::Reduce(18) },
-    hashmap! { 6 => TE::Transit(39), 7 => TE::Transit(38), 8 => TE::Transit(36), 9 => TE::Transit(37), 10 => TE::Transit(8), 11 => TE::Transit(9), 12 => TE::Transit(10), 13 => TE::Transit(22), 14 => TE::Transit(23), 15 => TE::Transit(11), 18 => TE::Transit(12), 23 => TE::Transit(16), 24 => TE::Transit(17), 25 => TE::Transit(15), 26 => TE::Transit(18), 27 => TE::Transit(28), 28 => TE::Transit(13), 34 => TE::Shift(14), 35 => TE::Reduce(10), 36 => TE::Shift(24), 38 => TE::Shift(25), 39 => TE::Shift(26), 41 => TE::Shift(27), 43 => TE::Shift(20), 44 => TE::Shift(21), 45 => TE::Shift(19), 46 => TE::Shift(29), 47 => TE::Shift(30), 48 => TE::Shift(31) },
-    hashmap! { 33 => TE::Reduce(20), 35 => TE::Reduce(20), 49 => TE::Reduce(20), 50 => TE::Reduce(20) },
-    hashmap! { 33 => TE::Reduce(21), 35 => TE::Reduce(21), 49 => TE::Reduce(21), 50 => TE::Reduce(21) },
-    hashmap! { 33 => TE::Reduce(22), 35 => TE::Reduce(22), 49 => TE::Reduce(22), 50 => TE::Reduce(22) },
-    hashmap! { 33 => TE::Reduce(42), 35 => TE::Reduce(42), 49 => TE::Reduce(42), 50 => TE::Reduce(42) },
-    hashmap! { 33 => TE::Reduce(43), 35 => TE::Reduce(43), 49 => TE::Reduce(43), 50 => TE::Reduce(43) },
-    hashmap! { 33 => TE::Reduce(40), 35 => TE::Reduce(40), 49 => TE::Reduce(40), 50 => TE::Reduce(40) },
-    hashmap! { 21 => TE::Transit(45), 37 => TE::Reduce(37), 42 => TE::Reduce(37) },
-    hashmap! { 33 => TE::Reduce(23), 35 => TE::Reduce(23), 49 => TE::Reduce(23), 50 => TE::Reduce(23) },
-    hashmap! { 33 => TE::Reduce(24), 35 => TE::Reduce(24), 49 => TE::Reduce(24), 50 => TE::Reduce(24) },
-    hashmap! { 20 => TE::Transit(49), 37 => TE::Reduce(35), 42 => TE::Reduce(35) },
-    hashmap! { 33 => TE::Reduce(26), 35 => TE::Reduce(26), 49 => TE::Reduce(26), 50 => TE::Reduce(26) },
-    hashmap! { 16 => TE::Transit(52), 37 => TE::Reduce(28), 42 => TE::Reduce(28) },
-    hashmap! { 19 => TE::Transit(58), 37 => TE::Reduce(33), 42 => TE::Reduce(33) },
-    hashmap! { 33 => TE::Reduce(47), 35 => TE::Reduce(47), 49 => TE::Reduce(47), 50 => TE::Reduce(47) },
-    hashmap! { 33 => TE::Reduce(44), 35 => TE::Reduce(44), 49 => TE::Reduce(44), 50 => TE::Reduce(44) },
-    hashmap! { 33 => TE::Reduce(45), 35 => TE::Reduce(45), 49 => TE::Reduce(45), 50 => TE::Reduce(45) },
-    hashmap! { 33 => TE::Reduce(46), 35 => TE::Reduce(46), 49 => TE::Reduce(46), 50 => TE::Reduce(46) },
-    hashmap! { 50 => TE::Reduce(2) },
-    hashmap! { 50 => TE::Reduce(49) },
-    hashmap! { 50 => TE::Reduce(54) },
-    hashmap! { 50 => TE::Reduce(53) },
-    hashmap! { 35 => TE::Shift(40) },
-    hashmap! { 30 => TE::Transit(41), 33 => TE::Shift(42), 35 => TE::Reduce(50), 49 => TE::Shift(43) },
-    hashmap! { 33 => TE::Reduce(12), 35 => TE::Reduce(12), 49 => TE::Reduce(12) },
-    hashmap! { 33 => TE::Reduce(9), 35 => TE::Reduce(9), 49 => TE::Reduce(9) },
-    hashmap! { 33 => TE::Reduce(19), 35 => TE::Reduce(19), 49 => TE::Reduce(19), 50 => TE::Reduce(19) },
+    hashmap! { 0 => TE::Transit(1), 1 => TE::Transit(2), 2 => TE::Transit(3), 3 => TE::Transit(4), 4 => TE::Transit(5), 5 => TE::Transit(6), 6 => TE::Transit(7), 10 => TE::Transit(8), 11 => TE::Transit(9), 12 => TE::Transit(10), 13 => TE::Transit(22), 14 => TE::Transit(23), 15 => TE::Transit(11), 18 => TE::Transit(12), 23 => TE::Transit(16), 24 => TE::Transit(17), 25 => TE::Transit(15), 26 => TE::Transit(18), 27 => TE::Transit(28), 28 => TE::Transit(13), 34 => TE::Shift(14), 36 => TE::Shift(24), 38 => TE::Shift(25), 39 => TE::Shift(26), 41 => TE::Shift(27), 43 => TE::Shift(20), 44 => TE::Shift(21), 45 => TE::Shift(19), 46 => TE::Shift(29), 47 => TE::Shift(30), 48 => TE::Shift(31), 49 => TE::Shift(32), 50 => TE::Reduce(3), 51 => TE::Reduce(3) },
+    hashmap! { 51 => TE::Accept },
+    hashmap! { 51 => TE::Reduce(1) },
+    hashmap! { 29 => TE::Transit(33), 31 => TE::Transit(35), 32 => TE::Transit(34), 50 => TE::Shift(36), 51 => TE::Reduce(49) },
+    hashmap! { 50 => TE::Reduce(4), 51 => TE::Reduce(4) },
+    hashmap! { 50 => TE::Reduce(5), 51 => TE::Reduce(5) },
+    hashmap! { 50 => TE::Reduce(6), 51 => TE::Reduce(6) },
+    hashmap! { 50 => TE::Reduce(7), 51 => TE::Reduce(7) },
+    hashmap! { 33 => TE::Reduce(8), 35 => TE::Reduce(8), 50 => TE::Reduce(8), 51 => TE::Reduce(8) },
+    hashmap! { 33 => TE::Reduce(14), 35 => TE::Reduce(14), 50 => TE::Reduce(14), 51 => TE::Reduce(14) },
+    hashmap! { 33 => TE::Reduce(15), 35 => TE::Reduce(15), 50 => TE::Reduce(15), 51 => TE::Reduce(15) },
+    hashmap! { 33 => TE::Reduce(16), 35 => TE::Reduce(16), 50 => TE::Reduce(16), 51 => TE::Reduce(16) },
+    hashmap! { 33 => TE::Reduce(17), 35 => TE::Reduce(17), 50 => TE::Reduce(17), 51 => TE::Reduce(17) },
+    hashmap! { 33 => TE::Reduce(18), 35 => TE::Reduce(18), 50 => TE::Reduce(18), 51 => TE::Reduce(18) },
+    hashmap! { 6 => TE::Transit(40), 7 => TE::Transit(39), 8 => TE::Transit(37), 9 => TE::Transit(38), 10 => TE::Transit(8), 11 => TE::Transit(9), 12 => TE::Transit(10), 13 => TE::Transit(22), 14 => TE::Transit(23), 15 => TE::Transit(11), 18 => TE::Transit(12), 23 => TE::Transit(16), 24 => TE::Transit(17), 25 => TE::Transit(15), 26 => TE::Transit(18), 27 => TE::Transit(28), 28 => TE::Transit(13), 34 => TE::Shift(14), 35 => TE::Reduce(10), 36 => TE::Shift(24), 38 => TE::Shift(25), 39 => TE::Shift(26), 41 => TE::Shift(27), 43 => TE::Shift(20), 44 => TE::Shift(21), 45 => TE::Shift(19), 46 => TE::Shift(29), 47 => TE::Shift(30), 48 => TE::Shift(31), 49 => TE::Shift(32) },
+    hashmap! { 33 => TE::Reduce(20), 35 => TE::Reduce(20), 50 => TE::Reduce(20), 51 => TE::Reduce(20) },
+    hashmap! { 33 => TE::Reduce(21), 35 => TE::Reduce(21), 50 => TE::Reduce(21), 51 => TE::Reduce(21) },
+    hashmap! { 33 => TE::Reduce(22), 35 => TE::Reduce(22), 50 => TE::Reduce(22), 51 => TE::Reduce(22) },
+    hashmap! { 33 => TE::Reduce(42), 35 => TE::Reduce(42), 50 => TE::Reduce(42), 51 => TE::Reduce(42) },
+    hashmap! { 33 => TE::Reduce(43), 35 => TE::Reduce(43), 50 => TE::Reduce(43), 51 => TE::Reduce(43) },
+    hashmap! { 33 => TE::Reduce(40), 35 => TE::Reduce(40), 50 => TE::Reduce(40), 51 => TE::Reduce(40) },
+    hashmap! { 21 => TE::Transit(46), 37 => TE::Reduce(37), 42 => TE::Reduce(37) },
+    hashmap! { 33 => TE::Reduce(23), 35 => TE::Reduce(23), 50 => TE::Reduce(23), 51 => TE::Reduce(23) },
+    hashmap! { 33 => TE::Reduce(24), 35 => TE::Reduce(24), 50 => TE::Reduce(24), 51 => TE::Reduce(24) },
+    hashmap! { 20 => TE::Transit(50), 37 => TE::Reduce(35), 42 => TE::Reduce(35) },
+    hashmap! { 33 => TE::Reduce(26), 35 => TE::Reduce(26), 50 => TE::Reduce(26), 51 => TE::Reduce(26) },
+    hashmap! { 16 => TE::Transit(53), 37 => TE::Reduce(28), 42 => TE::Reduce(28) },
+    hashmap! { 19 => TE::Transit(59), 37 => TE::Reduce(33), 42 => TE::Reduce(33) },
+    hashmap! { 33 => TE::Reduce(48), 35 => TE::Reduce(48), 50 => TE::Reduce(48), 51 => TE::Reduce(48) },
+    hashmap! { 33 => TE::Reduce(44), 35 => TE::Reduce(44), 50 => TE::Reduce(44), 51 => TE::Reduce(44) },
+    hashmap! { 33 => TE::Reduce(45), 35 => TE::Reduce(45), 50 => TE::Reduce(45), 51 => TE::Reduce(45) },
+    hashmap! { 33 => TE::Reduce(46), 35 => TE::Reduce(46), 50 => TE::Reduce(46), 51 => TE::Reduce(46) },
+    hashmap! { 33 => TE::Reduce(47), 35 => TE::Reduce(47), 50 => TE::Reduce(47), 51 => TE::Reduce(47) },
+    hashmap! { 51 => TE::Reduce(2) },
+    hashmap! { 51 => TE::Reduce(50) },
+    hashmap! { 51 => TE::Reduce(55) },
+    hashmap! { 51 => TE::Reduce(54) },
+    hashmap! { 35 => TE::Shift(41) },
+    hashmap! { 30 => TE::Transit(42), 33 => TE::Shift(43), 35 => TE::Reduce(51), 50 => TE::Shift(44) },
+    hashmap! { 33 => TE::Reduce(12), 35 => TE::Reduce(12), 50 => TE::Reduce(12) },
+    hashmap! { 33 => TE::Reduce(9), 35 => TE::Reduce(9), 50 => TE::Reduce(9) },
+    hashmap! { 33 => TE::Reduce(19), 35 => TE::Reduce(19), 50 => TE::Reduce(19), 51 => TE::Reduce(19) },
     hashmap! { 35 => TE::Reduce(11) },
-    hashmap! { 6 => TE::Transit(39), 7 => TE::Transit(44), 10 => TE::Transit(8), 11 => TE::Transit(9), 12 => TE::Transit(10), 13 => TE::Transit(22), 14 => TE::Transit(23), 15 => TE::Transit(11), 18 => TE::Transit(12), 23 => TE::Transit(16), 24 => TE::Transit(17), 25 => TE::Transit(15), 26 => TE::Transit(18), 27 => TE::Transit(28), 28 => TE::Transit(13), 34 => TE::Shift(14), 35 => TE::Reduce(52), 36 => TE::Shift(24), 38 => TE::Shift(25), 39 => TE::Shift(26), 41 => TE::Shift(27), 43 => TE::Shift(20), 44 => TE::Shift(21), 45 => TE::Shift(19), 46 => TE::Shift(29), 47 => TE::Shift(30), 48 => TE::Shift(31) },
-    hashmap! { 35 => TE::Reduce(51) },
-    hashmap! { 33 => TE::Reduce(13), 35 => TE::Reduce(13), 49 => TE::Reduce(13) },
-    hashmap! { 22 => TE::Transit(47), 37 => TE::Shift(46), 42 => TE::Shift(48) },
-    hashmap! { 33 => TE::Reduce(41), 35 => TE::Reduce(41), 49 => TE::Reduce(41), 50 => TE::Reduce(41) },
+    hashmap! { 6 => TE::Transit(40), 7 => TE::Transit(45), 10 => TE::Transit(8), 11 => TE::Transit(9), 12 => TE::Transit(10), 13 => TE::Transit(22), 14 => TE::Transit(23), 15 => TE::Transit(11), 18 => TE::Transit(12), 23 => TE::Transit(16), 24 => TE::Transit(17), 25 => TE::Transit(15), 26 => TE::Transit(18), 27 => TE::Transit(28), 28 => TE::Transit(13), 34 => TE::Shift(14), 35 => TE::Reduce(53), 36 => TE::Shift(24), 38 => TE::Shift(25), 39 => TE::Shift(26), 41 => TE::Shift(27), 43 => TE::Shift(20), 44 => TE::Shift(21), 45 => TE::Shift(19), 46 => TE::Shift(29), 47 => TE::Shift(30), 48 => TE::Shift(31), 49 => TE::Shift(32) },
+    hashmap! { 35 => TE::Reduce(52) },
+    hashmap! { 33 => TE::Reduce(13), 35 => TE::Reduce(13), 50 => TE::Reduce(13) },
+    hashmap! { 22 => TE::Transit(48), 37 => TE::Shift(47), 42 => TE::Shift(49) },
+    hashmap! { 33 => TE::Reduce(41), 35 => TE::Reduce(41), 50 => TE::Reduce(41), 51 => TE::Reduce(41) },
     hashmap! { 37 => TE::Reduce(38), 42 => TE::Reduce(38) },
     hashmap! { 37 => TE::Reduce(39), 40 => TE::Reduce(39), 42 => TE::Reduce(39) },
-    hashmap! { 22 => TE::Transit(51), 37 => TE::Shift(50), 42 => TE::Shift(48) },
-    hashmap! { 33 => TE::Reduce(25), 35 => TE::Reduce(25), 49 => TE::Reduce(25), 50 => TE::Reduce(25) },
+    hashmap! { 22 => TE::Transit(52), 37 => TE::Shift(51), 42 => TE::Shift(49) },
+    hashmap! { 33 => TE::Reduce(25), 35 => TE::Reduce(25), 50 => TE::Reduce(25), 51 => TE::Reduce(25) },
     hashmap! { 37 => TE::Reduce(36), 42 => TE::Reduce(36) },
-    hashmap! { 17 => TE::Transit(54), 22 => TE::Transit(55), 37 => TE::Shift(53), 42 => TE::Shift(48) },
-    hashmap! { 33 => TE::Reduce(27), 35 => TE::Reduce(27), 49 => TE::Reduce(27), 50 => TE::Reduce(27) },
-    hashmap! { 22 => TE::Transit(57), 40 => TE::Shift(56), 42 => TE::Shift(48) },
+    hashmap! { 17 => TE::Transit(55), 22 => TE::Transit(56), 37 => TE::Shift(54), 42 => TE::Shift(49) },
+    hashmap! { 33 => TE::Reduce(27), 35 => TE::Reduce(27), 50 => TE::Reduce(27), 51 => TE::Reduce(27) },
+    hashmap! { 22 => TE::Transit(58), 40 => TE::Shift(57), 42 => TE::Shift(49) },
     hashmap! { 40 => TE::Reduce(30), 42 => TE::Reduce(30) },
     hashmap! { 37 => TE::Reduce(29), 42 => TE::Reduce(29) },
     hashmap! { 40 => TE::Reduce(31), 42 => TE::Reduce(31) },
-    hashmap! { 37 => TE::Shift(59), 42 => TE::Shift(60) },
-    hashmap! { 33 => TE::Reduce(32), 35 => TE::Reduce(32), 49 => TE::Reduce(32), 50 => TE::Reduce(32) },
-    hashmap! { 40 => TE::Shift(61) },
+    hashmap! { 37 => TE::Shift(60), 42 => TE::Shift(61) },
+    hashmap! { 33 => TE::Reduce(32), 35 => TE::Reduce(32), 50 => TE::Reduce(32), 51 => TE::Reduce(32) },
+    hashmap! { 40 => TE::Shift(62) },
     hashmap! { 37 => TE::Reduce(34), 42 => TE::Reduce(34) }
 ];
 }
@@ -273,7 +275,7 @@ pub struct Parser {
     /**
      * Semantic action handlers.
      */
-    handlers: [fn(&mut Parser) -> SV; 55],
+    handlers: [fn(&mut Parser) -> SV; 56],
 }
 
 impl Parser {
@@ -343,7 +345,8 @@ impl Parser {
     Parser::_handler51,
     Parser::_handler52,
     Parser::_handler53,
-    Parser::_handler54
+    Parser::_handler54,
+    Parser::_handler55
 ],
         }
     }
@@ -1102,7 +1105,7 @@ fn _handler45(&mut self) -> SV {
   // Semantic values prologue.
 // self.values_stack.pop();
 
-let __ = Node::True;
+let __ = Node::NSelf;
 SV::_1(__)
 }
 
@@ -1114,7 +1117,7 @@ fn _handler46(&mut self) -> SV {
   // Semantic values prologue.
 // self.values_stack.pop();
 
-let __ = Node::False;
+let __ = Node::True;
 SV::_1(__)
 }
 
@@ -1122,6 +1125,18 @@ SV::_1(__)
 fn _handler47(&mut self) -> SV {
 
     println!("   *** PARSER: _handler47");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
+// self.values_stack.pop();
+
+let __ = Node::False;
+SV::_1(__)
+}
+
+
+fn _handler48(&mut self) -> SV {
+
+    println!("   *** PARSER: _handler48");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _1);
@@ -1143,26 +1158,14 @@ SV::_1(__)
 }
 
 
-fn _handler48(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler48");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
-// self.values_stack.pop();
-
-let __ = SV::Undefined;
-__
-}
-
-
 fn _handler49(&mut self) -> SV {
 
     println!("   *** PARSER: _handler49");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-let mut _1 = self.values_stack.pop().unwrap();
+// self.values_stack.pop();
 
-let __ = _1;
+let __ = SV::Undefined;
 __
 }
 
@@ -1172,9 +1175,9 @@ fn _handler50(&mut self) -> SV {
     println!("   *** PARSER: _handler50");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-// self.values_stack.pop();
+let mut _1 = self.values_stack.pop().unwrap();
 
-let __ = SV::Undefined;
+let __ = _1;
 __
 }
 
@@ -1184,9 +1187,9 @@ fn _handler51(&mut self) -> SV {
     println!("   *** PARSER: _handler51");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-let mut _1 = self.values_stack.pop().unwrap();
+// self.values_stack.pop();
 
-let __ = _1;
+let __ = SV::Undefined;
 __
 }
 
@@ -1218,6 +1221,18 @@ __
 fn _handler54(&mut self) -> SV {
 
     println!("   *** PARSER: _handler54");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
+let mut _1 = self.values_stack.pop().unwrap();
+
+let __ = _1;
+__
+}
+
+
+fn _handler55(&mut self) -> SV {
+
+    println!("   *** PARSER: _handler55");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();

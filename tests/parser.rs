@@ -806,20 +806,20 @@ fn array_words_empty() {
 // //         |~~~~~ expression})
 // //   end
 
-// //   #
-// //   # Access
-// //   #
+//   #
+//   # Access
+//   #
 
-// //   # Variables and pseudovariables
+//   # Variables and pseudovariables
 
-// //   def test_self
-// //     assert_parses(
-// //       s(:self),
-// //       %q{self},
-// //       %q{~~~~ expression})
-// //   end
-// #[test]
-// fn test_self() { assert_parses!("self", Node::NSelf); }
+//   def test_self
+//     assert_parses(
+//       s(:self),
+//       %q{self},
+//       %q{~~~~ expression})
+//   end
+#[test]
+fn test_self() { assert_parses!("self", Node::NSelf); }
 
 // //   def test_lvar
 // //     assert_parses(
