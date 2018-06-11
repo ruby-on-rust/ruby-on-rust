@@ -190,6 +190,8 @@ impl Lexer {
 
     // parser will use this method to set lexer's state directly
     pub fn set_state(&mut self, state: LexingState) {
+        println!("lexer: set_state: {:?}", state);
+
         self.current_state = state;
     }
 
@@ -199,6 +201,8 @@ impl Lexer {
     }
 
     fn set_next_state(&mut self, state: LexingState) {
+        println!("lexer: set_next_state: {:?}", state);
+
         self.next_state = Some(state);
     }
 

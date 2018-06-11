@@ -183,13 +183,22 @@ pub fn symbol(symbol_t: Token) -> Node {
 //       collection_map(begin_t, parts, end_t))
 //   end
 // end
-// TODO INCOMPLETE
+// TODO note
 pub fn symbol_compose(parts: Node) -> Node {
     // parts: Node::Nodes<Node::Str>
 
-    // TODO collapse_string_parts
-    if let Node::Nodes(nodes) = parts {
-        return Node::DSym(nodes);
+    if is_collapse_string_parts(&parts) {
+        if let Node::Nodes(nodes) = parts {
+            let n_str = nodes.get(0).unwrap();
+            if let Node::Str(str_value) = n_str {
+                return Node::Sym(str_value.to_string());
+            } else { unreachable!(); }
+        } else { unreachable!(); }
+    } else {
+        // NOTE ignored ruby18
+        if let Node::Nodes(nodes) = parts {
+            return Node::DSym(nodes);
+        }
     }
 
     unreachable!();
@@ -1244,8 +1253,22 @@ pub fn compstmt(nodes: Node) -> Node {
 //       parts.one? &&
 //           [:str, :dstr].include?(parts.first.type)
 //     end
+// TODO note
 fn is_collapse_string_parts(parts: &Node) -> bool {
-    true
+    // parts: Node::Nodes(nodes)
+    if let Node::Nodes(nodes) = parts {
+        if nodes.len() == 1 {
+            match nodes.get(0).unwrap() {
+                // TODO emm why can't we just use
+                // Node::Str(_str) | Node::DStr(_dstr) => { return true; },
+                Node::Str(_str) => { return true; },
+                Node::DStr(_dstr) => { return true; },
+                _ => { return false; }
+            }
+        } else { return false; }
+    }
+
+    unreachable!();
 }
 
 //     def value(token)

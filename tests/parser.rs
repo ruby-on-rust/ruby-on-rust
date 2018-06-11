@@ -402,7 +402,7 @@ fn string_plain() {
 
 #[test]
 fn symbol_plain() {
-    // assert_parses!(":foo", n_sym!("foo"));
+    assert_parses!(":foo", n_sym!("foo"));
     assert_parses!(":'foo'", n_sym!("foo"));
 }
 
