@@ -8,9 +8,11 @@ use parser::token::InteriorToken as Token;
 #[derive(Debug, PartialEq, Clone)]
 pub enum Node {
     // for rules which returns a vec of nodes
+    // TODO migrate to Nodes
     Nodes(Vec<Node>),
 
-    // for rules which may returns a result being `nil`, and the rule is acutally applied so we cannot return a None, i guess. still not sure about this.
+    // for rules which may returns a result being `nil`, and the rule is acutally applied so we cannot return a None, i guess.
+    // TODO still not sure about this.
     Null,
 
     Nil,
