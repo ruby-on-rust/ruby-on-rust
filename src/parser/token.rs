@@ -152,7 +152,7 @@ impl InteriorToken {
         // TODO
 
 // STARTING OF TOKENS_MAP
-let tokens_map: HashMap<&str, isize> = hashmap! {"T_COMMA"=>34, "T_LBRACK"=>35, "T_RBRACK"=>36, "T_STRING_BEG"=>37, "T_STRING_END"=>38, "T_STRING"=>39, "T_WORDS_BEG"=>40, "T_SPACE"=>41, "T_QWORDS_BEG"=>42, "T_STRING_CONTENT"=>43, "T_SYMBOL"=>44, "T_SYMBEG"=>45, "T_INTEGER"=>46, "T_IDENTIFIER"=>47, "K_NIL"=>48, "K_SELF"=>49, "K_TRUE"=>50, "K_FALSE"=>51, "T_NL"=>52, "$"=>53};
+let tokens_map: HashMap<&str, isize> = hashmap! {"T_COMMA"=>34, "T_LBRACK"=>35, "T_RBRACK"=>36, "T_STRING_BEG"=>37, "T_STRING_END"=>38, "T_STRING"=>39, "T_WORDS_BEG"=>40, "T_SPACE"=>41, "T_QWORDS_BEG"=>42, "T_STRING_CONTENT"=>43, "T_SYMBOL"=>44, "T_SYMBEG"=>45, "T_INTEGER"=>46, "T_IDENTIFIER"=>47, "T_IVAR"=>48, "K_NIL"=>49, "K_SELF"=>50, "K_TRUE"=>51, "K_FALSE"=>52, "T_NL"=>53, "$"=>54};
 // END OF TOKENS_MAP
 
         let token_variant = self.as_ref();
@@ -192,7 +192,7 @@ pub struct Token {
 
 pub fn get_an_eof_token() -> Token {
 // STARTING OF TOKENS_MAP
-let tokens_map: HashMap<&str, isize> = hashmap! {"T_COMMA"=>34, "T_LBRACK"=>35, "T_RBRACK"=>36, "T_STRING_BEG"=>37, "T_STRING_END"=>38, "T_STRING"=>39, "T_WORDS_BEG"=>40, "T_SPACE"=>41, "T_QWORDS_BEG"=>42, "T_STRING_CONTENT"=>43, "T_SYMBOL"=>44, "T_SYMBEG"=>45, "T_INTEGER"=>46, "T_IDENTIFIER"=>47, "K_NIL"=>48, "K_SELF"=>49, "K_TRUE"=>50, "K_FALSE"=>51, "T_NL"=>52, "$"=>53};
+let tokens_map: HashMap<&str, isize> = hashmap! {"T_COMMA"=>34, "T_LBRACK"=>35, "T_RBRACK"=>36, "T_STRING_BEG"=>37, "T_STRING_END"=>38, "T_STRING"=>39, "T_WORDS_BEG"=>40, "T_SPACE"=>41, "T_QWORDS_BEG"=>42, "T_STRING_CONTENT"=>43, "T_SYMBOL"=>44, "T_SYMBEG"=>45, "T_INTEGER"=>46, "T_IDENTIFIER"=>47, "T_IVAR"=>48, "K_NIL"=>49, "K_SELF"=>50, "K_TRUE"=>51, "K_FALSE"=>52, "T_NL"=>53, "$"=>54};
 // END OF TOKENS_MAP
 
     Token {

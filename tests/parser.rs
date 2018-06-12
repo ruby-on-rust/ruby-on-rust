@@ -837,7 +837,7 @@ fn lvar() { assert_parses!("foo", Node::LVar(String::from("foo"))); }
 //       %q{~~~~ expression})
 //   end
 #[test]
-fn ivar() { assert_parses!("@foo", Node::IVar(String::from("foo"))); }
+fn ivar() { assert_parses!("@foo", Node::IVar(String::from("@foo"))); }
 
 // //   def test_cvar
 // //     assert_parses(
