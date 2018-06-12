@@ -64,7 +64,7 @@
 use parser::token::{ InteriorToken, Token };
 use parser::tokenizer::Tokenizer;
 use ast::node;
-use ast::node::Node;
+use ast::node::{ Node, Nodes };
 
 pub type TResult = Node;
 
@@ -81,10 +81,9 @@ program: top_compstmt;
 //                     }
 top_compstmt
     : top_stmts opt_terms {
-        |$1: Node| -> Node;
+        |$1: Nodes| -> Node;
 
-        // TODO builder.compstmt
-        $$ = $1
+        $$ = node::compstmt($1);
     }
 ;
 
@@ -107,16 +106,21 @@ top_compstmt
 // TODO
 top_stmts
     : {
-        || -> Node;
+        || -> Nodes;
 
-        // TODO result = []
-        $$ = Node::Dummy
+        $$ = vec![];
     }
     | top_stmt {
-        |$1: Node| -> Node;
+        |$1: Node| -> Nodes;
 
-        // TODO [ val[0] ]
-        $$ = $1;
+        $$ = vec![$1];
+    }
+    | top_stmts terms top_stmt {
+        |$1: Nodes; $3: Node| -> Nodes;
+
+        let mut nodes = $1;
+        nodes.push($3);
+        $$ = nodes;
     }
 ;
 
@@ -552,6 +556,12 @@ expr
 //                     {
 //                       result = @builder.assignable(val[0])
 //                     }
+lhs
+    : user_variable {
+        |$1:Node| -> Node;
+        $$ = node::assignable($1);
+    }
+;
 //                 | keyword_variable
 //                     {
 //                       result = @builder.assignable(val[0])
@@ -652,6 +662,12 @@ expr
 //                     {
 //                       result = @builder.assign(val[0], val[1], val[2])
 //                     }
+arg
+    : lhs tEQL arg_rhs {
+        |$1: Node; $2: Token, $3: Node| -> Node;
+
+        $$ = node::assign($1, *$2.interior_token, $3)
+    }
 //                 | var_lhs tOP_ASGN arg_rhs
 //                     {
 //                       result = @builder.op_assign(val[0], val[1], val[2])
@@ -817,9 +833,7 @@ expr
 //                                                 val[2], val[4], val[5])
 //                     }
 //                 | primary
-// TODO
-arg
-    : primary
+    | primary
 ;
 
 //            relop: tGT | tLT | tGEQ | tLEQ
@@ -863,9 +877,13 @@ aref_args
 //                       rescue_body = @builder.rescue_body(val[1],
 //                                         nil, nil, nil,
 //                                         nil, val[2])
-
+// 
 //                       result = @builder.begin_body(val[0], [ rescue_body ])
 //                     }
+// TODO
+arg_rhs
+    : arg %prec tOP_ASGN
+;
 
 //       paren_args: tLPAREN2 opt_call_args rparen
 //                     {
@@ -2287,7 +2305,7 @@ var_ref
 //        f_arglist: tLPAREN2 f_args rparen
 //                     {
 //                       result = @builder.args(val[0], val[1], val[2])
-
+// 
 //                       @lexer.state = :expr_value
 //                     }
 //                 |   {
@@ -2655,15 +2673,16 @@ trailer:  | tNL | tCOMMA ;
 //                   }
 //                 | tNL
 term
-    // TODO tSEMI
-    : tNL
+    // TODO yyerrok
+    : tSEMI
+    | tNL
 ;
 
 //            terms: term
 //                 | terms tSEMI
 terms
     : term
-    // TODO
+    | terms tSEMI
 ;
 
 //             none: # nothing

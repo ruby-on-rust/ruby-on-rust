@@ -48,26 +48,26 @@ macro_rules! n_sym {
 
 #[test] fn nil() { assert_parses!("nil", Node::Nil); }
 
-// //   def test_nil_expression
-// //     assert_parses(
-// //       s(:begin),
-// //       %q{()},
-// //       %q{^ begin
-// //         | ^ end
-// //         |~~ expression})
-
-// //     assert_parses(
-// //       s(:kwbegin),
-// //       %q{begin end},
-// //       %q{~~~~~ begin
-// //         |      ~~~ end
-// //         |~~~~~~~~~ expression})
-// //   end
-// // TODO
-// // #[test]
-// // fn test_nil_expression() {
-// //     assert_parses!
-// // }
+//   def test_nil_expression
+//     assert_parses(
+//       s(:begin),
+//       %q{()},
+//       %q{^ begin
+//         | ^ end
+//         |~~ expression})
+// 
+//     assert_parses(
+//       s(:kwbegin),
+//       %q{begin end},
+//       %q{~~~~~ begin
+//         |      ~~~ end
+//         |~~~~~~~~~ expression})
+//   end
+// TODO
+// #[test]
+// fn nil_expression() {
+//     assert_parses!("()", Node::Begin(vec![]));
+// }
 
 #[test] fn test_true() { assert_parses!("true", Node::True); }
 
@@ -950,35 +950,34 @@ fn ivar() { assert_parses!("@foo", Node::IVar(String::from("@foo"))); }
 // //       %q{defined? @foo})
 // //   end
 
-// //   #
-// //   # Assignment
-// //   #
+//   #
+//   # Assignment
+//   #
 
-// //   # Variables
+//   # Variables
 
-// //   def test_lvasgn
-// //     assert_parses(
-// //       s(:begin,
-// //         s(:lvasgn, :var, s(:int, 10)),
-// //         s(:lvar, :var)),
-// //       %q{var = 10; var},
-// //       %q{~~~ name (lvasgn)
-// //         |    ^ operator (lvasgn)
-// //         |~~~~~~~~ expression (lvasgn)
-// //         })
-// //   end
-
-// // TODO use a helper macro n_begin! for constructing Node::Begin
-// #[test]
-// fn lvasgn() {
-//     assert_parses!(
-//         "var = 10; var",
-//         Node::Begin(vec![
-//             Node::LVasgn(String::from("var"), vec![ Node::Int(10) ]),
-//             Node::LVar(String::from("var"))
-//         ])
-//     );
-// }
+//   def test_lvasgn
+//     assert_parses(
+//       s(:begin,
+//         s(:lvasgn, :var, s(:int, 10)),
+//         s(:lvar, :var)),
+//       %q{var = 10; var},
+//       %q{~~~ name (lvasgn)
+//         |    ^ operator (lvasgn)
+//         |~~~~~~~~ expression (lvasgn)
+//         })
+//   end
+#[test]
+fn lvasgn() {
+    assert_parses!(
+        "var = 10; var",
+        // TODO craft a helper macro n_begin! for constructing Node::Begin
+        Node::Begin(vec![
+            Node::LVasgn(String::from("var"), vec![ Node::Int(10) ]),
+            Node::LVar(String::from("var"))
+        ])
+    );
+}
 
 // //   def test_ivasgn
 // //     assert_parses(

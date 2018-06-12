@@ -149,10 +149,10 @@ use std::collections::HashMap;
 
 impl InteriorToken {
     pub fn wrap_as_token(&self) -> Token {
-        // TODO
+        println!("#wrap_as_token invoked, self: {:?}", self);
 
 // STARTING OF TOKENS_MAP
-let tokens_map: HashMap<&str, isize> = hashmap! {"T_COMMA"=>34, "T_LBRACK"=>35, "T_RBRACK"=>36, "T_STRING_BEG"=>37, "T_STRING_END"=>38, "T_STRING"=>39, "T_WORDS_BEG"=>40, "T_SPACE"=>41, "T_QWORDS_BEG"=>42, "T_STRING_CONTENT"=>43, "T_SYMBOL"=>44, "T_SYMBEG"=>45, "T_INTEGER"=>46, "T_IDENTIFIER"=>47, "T_IVAR"=>48, "K_NIL"=>49, "K_SELF"=>50, "K_TRUE"=>51, "K_FALSE"=>52, "T_NL"=>53, "$"=>54};
+let tokens_map: HashMap<&str, isize> = hashmap! {"T_EQL"=>36, "T_COMMA"=>37, "T_LBRACK"=>38, "T_RBRACK"=>39, "T_STRING_BEG"=>40, "T_STRING_END"=>41, "T_STRING"=>42, "T_WORDS_BEG"=>43, "T_SPACE"=>44, "T_QWORDS_BEG"=>45, "T_STRING_CONTENT"=>46, "T_SYMBOL"=>47, "T_SYMBEG"=>48, "T_INTEGER"=>49, "T_IDENTIFIER"=>50, "T_IVAR"=>51, "K_NIL"=>52, "K_SELF"=>53, "K_TRUE"=>54, "K_FALSE"=>55, "T_NL"=>56, "T_SEMI"=>57, "$"=>58};
 // END OF TOKENS_MAP
 
         let token_variant = self.as_ref();
@@ -192,7 +192,7 @@ pub struct Token {
 
 pub fn get_an_eof_token() -> Token {
 // STARTING OF TOKENS_MAP
-let tokens_map: HashMap<&str, isize> = hashmap! {"T_COMMA"=>34, "T_LBRACK"=>35, "T_RBRACK"=>36, "T_STRING_BEG"=>37, "T_STRING_END"=>38, "T_STRING"=>39, "T_WORDS_BEG"=>40, "T_SPACE"=>41, "T_QWORDS_BEG"=>42, "T_STRING_CONTENT"=>43, "T_SYMBOL"=>44, "T_SYMBEG"=>45, "T_INTEGER"=>46, "T_IDENTIFIER"=>47, "T_IVAR"=>48, "K_NIL"=>49, "K_SELF"=>50, "K_TRUE"=>51, "K_FALSE"=>52, "T_NL"=>53, "$"=>54};
+let tokens_map: HashMap<&str, isize> = hashmap! {"T_EQL"=>36, "T_COMMA"=>37, "T_LBRACK"=>38, "T_RBRACK"=>39, "T_STRING_BEG"=>40, "T_STRING_END"=>41, "T_STRING"=>42, "T_WORDS_BEG"=>43, "T_SPACE"=>44, "T_QWORDS_BEG"=>45, "T_STRING_CONTENT"=>46, "T_SYMBOL"=>47, "T_SYMBEG"=>48, "T_INTEGER"=>49, "T_IDENTIFIER"=>50, "T_IVAR"=>51, "K_NIL"=>52, "K_SELF"=>53, "K_TRUE"=>54, "K_FALSE"=>55, "T_NL"=>56, "T_SEMI"=>57, "$"=>58};
 // END OF TOKENS_MAP
 
     Token {

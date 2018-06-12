@@ -1,3 +1,6 @@
+// TODO
+// maybe, we could use a separate Nodes instead of Node::Nodes
+
 // https://raw.githubusercontent.com/whitequark/parser/2a73841d6da04a5ab9bd270561165fd766722d43/lib/parser/builders/default.rb
 
 use parser::token::InteriorToken as Token;
@@ -50,10 +53,12 @@ pub enum Node {
     // assignable
     LVasgn(String, Vec<Node>),
 
-    Begin(Vec<Node>),
+    Begin(Nodes),
 
     Module()
 }
+
+pub type Nodes = Vec<Node>;
 
 // def unary_num(unary_t, numeric)
 //   value, = *numeric
@@ -573,7 +578,6 @@ pub fn const_fetch(scope: Node, token: Token, name: Token) -> Node {
 // end
 // TODO INCOMPLETE
 pub fn assignable(node: Node) -> Node {
-    // println!("DEBUGGING node::assignable: {:?}", node);
     match node {
         //   when :const
         //     if @parser.in_def?
@@ -1168,16 +1172,13 @@ pub fn assign(lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //       collection_map(nil, statements, nil))
 //   end
 // end
-pub fn compstmt(nodes: Node) -> Node {
-    if let Node::Nodes(extracted_nodes) = nodes {
-        match extracted_nodes.len() {
-            0 => { return Node::Null; }
-            1 => { return extracted_nodes.get(0).unwrap().clone(); }
-            // TODO collection_map
-            _ => { return Node::Begin(extracted_nodes); }
-        }
-    } else {
-        panic!("compstmt: should pass in a Node::Nodes")
+pub fn compstmt(nodes: Nodes) -> Node {
+    match nodes.len() {
+        // TODO nil <-> Node::Null
+        0 => { return Node::Null; }
+        1 => { return nodes.get(0).unwrap().clone(); }
+        // TODO collection_map
+        _ => { return Node::Begin(nodes); }
     }
 }
 
