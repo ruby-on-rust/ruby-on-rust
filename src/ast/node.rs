@@ -7,8 +7,6 @@ use parser::token::InteriorToken as Token;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Node {
-    // for rules which doesnot need to return a real node
-    Dummy,
     // for rules which returns a vec of nodes
     Nodes(Vec<Node>),
 
@@ -48,8 +46,6 @@ pub enum Node {
 
     Ident(String),
 
-    Assign(Box<Node>, Token, Box<Node>), // TODO a dummy NodeType for builder.assign
-
     // assignable
     LVasgn(String, Nodes),
     IVasgn(String, Nodes),
@@ -60,6 +56,17 @@ pub enum Node {
 }
 
 pub type Nodes = Vec<Node>;
+
+impl Node {
+    pub fn push_children(&mut self, node: Node) {
+        match self {
+            Node::LVasgn(name, nodes) | Node::IVasgn(name, nodes) => {
+                nodes.push(node);
+            },
+            _ => { unreachable!(); }
+        }
+    }
+}
 
 // def unary_num(unary_t, numeric)
 //   value, = *numeric
@@ -624,17 +631,13 @@ pub fn assignable(node: Node) -> Node {
 //       with_expression(join_exprs(lhs, rhs)))
 // end
 // TODO INCOMPLETE
-pub fn assign(lhs_node: Node, token: Token, rhs_node: Node) -> Node {
+pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
     match lhs_node {
-        Node::LVasgn(var_str, mut nodes) => {
-            nodes.push(rhs_node);
-            return Node::LVasgn(var_str, nodes);
+        Node::LVasgn(_, _) | Node::IVasgn(_, _) => {
+            lhs_node.push_children(rhs_node);
+            return lhs_node;
         },
-        Node::IVasgn(var_str, mut nodes) => {
-            nodes.push(rhs_node);
-            return Node::IVasgn(var_str, nodes);
-        },
-        _ => { panic!("node::assign UNIMPL"); }
+        _ => { unreachable!(); }
     }
 }
 
