@@ -51,7 +51,8 @@ pub enum Node {
     Assign(Box<Node>, Token, Box<Node>), // TODO a dummy NodeType for builder.assign
 
     // assignable
-    LVasgn(String, Vec<Node>),
+    LVasgn(String, Nodes),
+    IVasgn(String, Nodes),
 
     Begin(Nodes),
 
@@ -579,6 +580,13 @@ pub fn const_fetch(scope: Node, token: Token, name: Token) -> Node {
 // TODO INCOMPLETE
 pub fn assignable(node: Node) -> Node {
     match node {
+
+        //   when :ivar
+        //     node.updated(:ivasgn)
+        Node::IVar(ivar_str) => {
+            return Node::IVasgn(ivar_str, vec![]);
+        },
+
         //   when :const
         //     if @parser.in_def?
         //       diagnostic :error, :dynamic_const, nil, node.loc.expression
@@ -600,6 +608,7 @@ pub fn assignable(node: Node) -> Node {
             // TODO handle static_env
             return Node::LVasgn(ident, vec![]);
         },
+
         _ => { panic!("node::assignable: UNIMPL branch"); }
     }
 }
@@ -620,6 +629,10 @@ pub fn assign(lhs_node: Node, token: Token, rhs_node: Node) -> Node {
         Node::LVasgn(var_str, mut nodes) => {
             nodes.push(rhs_node);
             return Node::LVasgn(var_str, nodes);
+        },
+        Node::IVasgn(var_str, mut nodes) => {
+            nodes.push(rhs_node);
+            return Node::IVasgn(var_str, nodes);
         },
         _ => { panic!("node::assign UNIMPL"); }
     }

@@ -979,15 +979,25 @@ fn lvasgn() {
     );
 }
 
-// //   def test_ivasgn
-// //     assert_parses(
-// //       s(:ivasgn, :@var, s(:int, 10)),
-// //       %q{@var = 10},
-// //       %q{~~~~ name
-// //         |     ^ operator
-// //         |~~~~~~~~~ expression
-// //         })
-// //   end
+//   def test_ivasgn
+//     assert_parses(
+//       s(:ivasgn, :@var, s(:int, 10)),
+//       %q{@var = 10},
+//       %q{~~~~ name
+//         |     ^ operator
+//         |~~~~~~~~~ expression
+//         })
+//   end
+#[test]
+fn ivasgn() {
+    assert_parses!(
+        "@var = 10",
+        Node::IVasgn(
+            String::from("@var"),
+            vec![ Node::Int(10) ]
+        )
+    );
+}
 
 // //   def test_cvasgn
 // //     assert_parses(
