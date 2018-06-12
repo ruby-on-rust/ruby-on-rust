@@ -36,11 +36,6 @@
 // TODO make macros
 // 
 
-// 
-// TODO there's an issue with empty production, currently we have to comment `pop` lines in those productions manually
-// https://github.com/DmitrySoshnikov/syntax/issues/60
-// 
-
 %right    tBANG tTILDE tUPLUS
 %right    tPOW
 %right    tUNARY_NUM tUMINUS
@@ -854,7 +849,6 @@ arg_value: arg;
 // TODO
 aref_args
     : {
-        <EMPTY PRODUCTION>
         || -> Node;
 
         // TODO shared macro
@@ -1881,7 +1875,6 @@ words
 //                     }
 word_list
     : {
-        <EMPTY PRODUCTION>
         || -> Node;
         $$ = Node::Nodes(vec![]);
     }
@@ -1957,7 +1950,6 @@ qwords: tQWORDS_BEG qword_list tSTRING_END {
 //                     }
 qword_list
     : {
-        <EMPTY PRODUCTION>
         || -> Node;
         $$ = Node::Nodes(vec![]);
     }
@@ -1991,8 +1983,6 @@ qword_list
 // TODO
 string_contents
     : {
-        <EMPTY PRODUCTION>
-
         || -> Node;
 
         $$ = Node::Nodes(vec![]);
@@ -2021,7 +2011,6 @@ string_contents
 //                     }
 xstring_contents
     : {
-        <EMPTY PRODUCTION>
         || -> Node;
         $$ = Node::Nodes(vec![]);
     }
