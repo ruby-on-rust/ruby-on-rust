@@ -152,7 +152,7 @@ impl InteriorToken {
         println!("#wrap_as_token invoked, self: {:?}", self);
 
 // STARTING OF TOKENS_MAP
-let tokens_map: HashMap<&str, isize> = hashmap! {"T_EQL"=>36, "T_COMMA"=>37, "T_LBRACK"=>38, "T_RBRACK"=>39, "T_STRING_BEG"=>40, "T_STRING_END"=>41, "T_STRING"=>42, "T_WORDS_BEG"=>43, "T_SPACE"=>44, "T_QWORDS_BEG"=>45, "T_STRING_CONTENT"=>46, "T_SYMBOL"=>47, "T_SYMBEG"=>48, "T_INTEGER"=>49, "T_IDENTIFIER"=>50, "T_IVAR"=>51, "K_NIL"=>52, "K_SELF"=>53, "K_TRUE"=>54, "K_FALSE"=>55, "T_NL"=>56, "T_SEMI"=>57, "$"=>58};
+let tokens_map: HashMap<&str, isize> = hashmap! {"T_EQL"=>36, "T_COMMA"=>37, "T_COLON3"=>38, "T_CONSTANT"=>39, "T_LBRACK"=>40, "T_RBRACK"=>41, "T_STRING_BEG"=>42, "T_STRING_END"=>43, "T_STRING"=>44, "T_WORDS_BEG"=>45, "T_SPACE"=>46, "T_QWORDS_BEG"=>47, "T_STRING_CONTENT"=>48, "T_SYMBOL"=>49, "T_SYMBEG"=>50, "T_INTEGER"=>51, "T_IDENTIFIER"=>52, "T_IVAR"=>53, "K_NIL"=>54, "K_SELF"=>55, "K_TRUE"=>56, "K_FALSE"=>57, "T_NL"=>58, "T_SEMI"=>59, "$"=>60};
 // END OF TOKENS_MAP
 
         let token_variant = self.as_ref();
@@ -192,7 +192,7 @@ pub struct Token {
 
 pub fn get_an_eof_token() -> Token {
 // STARTING OF TOKENS_MAP
-let tokens_map: HashMap<&str, isize> = hashmap! {"T_EQL"=>36, "T_COMMA"=>37, "T_LBRACK"=>38, "T_RBRACK"=>39, "T_STRING_BEG"=>40, "T_STRING_END"=>41, "T_STRING"=>42, "T_WORDS_BEG"=>43, "T_SPACE"=>44, "T_QWORDS_BEG"=>45, "T_STRING_CONTENT"=>46, "T_SYMBOL"=>47, "T_SYMBEG"=>48, "T_INTEGER"=>49, "T_IDENTIFIER"=>50, "T_IVAR"=>51, "K_NIL"=>52, "K_SELF"=>53, "K_TRUE"=>54, "K_FALSE"=>55, "T_NL"=>56, "T_SEMI"=>57, "$"=>58};
+let tokens_map: HashMap<&str, isize> = hashmap! {"T_EQL"=>36, "T_COMMA"=>37, "T_COLON3"=>38, "T_CONSTANT"=>39, "T_LBRACK"=>40, "T_RBRACK"=>41, "T_STRING_BEG"=>42, "T_STRING_END"=>43, "T_STRING"=>44, "T_WORDS_BEG"=>45, "T_SPACE"=>46, "T_QWORDS_BEG"=>47, "T_STRING_CONTENT"=>48, "T_SYMBOL"=>49, "T_SYMBEG"=>50, "T_INTEGER"=>51, "T_IDENTIFIER"=>52, "T_IVAR"=>53, "K_NIL"=>54, "K_SELF"=>55, "K_TRUE"=>56, "K_FALSE"=>57, "T_NL"=>58, "T_SEMI"=>59, "$"=>60};
 // END OF TOKENS_MAP
 
     Token {

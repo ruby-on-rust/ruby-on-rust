@@ -521,7 +521,7 @@ pub fn build_const(name: Token) -> Node {
 //     constant_map(cbase, t_colon3, name_t))
 // end
 // NOTE top level const like ::Foo
-pub fn const_global(t_colon3: Token, name: Token ) -> Node {
+pub fn const_global(t_colon3: Token, name: Token) -> Node {
     if let Token::T_CONSTANT(const_name) = name {
         return Node::Const {
             scope: Some(box Node::CBase),

@@ -1080,6 +1080,11 @@ primary
 //                     {
 //                       result = @builder.const_global(val[0], val[1])
 //                     }
+    | tCOLON3 tCONSTANT {
+        |$1:Token, $2:Token| -> Node;
+
+        $$ = node::const_global(*$1.interior_token, *$2.interior_token);
+    }
 //                 | tLBRACK aref_args tRBRACK
 //                     {
 //                       result = @builder.array(val[0], val[1], val[2])

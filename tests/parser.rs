@@ -1,6 +1,6 @@
 // // BASED ON https://github.com/whitequark/parser/blob/2a73841d6da04a5ab9bd270561165fd766722d43/test/test_parser.rb
 
-// #![feature(box_syntax, box_patterns)]
+#![feature(box_syntax, box_patterns)]
 
 extern crate ruby_on_rust;
 
@@ -875,23 +875,23 @@ fn ivar() { assert_parses!("@foo", Node::IVar(String::from("@foo"))); }
 // //       %q{~~~ expression})
 // //   end
 
-// //   # Constants
+//   # Constants
 
-// //   def test_const_toplevel
-// //     assert_parses(
-// //       s(:const, s(:cbase), :Foo),
-// //       %q{::Foo},
-// //       %q{  ~~~ name
-// //         |~~ double_colon
-// //         |~~~~~ expression})
-// //   end
-// #[test]
-// fn const_toplevel() {
-//     assert_parses!(
-//         r"::Foo",
-//         Node::Const { scope: Some(box Node::CBase), name: String::from("Foo") }
-//     );
-// }
+//   def test_const_toplevel
+//     assert_parses(
+//       s(:const, s(:cbase), :Foo),
+//       %q{::Foo},
+//       %q{  ~~~ name
+//         |~~ double_colon
+//         |~~~~~ expression})
+//   end
+#[test]
+fn const_toplevel() {
+    assert_parses!(
+        r"::Foo",
+        Node::Const { scope: Some(box Node::CBase), name: String::from("Foo") }
+    );
+}
 
 // //   def test_const_scoped
 // //     assert_parses(
