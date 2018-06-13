@@ -893,24 +893,24 @@ fn const_toplevel() {
     );
 }
 
-// //   def test_const_scoped
-// //     assert_parses(
-// //       s(:const, s(:const, nil, :Bar), :Foo),
-// //       %q{Bar::Foo},
-// //       %q{     ~~~ name
-// //         |   ~~ double_colon
-// //         |~~~~~~~~ expression})
-// //   end
-// #[test]
-// fn const_scoped() {
-//     assert_parses!(
-//         r"Bar::Foo",
-//         Node::Const {
-//             scope: Some(box Node::Const { scope: None, name: String::from("Bar") } ),
-//             name: String::from("Foo")
-//         }
-//     );
-// }
+//   def test_const_scoped
+//     assert_parses(
+//       s(:const, s(:const, nil, :Bar), :Foo),
+//       %q{Bar::Foo},
+//       %q{     ~~~ name
+//         |   ~~ double_colon
+//         |~~~~~~~~ expression})
+//   end
+#[test]
+fn const_scoped() {
+    assert_parses!(
+        r"Bar::Foo",
+        Node::Const {
+            scope: Some(box Node::Const { scope: None, name: String::from("Bar") } ),
+            name: String::from("Foo")
+        }
+    );
+}
 
 // //   def test_const_unscoped
 // //     assert_parses(

@@ -511,7 +511,7 @@ pub fn build_const(name: Token) -> Node {
             name: const_name
         }
     }
-    panic!("you came too far");
+    unreachable!();
 }
 
 // def const_global(t_colon3, name_t)
@@ -535,14 +535,14 @@ pub fn const_global(t_colon3: Token, name: Token) -> Node {
 //   n(:const, [ scope, value(name_t).to_sym ],
 //     constant_map(scope, t_colon2, name_t))
 // end
-pub fn const_fetch(scope: Node, token: Token, name: Token) -> Node {
-    panic!("WIP");
-    // if let Token::T_CONSTANT(const_name) = name {
-    //     return Node::Const {
-    //         scope,
-    //         const_name
-    //     }
-    // }
+pub fn const_fetch(scope: Node, _colon2: Token, name: Token) -> Node {
+    if let Token::T_CONSTANT(name_str) = name {
+        return Node::Const {
+            scope: Some(box scope),
+            name: name_str
+        };
+    }
+    unreachable!();
 }
 
 // def __ENCODING__(__ENCODING__t)

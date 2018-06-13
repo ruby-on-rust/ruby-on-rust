@@ -1076,6 +1076,11 @@ primary
 //                     {
 //                       result = @builder.const_fetch(val[0], val[1], val[2])
 //                     }
+    | primary_value tCOLON2 tCONSTANT {
+        |$1:Node; $2:Token, $3:Token| -> Node;
+
+        $$ = node::const_fetch($1, *$2.interior_token, *$3.interior_token);
+    }
 //                 | tCOLON3 tCONSTANT
 //                     {
 //                       result = @builder.const_global(val[0], val[1])
@@ -1328,6 +1333,7 @@ primary
 // TODO
 
 //    primary_value: primary
+primary_value: primary ;
 
 //             then: term
 //                 | kTHEN
@@ -2214,6 +2220,11 @@ user_variable
         |$1:Token| -> Node;
 
         $$ = node::ivar(*$1.interior_token);
+    }
+    | tCONSTANT {
+        |$1:Token| -> Node;
+
+        $$ = node::build_const(*$1.interior_token);
     }
 ;
 
