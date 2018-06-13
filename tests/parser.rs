@@ -912,13 +912,23 @@ fn const_scoped() {
     );
 }
 
-// //   def test_const_unscoped
-// //     assert_parses(
-// //       s(:const, nil, :Foo),
-// //       %q{Foo},
-// //       %q{~~~ name
-// //         |~~~ expression})
-// //   end
+//   def test_const_unscoped
+//     assert_parses(
+//       s(:const, nil, :Foo),
+//       %q{Foo},
+//       %q{~~~ name
+//         |~~~ expression})
+//   end
+#[test]
+fn const_unscoped() {
+    assert_parses!(
+        r"Foo",
+        Node::Const {
+            scope: None,
+            name: String::from("Foo")
+        }
+    );
+}
 
 // //   def test___ENCODING__
 // //     assert_parses(
