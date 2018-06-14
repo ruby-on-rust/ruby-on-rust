@@ -340,6 +340,10 @@ pub fn words_compose(parts: Node) -> Node {
 //   n(:pair, [ key, value ],
 //     binary_op_map(key, assoc_t, value))
 // end
+pub fn pair(key: Node, t_assoc: Token, value: Node) -> Node {
+    // TODO binary_op_map
+    Node::Pair { key: box key, value: box value }
+}
 
 // def pair_list_18(list)
 //   if list.size % 2 != 0
@@ -378,6 +382,10 @@ pub fn words_compose(parts: Node) -> Node {
 //   n(:hash, [ *pairs ],
 //     collection_map(begin_t, pairs, end_t))
 // end
+pub fn associate(pairs: Nodes) -> Node {
+    // pairs: Nodes
+    return Node::Hash(pairs);
+}
 
 // # Ranges
 

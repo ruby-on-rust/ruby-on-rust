@@ -152,7 +152,7 @@ impl InteriorToken {
         println!("#wrap_as_token invoked, self: {:?}", self);
 
 // STARTING OF TOKENS_MAP
-let tokens_map: HashMap<&str, isize> = hashmap! {"T_EQL"=>37, "T_COMMA"=>38, "T_COLON2"=>39, "T_CONSTANT"=>40, "T_COLON3"=>41, "T_LBRACK"=>42, "T_RBRACK"=>43, "T_STRING_BEG"=>44, "T_STRING_END"=>45, "T_STRING"=>46, "T_WORDS_BEG"=>47, "T_SPACE"=>48, "T_QWORDS_BEG"=>49, "T_STRING_CONTENT"=>50, "T_SYMBOL"=>51, "T_SYMBEG"=>52, "T_INTEGER"=>53, "T_IDENTIFIER"=>54, "T_IVAR"=>55, "K_NIL"=>56, "K_SELF"=>57, "K_TRUE"=>58, "K_FALSE"=>59, "T_NL"=>60, "T_SEMI"=>61, "$"=>62};
+let tokens_map: HashMap<&str, isize> = hashmap! {"T_EQL"=>40, "T_COMMA"=>41, "T_COLON2"=>42, "T_CONSTANT"=>43, "T_COLON3"=>44, "T_LBRACK"=>45, "T_RBRACK"=>46, "T_LBRACE"=>47, "T_RCURLY"=>48, "T_STRING_BEG"=>49, "T_STRING_END"=>50, "T_STRING"=>51, "T_WORDS_BEG"=>52, "T_SPACE"=>53, "T_QWORDS_BEG"=>54, "T_STRING_CONTENT"=>55, "T_SYMBOL"=>56, "T_SYMBEG"=>57, "T_INTEGER"=>58, "T_IDENTIFIER"=>59, "T_IVAR"=>60, "K_NIL"=>61, "K_SELF"=>62, "K_TRUE"=>63, "K_FALSE"=>64, "T_ASSOC"=>65, "T_NL"=>66, "T_SEMI"=>67, "$"=>68};
 // END OF TOKENS_MAP
 
         let token_variant = self.as_ref();
@@ -192,7 +192,7 @@ pub struct Token {
 
 pub fn get_an_eof_token() -> Token {
 // STARTING OF TOKENS_MAP
-let tokens_map: HashMap<&str, isize> = hashmap! {"T_EQL"=>37, "T_COMMA"=>38, "T_COLON2"=>39, "T_CONSTANT"=>40, "T_COLON3"=>41, "T_LBRACK"=>42, "T_RBRACK"=>43, "T_STRING_BEG"=>44, "T_STRING_END"=>45, "T_STRING"=>46, "T_WORDS_BEG"=>47, "T_SPACE"=>48, "T_QWORDS_BEG"=>49, "T_STRING_CONTENT"=>50, "T_SYMBOL"=>51, "T_SYMBEG"=>52, "T_INTEGER"=>53, "T_IDENTIFIER"=>54, "T_IVAR"=>55, "K_NIL"=>56, "K_SELF"=>57, "K_TRUE"=>58, "K_FALSE"=>59, "T_NL"=>60, "T_SEMI"=>61, "$"=>62};
+let tokens_map: HashMap<&str, isize> = hashmap! {"T_EQL"=>40, "T_COMMA"=>41, "T_COLON2"=>42, "T_CONSTANT"=>43, "T_COLON3"=>44, "T_LBRACK"=>45, "T_RBRACK"=>46, "T_LBRACE"=>47, "T_RCURLY"=>48, "T_STRING_BEG"=>49, "T_STRING_END"=>50, "T_STRING"=>51, "T_WORDS_BEG"=>52, "T_SPACE"=>53, "T_QWORDS_BEG"=>54, "T_STRING_CONTENT"=>55, "T_SYMBOL"=>56, "T_SYMBEG"=>57, "T_INTEGER"=>58, "T_IDENTIFIER"=>59, "T_IVAR"=>60, "K_NIL"=>61, "K_SELF"=>62, "K_TRUE"=>63, "K_FALSE"=>64, "T_ASSOC"=>65, "T_NL"=>66, "T_SEMI"=>67, "$"=>68};
 // END OF TOKENS_MAP
 
     Token {

@@ -1099,11 +1099,16 @@ primary
 
         $$ = node::array($2);
     }
-;
 //                 | tLBRACE assoc_list tRCURLY
 //                     {
 //                       result = @builder.associate(val[0], val[1], val[2])
 //                     }
+    | tLBRACE assoc_list tRCURLY {
+        |$1:Token, $2:Nodes, $3:Token| -> Node;
+
+        $$ = node::associate($2);
+    }
+;
 //                 | kRETURN
 //                     {
 //                       result = @builder.keyword_cmd(:return, val[0])
@@ -2626,6 +2631,13 @@ var_ref
 //                       result = []
 //                     }
 //                 | assocs trailer
+assoc_list
+    : {
+        || -> Nodes;
+        $$ = vec![];
+    }
+    | assocs trailer
+;
 
 //           assocs: assoc
 //                     {
@@ -2635,6 +2647,19 @@ var_ref
 //                     {
 //                       result = val[0] << val[2]
 //                     }
+assocs
+    : assoc {
+        |$1:Node| -> Nodes;
+
+        $$ = vec![$1];
+    }
+    | assocs tCOMMA assoc {
+        |$1: Nodes; $2: Token; $3: Node| -> Nodes;
+
+        $1.push($3);
+        $$ = $1;
+    }
+;
 
 //            assoc: arg_value tASSOC arg_value
 //                     {
@@ -2652,6 +2677,13 @@ var_ref
 //                     {
 //                       result = @builder.kwsplat(val[0], val[1])
 //                     }
+// TODO
+assoc
+    : arg_value tASSOC arg_value {
+        |$1: Node; $2: Token; $3: Node| -> Node;
+        $$ = node::pair($1, *$2.interior_token, $3);
+    }
+;
 
 //        operation: tIDENTIFIER | tCONSTANT | tFID
 //       operation2: tIDENTIFIER | tCONSTANT | tFID | op

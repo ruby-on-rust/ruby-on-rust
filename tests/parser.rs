@@ -678,23 +678,23 @@ fn array_words_empty() {
 // //       SINCE_2_0)
 // //   end
 
-// //   # Hashes
+//   # Hashes
 
-// //   def test_hash_empty
-// //     assert_parses(
-// //       s(:hash),
-// //       %q[{ }],
-// //       %q{^ begin
-// //         |  ^ end
-// //         |~~~ expression})
-// //   end
-// #[test]
-// fn hash_empty() {
-//     assert_parses!(
-//         "{ }",
-//         Node::Hash(vec![])
-//     );
-// }
+//   def test_hash_empty
+//     assert_parses(
+//       s(:hash),
+//       %q[{ }],
+//       %q{^ begin
+//         |  ^ end
+//         |~~~ expression})
+//   end
+#[test]
+fn hash_empty() {
+    assert_parses!(
+        "{ }",
+        Node::Hash(vec![])
+    );
+}
 
 // //   def test_hash_hashrocket
 // //     assert_parses(

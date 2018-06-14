@@ -1,6 +1,9 @@
 - parser
+  - syntax-cli as vendor
+    - |$1: mut Node|
 - lexer
   - checkout ragel in spack
+
 
 --- LEGACY BELOW ---
 
