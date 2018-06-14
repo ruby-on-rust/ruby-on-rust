@@ -413,7 +413,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
             }
         ),
         action_with_literal!(
-            format!(r"(({})|({}))", pattern_lit!("operator_arithmetic"), pattern_lit!("operator_rest")),
+            format!(r"({})|({})", pattern_lit!("operator_arithmetic"), pattern_lit!("operator_rest")),
             |lexer: &mut Lexer| {
                 lexer.emit_token_from_table("punctuation");
                 lexer.set_next_state(state!("expr_beg"));
