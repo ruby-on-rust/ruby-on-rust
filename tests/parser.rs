@@ -721,28 +721,38 @@ fn hash_hashrocket() {
         ])
     );
 
-    // TODO FAILING
-    // assert_parses!(
-    //     r#"{ 1 => 2, :foo => "bar" }"#,
-    //     Node::Hash(vec![
-    //         Node::Pair { key: box Node::Int(1), value: box Node::Int(2) },
-    //         Node::Pair { key: box Node::Sym(String::from("foo")), value: box Node::Str(String::from("bar")) }
-    //     ])
-    // );
+    // WIP FAILING
+    assert_parses!(
+        r#"{ 1 => 2, :foo => "bar" }"#,
+        Node::Hash(vec![
+            Node::Pair { key: box Node::Int(1), value: box Node::Int(2) },
+            Node::Pair { key: box Node::Sym(String::from("foo")), value: box Node::Str(String::from("bar")) }
+        ])
+    );
 }
 
-// //   def test_hash_label
-// //     assert_parses(
-// //       s(:hash, s(:pair, s(:sym, :foo), s(:int, 2))),
-// //       %q[{ foo: 2 }],
-// //       %q{^ begin
-// //         |         ^ end
-// //         |     ^ operator (pair)
-// //         |  ~~~ expression (pair.sym)
-// //         |  ~~~~~~ expression (pair)
-// //         |~~~~~~~~~~ expression},
-// //       SINCE_1_9)
-// //   end
+//   def test_hash_label
+//     assert_parses(
+//       s(:hash, s(:pair, s(:sym, :foo), s(:int, 2))),
+//       %q[{ foo: 2 }],
+//       %q{^ begin
+//         |         ^ end
+//         |     ^ operator (pair)
+//         |  ~~~ expression (pair.sym)
+//         |  ~~~~~~ expression (pair)
+//         |~~~~~~~~~~ expression},
+//       SINCE_1_9)
+//   end
+// WIP FAILING
+#[test]
+fn hash_label() {
+    assert_parses!(
+        "{ foo: 2 }",
+        Node::Hash(vec![
+            Node::Pair { key: box Node::Sym(String::from("foo")), value: box Node::Int(2) }
+        ])
+    );
+}
 
 // //   def test_hash_label_end
 // //     assert_parses(

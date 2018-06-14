@@ -279,13 +279,13 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
         //           )
         //       => {
         //         value = @escape || tok(@ts + 1)
-
+        // 
         //         if version?(18)
         //           emit(:tINTEGER, value.dup.force_encoding(Encoding::BINARY)[0].ord)
         //         else
         //           emit(:tCHARACTER, value)
         //         end
-
+        // 
         //         fnext expr_end; fbreak;
         //       };
         // TODO UNIMPL
@@ -295,7 +295,7 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
         //         escape = { " "  => '\s', "\r" => '\r', "\n" => '\n', "\t" => '\t',
         //                    "\v" => '\v', "\f" => '\f' }[@source_buffer.slice(@ts + 1)]
         //         diagnostic :warning, :invalid_escape_use, { :escape => escape }, range
-
+        // 
         //         p = @ts - 1
         //         fgoto expr_end;
         //       };
@@ -413,14 +413,14 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
         //       label ( any - ':' )
         //       => {
         //         fhold;
-
+        // 
         //         if version?(18)
         //           ident = tok(@ts, @te - 2)
-
+        // 
         //           emit((@source_buffer.slice(@ts) =~ /[A-Z]/) ? :tCONSTANT : :tIDENTIFIER,
         //                ident, @ts, @te - 2)
         //           fhold; # continue as a symbol
-
+        // 
         //           if !@static_env.nil? && @static_env.declared?(ident)
         //             fnext expr_end;
         //           else
@@ -430,7 +430,7 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
         //           emit(:tLABEL, tok(@ts, @te - 2), @ts, @te - 1)
         //           fnext expr_labelarg;
         //         end
-
+        // 
         //         fbreak;
         //       };
         action_with_literal!(
