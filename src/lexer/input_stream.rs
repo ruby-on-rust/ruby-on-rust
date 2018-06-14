@@ -55,7 +55,7 @@ impl InputStream {
 
         // TODO not that elegant, use Option<Action> instead of
         let mut longest_matched_action_i: Option<usize> = None;
-        let mut longest_matched_action_len = -1; // init as -1, since there will be matching result with len 0 (c_eof)
+        let mut longest_matched_action_len = -1; // init as -1, since there will be matching result with len 0 (c_eof) // TODO handle eof
 
         let starting_pos = ( if self.entering_machine { self.p } else { self.p + 1 } ) as usize;
         let sliced_string: String = self.string.chars().skip(starting_pos).collect();
@@ -165,11 +165,10 @@ impl InputStream {
 
     fn match_action_starting_from_pos(&mut self, current_slice: &String, regex: &Regex) -> Option<usize> {
 
-        // println!("\n===\n    matching action starting from pos");
+        // println!("\n===\n    matching_action_starting_from_pos");
 
-        // println!("    current entering machine: {}", self.entering_machine);
-        // // println!("    current starting pos: {}", starting_pos);
-        // // println!("    current sliced string: {}, (len: {})", sliced_string, sliced_string.len());
+        // println!("    current starting pos: {}", starting_pos);
+        // println!("    current sliced string: {}, (len: {})", sliced_string, sliced_string.len());
         // println!("    current slice: {}, (len: {})", current_slice, current_slice.len());
         // println!("    regex: {:?}", regex);
 
@@ -179,8 +178,10 @@ impl InputStream {
             Some(capture) => {
                 let match_ = capture.get(0).unwrap();
                 let matched_str = String::from(match_.as_str());
-                // println!("    ***** matched str: {:?}", matched_str);
-                // println!("    DEBUGGING CAPTURE: capture: {:?}", capture);
+
+                // println!("        ***** matched str: {:?}", matched_str);
+                // println!("        DEBUGGING CAPTURE: capture: {:?}", capture);
+
                 return Some(matched_str.len());
             }
         }

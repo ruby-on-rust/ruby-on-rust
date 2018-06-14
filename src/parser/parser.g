@@ -1095,7 +1095,7 @@ primary
 //                       result = @builder.array(val[0], val[1], val[2])
 //                     }
     | tLBRACK aref_args tRBRACK {
-        |$1:Token, $2:Node, $3:Token| -> Node;
+        |$1:Token; $2:Node; $3:Token| -> Node;
 
         $$ = node::array($2);
     }
@@ -1104,7 +1104,7 @@ primary
 //                       result = @builder.associate(val[0], val[1], val[2])
 //                     }
     | tLBRACE assoc_list tRCURLY {
-        |$1:Token, $2:Nodes, $3:Token| -> Node;
+        |$1:Token; $2:Nodes; $3:Token| -> Node;
 
         $$ = node::associate($2);
     }
@@ -2636,7 +2636,7 @@ assoc_list
         || -> Nodes;
         $$ = vec![];
     }
-    | assocs trailer
+    | assocs trailer { $$ = $1; } // TODO i thought `$$ = $1;` is the default one, yet the parser rails without this line
 ;
 
 //           assocs: assoc

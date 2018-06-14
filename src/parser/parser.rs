@@ -1380,9 +1380,9 @@ fn _handler62(&mut self) -> SV {
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 self.values_stack.pop();
-self.values_stack.pop();
+let mut _1 = self.values_stack.pop().unwrap();
 
-let __ = SV::Undefined;
+let __ = _1;
 __
 }
 

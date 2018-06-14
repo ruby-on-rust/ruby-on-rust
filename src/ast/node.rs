@@ -31,7 +31,7 @@ pub enum Node {
     Array(Vec<Node>),
 
     Pair { key: Box<Node>, value: Box<Node> },
-    Hash(Vec<Node>), // TODO Hash(Vec<Node::Pair>) after enum variants become types
+    Hash(Nodes), // NOTE Hash(Vec<Node::Pair>) 
 
     NSelf,
 
