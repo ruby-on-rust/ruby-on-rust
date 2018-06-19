@@ -48,7 +48,7 @@ pub fn construct_machine_expr_endfn( patterns: &TMatchingPatterns, shared_action
             regex: Regex::new(r"^[[:alpha:]][[:alnum:]]*[\\?!]?:[^:]").unwrap(),
             procedure: |lexer: &mut Lexer| {
                 let slice = lexer.input_stream.token_string_from_range( lexer.input_stream.ts.unwrap(), lexer.input_stream.te.unwrap() - 2 );
-                let token = Token::T_LABLE(slice);
+                let token = Token::T_LABEL(slice);
                 lexer.emit_token(token);
                 lexer.input_stream.hold_current_char();
                 lexer.set_next_state(LexingState::ExprLabelarg);

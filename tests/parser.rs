@@ -744,7 +744,6 @@ fn hash_hashrocket() {
 //         |~~~~~~~~~~ expression},
 //       SINCE_1_9)
 //   end
-// WIP FAILING
 #[test]
 fn hash_label() {
     assert_parses!(

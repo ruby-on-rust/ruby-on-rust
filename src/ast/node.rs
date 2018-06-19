@@ -359,17 +359,30 @@ pub fn pair(key: Node, t_assoc: Token, value: Node) -> Node {
 
 // def pair_keyword(key_t, value)
 //   key_map, pair_map = pair_keyword_map(key_t, value)
-
+// 
 //   key = n(:sym, [ value(key_t).to_sym ], key_map)
-
+// 
 //   n(:pair, [ key, value ], pair_map)
 // end
+pub fn pair_keyword(key_t: Token, value: Node) -> Node {
+    // key_t: Tokne::Node::T_LABEL
+
+    // TODO INCOMPLETE pair_keyword_map
+
+    // TODO macro like value! to extract value, instead of `if let`
+    if let Token::T_LABEL(key_name) = key_t {
+        let key = Node::Sym(key_name);
+        return Node::Pair { key: box key, value: box value };
+    }
+
+    unreachable!();
+}
 
 // def pair_quoted(begin_t, parts, end_t, value)
 //   end_t, pair_map = pair_quoted_map(begin_t, end_t, value)
-
+// 
 //   key = symbol_compose(begin_t, parts, end_t)
-
+// 
 //   n(:pair, [ key, value ], pair_map)
 // end
 

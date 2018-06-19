@@ -2506,9 +2506,9 @@ var_ref
 //          f_label: tLABEL
 //                     {
 //                       check_kwarg_name(val[0])
-
+// 
 //                       @static_env.declare val[0][0]
-
+// 
 //                       result = val[0]
 //                     }
 
@@ -2682,6 +2682,10 @@ assoc
     : arg_value tASSOC arg_value {
         |$1: Node; $2: Token; $3: Node| -> Node;
         $$ = node::pair($1, *$2.interior_token, $3);
+    }
+    | tLABEL arg_value {
+        |$1: Token; $2: Node| -> Node;
+        $$ = node::pair_keyword(*$1.interior_token, $2);
     }
 ;
 

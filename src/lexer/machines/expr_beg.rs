@@ -436,7 +436,15 @@ pub fn construct_machine_expr_beg( patterns: &TMatchingPatterns, shared_actions:
         action_with_literal!(
             format!("{}[^:]", pattern_lit!("label")),
             |lexer: &mut Lexer| {
-                panic!("UNIMPL");
+                lexer.input_stream.hold_current_char();
+                // NOTE ignored ruby18 case
+
+                let current_token = lexer.input_stream.current_token_string();
+                let current_token = &current_token[0..current_token.len()-2];
+                let token = Token::T_LABEL(String::from(current_token));
+                lexer.emit_token(token);
+                lexer.set_next_state(state!("expr_labelarg"));
+                lexer.flag_breaking();
             }
         ),
 
