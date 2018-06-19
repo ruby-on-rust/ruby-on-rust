@@ -5,6 +5,7 @@ use lexer::LexingState;
 use lexer::action::{Action};
 use lexer::matching_patterns::TMatchingPatterns;
 use lexer::shared_actions::TSharedActions;
+use lexer::literal::Literal;
 
 use parser::token::InteriorToken as Token;
 
@@ -58,7 +59,7 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //       => {
         //         if @lambda_stack.last == @paren_nest
         //           @lambda_stack.pop
-
+        // 
         //           if tok == '{'.freeze
         //             emit(:tLAMBEG, '{'.freeze)
         //           else # 'do'
@@ -320,8 +321,28 @@ pub fn construct_machine_expr_end( patterns: &TMatchingPatterns, shared_actions:
         //         fgoto *push_literal(type, delimiter, @ts, nil, false, false, true);
         //       };
         // 
-        // TODO UNIMPL
+        // TODO emm what's the different between
+        //       '`' | ['"] # '
+        // and
+        //       [`'"]
         // 
+        action_with_literal!(
+            r#"`|['"]"#, |lexer: &mut Lexer| {
+                let current_slice = lexer.input_stream.current_token().unwrap();
+                let lit_type = current_slice.clone();
+                let lit_delimiter = current_slice.chars().last().unwrap().to_string();
+
+                println!("!!! current_slice {:?}", current_slice);
+                println!("!!! current_slice.chars() {:?}", current_slice.chars().last().unwrap().to_string() );
+
+                let ts = lexer.input_stream.ts.unwrap();
+                let mut literal = Literal::new(lit_type, lit_delimiter, ts, None, false, false, true );
+                for token in literal.consume_tokens_to_emit() { lexer.emit_token(token); }
+
+                let next_state = lexer.push_literal(literal);
+                lexer.set_next_state(next_state);
+            }
+        ),
 
         //       #
         //       # CONSTANTS AND VARIABLES

@@ -287,8 +287,8 @@ impl Literal {
         // Some("") -> None
         let lookahead = if (lookahead.is_some() && !lookahead.clone().unwrap().is_empty()) { lookahead } else { None };
 
-        println!("### invoking `nest_and_try_closing`, delimiter: {:?}", delimiter);
-        println!("### lookahead: {:?}", lookahead);
+        println!("### literal:nest_and_try_closing: invoking, delimiter: {:?}", delimiter);
+        println!("### literal:nest_and_try_closing: lookahead: {:?}", lookahead);
 
         if self.start_delim.is_some() && self.start_delim.clone().unwrap() == delimiter {
             self.nesting += 1;
@@ -298,7 +298,7 @@ impl Literal {
             }
         }
 
-        println!("### self.nesting: {}", self.nesting);
+        println!("### literal:nest_and_try_closing: self.nesting: {}", self.nesting);
 
         if self.nesting == 0 {
             // if words?
@@ -366,7 +366,7 @@ impl Literal {
 
     //     def infer_indent_level(line)
     //       return if !@dedent_body
-
+    // 
     //       indent_level = 0
     //       line.each_char do |char|
     //         case char
@@ -387,6 +387,8 @@ impl Literal {
     //       @interp_braces += 1
     //     end
     pub fn start_interp_brace(&mut self) {
+        println!("literal.start_interp_brace invoked");
+
         self.interp_braces += 1;
     }
 
@@ -396,7 +398,8 @@ impl Literal {
     //       (@interp_braces == 0)
     //     end
     pub fn end_interp_brace_and_try_closing(&mut self) -> bool {
-        // println!("literal:end_interp_brace_and_try_closing. self.interp_braces: {}", self.interp_braces);
+        println!("literal:end_interp_brace_and_try_closing. self.interp_braces: {}", self.interp_braces);
+
         self.interp_braces -= 1;
         self.interp_braces == 0
     }
@@ -408,14 +411,14 @@ impl Literal {
     //       @buffer << string
     //     end
     pub fn extend_string(&mut self, string: String, ts: usize, te: usize) {
-        println!("invoking literal.extend_string, string: {:?}", string);
+        println!("### literal: invoking literal.extend_string, string: {:?}", string);
 
         if self.buffer_s.is_none() { self.buffer_s = Some(ts); }
         self.buffer_e = Some(te);
 
         self.buffer += &string;
 
-        println!("invoked literal.extend_string, now buffer: {:?}", self.buffer);
+        println!("### literal: invoked literal.extend_string, now buffer: {:?}", self.buffer);
     }
 
     //     def flush_string
@@ -573,6 +576,8 @@ impl Lexer {
     // 
     // usually being called as `fgoto *push_literal`, implying it returns a state
     pub fn push_literal(&mut self, literal: Literal) -> LexingState {
+        println!("### literal: push_literal: invoked. literal: {:?}", literal);
+
         self.literal_stack.push(literal.clone());
 
         let literal = literal.clone();
@@ -612,6 +617,8 @@ impl Lexer {
     //     @literal_stack.last
     //   end
     pub fn literal(&mut self) -> Option<&mut Literal> {
+        println!("### literal: literal: invoked. literal_stack: {:?}", self.literal_stack);
+
         self.literal_stack.last_mut()
     }
 
@@ -631,7 +638,14 @@ impl Lexer {
     //   end
     // TODO DUMMY
     pub fn pop_literal(&mut self) -> LexingState {
+        println!("### literal: pop_literal: invoked");
+
         let old_literal = self.literal_stack.pop().unwrap();
+        // TODO
+        // self.dedent_level = old_literal.dedent_level;
+
+        println!("### literal: literal_stack: {:?}", self.literal_stack);
+
         state!("expr_endarg")
     }
 }

@@ -146,6 +146,7 @@ fn int() {
 #[test]
 fn string_plain() {
     assert_parses!(r"'foobar'", n_str!("foobar"));
+    assert_parses!(r#""foobar""#, n_str!("foobar"));
     assert_parses!(r"%q(foobar)", n_str!("foobar"));
 }
 
@@ -721,7 +722,6 @@ fn hash_hashrocket() {
         ])
     );
 
-    // WIP FAILING
     assert_parses!(
         r#"{ 1 => 2, :foo => "bar" }"#,
         Node::Hash(vec![
@@ -729,6 +729,7 @@ fn hash_hashrocket() {
             Node::Pair { key: box Node::Sym(String::from("foo")), value: box Node::Str(String::from("bar")) }
         ])
     );
+
 }
 
 //   def test_hash_label

@@ -265,7 +265,7 @@ pub fn construct() -> TSharedActions {
     //   }
     // TODO INCOMPLETE
     action!("extend_string", |lexer: &mut Lexer| {
-        // println!("action `extend_string` invoking. current_token: {:?}", lexer.input_stream.current_token());
+        println!("### action `extend_string` invoking. current_token: {:?}", lexer.input_stream.current_token());
 
         // TODO NAMING
         let current_string = lexer.input_stream.current_token().unwrap();
@@ -278,36 +278,33 @@ pub fn construct() -> TSharedActions {
 
             // calling literal.nest_and_try_closing is kinda complex, see notes before that fn for more detail
             let final_token_emitted = current_literal.nest_and_try_closing(current_string, lexer.input_stream.ts.unwrap(), lexer.input_stream.te.unwrap(), Some(lookahead));
-            for token_to_emit in current_literal.consume_tokens_to_emit().iter() { lexer.emit_token(token_to_emit.clone()); }
-
             if let Some(token) = final_token_emitted {
+                for token_to_emit in current_literal.consume_tokens_to_emit().iter() { lexer.emit_token(token_to_emit.clone()); }
                 lexer.emit_token(token);
 
                 // TODO handle t_label_end
 
                 // TODO DUMMY
                 let next_state = lexer.pop_literal();
+
                 lexer.set_next_state(next_state);
                 lexer.flag_breaking();
+            } else {
+                // current_literal.extend_string(string, @ts, @te)
+                current_literal.extend_string(
+                    lexer.input_stream.current_token().unwrap(),
+                    lexer.input_stream.ts.unwrap(), lexer.input_stream.te.unwrap());
+
+                // NOTE
+                // due to limitations of borrowing in rust, we have to
+                // 1 clone current_literal
+                // 2 modify it 
+                // 3 re-save it to the stack
+                // TODO need some helper fns on literal
+                lexer.literal_stack.pop();
+                lexer.literal_stack.push(current_literal);
             }
-            // (token = current_literal.nest_and_try_closing(string, @ts, @te, lookahead)
         }
-
-        // TODO DUMMY
-
-        // current_literal.extend_string(string, @ts, @te)
-        current_literal.extend_string(
-            lexer.input_stream.current_token().unwrap(),
-            lexer.input_stream.ts.unwrap(), lexer.input_stream.te.unwrap());
-
-        // NOTE
-        // due to limitations of borrowing in rust, we have to
-        // 1 clone current_literal
-        // 2 modify it 
-        // 3 re-save it to the stack
-        // TODO need some helper fns on literal
-        lexer.literal_stack.pop();
-        lexer.literal_stack.push(current_literal);
     });
 
     //   action extend_string_escaped {
@@ -441,7 +438,7 @@ pub fn construct() -> TSharedActions {
     //     fcall expr_variable;
     //   }
     action!("extend_interp_var", |lexer: &mut Lexer| {
-        // println!("action extend_interp_var");
+        println!("action extend_interp_var");
 
         let mut current_literal = lexer.literal_stack.pop().unwrap().clone();
         current_literal.flush_string();
@@ -473,7 +470,7 @@ pub fn construct() -> TSharedActions {
     //     fcall expr_value;
     //   }
     action!("extend_interp_code", |lexer: &mut Lexer| {
-        // println!("action extend_interp_code");
+        println!("action extend_interp_code");
 
         let mut current_literal = lexer.literal_stack.pop().unwrap().clone();
 
@@ -573,7 +570,7 @@ pub fn construct() -> TSharedActions {
 
     //   e_lbrace = '{' % {
     //     @cond.push(false); @cmdarg.push(false)
-
+    // 
     //     current_literal = literal
     //     if current_literal
     //       current_literal.start_interp_brace
@@ -612,7 +609,8 @@ pub fn construct() -> TSharedActions {
     //     end
     //   };
     action!("e_rbrace", |lexer: &mut Lexer| {
-        println!("action e_rbrace invoked");
+        println!("action e_rbrace: invoked");
+        println!("action e_rbrace: literal: {:?}", lexer.literal());
 
         if lexer.literal().is_none() { return; }
 
