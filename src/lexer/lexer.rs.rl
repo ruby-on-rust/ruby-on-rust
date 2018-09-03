@@ -1,15 +1,17 @@
+// TODO
+// set starting cs as lexer_en_line_begin
+
 use lexer::input::Input;
+use token::token::Token;
 
 %%{
     machine lexer;
 
     line_begin := |*
-        any;
-
-        #any
-        #=> { fhold; fgoto expr_value; };
-
-        # c_eof => do_eof;
+        digit+
+        => {
+            self.emit(Token::T_INTEGER(1));
+        };
     *|;
 }%%
 
@@ -17,6 +19,8 @@ use lexer::input::Input;
 
 pub struct Lexer {
     input: Input,
+
+    tokens: Vec<Token>,
 
     // for ragel
     cs: i32,
@@ -28,6 +32,7 @@ pub struct Lexer {
 
 impl Lexer {
     pub fn new(input: String) -> Lexer {
+        let pe = input.len(); // TODO this would be wrong with UTF8 chars
         let input = Input::new(input);
 
         let cs;
@@ -38,13 +43,20 @@ impl Lexer {
 
         Lexer {
             input,
+            tokens: vec![],
             cs, ts, te,
             p: 0,
-            pe: 0
+            pe: pe as i32,
         }
     }
 
-    pub fn advance(&mut self) {
+    // TODO DOC
+    // return a Token
+    pub fn advance(&mut self) -> Token {
+        println!("---\nlexer.advance");
+
+        if !self.tokens.is_empty() { return self.tokens.remove(0); }
+
         let data = self.input.clone();
 
         // TODO macro
@@ -54,6 +66,9 @@ impl Lexer {
         let mut ts = self.ts;
         let mut te = self.te;
 
+        // 
+        let eof = self.pe;
+
         %% write exec;
 
         self.cs = cs;
@@ -61,5 +76,16 @@ impl Lexer {
         self.pe = pe;
         self.ts = ts;
         self.te = te;
+
+        if !self.tokens.is_empty() {
+            return self.tokens.remove(0);
+        } else {
+            panic!("toimpl");
+        }
+    }
+
+    fn emit(&mut self, token: Token) {
+        println!("lexer.emit: {:?}", token);
+        self.tokens.push(token);
     }
 }
