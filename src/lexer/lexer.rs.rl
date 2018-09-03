@@ -7,11 +7,45 @@ use token::token::Token;
 %%{
     machine lexer;
 
+    include "_character_classes.rs.rl";
+    include "_token_definitions.rs.rl";
+    # include "_numeric.rs.rl";
+    include "_string_and_heredoc.rs.rl";
+    # include "_interpolation.rs.rl";
+    include "_whitespace.rs.rl";
+    # include "_expression.rs.rl";
+
+    # include "_expr_variable.rs.rl";
+    # include "_expr_fname.rs.rl";
+    # include "_expr_endfn.rs.rl";
+    # include "_expr_dot.rs.rl";
+    # include "_expr_arg.rs.rl";
+    # include "_expr_cmdarg.rs.rl";
+    # include "_expr_endarg.rs.rl";
+    # include "_expr_mid.rs.rl";
+    # include "_expr_beg.rs.rl";
+    # include "_expr_labelarg.rs.rl";
+    include "_expr_value.rs.rl";
+    # include "_expr_end.rs.rl";
+    # include "_leading_dot.rs.rl";
+    # include "_line_comment.rs.rl";
+
     line_begin := |*
-        digit+
-        => {
-            self.emit(Token::T_INTEGER(1));
-        };
+        w_any;
+
+        # '=begin' ( c_space | c_nl_zlen )
+        # => {
+        #     @eq_begin_s = @ts
+        #     fgoto line_comment;
+        # };
+
+        # '__END__' ( c_eol - zlen )
+        # => { p = pe - 3 };
+
+        c_any
+        => { fhold; fgoto expr_value; };
+
+        # c_eof => do_eof;
     *|;
 }%%
 
