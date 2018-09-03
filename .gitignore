@@ -13,8 +13,7 @@
 
 /tmp
 
-# TODO
-# /src/parser/table
+/build_lexer.sh
 
 # TODO
-/vendor/
+# /src/parser/table
