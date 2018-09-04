@@ -1,10 +1,11 @@
-%%{
 # === CHARACTER CLASSES ===
 #
 # Pay close attention to the differences between c_any and any.
 # c_any does not include EOF and so will cause incorrect behavior
 # for machine subtraction (any-except rules) and default transitions
 # for scanners.
+
+%%{
 
 action do_nl {
   // TODO
@@ -44,4 +45,5 @@ action do_eof {
   // TODO
   // fhold; fbreak;
 }
+
 }%%

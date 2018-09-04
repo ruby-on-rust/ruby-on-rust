@@ -10,6 +10,7 @@ use token::token::Token;
     include "_character_classes.rs.rl";
     include "_token_definitions.rs.rl";
     include "_numeric.rs.rl";
+    include "_escape_sequence.rs.rl";
     include "_string_and_heredoc.rs.rl";
     include "_interpolation.rs.rl";
     include "_whitespace.rs.rl";
