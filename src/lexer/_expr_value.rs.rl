@@ -6,28 +6,29 @@
 
 expr_value := |*
     # a:b: a(:b), a::B, A::B
-    # label (any - ':')
-    # => { p = @ts - 1
-    #       fgoto expr_end; };
+    label (any - ':') => {
+        // p = @ts - 1
+        // fgoto expr_end;
+    };
 
     # "bar", 'baz'
-    # ['"] # '
-    # => {
-    #   fgoto *push_literal(tok, tok, @ts);
-    # };
+    ['"] # '
+    => {
+      fgoto *push_literal(tok, tok, @ts);
+    };
 
-    # w_space_comment;
+    w_space_comment;
 
-    # w_newline
-    # => { fgoto line_begin; };
+    w_newline => {
+        fgoto line_begin;
+    };
 
     c_any
     => {
-        // TODO
-        // fhold; fgoto expr_beg;
+        fhold; fgoto expr_beg;
     };
 
-    # c_eof => do_eof;
+    c_eof => do_eof;
 *|;
 
 }%%

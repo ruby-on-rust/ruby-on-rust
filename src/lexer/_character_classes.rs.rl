@@ -34,13 +34,14 @@ c_alpha    = c_lower | c_upper;
 c_alnum    = c_alpha | [0-9];
 
 action do_eof {
-  # Sit at EOF indefinitely. #advance would return $eof each time.
-  # This allows to feed the lexer more data if needed; this is only used
-  # in tests.
-  #
-  # Note that this action is not embedded into e_eof like e_heredoc_nl and e_bs
-  # below. This is due to the fact that scanner state at EOF is observed
-  # by tests, and encapsulating it in a rule would break the introspection.
-  fhold; fbreak;
+  // # Sit at EOF indefinitely. #advance would return $eof each time.
+  // # This allows to feed the lexer more data if needed; this is only used
+  // # in tests.
+  // #
+  // # Note that this action is not embedded into e_eof like e_heredoc_nl and e_bs
+  // # below. This is due to the fact that scanner state at EOF is observed
+  // # by tests, and encapsulating it in a rule would break the introspection.
+  // TODO
+  // fhold; fbreak;
 }
 }%%

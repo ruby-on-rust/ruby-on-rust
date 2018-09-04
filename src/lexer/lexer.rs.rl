@@ -9,27 +9,28 @@ use token::token::Token;
 
     include "_character_classes.rs.rl";
     include "_token_definitions.rs.rl";
-    # include "_numeric.rs.rl";
+    include "_numeric.rs.rl";
     include "_string_and_heredoc.rs.rl";
-    # include "_interpolation.rs.rl";
+    include "_interpolation.rs.rl";
     include "_whitespace.rs.rl";
-    # include "_expression.rs.rl";
+    include "_expression.rs.rl";
 
-    # include "_expr_variable.rs.rl";
-    # include "_expr_fname.rs.rl";
-    # include "_expr_endfn.rs.rl";
-    # include "_expr_dot.rs.rl";
-    # include "_expr_arg.rs.rl";
-    # include "_expr_cmdarg.rs.rl";
-    # include "_expr_endarg.rs.rl";
-    # include "_expr_mid.rs.rl";
-    # include "_expr_beg.rs.rl";
-    # include "_expr_labelarg.rs.rl";
+    include "_expr_variable.rs.rl";
+    include "_expr_fname.rs.rl";
+    include "_expr_endfn.rs.rl";
+    include "_expr_dot.rs.rl";
+    include "_expr_arg.rs.rl";
+    include "_expr_cmdarg.rs.rl";
+    include "_expr_endarg.rs.rl";
+    include "_expr_mid.rs.rl";
+    include "_expr_beg.rs.rl";
+    include "_expr_labelarg.rs.rl";
     include "_expr_value.rs.rl";
-    # include "_expr_end.rs.rl";
-    # include "_leading_dot.rs.rl";
-    # include "_line_comment.rs.rl";
+    include "_expr_end.rs.rl";
+    include "_leading_dot.rs.rl";
+    include "_line_comment.rs.rl";
 
+    # TODO
     line_begin := |*
         w_any;
 

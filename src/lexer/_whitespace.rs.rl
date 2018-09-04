@@ -18,10 +18,15 @@ w_space =
   ;
 
 w_comment =
-    '#'     %{ @sharp_s = p - 1 }
+    '#' %{
+      // @sharp_s = p - 1
+    }
+
     # The (p == pe) condition compensates for added "\0" and
     # the way Ragel handles EOF.
-    c_line* %{ emit_comment(@sharp_s, p == pe ? p - 2 : p) }
+    c_line* %{
+      // emit_comment(@sharp_s, p == pe ? p - 2 : p)
+    }
   ;
 
 w_space_comment =
