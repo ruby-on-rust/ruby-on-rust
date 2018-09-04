@@ -1,61 +1,79 @@
 // TODO
 // set starting cs as lexer_en_line_begin
 
-use lexer::input::Input;
 use token::token::Token;
 
 %%{
     machine lexer;
 
-    include "_character_classes.rs.rl";
-    include "_token_definitions.rs.rl";
-    include "_numeric.rs.rl";
-    include "_escape_sequence.rs.rl";
-    include "_string_and_heredoc.rs.rl";
-    include "_interpolation.rs.rl";
-    include "_whitespace.rs.rl";
-    include "_expression.rs.rl";
+    # include "_character_classes.rs.rl";
+    # include "_token_definitions.rs.rl";
+    # include "_numeric.rs.rl";
+    # include "_escape_sequence.rs.rl";
+    # include "_string_and_heredoc.rs.rl";
+    # include "_interpolation.rs.rl";
+    # include "_whitespace.rs.rl";
+    # include "_expression.rs.rl";
+    #
+    # include "_expr_variable.rs.rl";
+    # include "_expr_fname.rs.rl";
+    # include "_expr_endfn.rs.rl";
+    # include "_expr_dot.rs.rl";
+    # include "_expr_arg.rs.rl";
+    # include "_expr_cmdarg.rs.rl";
+    # include "_expr_endarg.rs.rl";
+    # include "_expr_mid.rs.rl";
+    # include "_expr_beg.rs.rl";
+    # include "_expr_labelarg.rs.rl";
+    # include "_expr_value.rs.rl";
+    # include "_expr_end.rs.rl";
+    # include "_leading_dot.rs.rl";
+    # include "_line_comment.rs.rl";
+    # include "_line_begin.rs.rl";
+    
+    # DUMMY
+    line_begin := |*
+        digit+ => {
+            println!("=== digit");
+            println!("p pe ts te {} {} {} {}", p, pe, ts, te);
+            println!("current token string: {:?}", self.current_token_string(ts, te));
+            println!("data: {:?}", data);
+            // println!("input: {:?}", self.input);
 
-    include "_expr_variable.rs.rl";
-    include "_expr_fname.rs.rl";
-    include "_expr_endfn.rs.rl";
-    include "_expr_dot.rs.rl";
-    include "_expr_arg.rs.rl";
-    include "_expr_cmdarg.rs.rl";
-    include "_expr_endarg.rs.rl";
-    include "_expr_mid.rs.rl";
-    include "_expr_beg.rs.rl";
-    include "_expr_labelarg.rs.rl";
-    include "_expr_value.rs.rl";
-    include "_expr_end.rs.rl";
-    include "_leading_dot.rs.rl";
-    include "_line_comment.rs.rl";
-    include "_line_begin.rs.rl";
+            // self.emit(Token::T_INTEGER())
+        };
+
+        any => {
+            println!("=== any");
+            println!("p pe ts te {} {} {} {}", p, pe, ts, te);
+            println!("current token string: {:?}", self.current_token_string(ts, te));
+            println!("data: {:?}", data);
+        };
+    *|;
 }%%
 
 %% write data nofinal;
 
 pub struct Lexer {
-    input: Input,
+    input: String,
 
     tokens: Vec<Token>,
 
-    // for ragel
+    // ragel
     cs: i32,
     p: i32,
     pe: i32,
     ts: i32,
     te: i32,
+    // TODO act
 }
 
 impl Lexer {
     pub fn new(input: String) -> Lexer {
-        let pe = input.len(); // TODO this would be wrong with UTF8 chars
-        let input = Input::new(input);
-
         let cs;
         let ts;
         let te;
+		let pe = input.len() as i32;
 
         %% write init;
 
@@ -64,7 +82,7 @@ impl Lexer {
             tokens: vec![],
             cs, ts, te,
             p: 0,
-            pe: pe as i32,
+            pe,
         }
     }
 
@@ -75,7 +93,8 @@ impl Lexer {
 
         if !self.tokens.is_empty() { return self.tokens.remove(0); }
 
-        let data = self.input.clone();
+        // TODO utf8 uncompatible
+        let data = self.input.as_bytes();
 
         // TODO macro
         let mut cs = self.cs;
@@ -100,6 +119,12 @@ impl Lexer {
         } else {
             panic!("toimpl");
         }
+    }
+
+    // TODO CRITICAL utf8 uncompatible
+    // TODO macro!
+    fn current_token_string(&self, ts: i32, te: i32) -> String {
+        self.input.chars().skip(ts as usize).take( ( te - ts ) as usize ).collect()
     }
 
     fn emit(&mut self, token: Token) {
