@@ -34,20 +34,11 @@ use token::token::Token;
     # DUMMY
     line_begin := |*
         digit+ => {
-            println!("=== digit");
-            println!("p pe ts te {} {} {} {}", p, pe, ts, te);
-            println!("current token string: {:?}", self.current_token_string(ts, te));
-            println!("data: {:?}", data);
-            // println!("input: {:?}", self.input);
-
-            // self.emit(Token::T_INTEGER())
+            let v = self.current_token_string(ts, te).parse::<isize>().unwrap();
+            self.emit(Token::T_INTEGER(v));
         };
 
         any => {
-            println!("=== any");
-            println!("p pe ts te {} {} {} {}", p, pe, ts, te);
-            println!("current token string: {:?}", self.current_token_string(ts, te));
-            println!("data: {:?}", data);
         };
     *|;
 }%%
@@ -94,7 +85,8 @@ impl Lexer {
         if !self.tokens.is_empty() { return self.tokens.remove(0); }
 
         // TODO utf8 uncompatible
-        let data = self.input.as_bytes();
+		let _input = self.input.clone();
+		let data = _input.as_bytes();
 
         // TODO macro
         let mut cs = self.cs;
