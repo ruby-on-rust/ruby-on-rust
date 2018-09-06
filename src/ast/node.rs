@@ -3,7 +3,7 @@
 
 // https://raw.githubusercontent.com/whitequark/parser/2a73841d6da04a5ab9bd270561165fd766722d43/lib/parser/builders/default.rb
 
-use parser::token::InteriorToken as Token;
+use token::token::Token;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Node {
@@ -342,7 +342,7 @@ pub fn words_compose(parts: Node) -> Node {
 // end
 pub fn pair(key: Node, t_assoc: Token, value: Node) -> Node {
     // TODO binary_op_map
-    Node::Pair { key: box key, value: box value }
+    Node::Pair { key: Box::new(key), value: Box::new(value) }
 }
 
 // def pair_list_18(list)
@@ -372,7 +372,7 @@ pub fn pair_keyword(key_t: Token, value: Node) -> Node {
     // TODO macro like value! to extract value, instead of `if let`
     if let Token::T_LABEL(key_name) = key_t {
         let key = Node::Sym(key_name);
-        return Node::Pair { key: box key, value: box value };
+        return Node::Pair { key: Box::new(key), value: Box::new(value) };
     }
 
     unreachable!();
@@ -545,7 +545,7 @@ pub fn build_const(name: Token) -> Node {
 pub fn const_global(t_colon3: Token, name: Token) -> Node {
     if let Token::T_CONSTANT(const_name) = name {
         return Node::Const {
-            scope: Some(box Node::CBase),
+            scope: Some(Box::new(Node::CBase)),
             name: const_name
         }
     }
@@ -559,7 +559,7 @@ pub fn const_global(t_colon3: Token, name: Token) -> Node {
 pub fn const_fetch(scope: Node, _colon2: Token, name: Token) -> Node {
     if let Token::T_CONSTANT(name_str) = name {
         return Node::Const {
-            scope: Some(box scope),
+            scope: Some(Box::new(scope)),
             name: name_str
         };
     }

@@ -17,5 +17,6 @@
 /build_lexer.sh
 /src/lexer/lexer.rs
 
-# TODO
-# /src/parser/table
+# parser
+/src/parser/table
+/src/parser/parser.rs

@@ -1,21 +1,19 @@
-pub type TokenString = String;
-
 // TODO refine order of token variants
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, AsRefStr)]
 pub enum Token {
     T_INTEGER( isize ),
-    T_GVAR( TokenString ),
-    T_CONSTANT( TokenString ),
-    T_IDENTIFIER( TokenString ),
-    T_LABEL( TokenString ),
+    T_GVAR( String ),
+    T_CONSTANT( String ),
+    T_IDENTIFIER( String ),
+    T_LABEL( String ),
     T_LABEL_END,
-    T_IVAR( TokenString ),
-    T_FID( TokenString ),
-    T_UNARY_NUM( TokenString ),
-    T_SYMBOL( TokenString ),
+    T_IVAR( String ),
+    T_FID( String ),
+    T_UNARY_NUM( String ),
+    T_SYMBOL( String ),
 
-    T_STRING( TokenString ),
-    T_STRING_CONTENT( TokenString ),
+    T_STRING( String ),
+    T_STRING_CONTENT( String ),
 
     T_STRING_BEG,
     T_STRING_END,
@@ -140,4 +138,8 @@ pub enum Token {
     T_UMINUS,
     T_UPLUS,
     T_SPACE,
+
+    // NOTE
+    // dummy token, so we dont have to use `interior_token: Option<Token>` in parser's wrapped Token
+    T_EOF,
 }

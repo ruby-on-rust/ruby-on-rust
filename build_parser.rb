@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# TODO refine this file
+
 puts "invoking generator..."
 
 puts "validating grammar..."
@@ -125,6 +127,12 @@ fn _handler#{i}(&mut self) -> SV {\n
   ]
 end
 
+# 
+# parser: &'static str -> &str
+# 
+content.gsub! 'pub fn parse(&mut self, string: &\'static str) -> TResult {', 'pub fn parse(&mut self, string: &str) -> TResult {'
+
+
 File.open parser_file, "w" do |file| file.puts content end
 
 #
@@ -145,6 +153,8 @@ tokens_map = original_map.transform_keys do |k|
     'K_' + k.delete_prefix('k')
   when k == '$'
     k
+  else
+    raise 'unreachable!'
   end
 end
 
@@ -152,32 +162,3 @@ token_file = 'src/parser/token.rs'
 content = File.read token_file
 content.gsub! /(\/\/\ STARTING\ OF\ TOKENS_MAP)(.*?)(\/\/\ END\ OF\ TOKENS_MAP\n)/m, "// STARTING OF TOKENS_MAP\n" + "let tokens_map: HashMap<&str, isize> = hashmap! #{tokens_map.to_s};" + "\n// END OF TOKENS_MAP\n"
 File.open token_file, "w" do |file| file.puts content end
-
-# TODO
-
-#[derive(Debug)]
-# enum SV
-
-# macro_rules! get_result {
-#   ($r:expr, $ty:ident) => ({
-#       println!("get_result!");
-#       println!("$r: {:?}", stringify!($r) );
-#       println!("$ty: {:?}", stringify!($ty) );
-# 
-#       // match $r {
-#       //     SV::_1(v) => { panic!("matched _1"); },
-#       //     _ => { println!("matched _"); panic!("a"); }
-#       // }
-# 
-#       // let mut tester: () = $r;
-#       let rr = $r;
-#       match rr {
-#           SV::$ty(v) => { v },
-#           _ => {
-#               println!("###$r {:?}", rr );
-#               println!("###$ty: {:?}", stringify!($ty) );
-#               unreachable!()
-#           }
-#       }
-#   });
-# }

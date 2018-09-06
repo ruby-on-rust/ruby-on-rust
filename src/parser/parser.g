@@ -64,7 +64,8 @@
 
 %{
 
-use parser::token::{ InteriorToken, Token };
+use token::token::Token as InteriorToken;
+use parser::token::Token;
 use parser::tokenizer::Tokenizer;
 use ast::node;
 use ast::node::{ Node, Nodes };
@@ -1871,7 +1872,7 @@ string1
         |$1:Token| -> Node;
 
         let $$;
-        if let box InteriorToken::T_STRING(string_value) = $1.interior_token {
+        if let InteriorToken::T_STRING(string_value) = *$1.interior_token {
             <REMOVE THIS LET>$$ = Node::Str(string_value);
         } else { unreachable!(); }
         // TODO builder.dedent_string
@@ -2096,7 +2097,7 @@ string_content
         |$1:Token| -> Node;
 
         let $$;
-        if let box InteriorToken::T_STRING_CONTENT(string_value) = $1.interior_token {
+        if let InteriorToken::T_STRING_CONTENT(string_value) = *$1.interior_token {
             <REMOVE THIS LET>$$ = Node::Str(string_value);
         } else { unreachable!(); } 
     }
@@ -2175,7 +2176,7 @@ simple_numeric
 
         let $$;
         if let SV::_0(token) = $1 {
-            if let box InteriorToken::T_INTEGER(value) = token.interior_token {
+            if let InteriorToken::T_INTEGER(value) = *token.interior_token {
                 <REMOVE THIS LET>$$ = Node::Int(value);
             } else { unreachable!(); }
         } else { unreachable!(); }
