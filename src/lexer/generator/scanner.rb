@@ -42,7 +42,13 @@ class Scanner
                 action
               end
 
+    # 
     # transform action
+    # 
+
+    # fhold
+    action.gsub! 'fhold;', 'self.p -= 1;'
+
     action = '||' + action
 
     @patterns << {
@@ -58,7 +64,7 @@ class Scanner
             // getting the longest match
             //
             let mut longest_match_len: isize = -1; // TODO HACKING init as -1 since there would be matched with len being 0
-            let mut longest_match_action: Option<fn() -> ()> = None;
+            let mut longest_match_action: Option<Box<FnMut()>> = None;
 
             let slice_from_current_pos: String = self.input.chars().skip(self.p).collect();
 
@@ -83,7 +89,7 @@ class Scanner
                         if matched_slice_len > longest_match_len {
                             longest_match_len = matched_slice_len;
                             let action = #{p[:action]};
-                            longest_match_action = Some(action);
+                            longest_match_action = Some(Box::new(action));
                         }
 
                         // println!(\"        ***** matched str: {:?}\", matched_slice);

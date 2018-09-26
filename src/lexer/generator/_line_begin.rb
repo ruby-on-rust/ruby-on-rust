@@ -20,7 +20,7 @@ s.p p!( '__END__', p!( :c_eol, :-, :zlen ) ), %q{{
 #       c_any
 #       => { fhold; fgoto expr_value; };
 s.p :c_any, %q{{
-    //fhold
+    fhold;
     //fgoto expr_value
 }}
 
