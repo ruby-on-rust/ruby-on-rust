@@ -10,11 +10,13 @@ require_relative 'pattern'
 require_relative 'scanner'
 
 def p! *p
-  Pattern.parse *p
+  Pattern.new *p
 end
 
 # 
 # define a machine
+# 
+# machine is basically a pattern with a name
 # 
 # m name, *pattern_rules
 # m :c_nl, '\n'
@@ -26,9 +28,7 @@ end
 # m name, [rule_1, rule_2...] => rule_1 or rule_2 or ...
 # 
 def m! name, *p
-  $machines[name] = {
-    regex: p!(*p)
-  }
+  $machines[name] = p!(*p)
 end
 
 # 
@@ -65,8 +65,26 @@ require_relative '_line_begin.rb'
 puts 'machines:'
 pp $machines
 
+puts 'scanners:'
+pp $scanners
+
 # 
-# write rust code 
+# write rust code for lexer#advance
 # 
 
+lexer_rs_rl_content = File.read './src/lexer/lexer.rs.rl'
 
+lexer_advance_loop = """
+loop {
+    match self.current_state {
+        #{$scanners.map{|name, scanner| scanner.code }.join}
+        _ => panic!(\"unreachable\")
+    };
+}
+"""
+
+lexer_rs_rl_content.gsub! "// %% write exec\n", lexer_advance_loop
+
+File.open './src/lexer/lexer.rs', 'w' do |f| f.write lexer_rs_rl_content end
+
+# puts lexer

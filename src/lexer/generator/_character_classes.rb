@@ -77,7 +77,7 @@ m! :c_any, '.', :-, :c_eof # TODO leverage/embrace native class in rust's regex
 m! :c_nl_zlen, %i(c_nl zlen)
 # c_line     = any - c_nl_zlen;
 
-# c_unicode  = c_any - 0x00..0x7f;
+# c_unicode  = c_any - 0x00..0x7f; # TODO
 # c_upper    = [A-Z];
 m! :c_upper, '[[:upper:]]'
 # c_lower    = [a-z_]  | c_unicode;

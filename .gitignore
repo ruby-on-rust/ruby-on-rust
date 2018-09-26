@@ -14,9 +14,10 @@
 /tmp
 
 # lexer
-/build_lexer.sh
 /src/lexer/lexer.rs
 
 # parser
 /src/parser/table
 /src/parser/parser.rs
+
+.byebug_history
