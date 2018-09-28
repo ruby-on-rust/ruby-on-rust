@@ -69,9 +69,13 @@ class Scanner
 
                 let pattern_regex = Regex::new(r\"#{regex}\").unwrap(); // TODO PERFORMANCE
 
+                println!(\"      matching pattern with regex: {:?}\", pattern_regex);
+
                 let captures = pattern_regex.captures(&slice_from_current_pos);
                 match captures {
-                    None => {},
+                    None => {
+                        println!(\"        matched none\");
+                    },
                     Some(capture) => {
                         let match_ = capture.get(0).unwrap();
                         let matched_slice = String::from(match_.as_str());
@@ -82,7 +86,7 @@ class Scanner
                             longest_match_action_key = #{action.id};
                         }
 
-                        // println!(\"        ***** matched str: {:?}\", matched_slice);
+                        println!(\"        matched slice: {:?}\", matched_slice);
                         // println!(\"        DEBUGGING CAPTURE: capture: {:?}\", capture);
                     }
                 }
@@ -90,7 +94,9 @@ class Scanner
             }.join}
 
             match longest_match_action_key {
-                -1 => {},
+                -1 => {
+                    panic!(\"unreachable! no matched action to invoke\");
+                },
                 #{$actions.map{ |id, action|
                     """
                 #{id} => #{action.code},

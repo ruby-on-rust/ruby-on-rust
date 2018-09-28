@@ -28,14 +28,44 @@ class Action
   private
 
   def transform!
+    header_comment =  if @name
+                        "action: #{@name}"
+                      else
+                        "anonymouse action"
+                      end
+
     # wrapper
     @code = """
             {
+                // #{header_comment}
+                println!(\"      invoking action: #{@name}\");
                 #{@code}
             }
             """
 
     # fhold
-    @code.gsub! 'fhold;', 'self.p -= 1;' # TODO should use a flag like is_holding
+    @code.gsub! 'fhold;', 'is_holding = true;'
+
+    # fbreak
+    @code.gsub! 'fbreak;', 'is_breaking = true;'
+
+    # fgoto
+    # 
+    #   fgoto expr_value;
+    # 
+    # @code.gsub!(/fgoto (.+);/) do |state|
+    #   'self.next_state = \1;'
+    # end
+    # TODO the code above doesnot work
+
+    if match = @code.match(/fgoto (.+);/)
+      state = match.captures.first
+
+      @code.gsub! /fgoto (.+);/, "self.next_state = Some(String::from(\"#{state}\"));"
+    end
+
+    # byebug if state
+
+    # "foobar".gsub(/(o+)/){|s|s+'ball'}
   end
 end

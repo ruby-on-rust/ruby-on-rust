@@ -21,7 +21,7 @@ s.p p!( '__END__', p!( :c_eol, :-, :zlen ) ), %q{
 #       => { fhold; fgoto expr_value; };
 s.p :c_any, %q{
     fhold;
-    //fgoto expr_value
+    fgoto expr_value;
 }
 
 #       c_eof => do_eof;

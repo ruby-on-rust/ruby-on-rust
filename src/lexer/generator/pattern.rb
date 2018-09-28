@@ -3,6 +3,7 @@
 # pattern is a what
 # 
 class Pattern
+  # attr_reader :label
   attr_reader :regex
 
   # 
@@ -16,6 +17,7 @@ class Pattern
   # m [rule_1, rule_2...] => rule_1 or rule_2 or ...
   # 
   def initialize *p
+    # @label = p.to_s
     @regex =  case p.size
               when 1
                 Pattern.parse_segment p[0]
@@ -34,6 +36,7 @@ class Pattern
               else
                 raise 'unreachable'
               end
+    @regex = "^(?ms:#{@regex})"
   end
 
   private

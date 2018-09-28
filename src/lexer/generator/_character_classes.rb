@@ -71,7 +71,7 @@ m! :c_eof, [ '' ] # TODO INCOMPLETE
 # c_eol      = c_nl | c_eof;
 m! :c_eol, %i(c_nl c_eof)
 # c_any      = any - c_eof;
-m! :c_any, '.', :-, :c_eof # TODO leverage/embrace native class in rust's regex
+m! :c_any, '.' # TODO note completely same
 
 # c_nl_zlen  = c_nl | zlen;
 m! :c_nl_zlen, %i(c_nl zlen)
