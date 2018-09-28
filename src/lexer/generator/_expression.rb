@@ -60,3 +60,11 @@
 #     fnext *arg_or_cmdarg; fbreak;
 #   end
 # }
+
+a! :local_ident, %q{
+    emit TIdentifier;
+
+    // TODO INCOMPLETE
+    fnext expr_endfn;
+    fbreak;
+}

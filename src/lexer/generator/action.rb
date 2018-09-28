@@ -53,19 +53,38 @@ class Action
     # 
     #   fgoto expr_value;
     # 
-    # @code.gsub!(/fgoto (.+);/) do |state|
-    #   'self.next_state = \1;'
-    # end
-    # TODO the code above doesnot work
-
-    if match = @code.match(/fgoto (.+);/)
-      state = match.captures.first
-
-      @code.gsub! /fgoto (.+);/, "self.next_state = Some(String::from(\"#{state}\"));"
+    # NOTE
+    # this emulated-fgoto will transfer the state after this action, instead of immediately,
+    # apparently that's ok, since all `fgoto` occurs at the end of an action
+    # 
+    @code.gsub!(/fgoto (.+);/) do |match|
+      "self.next_state = Some(String::from(\"#$1\"));"
     end
 
-    # byebug if state
+    # fnext
+    # 
+    #   fnext expr_value;
+    # 
+    @code.gsub!(/fnext (.+);/) do |match|
+      "self.next_state = Some(String::from(\"#$1\"));"
+    end
 
-    # "foobar".gsub(/(o+)/){|s|s+'ball'}
+    # TODO fnext*
+
+    # emit
+    # 
+    # emit TIdentifier;
+    # 
+    @code.gsub!(/emit ([TK].+);/) do |match|
+      variant = $1
+
+      # TIdentifier -> T_IDENTIFIER
+      variant = variant[0] + '_' + variant.slice(1..-1).upcase
+
+      """
+      let token = Token::#{variant}(current_matched_slice.clone());
+      self.tokens.push(token);
+      """
+    end
   end
 end

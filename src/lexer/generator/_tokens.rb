@@ -64,10 +64,13 @@ m! :operator_fname, '\[\]' # TODO ESCAPE
 
 # constant       = c_upper c_alnum*;
 # bareword       = c_alpha c_alnum*;
+m! :bareword, '[[:upper:]][[:alnum:]]*'
 
 # call_or_var    = c_lower c_alnum*;
+m! :call_or_var, '[[:lower:]][[:alnum:]]*'
 # class_var      = '@@' bareword;
 # instance_var   = '@' bareword;
+m! :instance_var, '@', :bareword
 # global_var     = '$'
 #     ( bareword | digit+
 #     | [`'+~*$&?!@/\\;,.=:<>"] # `
@@ -81,3 +84,4 @@ m! :operator_fname, '\[\]' # TODO ESCAPE
 # instance_var_v = '@' c_alnum+;
 
 # label          = bareword [?!]? ':';
+# m! :label, [:bareword, [?!]

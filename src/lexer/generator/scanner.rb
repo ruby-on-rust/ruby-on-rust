@@ -24,7 +24,7 @@ class Scanner
   def p pattern, action
     pattern = case pattern
               when Symbol
-                $machines[pattern]
+                $machines[pattern] or raise "unknown pattern :#{pattern}"
               when Pattern
                 pattern
               else
@@ -59,6 +59,7 @@ class Scanner
             let slice_from_current_pos: String = self.input.chars().skip(self.p).collect();
 
             #{@patterns.map{|p|
+                byebug unless p[:pattern]
                 regex = p[:pattern].regex
                 action = p[:action]
 
@@ -83,27 +84,21 @@ class Scanner
 
                         if matched_slice_len > longest_match_len {
                             longest_match_len = matched_slice_len;
-                            longest_match_action_key = #{action.id};
+                            current_matched_action_id = #{action.id};
+                            current_matched_slice = matched_slice.clone();
                         }
 
-                        println!(\"        matched slice: {:?}\", matched_slice);
+                        println!(\"        matched slice: {:?}\", matched_slice.clone());
                         // println!(\"        DEBUGGING CAPTURE: capture: {:?}\", capture);
                     }
                 }
             """
             }.join}
 
-            match longest_match_action_key {
-                -1 => {
-                    panic!(\"unreachable! no matched action to invoke\");
-                },
-                #{$actions.map{ |id, action|
-                    """
-                #{id} => #{action.code},
-                    """
-                }.join}
-                _ => { panic!(\"unreachable!\"); }
+            if longest_match_len == -1 {
+                panic!(\"unreachable! matched nothing\");
             }
+
         },
         """
   end

@@ -3,3 +3,5 @@ lexer: ruby-lexer-gem: what's about @tokens and @token_queue
 lexer: CRITICAL not handling utf8 now
 
 lexer: ragel, p, @p
+
+all: unite T_IDENTIFIER TIdentifier

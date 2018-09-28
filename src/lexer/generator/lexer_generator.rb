@@ -58,10 +58,10 @@ require_relative '_expression'
 # require_relative '_expr_cmdarg.rb'
 # require_relative '_expr_endarg.rb'
 # require_relative '_expr_mid.rb'
-# require_relative '_expr_beg.rb'
+require_relative '_expr_beg.rb'
 # require_relative '_expr_labelarg.rb'
-# require_relative '_expr_value.rb'
-# require_relative '_expr_end.rb'
+require_relative '_expr_value.rb'
+require_relative '_expr_end.rb'
 # require_relative '_leading_dot.rb'
 # require_relative '_line_comment.rb'
 require_relative '_line_begin.rb'
@@ -81,6 +81,19 @@ lexer_rs_rl_content = File.read './src/lexer/lexer.rs.rl'
 
 lexer_rs_rl_content.gsub! "// %% write each scanners branch\n", $scanners.map{|name, scanner| scanner.code }.join
 
+lexer_rs_rl_content.gsub! "// %% write invoke matched action\n", """
+            match current_matched_action_id {
+              -1 => {
+                  panic!(\"unreachable! no matched action to invoke\");
+              },
+              #{$actions.map{ |id, action|
+                  """
+              #{id} => #{action.code},
+                  """
+              }.join}
+              _ => { panic!(\"unreachable!\"); }
+            }
+"""
 
 File.open './src/lexer/lexer.rs', 'w' do |f| f.write lexer_rs_rl_content end
 

@@ -31,6 +31,8 @@ impl Lexer {
         if !self.tokens.is_empty() { return Some(self.tokens.remove(0)); }
 
         let mut is_holding = true; // TODO NOTE
+        let mut current_matched_slice = String::from("");
+        let mut current_matched_action_id = -1;
 
         loop {
             println!("  lexer#advance: looping...");
@@ -52,18 +54,24 @@ impl Lexer {
             }
 
             match self.current_state.as_ref() {
+                // 
                 // %% write each scanners branch
+                // 
                 // NOTE
                 // that includes
                 //   finding the longest match
-                //   invoking the action
-                _ => { panic!("unreachable: cant match current_state"); }
+                _ => { panic!("unreachable: cant match current_state {}", self.current_state.clone()); }
             };
+
+            // 
+            // %% write invoke matched action
+            // 
 
             if is_breaking { break; }
         }
 
-        panic!("WIP");
+        if !self.tokens.is_empty() { return Some(self.tokens.remove(0)); }
+        panic!("no tokens");
     }
 
 }
