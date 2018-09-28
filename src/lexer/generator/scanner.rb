@@ -19,9 +19,7 @@ class Scanner
   #   nil           -> {}
   #   :action_name
   #   code block like
-  #   {
   #       let a = 1;
-  #   }
   # 
   def p pattern, action
     pattern = case pattern
@@ -34,22 +32,14 @@ class Scanner
               end
 
     action =  case action
-              when nil
-                '{}'
               when Symbol
-                '{}'
+                Action.find_by_name action
+              when nil
+                Action.find_by_name :nil
               when String
-                action
+                new_action = Action.new action, nil
+                new_action
               end
-
-    # 
-    # transform action
-    # 
-
-    # fhold
-    action.gsub! 'fhold;', 'self.p -= 1;'
-
-    action = '||' + action
 
     @patterns << {
       pattern: pattern,
@@ -59,17 +49,18 @@ class Scanner
 
   def code
         """
-        #{@name} => {
+        \"#{@name}\" => {
             //
             // getting the longest match
             //
             let mut longest_match_len: isize = -1; // TODO HACKING init as -1 since there would be matched with len being 0
-            let mut longest_match_action: Option<Box<FnMut()>> = None;
+            let mut longest_match_action_key: isize = -1;
 
             let slice_from_current_pos: String = self.input.chars().skip(self.p).collect();
 
             #{@patterns.map{|p|
                 regex = p[:pattern].regex
+                action = p[:action]
 
             """
                 //
@@ -88,8 +79,7 @@ class Scanner
 
                         if matched_slice_len > longest_match_len {
                             longest_match_len = matched_slice_len;
-                            let action = #{p[:action]};
-                            longest_match_action = Some(Box::new(action));
+                            longest_match_action_key = #{action.id};
                         }
 
                         // println!(\"        ***** matched str: {:?}\", matched_slice);
@@ -99,8 +89,14 @@ class Scanner
             """
             }.join}
 
-            if let Some(action) = longest_match_action {
-                action();
+            match longest_match_action_key {
+                -1 => {},
+                #{$actions.map{ |id, action|
+                    """
+                #{id} => #{action.code},
+                    """
+                }.join}
+                _ => { panic!(\"unreachable!\"); }
             }
         },
         """

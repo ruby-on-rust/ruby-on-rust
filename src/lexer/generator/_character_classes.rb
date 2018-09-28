@@ -97,3 +97,6 @@ m! :c_alnum, '[[:alnum:]]'
 #   # by tests, and encapsulating it in a rule would break the introspection.
 #   fhold; fbreak;
 # }
+a! :do_eof, %q{
+    // TODO
+}

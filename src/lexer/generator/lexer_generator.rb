@@ -6,6 +6,7 @@ $actions = {}
 $machines = {}
 $scanners = {}
 
+require_relative 'action'
 require_relative 'pattern'
 require_relative 'scanner'
 
@@ -34,8 +35,12 @@ end
 # 
 # action
 # 
-def a!
+def a! name, code
+  Action.new code, name
 end
+
+# pre-defined actions
+a! :nil, ''
 
 require_relative '_character_classes'
 require_relative '_tokens'
@@ -74,16 +79,8 @@ pp $scanners
 
 lexer_rs_rl_content = File.read './src/lexer/lexer.rs.rl'
 
-lexer_advance_loop = """
-loop {
-    match self.current_state {
-        #{$scanners.map{|name, scanner| scanner.code }.join}
-        _ => panic!(\"unreachable\")
-    };
-}
-"""
+lexer_rs_rl_content.gsub! "// %% write each scanners branch\n", $scanners.map{|name, scanner| scanner.code }.join
 
-lexer_rs_rl_content.gsub! "// %% write exec\n", lexer_advance_loop
 
 File.open './src/lexer/lexer.rs', 'w' do |f| f.write lexer_rs_rl_content end
 
