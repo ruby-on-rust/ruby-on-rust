@@ -22,7 +22,7 @@
 # empty — Empty set. Matches nothing. ^any
 # 
 
-m! :zlen, '' # TODO
+m! :zlen, '$' # TODO i don't think they are the same?
 
 # 
 # regex built in character classes
@@ -71,7 +71,7 @@ m! :c_eof, [ '' ] # TODO INCOMPLETE
 # c_eol      = c_nl | c_eof;
 m! :c_eol, %i(c_nl c_eof)
 # c_any      = any - c_eof;
-m! :c_any, '.' # TODO note completely same
+m! :c_any, '.' # TODO not completely same
 
 # c_nl_zlen  = c_nl | zlen;
 m! :c_nl_zlen, %i(c_nl zlen)

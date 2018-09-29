@@ -8,3 +8,7 @@ all: unite T_IDENTIFIER TIdentifier
 
 lexer:
   currently we only stored token's value, and dropped the location info
+
+lexer:
+  simplify generator:
+    write the patterns table at once, before looping

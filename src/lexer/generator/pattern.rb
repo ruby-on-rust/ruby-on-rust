@@ -36,8 +36,6 @@ class Pattern
               else
                 raise 'unreachable'
               end
-    # wrap
-    @regex = "^(?ms:#{@regex})"
   end
 
   private
@@ -53,7 +51,7 @@ class Pattern
       when String
         pattern
       when Array
-        '[' + pattern.map{|p| "(#{parse_segment p})" }.join + ']'
+        '(' + pattern.map{|p| "(#{parse_segment p})" }.join('|') + ')'
       else
         raise "unreachable with pattern #{pattern.inspect}"
       end

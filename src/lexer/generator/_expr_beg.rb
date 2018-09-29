@@ -132,7 +132,7 @@ s = Scanner.new :expr_beg
 #       fnext expr_end; fbreak;
 #     };
 # TODO INCOMPLETE
-s.p p!( ':', [ :bareword ] ), %q{
+s.p p!( ':', [ :bareword, :class_var ] ), %q{
     emit TSymbol, 1, 0;
 
     fnext expr_end;
