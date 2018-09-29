@@ -36,6 +36,7 @@ class Pattern
               else
                 raise 'unreachable'
               end
+    # wrap
     @regex = "^(?ms:#{@regex})"
   end
 

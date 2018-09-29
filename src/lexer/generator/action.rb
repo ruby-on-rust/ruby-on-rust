@@ -73,18 +73,27 @@ class Action
 
     # emit
     # 
-    # emit TIdentifier;
+    # emit TIdentifier, token_start_offset, token_end_offset;
     # 
-    @code.gsub!(/emit ([TK].+);/) do |match|
+    #     for TIdentifier(ts+start_offset, te+start_offset)
+    # 
+    # emit TIdentifier; => emit TIdentifier, 0, 0;
+    # 
+    @code.gsub!(/emit (\w+);/) do |match| "emit #$1, 0, 0;" end
+    @code.gsub!(/emit (\w+), (\d+), (\d+);/) do |match|
       variant = $1
+      start_offset = $2
+      end_offset = $3
 
       # TIdentifier -> T_IDENTIFIER
       variant = variant[0] + '_' + variant.slice(1..-1).upcase
 
       """
-      let token = Token::#{variant}(current_matched_slice.clone());
+      let slice = self.get_input_slice(matched_slice_start_pos + #{start_offset}, matched_slice_end_pos + #{end_offset});
+      let token = Token::#{variant}(slice);
       self.tokens.push(token);
       """
     end
+
   end
 end

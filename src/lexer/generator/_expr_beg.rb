@@ -131,6 +131,13 @@ s = Scanner.new :expr_beg
 #       emit(:tSYMBOL, tok(@ts + 1), @ts)
 #       fnext expr_end; fbreak;
 #     };
+# TODO INCOMPLETE
+s.p p!( ':', [ :bareword ] ), %q{
+    emit TSymbol, 1, 0;
+
+    fnext expr_end;
+    fbreak;
+}
 
 #     #
 #     # AMBIGUOUS TERNARY OPERATOR

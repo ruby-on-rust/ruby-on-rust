@@ -79,13 +79,13 @@ class Scanner
                     },
                     Some(capture) => {
                         let match_ = capture.get(0).unwrap();
-                        let matched_slice = String::from(match_.as_str());
-                        let matched_slice_len = matched_slice.len() as isize;
+                        let matched_slice_ = String::from(match_.as_str());
+                        let matched_slice_len = matched_slice_.len() as isize;
 
                         if matched_slice_len > longest_match_len {
                             longest_match_len = matched_slice_len;
-                            current_matched_action_id = #{action.id};
-                            current_matched_slice = matched_slice.clone();
+                            matched_slice = Some(matched_slice_.clone());
+                            matched_action_id = #{action.id};
                         }
 
                         println!(\"        matched slice: {:?}\", matched_slice.clone());

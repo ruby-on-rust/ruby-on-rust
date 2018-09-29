@@ -77,22 +77,16 @@ pp $scanners
 # write rust code for lexer#advance
 # 
 
-lexer_rs_rl_content = File.read './src/lexer/lexer.rs.rl'
+lexer_rs_rl_content = File.read './src/lexer/lexer.rl.rs'
 
 lexer_rs_rl_content.gsub! "// %% write each scanners branch\n", $scanners.map{|name, scanner| scanner.code }.join
 
-lexer_rs_rl_content.gsub! "// %% write invoke matched action\n", """
-            match current_matched_action_id {
-              -1 => {
-                  panic!(\"unreachable! no matched action to invoke\");
-              },
+lexer_rs_rl_content.gsub! "// %% write matching action\n", """
               #{$actions.map{ |id, action|
                   """
               #{id} => #{action.code},
                   """
               }.join}
-              _ => { panic!(\"unreachable!\"); }
-            }
 """
 
 File.open './src/lexer/lexer.rs', 'w' do |f| f.write lexer_rs_rl_content end

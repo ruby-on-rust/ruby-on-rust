@@ -5,3 +5,6 @@ lexer: CRITICAL not handling utf8 now
 lexer: ragel, p, @p
 
 all: unite T_IDENTIFIER TIdentifier
+
+lexer:
+  currently we only stored token's value, and dropped the location info
