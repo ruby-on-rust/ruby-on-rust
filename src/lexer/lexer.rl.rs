@@ -9,7 +9,7 @@ pub struct Lexer {
     current_state: String, // "line_begin"
     next_state: Option<String>,
 
-    p: usize
+    p: isize
 }
 
 impl Lexer {
@@ -19,7 +19,7 @@ impl Lexer {
             tokens: vec![],
             current_state: String::from("line_begin"),
             next_state: None,
-            p: 0,
+            p: -1,
         }
     }
 
@@ -31,23 +31,29 @@ impl Lexer {
         if !self.tokens.is_empty() { return Some(self.tokens.remove(0)); }
 
         // define these here to preserve value out of looping
-        let mut is_holding = true; // TODO NOTE init as true, so done have to handle -1
+        let mut is_holding = false;
         let mut matched_slice: Option<String> = None; 
 
         loop {
+            // transfer pointers
+            if !is_holding {
+                self.p += 1;
+
+                // detect EOF
+                if self.p as usize == self.input.len() {
+                    print!("EOF detected!");
+                    return None;
+                }
+            }
+
+            // refresh
             let mut is_breaking = false;
+            is_holding = false;
 
             println!("  lexer#advance: looping...");
             println!("    current_state: {}", self.current_state);
             println!("    next_state: {:?}", self.next_state);
-            println!("    is_holding: {:?}", is_holding);
-
-            // transfer pointers
-            if !is_holding {
-                self.p += 1;
-            }
             println!("    self.p: {:?}", self.p);
-            is_holding = false;
 
             // transfer to next state
             if let Some(next_state) = self.next_state.clone() {
@@ -57,8 +63,8 @@ impl Lexer {
 
             matched_slice = None;
             let mut matched_action_id: isize = -1;
-            let mut matched_slice_start_pos = 0; // ts
-            let mut matched_slice_end_pos = 0;   // te
+            let mut matched_slice_start_pos: usize = 0; // ts
+            let mut matched_slice_end_pos: usize = 0;   // te
 
             match self.current_state.as_ref() {
                 // %% write each scanners branch
@@ -71,15 +77,23 @@ impl Lexer {
                 _ => { panic!("unreachable: cant match current_state {}", self.current_state.clone()); }
             };
 
+            // matched
             if let Some(some_matched_slice) = matched_slice.clone() {
-                matched_slice_start_pos = self.p;
-                matched_slice_end_pos = self.p + some_matched_slice.len() - 1;
-                self.p = matched_slice_end_pos; // will +1 upon next loop, unless is_holding
-            }
+                matched_slice_start_pos = self.p as usize;
+                matched_slice_end_pos = matched_slice_start_pos + some_matched_slice.len() - 1;
+                self.p = matched_slice_end_pos as isize; // will +1 upon next loop, unless is_holding
 
-            match matched_action_id {
-                // %% write matching action
-                -1 | _ => { panic!("unreachable! no matched action to invoke"); }
+                println!("    matched with:");
+                println!("      matched_slice: {:?}", some_matched_slice);
+                println!("      ts: {}, te: {}", matched_slice_start_pos, matched_slice_end_pos);
+
+                // invoke action
+                match matched_action_id {
+                    // %% write matching action
+                    -1 | _ => { panic!("unreachable! no matched action to invoke"); }
+                }
+            } else {
+                panic!("unreachable! matched nothing");
             }
 
             if is_breaking { break; }

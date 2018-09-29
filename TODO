@@ -12,3 +12,7 @@ lexer:
 lexer:
   simplify generator:
     write the patterns table at once, before looping
+
+lexer:
+  handle eof
+    we can't really `match` eof, we detect p > len

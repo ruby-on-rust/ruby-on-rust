@@ -67,7 +67,7 @@ m! :c_space, '[ \t\r\f\v]'
 m! :c_space_nl, [ :c_space, :c_nl ]
 
 # c_eof      = 0x04 | 0x1a | 0 | zlen; # ^D, ^Z, \0, EOF
-m! :c_eof, [ '' ] # TODO INCOMPLETE
+m! :c_eof, [ '$' ] # TODO INCOMPLETE
 # c_eol      = c_nl | c_eof;
 m! :c_eol, %i(c_nl c_eof)
 # c_any      = any - c_eof;

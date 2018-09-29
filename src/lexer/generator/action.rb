@@ -44,10 +44,10 @@ class Action
             """
 
     # fhold
-    @code.gsub! 'fhold;', 'is_holding = true;'
+    @code.gsub! 'fhold;', 'println!("      # holding..."); is_holding = true;'
 
     # fbreak
-    @code.gsub! 'fbreak;', 'is_breaking = true;'
+    @code.gsub! 'fbreak;', 'println!("      # breaking..."); is_breaking = true;'
 
     # fgoto
     # 
@@ -58,7 +58,7 @@ class Action
     # apparently that's ok, since all `fgoto` occurs at the end of an action
     # 
     @code.gsub!(/fgoto (.+);/) do |match|
-      "self.next_state = Some(String::from(\"#$1\"));"
+      "self.next_state = Some(String::from(\"#$1\")); println!(\"      # setting next_state to {:?}\", self.next_state);"
     end
 
     # fnext
@@ -66,7 +66,7 @@ class Action
     #   fnext expr_value;
     # 
     @code.gsub!(/fnext (.+);/) do |match|
-      "self.next_state = Some(String::from(\"#$1\"));"
+      "self.next_state = Some(String::from(\"#$1\")); println!(\"      # setting next_state to {:?}\", self.next_state);"
     end
 
     # TODO fnext*

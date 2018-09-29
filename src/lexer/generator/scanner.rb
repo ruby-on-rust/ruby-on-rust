@@ -56,7 +56,7 @@ class Scanner
             let mut longest_match_len: isize = -1; // TODO HACKING init as -1 since there would be matched with len being 0
             let mut longest_match_action_key: isize = -1;
 
-            let slice_from_current_pos: String = self.input.chars().skip(self.p).collect();
+            let slice_from_current_pos: String = self.input.chars().skip(self.p as usize).collect();
 
             #{@patterns.map{|p|
                 byebug unless p[:pattern]
