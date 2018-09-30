@@ -359,12 +359,6 @@ fn string_plain() {
 
 // //   # Symbols
 
-#[test]
-fn symbol_plain() {
-    assert_parses!(":foo", n_sym!("foo"));
-    assert_parses!(":'foo'", n_sym!("foo"));
-}
-
 // //   def test_symbol_interpa
 // //     assert_parses(
 // //       s(:dsym,
