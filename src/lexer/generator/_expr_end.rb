@@ -90,6 +90,11 @@ s = Scanner.new :expr_end
 # => { emit_table(KEYWORDS)
 #      fbreak; };
 
+s.p :keyword_with_end, %q{
+    emit_table KEYWORDS;
+    fbreak;
+}
+
 # #
 # # NUMERIC LITERALS
 # #

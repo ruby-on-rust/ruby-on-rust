@@ -264,6 +264,12 @@ s.p p!( ':', [ :bareword, :class_var ] ), %q{
 #     => { p = @ts - 1
 #          fgoto expr_end; };
 
+# TODO INCOMPLETE
+s.p :keyword, %q{
+    fholdslice;
+    fgoto expr_end;
+}
+
 #     # a = 42;     a [42]: Indexing.
 #     # def a; end; a [42]: Array argument.
 #     call_or_var

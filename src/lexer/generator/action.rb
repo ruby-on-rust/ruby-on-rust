@@ -44,7 +44,12 @@ class Action
             """
 
     # fhold
-    @code.gsub! 'fhold;', 'println!("      # holding..."); is_holding = true;'
+    @code.gsub! 'fhold;', 'println!("      # holding 1 char..."); self.p = matched_slice_start_pos as isize - 1;'
+
+    # fholdslice
+    # NOTE not a ragel command, holds current slice instead of one char
+    # TODO apparently they will be the same in lexer?
+    @code.gsub! 'fholdslice;', 'println!("      # holding slice..."); self.p = matched_slice_start_pos as isize - 1;'
 
     # fbreak
     @code.gsub! 'fbreak;', 'println!("      # breaking..."); is_breaking = true;'
@@ -91,7 +96,18 @@ class Action
       """
       let slice = self.get_input_slice(matched_slice_start_pos + #{start_offset}, matched_slice_end_pos + #{end_offset});
       let token = Token::#{variant}(slice);
-      self.tokens.push(token);
+      self.emit_token(token);
+      """
+    end
+
+    # emit_table KEYWORD
+    @code.gsub!(/emit_table (\w+);/) do |match|
+      table = $1
+
+      """
+      let slice = self.get_input_slice(matched_slice_start_pos, matched_slice_end_pos);
+      let token = self.get_current_slice_as_token_from_table(\"#{table}\", slice);
+      self.emit_token(token);
       """
     end
 

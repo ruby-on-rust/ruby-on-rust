@@ -34,33 +34,40 @@ m! :operator_fname, '\[\]' # TODO ESCAPE
 
 # # A list of keywords which have different meaning at the beginning of expression.
 # keyword_modifier    = 'if'     | 'unless' | 'while'  | 'until' | 'rescue' ;
+m! :keyword_modifier, %w(if unless while until rescue)
 
 # # A list of keywords which accept an argument-like expression, i.e. have the
 # # same post-processing as method calls or commands. Example: `yield 1`,
 # # `yield (1)`, `yield(1)`, are interpreted as if `yield` was a function.
 # keyword_with_arg    = 'yield'  | 'super'  | 'not'    | 'defined?' ;
+m! :keyword_with_arg, %w(yield super not defined?)
 
 # # A list of keywords which accept a literal function name as an argument.
 # keyword_with_fname  = 'def'    | 'undef'  | 'alias'  ;
+m! :keyword_with_fname, %w(def undef alias)
 
 # # A list of keywords which accept an expression after them.
 # keyword_with_value  = 'else'   | 'case'   | 'ensure' | 'module' | 'elsif' | 'then'  |
 #                       'for'    | 'in'     | 'do'     | 'when'   | 'begin' | 'class' |
 #                       'and'    | 'or'     ;
+m! :keyword_with_value, %w(else case ensure module elsif then for in do when begin class and or)
 
 # # A list of keywords which accept a value, and treat the keywords from
 # # `keyword_modifier` list as modifiers.
 # keyword_with_mid    = 'rescue' | 'return' | 'break'  | 'next'   ;
+m! :keyword_with_mid, %w(rescue return break next)
 
 # # A list of keywords which do not accept an expression after them.
 # keyword_with_end    = 'end'    | 'self'   | 'true'   | 'false'  | 'retry'    |
 #                       'redo'   | 'nil'    | 'BEGIN'  | 'END'    | '__FILE__' |
 #                       '__LINE__' | '__ENCODING__';
+m! :keyword_with_end, %w(end self true false retry redo nil BEGIN END __FILE__ __LINE__ __ENCODING__)
 
 # # All keywords.
 # keyword             = keyword_with_value | keyword_with_mid |
 #                       keyword_with_end   | keyword_with_arg |
 #                       keyword_with_fname | keyword_modifier ;
+m! :keyword, %i(keyword_with_value keyword_with_mid keyword_with_end keyword_with_arg keyword_with_fname keyword_modifier)
 
 # constant       = c_upper c_alnum*;
 # bareword       = c_alpha c_alnum*;

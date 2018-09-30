@@ -31,24 +31,22 @@ impl Lexer {
         if !self.tokens.is_empty() { return Some(self.tokens.remove(0)); }
 
         // define these here to preserve value out of looping
-        let mut is_holding = false;
+        // let mut is_holding = false;
         let mut matched_slice: Option<String> = None; 
 
         loop {
             // transfer pointers
-            if !is_holding {
-                self.p += 1;
+            self.p += 1;
 
-                // detect EOF
-                if self.p as usize == self.input.len() {
-                    print!("EOF detected!");
-                    return None;
-                }
+            // detect EOF
+            if self.p as usize == self.input.len() {
+                print!("EOF detected!");
+                return None;
             }
 
             // refresh
             let mut is_breaking = false;
-            is_holding = false;
+            // is_holding = false;
 
             println!("  lexer#advance: looping...");
             println!("    current_state: {}", self.current_state);
@@ -80,8 +78,10 @@ impl Lexer {
             // matched
             if let Some(some_matched_slice) = matched_slice.clone() {
                 matched_slice_start_pos = self.p as usize;
-                matched_slice_end_pos = matched_slice_start_pos + some_matched_slice.len() - 1;
-                self.p = matched_slice_end_pos as isize; // will +1 upon next loop, unless is_holding
+                matched_slice_end_pos = matched_slice_start_pos + some_matched_slice.len();
+
+                // default transfering value for p, maybe override in action
+                self.p = matched_slice_end_pos as isize - 1; // will +1 upon next loop
 
                 println!("    matched with:");
                 println!("      matched_slice: {:?}", some_matched_slice);
@@ -105,5 +105,16 @@ impl Lexer {
 
     fn get_input_slice(&self, start_p: usize, end_p: usize) -> String {
         self.input.chars().skip(start_p).take(end_p - start_p + 1).collect()
+    }
+
+    fn emit_token(&mut self, token: Token) {
+        self.tokens.push(token);
+    }
+
+    fn get_current_slice_as_token_from_table(&mut self, table_name: &str, current_slice: String) -> Token {
+        match table_name {
+            // %% write token tables matching
+            _ => { panic!("unreachable! no such table"); }
+        }
     }
 }
