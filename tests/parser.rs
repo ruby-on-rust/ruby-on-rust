@@ -39,6 +39,8 @@ macro_rules! n_sym {
 //       %q{})
 //   end
 // TODO FAILING
+#[test]
+fn test_empty_stmt() { assert_parses!("", Node::Null); } // We're using a Node::Null, DK if that will fit later
 
 //   def test_nil
 //     assert_parses(
@@ -71,6 +73,7 @@ fn test_nil() { assert_parses!("nil", Node::Nil); }
 //       %q{true},
 //       %q{~~~~ expression})
 //   end
+#[test] fn test_true() { assert_parses!("true", Node::True); }
 
 //   def test_false
 //     assert_parses(
@@ -78,6 +81,7 @@ fn test_nil() { assert_parses!("nil", Node::Nil); }
 //       %q{false},
 //       %q{~~~~~ expression})
 //   end
+#[test] fn test_false() { assert_parses!("false", Node::False); }
 
 //   def test_int
 //     assert_parses(

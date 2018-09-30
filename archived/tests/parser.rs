@@ -31,48 +31,6 @@ macro_rules! n_sym {
 // //   #
 // //   # Literals
 // //   #
-
-// //   def test_empty_stmt
-// //     assert_parses(
-// //       nil,
-// //       %q{})
-// //   end
-// // TODO FAILING
-// // #[test]
-// // fn empty_stmt() {
-// //     let content = String::from("");
-// //     let mut parser = Parser::new(content);
-// //     let node = parser.parse();
-// //     assert_eq!(node, Node::None);
-// // }
-
-#[test] fn nil() { assert_parses!("nil", Node::Nil); }
-
-//   def test_nil_expression
-//     assert_parses(
-//       s(:begin),
-//       %q{()},
-//       %q{^ begin
-//         | ^ end
-//         |~~ expression})
-// 
-//     assert_parses(
-//       s(:kwbegin),
-//       %q{begin end},
-//       %q{~~~~~ begin
-//         |      ~~~ end
-//         |~~~~~~~~~ expression})
-//   end
-// TODO
-// #[test]
-// fn nil_expression() {
-//     assert_parses!("()", Node::Begin(vec![]));
-// }
-
-#[test] fn test_true() { assert_parses!("true", Node::True); }
-
-#[test] fn test_false() { assert_parses!("false", Node::False); }
-
 #[test]
 fn int() {
     assert_parses!("42", Node::Int(42));
