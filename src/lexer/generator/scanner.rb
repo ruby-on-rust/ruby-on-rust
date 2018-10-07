@@ -67,7 +67,7 @@ class Scanner
                 // pattern: #{p.inspect}
                 //
 
-                let pattern_regex = Regex::new(r\"^(?ms:#{p[:pattern].regex})\").unwrap(); // TODO PERFORMANCE
+                let pattern_regex = Regex::new(r\#\"^(?ms:#{Pattern.wrap p[:pattern].regex})\"\#).unwrap(); // TODO PERFORMANCE
 
                 println!(\"      matching pattern with regex: {:?}\", pattern_regex);
 

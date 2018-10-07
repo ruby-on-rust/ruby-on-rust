@@ -1,5 +1,8 @@
 use regex::Regex;
 use token::token::Token;
+use lexer::literal::Literal;
+
+pub type LexerTokenEmitter = Box<FnMut(Token)>;
 
 pub struct Lexer {
     input: String,
@@ -9,7 +12,9 @@ pub struct Lexer {
     current_state: String, // "line_begin"
     next_state: Option<String>,
 
-    p: isize
+    p: isize,
+
+    pub literal_stack: Vec<Literal>,
 }
 
 impl Lexer {
@@ -20,6 +25,7 @@ impl Lexer {
             current_state: String::from("line_begin"),
             next_state: None,
             p: -1,
+            literal_stack: vec![]
         }
     }
 
@@ -76,7 +82,7 @@ impl Lexer {
             };
 
             // matched
-            if let Some(some_matched_slice) = matched_slice.clone() {
+            if let Some(some_matched_slice) = matched_slice {
                 matched_slice_start_pos = self.p as usize;
                 matched_slice_end_pos = matched_slice_start_pos + some_matched_slice.len();
 
@@ -103,12 +109,12 @@ impl Lexer {
         panic!("no tokens");
     }
 
-    fn get_input_slice(&self, start_p: usize, end_p: usize) -> String {
-        self.input.chars().skip(start_p).take(end_p - start_p + 1).collect()
+    pub fn emit_token(&mut self, token: Token) {
+        self.tokens.push(token);
     }
 
-    fn emit_token(&mut self, token: Token) {
-        self.tokens.push(token);
+    fn get_input_slice(&self, start_p: usize, end_p: usize) -> String {
+        self.input.chars().skip(start_p).take(end_p - start_p + 1).collect()
     }
 
     fn get_current_slice_as_token_from_table(&mut self, table_name: &str, current_slice: String) -> Token {
@@ -117,4 +123,5 @@ impl Lexer {
             _ => { panic!("unreachable! no such table"); }
         }
     }
+
 }

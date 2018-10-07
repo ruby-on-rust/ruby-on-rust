@@ -109,6 +109,21 @@ s = Scanner.new :expr_beg
 #       type, delimiter = tok, tok[-1].chr
 #       fgoto *push_literal(type, delimiter, @ts);
 #     };
+#     NOTE tok is like `:'`, `:"`
+s.p p!(':(\'|")'), %q{
+    // TODO macro around literal
+
+    let lexer_token_emitter: LexerTokenEmitter = Box::new(|token: Token| {
+        self.emit_token(token);
+    });
+
+    let literal_type = some_matched_slice.clone();
+    let literal_delimiter = some_matched_slice.chars().last().unwrap().to_string();
+    let literal = Literal::new(literal_type, literal_delimiter, matched_slice_start_pos, None, false, false, false, lexer_token_emitter);
+    // TODO fgoto*
+    let next_state = self.push_literal(literal);
+    self.next_state = Some(next_state);
+}
 
 #     # :!@ is :!
 #     # :~@ is :~
