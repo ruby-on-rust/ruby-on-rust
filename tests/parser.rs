@@ -437,7 +437,7 @@ fn test_nil() { assert_parses!("nil", Node::Nil); }
 //   end
 #[test]
 fn symbol_plain() {
-    // TODO assert_parses!(":foo", n_sym!("foo"));
+    // TODO WIP assert_parses!(":foo", n_sym!("foo"));
     assert_parses!(":'foo'", n_sym!("foo"));
 }
 

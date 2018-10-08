@@ -1,13 +1,13 @@
+use std::rc::Rc;
+use std::cell::RefCell;
 use regex::Regex;
 use token::token::Token;
 use lexer::literal::Literal;
 
-pub type LexerTokenEmitter = Box<FnMut(Token)>;
-
 pub struct Lexer {
     input: String,
 
-    tokens: Vec<Token>,
+    tokens: Rc<RefCell<Vec<Token>>>,
 
     current_state: String, // "line_begin"
     next_state: Option<String>,
@@ -21,7 +21,7 @@ impl Lexer {
     pub fn new(input: String) -> Lexer {
         Lexer {
             input,
-            tokens: vec![],
+            tokens: Rc::new(RefCell::new(vec![])),
             current_state: String::from("line_begin"),
             next_state: None,
             p: -1,
@@ -34,7 +34,7 @@ impl Lexer {
     pub fn advance(&mut self) -> Option<Token> {
         println!("---\nlexer.advance");
 
-        if !self.tokens.is_empty() { return Some(self.tokens.remove(0)); }
+        if !self.tokens.borrow().is_empty() { return Some(self.tokens.borrow_mut().remove(0)); }
 
         // define these here to preserve value out of looping
         // let mut is_holding = false;
@@ -105,12 +105,12 @@ impl Lexer {
             if is_breaking { break; }
         }
 
-        if !self.tokens.is_empty() { return Some(self.tokens.remove(0)); }
+        if !self.tokens.borrow().is_empty() { return Some(self.tokens.borrow_mut().remove(0)); }
         panic!("no tokens");
     }
 
     pub fn emit_token(&mut self, token: Token) {
-        self.tokens.push(token);
+        self.tokens.borrow_mut().push(token);
     }
 
     fn get_input_slice(&self, start_p: usize, end_p: usize) -> String {

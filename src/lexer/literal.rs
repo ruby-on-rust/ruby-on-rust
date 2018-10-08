@@ -3,7 +3,9 @@
 
 // TODO handle binary encoding issues
 
-use lexer::lexer::{ Lexer, LexerTokenEmitter };
+use std::rc::Rc;
+use std::cell::RefCell;
+use lexer::lexer::Lexer;
 use token::token::Token;
 
 // TODO impl Debug manually
@@ -42,7 +44,7 @@ pub struct Literal {
 
     is_words: bool,
 
-    lexer_token_emitter: LexerTokenEmitter,
+    lexer_tokens: Rc<RefCell<Vec<Token>>>,
 }
 
 impl Literal {
@@ -56,9 +58,10 @@ impl Literal {
         indent: bool,
         dedent_body: bool, // TODO
         label_allowed: bool,
-        lexer_token_emitter: LexerTokenEmitter,
+        lexer_tokens: Rc<RefCell<Vec<Token>>>,
     ) -> Literal {
         println!("creating new literal with: str_type: {:?}", str_type);
+
         // TODO
         //       # DELIMITERS and TYPES are hashes with keys encoded in binary.
         //       # Coerce incoming data to the same encoding.
@@ -176,7 +179,7 @@ impl Literal {
                         start_tok.clone() == Token::T_SYMBOLS_BEG ||
                         start_tok.clone() == Token::T_QSYMBOLS_BEG,
 
-            lexer_token_emitter,
+            lexer_tokens,
         };
 
         // println!("creating new literal: {:?}", literal.clone());
@@ -503,10 +506,7 @@ impl Literal {
     //       @lexer.send(:emit, token, type, s, e)
     //     end
     fn emit(&mut self, token: Token) {
-        (self.lexer_token_emitter)(token);
-        // let lexer = Rc::get_mut(&mut self.lexer).unwrap();
-        // let mut lexer = *(&mut self.lexer);
-        // lexer.emit_token(token);
+        self.lexer_tokens.borrow_mut().push(token);
     }
 }
 
