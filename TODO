@@ -16,3 +16,8 @@ lexer:
 lexer:
   handle eof
     we can't really `match` eof, we detect p > len
+
+lexer:
+  currently, we pass lexer.tokens into Literal, to emit tokens inside the literal. Yet we have to impl token emitting twice. we could try
+  a) pass in a callback closure instead. (FAILED due to complex lifetime issue)
+  b) wrap tokens as a struct and impl trait on it
