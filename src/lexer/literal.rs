@@ -381,7 +381,7 @@ impl Literal {
     //       @buffer << string
     //     end
     pub fn extend_string(&mut self, string: &String, ts: usize, te: usize) {
-        println!("### literal: invoking literal.extend_string, string: {:?}", string);
+        println!("### literal: invoking literal.extend_string, string: {:?}, buffer: {:?}", string, self.buffer);
 
         if self.buffer_s.is_none() { self.buffer_s = Some(ts); }
         self.buffer_e = Some(te);
@@ -405,6 +405,8 @@ impl Literal {
     //       end
     //     end
     pub fn flush_string(&mut self) {
+        println!("literal.flush_string invoking...");
+
         if self.monolithic {
             self.emit_start_tok();
             self.monolithic = false;
@@ -482,6 +484,8 @@ impl Literal {
     //       @buffer_e = nil
     //     end
     fn clear_buffer(&mut self) {
+        println!("literal.clear_buffer invoking...");
+
         self.buffer = String::from("");
 
         self.buffer_s = None;
@@ -588,10 +592,8 @@ impl Lexer {
     //   def literal
     //     @literal_stack.last
     //   end
-    pub fn literal(&mut self) -> Option<&mut Literal> {
-        // println!("### literal: literal: invoked. literal_stack: {:?}", self.literal_stack);
-
-        self.literal_stack.last_mut()
+    pub fn literal(&mut self) -> Option<&Literal> {
+        self.literal_stack.last()
     }
 
     //   def pop_literal

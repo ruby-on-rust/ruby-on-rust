@@ -181,8 +181,9 @@ fn test_nil() { assert_parses!("nil", Node::Nil); }
 //   end
 #[test]
 fn string_plain() {
+    // TODO
     assert_parses!(r"'foobar'", n_str!("foobar"));
-    // TODO assert_parses!(r#""foobar""#, n_str!("foobar"));
+    // assert_parses!(r#""foobar""#, n_str!("foobar"));
     // assert_parses!(r"%q(foobar)", n_str!("foobar"));
 }
 

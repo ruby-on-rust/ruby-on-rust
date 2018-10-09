@@ -71,7 +71,7 @@ a! :extend_string, %q{
     // TODO INCOMPLETE handle @cond.active
     let lookahead = self.get_input_slice(matched_slice_end_pos, matched_slice_end_pos + 2);
 
-    let mut current_literal = self.literal().expect("cant fetch current_literal").clone();
+    let mut current_literal = self.literal().expect("literal_stack is empty").clone();
     if !current_literal.is_heredoc() {
         if let Some(token) = current_literal.nest_and_try_closing(&some_matched_slice, matched_slice_start_pos, matched_slice_end_pos, Some(lookahead)) {
             if let Token::T_LABEL_END = token {
@@ -87,7 +87,16 @@ a! :extend_string, %q{
         }
     }
 
-    current_literal.extend_string(&some_matched_slice, matched_slice_start_pos, matched_slice_end_pos)
+    current_literal.extend_string(&some_matched_slice, matched_slice_start_pos, matched_slice_end_pos);
+
+    // NOTE
+    // due to limitations of borrowing in rust, we have to
+    // 1 clone current_literal
+    // 2 modify it 
+    // 3 re-save it to the stack
+    // TODO leverage RefCell
+    self.literal_stack.pop();
+    self.literal_stack.push(current_literal);
 }
 
 # action extend_string_escaped {
