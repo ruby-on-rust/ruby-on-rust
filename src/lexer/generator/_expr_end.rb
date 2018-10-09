@@ -202,6 +202,11 @@ s.p :keyword_with_end, %q{
 
 # global_var | class_var_v | instance_var_v
 # => { p = @ts - 1; fcall expr_variable; };
+# TODO NOTE we're using fnext to simulate fcall
+s.p p!([:global_var, :class_var_v, :instance_var_v]), %q{
+    fhold;
+    fnext expr_variable;
+}
 
 # #
 # # METHOD CALLS

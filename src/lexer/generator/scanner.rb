@@ -59,8 +59,9 @@ class Scanner
             let slice_from_current_pos: String = self.input.chars().skip(self.p as usize).collect();
 
             #{@patterns.map{|p|
-                byebug unless p[:pattern]
                 action = p[:action]
+
+                
 
             """
                 //
@@ -88,7 +89,6 @@ class Scanner
                         }
 
                         println!(\"        matched slice: {:?}\", matched_slice.clone());
-                        // println!(\"        DEBUGGING CAPTURE: capture: {:?}\", capture);
                     }
                 }
             """

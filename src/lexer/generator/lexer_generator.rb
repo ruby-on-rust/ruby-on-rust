@@ -43,7 +43,7 @@ end
 a! :nil, ''
 
 require_relative '_character_classes'
-require_relative '_tokens'
+require_relative '_token_definitions'
 require_relative '_numeric'
 require_relative '_escape_sequence'
 require_relative '_string_and_heredoc'

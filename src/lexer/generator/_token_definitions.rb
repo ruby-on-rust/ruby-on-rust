@@ -85,12 +85,19 @@ m! :instance_var, '@', :bareword
 #     | '-' c_alnum
 #     )
 # ;
+m! :global_var, '$', [
+  :bareword, '[[:digit:]]+',
+  %<[`'+~*$&?!@/\\\\;,.=:<>"]>, WIP
+  '-[[:alnum:]]'
+]
 
 
 # # Ruby accepts (and fails on) variables with leading digit
 # # in literal context, but not in unquoted symbol body.
 # class_var_v    = '@@' c_alnum+;
+m! :class_var_v, '@@', '[[:alnum:]]+'
 # instance_var_v = '@' c_alnum+;
+m! :instance_var_v, '@', '[[:alnum:]]+'
 
 # label          = bareword [?!]? ':';
 # m! :label, [:bareword, [?!]

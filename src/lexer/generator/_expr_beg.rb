@@ -324,6 +324,10 @@ s.p :call_or_var, :local_ident
 #     punctuation_end            |
 #     c_any
 #     => { p = @ts - 1; fgoto expr_end; };
+# TODO INCOMPLETE
+s.p :c_any, %q{
+    fgoto expr_end;
+}
 
 #     c_eof => do_eof;
 # *|;

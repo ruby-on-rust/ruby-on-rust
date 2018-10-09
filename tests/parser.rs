@@ -861,6 +861,7 @@ fn symbol_plain() {
 //       %q{self},
 //       %q{~~~~ expression})
 //   end
+#[test] fn test_self() { assert_parses!("self", Node::NSelf); }
 
 //   def test_lvar
 //     assert_parses(
@@ -868,6 +869,7 @@ fn symbol_plain() {
 //       %q{foo},
 //       %q{~~~ expression})
 //   end
+#[test] fn lvar() { assert_parses!("foo", Node::LVar(String::from("foo"))); }
 
 //   def test_ivar
 //     assert_parses(
@@ -875,6 +877,7 @@ fn symbol_plain() {
 //       %q{@foo},
 //       %q{~~~~ expression})
 //   end
+#[test] fn ivar() { assert_parses!("@foo", Node::IVar(String::from("@foo"))); }
 
 //   def test_cvar
 //     assert_parses(
