@@ -54,13 +54,25 @@ class Action
     # fbreak
     @code.gsub! 'fbreak;', 'println!("      # breaking..."); is_breaking = true;'
 
+    # 
+    # fgoto *expression
+    # 
+    #     fgoto *push_literal(tok, tok, @ts);
+    # 
+    # NOTE
+    # fgoto and fgoto * emulations will transfer the state after this action, instead of immediately,
+    # apparently that's ok, since all `fgoto` occurs at the end of an action
+    @code.gsub!(/fgoto \*(.+);/) do |match|
+      expression = $1
+      """
+      self.next_state = Some( ( #{expression} ) );
+      println!(\"      # setting next_state to {:?}\", self.next_state);
+      """
+    end
     # fgoto
     # 
     #   fgoto expr_value;
     # 
-    # NOTE
-    # this emulated-fgoto will transfer the state after this action, instead of immediately,
-    # apparently that's ok, since all `fgoto` occurs at the end of an action
     # 
     @code.gsub!(/fgoto (.+);/) do |match|
       "self.next_state = Some(String::from(\"#$1\")); println!(\"      # setting next_state to {:?}\", self.next_state);"

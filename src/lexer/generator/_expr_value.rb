@@ -16,6 +16,11 @@ s = Scanner.new :expr_value
 #     => {
 #       fgoto *push_literal(tok, tok, @ts);
 #     };
+s.p p!(["'", '"']), %q{
+    let literal = Literal::new(some_matched_slice.clone(), some_matched_slice.clone(), matched_slice_start_pos, None, false, false, false, Rc::clone(&self.tokens));
+
+    fgoto *self.push_literal(literal);
+}
 
 #     w_space_comment;
 

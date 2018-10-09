@@ -265,7 +265,9 @@ impl Literal {
     // 
     // TODO INCOMPLETE
     // 
+    // NOTE return the last emitted token
     pub fn nest_and_try_closing(&mut self, delimiter: &String, ts: usize, te: usize, lookahead: Option<String>) -> Option<Token> {
+        // TODO is this still necessary?
         // Some("") -> None
         let lookahead = if (lookahead.is_some() && !lookahead.clone().unwrap().is_empty()) { lookahead } else { None };
 
@@ -283,9 +285,6 @@ impl Literal {
         println!("### literal:nest_and_try_closing: self.nesting: {}", self.nesting);
 
         if self.nesting == 0 {
-            // if words?
-            //   extend_space(ts, ts)
-            // end
             if self.is_words {
                 self.extend_space(ts, ts);
             }
@@ -308,17 +307,17 @@ impl Literal {
             // end
             if  lookahead.is_some() &&
                 self.label_allowed &&
-                ( lookahead.clone().unwrap().chars().nth(0).unwrap() == ':' ) &&
+                ( lookahead.clone().unwrap().chars().nth(0).unwrap() == ':' ) && // TODO there must be a better way
                 ( lookahead.clone().unwrap().chars().nth(1).unwrap() != ':' ) {
                     //   # This is a quoted label.
                     self.flush_string();
 
-                    return Some(Token::T_LABEL_END);
+                    return Some(self.emit(Token::T_LABEL_END));
             } else {
                 if self.monolithic {
                     //   # Emit the string as a single token.
-                    // let token = );
-                    return Some(Token::T_STRING(self.buffer.clone()));
+                    let token = Token::T_STRING(self.buffer.clone());
+                    return Some(self.emit(token));
                 } else {
                     //   # If this is a heredoc, @buffer contains the sentinel now.
                     //   # Just throw it out. Lexer flushes the heredoc after each
@@ -327,7 +326,7 @@ impl Literal {
                         self.flush_string();
                     }
 
-                    return(Some(Token::T_STRING_END));
+                    return Some(self.emit(Token::T_STRING_END));
                 }
             }
         }
@@ -505,8 +504,9 @@ impl Literal {
     //     def emit(token, type, s, e)
     //       @lexer.send(:emit, token, type, s, e)
     //     end
-    fn emit(&mut self, token: Token) {
-        self.lexer_tokens.borrow_mut().push(token);
+    fn emit(&mut self, token: Token) -> Token {
+        self.lexer_tokens.borrow_mut().push(token.clone());
+        token
     }
 }
 

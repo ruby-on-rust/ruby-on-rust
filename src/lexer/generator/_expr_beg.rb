@@ -116,9 +116,7 @@ s.p p!(':(\'|")'), %q{
     let literal_type = some_matched_slice.clone();
     let literal_delimiter = some_matched_slice.chars().last().unwrap().to_string();
     let literal = Literal::new(literal_type, literal_delimiter, matched_slice_start_pos, None, false, false, false, Rc::clone(&self.tokens));
-    // TODO fgoto*
-    let next_state = self.push_literal(literal);
-    self.next_state = Some(next_state);
+    fgoto *self.push_literal(literal);
 }
 
 #     # :!@ is :!

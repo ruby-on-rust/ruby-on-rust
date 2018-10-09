@@ -171,7 +171,7 @@ fn test_nil() { assert_parses!("nil", Node::Nil); }
 //       %q{^ begin
 //         |       ^ end
 //         |~~~~~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:str, 'foobar'),
 //       %q{%q(foobar)},
@@ -179,6 +179,12 @@ fn test_nil() { assert_parses!("nil", Node::Nil); }
 //         |         ^ end
 //         |~~~~~~~~~~ expression})
 //   end
+#[test]
+fn string_plain() {
+    assert_parses!(r"'foobar'", n_str!("foobar"));
+    // TODO assert_parses!(r#""foobar""#, n_str!("foobar"));
+    // assert_parses!(r"%q(foobar)", n_str!("foobar"));
+}
 
 //   def test_string_interp
 //     assert_parses(
@@ -437,7 +443,7 @@ fn test_nil() { assert_parses!("nil", Node::Nil); }
 //   end
 #[test]
 fn symbol_plain() {
-    // TODO WIP assert_parses!(":foo", n_sym!("foo"));
+    assert_parses!(":foo", n_sym!("foo"));
     assert_parses!(":'foo'", n_sym!("foo"));
 }
 
