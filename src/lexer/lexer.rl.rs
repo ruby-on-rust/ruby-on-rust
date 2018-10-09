@@ -86,7 +86,7 @@ impl Lexer {
                 matched_slice_start_pos = self.p as usize;
                 matched_slice_end_pos = matched_slice_start_pos + some_matched_slice.len();
 
-                // default transfering value for p, maybe override in action
+                // NOTE set a default transfering value for p, maybe override in action
                 self.p = matched_slice_end_pos as isize - 1; // will +1 upon next loop
 
                 println!("    matched with:");

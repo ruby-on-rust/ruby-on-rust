@@ -9,7 +9,7 @@ use lexer::lexer::Lexer;
 use token::token::Token;
 
 // TODO impl Debug manually
-// #[derive(Clone)]
+#[derive(Clone)]
 pub struct Literal {
     nesting: usize,
 
@@ -208,7 +208,7 @@ impl Literal {
     //     def heredoc?
     //       !!@heredoc_e
     //     end
-    fn is_heredoc(&self) -> bool { self.heredoc_e.is_some() }
+    pub fn is_heredoc(&self) -> bool { self.heredoc_e.is_some() }
 
     //     def backslash_delimited?
     //       @end_delim == '\\'.freeze
@@ -265,14 +265,14 @@ impl Literal {
     // 
     // TODO INCOMPLETE
     // 
-    pub fn nest_and_try_closing(&mut self, delimiter: String, ts: usize, te: usize, lookahead: Option<String>) -> Option<Token> {
+    pub fn nest_and_try_closing(&mut self, delimiter: &String, ts: usize, te: usize, lookahead: Option<String>) -> Option<Token> {
         // Some("") -> None
         let lookahead = if (lookahead.is_some() && !lookahead.clone().unwrap().is_empty()) { lookahead } else { None };
 
         println!("### literal:nest_and_try_closing: invoking, delimiter: {:?}", delimiter);
         println!("### literal:nest_and_try_closing: lookahead: {:?}", lookahead);
 
-        if self.start_delim.is_some() && self.start_delim.clone().unwrap() == delimiter {
+        if self.start_delim.is_some() && self.start_delim.clone().unwrap() == *delimiter {
             self.nesting += 1;
         } else {
             if self.is_delimiter(&delimiter) {
@@ -381,13 +381,13 @@ impl Literal {
     // 
     //       @buffer << string
     //     end
-    pub fn extend_string(&mut self, string: String, ts: usize, te: usize) {
+    pub fn extend_string(&mut self, string: &String, ts: usize, te: usize) {
         println!("### literal: invoking literal.extend_string, string: {:?}", string);
 
         if self.buffer_s.is_none() { self.buffer_s = Some(ts); }
         self.buffer_e = Some(te);
 
-        self.buffer += &string;
+        self.buffer += string;
 
         println!("### literal: invoked literal.extend_string, now buffer: {:?}", self.buffer);
     }
@@ -609,15 +609,14 @@ impl Lexer {
     //     end
     //   end
     // TODO DUMMY
-    // pub fn pop_literal(&mut self) -> LexingState {
-    //     println!("### literal: pop_literal: invoked");
+    pub fn pop_literal(&mut self) -> String {
+        println!("### literal: pop_literal: invoked");
 
-    //     let old_literal = self.literal_stack.pop().unwrap();
-    //     // TODO
-    //     // self.dedent_level = old_literal.dedent_level;
+        // let old_literal = self.literal_stack.pop().unwrap();
+        // self.dedent_level = old_literal.dedent_level;
 
-    //     println!("### literal: literal_stack: {:?}", self.literal_stack);
+        // println!("### literal: literal_stack: {:?}", self.literal_stack);
 
-    //     state!("expr_endarg")
-    // }
+        String::from("expr_endarg")
+    }
 }

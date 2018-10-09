@@ -44,12 +44,12 @@
 
 # action extend_string {
 #   string = tok
-
+# 
 #   # tLABEL_END is only possible in non-cond context on >= 2.2
 #   if @version >= 22 && !@cond.active?
 #     lookahead = @source_buffer.slice(@te...@te+2)
 #   end
-
+# 
 #   current_literal = literal
 #   if !current_literal.heredoc? &&
 #         (token = current_literal.nest_and_try_closing(string, @ts, @te, lookahead))
@@ -59,12 +59,36 @@
 #       fnext expr_labelarg;
 #     else
 #       fnext *pop_literal;
+# 
 #     end
 #     fbreak;
 #   else
 #     current_literal.extend_string(string, @ts, @te)
 #   end
 # }
+a! :extend_string, %q{
+    // NOTE ignored ruby22-and-below cases
+    // TODO INCOMPLETE handle @cond.active
+    let lookahead = self.get_input_slice(matched_slice_end_pos, matched_slice_end_pos + 2);
+
+    let mut current_literal = self.literal().expect("cant fetch current_literal").clone();
+    if !current_literal.is_heredoc() {
+        if let Some(token) = current_literal.nest_and_try_closing(&some_matched_slice, matched_slice_start_pos, matched_slice_end_pos, Some(lookahead)) {
+            if let Token::T_LABEL_END = token {
+                self.p += 1;
+                self.pop_literal();
+                fnext expr_labelarg;
+            } else {
+                // TODO fnext *
+                self.next_state = Some(self.pop_literal());
+            }
+
+            fbreak;
+        }
+    }
+
+    current_literal.extend_string(&some_matched_slice, matched_slice_start_pos, matched_slice_end_pos)
+}
 
 # action extend_string_escaped {
 #   current_literal = literal

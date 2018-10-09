@@ -120,6 +120,9 @@
 #     c_eol       => extend_string_eol;
 #     c_any       => extend_string;
 # *|;
+# TODO INCOMPLETE
+s = Scanner.new :plain_string
+s.p :c_any, :extend_string
 
 # interp_backslash_delimited := |*
 #     interp_code => extend_interp_code;
