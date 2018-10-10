@@ -17,7 +17,6 @@ matrix:
     - rust: nightly
 
 before_install:
-  - \curl -sSL https://get.rvm.io | bash -s stable
   - rvm install 2.5.1
 
 # for kcov and codecov.io
