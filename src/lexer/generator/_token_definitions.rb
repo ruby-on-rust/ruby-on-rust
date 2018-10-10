@@ -87,10 +87,9 @@ m! :instance_var, '@', :bareword
 # ;
 m! :global_var, '$', [
   :bareword, '[[:digit:]]+',
-  %<[`'+~*$&?!@/\\\\;,.=:<>"]>, WIP
+  %<[`'+~*$&?!@/\\\\\\;,.=:<>"]>,
   '-[[:alnum:]]'
 ]
-
 
 # # Ruby accepts (and fails on) variables with leading digit
 # # in literal context, but not in unquoted symbol body.

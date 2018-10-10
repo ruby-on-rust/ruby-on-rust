@@ -51,31 +51,37 @@ class Action
     # TODO apparently they will be the same in lexer?
     @code.gsub! 'fholdslice;', 'println!("      # holding slice..."); self.p = matched_slice_start_pos as isize - 1;'
 
-    # fbreak
-    @code.gsub! 'fbreak;', 'println!("      # breaking..."); is_breaking = true;'
+    # 
+    # NOTE fnext and fgoto
+    # fnext, not like fgoto, transfers the state after the action, instead of immediately,
+    # apparently that's ok, since all existing `fnext` occurs at the end of an action
+    # 
+    # so we treat all `fgoto a` as `fnext a`
+    # 
 
-    # 
-    # fgoto *expression
-    # 
-    #     fgoto *push_literal(tok, tok, @ts);
-    # 
-    # NOTE
-    # fgoto and fgoto * emulations will transfer the state after this action, instead of immediately,
-    # apparently that's ok, since all `fgoto` occurs at the end of an action
-    @code.gsub!(/fgoto \*(.+);/) do |match|
-      expression = $1
-      """
-      self.next_state = Some( ( #{expression} ) );
-      println!(\"      # setting next_state to {:?}\", self.next_state);
-      """
-    end
     # fgoto
     # 
     #   fgoto expr_value;
     # 
-    # 
     @code.gsub!(/fgoto (.+);/) do |match|
-      "self.next_state = Some(String::from(\"#$1\")); println!(\"      # setting next_state to {:?}\", self.next_state);"
+      """
+      fnext #$1;
+      """
+    end
+
+    # fbreak
+    @code.gsub! 'fbreak;', 'println!("      # breaking..."); is_breaking = true;'
+
+    # fnext *
+    # 
+    #   fnext *expression;
+    # 
+    @code.gsub!(/fnext \*(.+);/) do |match|
+      expression = $1
+      """
+      self.next_state = Some( #{expression} );
+      println!(\"      # setting next_state to {:?}\", self.next_state);
+      """
     end
 
     # fnext
@@ -83,10 +89,27 @@ class Action
     #   fnext expr_value;
     # 
     @code.gsub!(/fnext (.+);/) do |match|
-      "self.next_state = Some(String::from(\"#$1\")); println!(\"      # setting next_state to {:?}\", self.next_state);"
+      """
+      self.next_state = Some(String::from(\"#$1\"));
+      println!(\"      # setting next_state to {:?}\", self.next_state);
+      """
     end
 
     # TODO fnext*
+
+    # fcall
+    # 
+    #     fcall expr_value;
+    # 
+    @code.gsub!(/fcall (.+);/) do |match|
+      state = $1;
+
+      """
+      println!(\"      invoking fcall #{state}\");
+      self.state_stack_push(String::from(\"#{state}\"));
+      self.next_state = Some(String::from(\"#{state}\"));
+      """
+    end
 
     # emit
     # 

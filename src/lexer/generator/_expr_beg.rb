@@ -141,7 +141,7 @@ s.p p!(':(\'|")'), %q{
 #       fnext expr_end; fbreak;
 #     };
 # TODO INCOMPLETE
-s.p p!( ':', [ :bareword, :class_var ] ), %q{
+s.p p!( ':', %i(bareword global_var class_var instance_var) ), %q{
     emit TSymbol, 1, 0;
 
     fnext expr_end;
@@ -326,6 +326,7 @@ s.p :call_or_var, :local_ident
 #     => { p = @ts - 1; fgoto expr_end; };
 # TODO INCOMPLETE
 s.p :c_any, %q{
+    fholdslice;
     fgoto expr_end;
 }
 

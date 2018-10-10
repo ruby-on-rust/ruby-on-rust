@@ -11,9 +11,9 @@
 #   current_literal = literal
 #   current_literal.flush_string
 #   current_literal.extend_content
-
+# 
 #   emit(:tSTRING_DVAR, nil, @ts, @ts + 1)
-
+# 
 #   p = @ts
 #   fcall expr_variable;
 # }

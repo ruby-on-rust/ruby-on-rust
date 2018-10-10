@@ -9,10 +9,11 @@ pub struct Lexer {
 
     tokens: Rc<RefCell<Vec<Token>>>,
 
+    p: isize,
+
     current_state: String, // "line_begin"
     next_state: Option<String>,
-
-    p: isize,
+    state_stack: Vec<String>,
 
     pub literal_stack: Vec<Literal>,
 }
@@ -22,9 +23,10 @@ impl Lexer {
         Lexer {
             input,
             tokens: Rc::new(RefCell::new(vec![])),
+            p: -1,
             current_state: String::from("line_begin"),
             next_state: None,
-            p: -1,
+            state_stack: vec![],
             literal_stack: vec![]
         }
     }
@@ -37,22 +39,19 @@ impl Lexer {
         if !self.tokens.borrow().is_empty() { return Some(self.tokens.borrow_mut().remove(0)); }
 
         // define these here to preserve value out of looping
-        // let mut is_holding = false;
         let mut matched_slice: Option<String> = None; 
 
         loop {
-            // transfer pointers
+            // transfer pointer
             self.p += 1;
 
             // detect EOF
-            if self.p as usize == self.input.len() {
+            if self.p >= self.input.len() as isize {
                 print!("EOF detected!");
                 return None;
             }
 
-            // refresh
             let mut is_breaking = false;
-            // is_holding = false;
 
             println!("  lexer#advance: looping...");
             println!("    current_state: {}", self.current_state);
@@ -81,12 +80,11 @@ impl Lexer {
                 _ => { panic!("unreachable: cant match current_state {}", self.current_state.clone()); }
             };
 
-            // matched
             if let Some(some_matched_slice) = matched_slice {
                 matched_slice_start_pos = self.p as usize;
                 matched_slice_end_pos = matched_slice_start_pos + some_matched_slice.len();
 
-                // NOTE set a default transfering value for p, maybe override in action
+                // NOTE set a default transfering value for p, maybe mutated in action
                 self.p = matched_slice_end_pos as isize - 1; // will +1 upon next loop
 
                 println!("    matched with:");
@@ -98,9 +96,7 @@ impl Lexer {
                     // %% write matching action
                     -1 | _ => { panic!("unreachable! no matched action to invoke"); }
                 }
-            } else {
-                panic!("unreachable! matched nothing");
-            }
+            } else { panic!("unreachable! matched nothing"); }
 
             if is_breaking { break; }
         }
@@ -122,6 +118,14 @@ impl Lexer {
             // %% write token tables matching
             _ => { panic!("unreachable! no such table"); }
         }
+    }
+
+    fn state_stack_push(&mut self, state: String) {
+        self.state_stack.push(state);
+    }
+
+    fn state_stack_pop(&mut self) -> String {
+        self.state_stack.pop().unwrap()
     }
 
 }
