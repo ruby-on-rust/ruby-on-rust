@@ -142,7 +142,7 @@ s.p p!(':(\'|")'), %q{
 #     };
 # TODO INCOMPLETE
 s.p p!( ':', %i(bareword global_var class_var instance_var) ), %q{
-    emit TSymbol, 1, 0;
+    emit T_SYMBOL, 1, 0;
 
     fnext expr_end;
     fbreak;
@@ -211,6 +211,14 @@ s.p p!( ':', %i(bareword global_var class_var instance_var) ), %q{
 #     e_lbrack
 #     => { emit(:tLBRACK, '['.freeze)
 #          fbreak; };
+# TODO this is not a universal solution
+# TODO make scanner accepts an Action, and embed it automatically
+s.p '\[', %q{
+    embed_action e_lbrack;
+
+    emit T_LBRACK_;
+    fbreak;
+}
 
 #     # a()
 #     e_lparen
@@ -325,7 +333,7 @@ s.p :call_or_var, :local_ident
 #     c_any
 #     => { p = @ts - 1; fgoto expr_end; };
 # TODO INCOMPLETE
-s.p :c_any, %q{
+s.p p!(%i(c_any punctuation_end)), %q{
     fholdslice;
     fgoto expr_end;
 }

@@ -31,6 +31,7 @@ m! :operator_fname, '\[\]' # TODO ESCAPE
 # # A list of all punctuation except punctuation_begin.
 # punctuation_end     = ','  | '='  | '->' | '('  | '['  | ']'   |
 #                       '::' | '?'  | ':'  | '.'  | '..' | '...' ;
+m! :punctuation_end, %w{ , = -> \( \[ \] :: \? : \. \.\. \.\.\. }
 
 # # A list of keywords which have different meaning at the beginning of expression.
 # keyword_modifier    = 'if'     | 'unless' | 'while'  | 'until' | 'rescue' ;

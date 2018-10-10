@@ -8,13 +8,13 @@ s.p :w_any, nil
 #       => { @eq_begin_s = @ts
 #            fgoto line_comment; };
 s.p p!( '=begin', p!( %i(c_space c_nl_zlen) ) ), %q{
-    //TODO
+    panic!("UNIMPL");
 }
 
 #       '__END__' ( c_eol - zlen )
 #       => { p = pe - 3 };
 s.p p!( '__END__', p!( :c_eol, :-, :zlen ) ), %q{
-    //TODO
+    panic!("UNIMPL");
 }
 
 #       c_any

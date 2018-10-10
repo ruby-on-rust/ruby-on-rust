@@ -21,14 +21,19 @@ class Scanner
   #   code block like
   #       let a = 1;
   # 
-  def p pattern, action
-    pattern = case pattern
-              when Symbol
-                $machines[pattern] or raise "unknown pattern :#{pattern}"
-              when Pattern
-                pattern
+  def p *pattern, action
+    pattern = case pattern.size
+              when 1
+                case pattern = pattern[0]
+                when Symbol
+                  $machines[pattern] or raise "unknown pattern :#{pattern}"
+                when Pattern
+                  pattern
+                else
+                  Pattern.new *pattern
+                end
               else
-                raise 'unreachable!'
+                Pattern.new *pattern
               end
 
     action =  case action

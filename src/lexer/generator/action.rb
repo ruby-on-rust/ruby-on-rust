@@ -3,6 +3,9 @@ class Action
     pair = $actions.find do |id, action|
       action.name == name
     end
+
+    return nil if pair.nil?
+
     pair[1]
   end
 
@@ -113,11 +116,16 @@ class Action
 
     # emit
     # 
-    # emit TIdentifier, token_start_offset, token_end_offset;
+    # emit T_IDENTIFIER, token_start_offset, token_end_offset;
     # 
-    #     for TIdentifier(ts+start_offset, te+start_offset)
+    #     for T_IDENTIFIER(ts+start_offset, te+start_offset)
     # 
-    # emit TIdentifier; => emit TIdentifier, 0, 0;
+    # emit T_IDENTIFIER; => emit T_IDENTIFIER, 0, 0;
+    # 
+    # TODO HACKING
+    # for Token variant without value, like Token::T_LBRACK, use a trailing _
+    # 
+    #     emit T_LBRACK_
     # 
     @code.gsub!(/emit (\w+);/) do |match| "emit #$1, 0, 0;" end
     @code.gsub!(/emit (\w+), (\d+), (\d+);/) do |match|
@@ -125,12 +133,16 @@ class Action
       start_offset = $2
       end_offset = $3
 
-      # TIdentifier -> T_IDENTIFIER
-      variant = variant[0] + '_' + variant.slice(1..-1).upcase
+      token = if variant.end_with? '_'
+                "Token::#{variant.delete_suffix '_'}"
+              else
+                "Token::#{variant}(slice)"
+              end
 
       """
       let slice = self.get_input_slice(matched_slice_start_pos + #{start_offset}, matched_slice_end_pos + #{end_offset});
-      let token = Token::#{variant}(slice);
+      
+      let token = #{token};
       self.emit_token(token);
       """
     end
@@ -146,5 +158,15 @@ class Action
       """
     end
 
+    # embed_action
+    # 
+    #     embed_action e_lbrack;
+    # 
+    @code.gsub!(/embed_action (\w+);/) do |match|
+      action_name = $1
+      action = Action.find_by_name action_name.to_sym
+
+      action.code
+    end
   end
 end

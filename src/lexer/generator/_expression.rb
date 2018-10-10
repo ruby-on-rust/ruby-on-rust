@@ -36,13 +36,18 @@
 # e_lbrack = '[' % {
 #   @cond.push(false); @cmdarg.push(false)
 # };
+a! :e_lbrack, %q{
+    println!("invoking embedded action e_lbrack");
+
+    // TODO @cond @cmdarg
+}
 
 # # Ruby 1.9 lambdas require parentheses counting in order to
 # # emit correct opening kDO/tLBRACE.
 
 # e_lparen = '(' % {
 #   @cond.push(false); @cmdarg.push(false)
-
+# 
 #   @paren_nest += 1
 # };
 
@@ -62,7 +67,7 @@
 # }
 
 a! :local_ident, %q{
-    emit TIdentifier;
+    emit T_IDENTIFIER;
 
     // TODO INCOMPLETE
     fnext expr_endfn;

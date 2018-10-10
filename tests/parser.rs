@@ -559,6 +559,11 @@ fn symbol_plain() {
 //         |     ^ end
 //         |~~~~~~ expression})
 //   end
+#[test]
+fn array_plain() {
+    assert_parses!(r"[]", Node::Array(vec![]));
+    // TODO assert_parses!(r"[1, 2]", Node::Array(vec![ Node::Int(1), Node::Int(2) ]));
+}
 
 //   def test_array_splat
 //     assert_parses(

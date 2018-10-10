@@ -42,7 +42,7 @@ s = Scanner.new :expr_variable
 s.p :instance_var_v, %q{
     // TODO handle invalid token
 
-    emit TIVar;
+    emit T_IVAR;
     fnext *self.state_stack_pop();
     fbreak;
 }

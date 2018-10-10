@@ -258,7 +258,7 @@ s.p :call_or_var, :local_ident
 # e_rbrace | e_rparen | ']'
 # => {
 #   emit_table(PUNCTUATION)
-
+# 
 #   if @version < 24
 #     @cond.lexpop
 #     @cmdarg.lexpop
@@ -266,7 +266,7 @@ s.p :call_or_var, :local_ident
 #     @cond.pop
 #     @cmdarg.pop
 #   end
-
+# 
 #   if tok == '}'.freeze || tok == ']'.freeze
 #     if @version >= 25
 #       fnext expr_end;
@@ -276,7 +276,7 @@ s.p :call_or_var, :local_ident
 #   else # )
 #     # fnext expr_endfn; ?
 #   end
-
+# 
 #   fbreak;
 # };
 
