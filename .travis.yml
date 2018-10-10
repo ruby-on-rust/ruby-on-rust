@@ -4,17 +4,27 @@ language: rust
 # workaround https://github.com/travis-ci/travis-ci/issues/9061
 sudo: required
 
-env:
-  - RUST_BACKTRACE=1 RUSTFLAGS="-C link-dead-code" # Note that setting the environment variable RUSTFLAGS="-C link-dead-code" during tests build may improve coverage accuracy by preventing dead-code elimination. Do not set this variable when creating release builds since it will increase binary size.
+# env:
+#   - RUST_BACKTRACE=1 RUSTFLAGS="-C link-dead-code" # Note that setting the environment variable RUSTFLAGS="-C link-dead-code" during tests build may improve coverage accuracy by preventing dead-code elimination. Do not set this variable when creating release builds since it will increase binary size.
 
 rust:
   - stable
   - beta
   - nightly
 
+cache: yarn
+
 matrix:
   allow_failures:
     - rust: nightly
+
+before_install:
+  - rvm install 2.5.1
+  - yarn global add syntax-cli
+
+before_script:
+  - ruby src/lexer/generator/lexer_generator.rb
+  - ruby build_parser.rb
 
 # for kcov and codecov.io
 # addons:
