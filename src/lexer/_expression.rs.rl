@@ -42,23 +42,30 @@ e_lbrack = '[' % {
 # emit correct opening kDO/tLBRACE.
 
 e_lparen = '(' % {
-  @cond.push(false); @cmdarg.push(false)
+  // @cond.push(false); @cmdarg.push(false)
 
-  @paren_nest += 1
+  // @paren_nest += 1
 };
 
 e_rparen = ')' % {
-  @paren_nest -= 1
+  // @paren_nest -= 1
 };
 
 # Ruby is context-sensitive wrt/ local identifiers.
 action local_ident {
-  emit(:tIDENTIFIER)
+  {
+      // TODO macro
+      let slice = self.input_slice(ts, te);
+      let token = Token::T_IDENTIFIER(slice);
+      self.emit(token);
+  }
 
-  if !@static_env.nil? && @static_env.declared?(tok)
-    fnext expr_endfn; fbreak;
-  else
-    fnext *arg_or_cmdarg; fbreak;
-  end
+  // TODO
+  // if !@static_env.nil? && @static_env.declared?(tok)
+  //   fnext expr_endfn; fbreak;
+  // else
+  //   fnext *arg_or_cmdarg; fbreak;
+  // end
+  fnext expr_endfn; fnbreak;
 }
 }%%

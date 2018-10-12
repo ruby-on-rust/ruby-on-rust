@@ -12,7 +12,7 @@ expr_value := |*
     # "bar", 'baz'
     ['"] # '
     => {
-      fgoto *push_literal(tok, tok, @ts);
+    //   fgoto *push_literal(tok, tok, @ts);
     };
 
     w_space_comment;

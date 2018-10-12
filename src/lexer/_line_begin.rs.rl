@@ -5,8 +5,8 @@ line_begin := |*
 
     '=begin' ( c_space | c_nl_zlen )
     => {
-        @eq_begin_s = @ts
-        fgoto line_comment;
+        // @eq_begin_s = @ts
+        // fgoto line_comment;
     };
 
     '__END__' ( c_eol - zlen )
