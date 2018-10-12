@@ -12,19 +12,9 @@ rust:
   - beta
   - nightly
 
-cache: yarn
-
 matrix:
   allow_failures:
     - rust: nightly
-
-before_install:
-  - rvm install 2.5.1
-  - yarn global add syntax-cli
-
-before_script:
-  - ruby src/lexer/generator/lexer_generator.rb
-  - ruby build_parser.rb
 
 # for kcov and codecov.io
 # addons:
