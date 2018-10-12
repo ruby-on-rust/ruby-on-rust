@@ -53,19 +53,14 @@ e_rparen = ')' % {
 
 # Ruby is context-sensitive wrt/ local identifiers.
 action local_ident {
-  {
-      // TODO macro
-      let slice = self.input_slice(ts, te);
-      let token = Token::T_IDENTIFIER(slice);
-      self.emit(token);
-  }
+    !emit T_IDENTIFIER;
 
-  // TODO
-  // if !@static_env.nil? && @static_env.declared?(tok)
-  //   fnext expr_endfn; fbreak;
-  // else
-  //   fnext *arg_or_cmdarg; fbreak;
-  // end
-  fnext expr_endfn; fnbreak;
+    // TODO
+    // if !@static_env.nil? && @static_env.declared?(tok)
+    //   fnext expr_endfn; fbreak;
+    // else
+    //   fnext *arg_or_cmdarg; fbreak;
+    // end
+    fnext expr_endfn; fnbreak;
 }
 }%%

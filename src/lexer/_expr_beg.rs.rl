@@ -256,11 +256,11 @@ expr_beg := |*
 # 
     #   // fbreak;
     # };
-# 
-    # #
-    # # CONTEXT-DEPENDENT VARIABLE LOOKUP OR COMMAND INVOCATION
-    # #
-# 
+
+    #
+    # CONTEXT-DEPENDENT VARIABLE LOOKUP OR COMMAND INVOCATION
+    #
+
     # foo= bar:  Disambiguate with bareword rule below.
     bareword ambiguous_ident_suffix |
     # def foo:   Disambiguate with bareword rule below.
@@ -269,12 +269,12 @@ expr_beg := |*
         p = ts - 1;
         fgoto expr_end;
     };
-# 
-    # # a = 42;     a [42]: Indexing.
-    # # def a; end; a [42]: Array argument.
+
+    # a = 42;     a [42]: Indexing.
+    # def a; end; a [42]: Array argument.
     call_or_var
     => local_ident;
-# 
+
     # (call_or_var - keyword)
     #   % { ident_tok = tok; ident_ts = @ts; ident_te = @te; }
     # w_space+ '('
@@ -289,34 +289,34 @@ expr_beg := |*
     #   // end
     #   // fbreak;
     # };
-# 
-    # #
-    # # WHITESPACE
-    # #
-# 
-    # w_any;
-# 
+
+    #
+    # WHITESPACE
+    #
+
+    w_any;
+
     # e_heredoc_nl '=begin' ( c_space | c_nl_zlen )
     # => {
     #   // p = @ts - 1
     #   // @cs_before_block_comment = @cs
     #   // fgoto line_begin;
     # };
-# 
-    # #
-    # # DEFAULT TRANSITION
-    # #
-# 
-    # # The following rules match most binary and all unary operators.
-    # # Rules for binary operators provide better error reporting.
-    # operator_arithmetic '='    |
-    # operator_rest              |
-    # punctuation_end            |
-    # c_any
-    # => {
-    #     p = @ts - 1; fgoto expr_end;
-    # };
-# 
-    # c_eof => do_eof;
+
+    #
+    # DEFAULT TRANSITION
+    #
+
+    # The following rules match most binary and all unary operators.
+    # Rules for binary operators provide better error reporting.
+    operator_arithmetic '='    |
+    operator_rest              |
+    punctuation_end            |
+    c_any
+    => {
+        p = ts - 1; fgoto expr_end;
+    };
+
+    c_eof => do_eof;
 *|;
 }%%

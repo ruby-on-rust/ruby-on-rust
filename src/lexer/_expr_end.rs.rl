@@ -196,8 +196,8 @@ expr_end := |*
 #    => { emit(:tCONSTANT, tok(@ts, tm), @ts, tm)
 #          p = tm - 1; fbreak; };
 #
-#    global_var | class_var_v | instance_var_v
-#    => { p = @ts - 1; fcall expr_variable; };
+    global_var | class_var_v | instance_var_v
+    => { p = ts - 1; fncall expr_variable; };
 #
 #    #
 #    # METHOD CALLS

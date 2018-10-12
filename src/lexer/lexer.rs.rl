@@ -15,7 +15,7 @@ use token::token::Token;
     include "_whitespace.rs.rl";
     include "_expression.rs.rl";
     #
-    # include "_expr_variable.rs.rl";
+    include "_expr_variable.rs.rl";
     # include "_expr_fname.rs.rl";
     include "_expr_endfn.rs.rl";
     # include "_expr_dot.rs.rl";
@@ -47,23 +47,29 @@ pub struct Lexer {
     te: i32,
     tm: i32,
     act: i32,
+    stack: [i32; 16],
+    top: i32,
 }
 
 impl Lexer {
     pub fn new(input: String) -> Lexer {
-        let cs;
-        let ts;
-        let te;
-        let tm = 0;
-		let pe = input.len() as i32;
-        let act;
+        // # %% write init;
+        let cs = ( lexer_start ) as i32;
+        let top = 0;
+        let ts = 0;
+        let te = 0;
+        let act = 0;
 
-        %% write init;
+        let tm = 0;
+        let pe = input.len() as i32;
+        let stack = [0; 16];
 
         Lexer {
             input,
             tokens: vec![],
+
             cs, ts, te, tm,
+            stack, top,
             p: 0,
             pe,
             act,
@@ -78,8 +84,8 @@ impl Lexer {
         if !self.tokens.is_empty() { return Some(self.tokens.remove(0)); }
 
         // TODO MAJOR utf8 uncompatible
-		let _input = self.input.clone();
-		let data = _input.as_bytes();
+        let _input = self.input.clone();
+        let data = _input.as_bytes();
 
         // TODO macro
         let mut cs = self.cs;
@@ -89,6 +95,14 @@ impl Lexer {
         let mut te = self.te;
         let mut tm = self.tm;
         let mut act = self.act;
+        let mut stack = self.stack;
+        let mut top = self.top;
+
+        // NOTE
+        // pe - Data end pointer.
+        // This should be initialized to p plus the data length on every run of the machine.
+        // In Go, Java and Ruby code this should be initialized to the data length.
+        // Seems like rust is same with ruby, since they're languages without `goto`
 
         let eof = self.pe;
 
@@ -101,6 +115,8 @@ impl Lexer {
         self.te = te;
         self.tm = tm;
         self.act = act;
+        self.stack = stack;
+        self.top = top;
 
         if self.tokens.is_empty() {
             return None;

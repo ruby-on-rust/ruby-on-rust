@@ -15,6 +15,8 @@
 
 # lexer
 /src/lexer/lexer.rs
+/src/lexer/tmp/*
+!/src/lexer/tmp/.keep
 
 # parser
 /src/parser/table
