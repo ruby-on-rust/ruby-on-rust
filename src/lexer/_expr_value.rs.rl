@@ -4,15 +4,16 @@
 expr_value := |*
     # a:b: a(:b), a::B, A::B
     label (any - ':') => {
-        // TODO
-        // p = @ts - 1
-        // fgoto expr_end;
+        p = ts - 1;
+        fgoto expr_end;
     };
 
     # "bar", 'baz'
     ['"] # '
     => {
-    //   fgoto *push_literal(tok, tok, @ts);
+        let literal = Literal::new(self.input_slice(ts,te), self.input_slice(ts,te), ts, None, false, false, false, Rc::clone(&self.tokens));
+
+        fgoto *self.push_literal(literal);
     };
 
     w_space_comment;

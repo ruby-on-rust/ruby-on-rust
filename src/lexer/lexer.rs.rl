@@ -1,7 +1,10 @@
 // TODO
 // set starting cs as lexer_en_line_begin
 
+use std::rc::Rc;
+use std::cell::RefCell;
 use token::token::Token;
+use lexer::literal::Literal;
 
 %%{
     machine lexer;
@@ -9,9 +12,9 @@ use token::token::Token;
     include "_character_classes.rs.rl";
     include "_token_definitions.rs.rl";
     # include "_numeric.rs.rl";
-    # include "_escape_sequence.rs.rl";
+    include "_escape_sequence.rs.rl";
     include "_string_and_heredoc.rs.rl";
-    # include "_interpolation.rs.rl";
+    include "_interpolation.rs.rl";
     include "_whitespace.rs.rl";
     include "_expression.rs.rl";
     #
@@ -37,8 +40,6 @@ use token::token::Token;
 pub struct Lexer {
     input: String,
 
-    tokens: Vec<Token>,
-
     // ragel
     cs: i32,
     p: i32,
@@ -49,11 +50,14 @@ pub struct Lexer {
     act: i32,
     stack: [i32; 16],
     top: i32,
+
+    tokens: Rc<RefCell<Vec<Token>>>,
+    pub literal_stack: Vec<Literal>,
 }
 
 impl Lexer {
     pub fn new(input: String) -> Lexer {
-        // # %% write init;
+        // %% write init;
         let cs = ( lexer_start ) as i32;
         let top = 0;
         let ts = 0;
@@ -66,13 +70,15 @@ impl Lexer {
 
         Lexer {
             input,
-            tokens: vec![],
 
             cs, ts, te, tm,
             stack, top,
             p: 0,
             pe,
             act,
+
+            tokens: Rc::new(RefCell::new(vec![])),
+            literal_stack: vec![]
         }
     }
 
@@ -81,7 +87,7 @@ impl Lexer {
     pub fn advance(&mut self) -> Option<Token> {
         println!("---\nlexer.advance");
 
-        if !self.tokens.is_empty() { return Some(self.tokens.remove(0)); }
+        if !self.tokens.borrow().is_empty() { return Some(self.tokens.borrow_mut().remove(0)); }
 
         // TODO MAJOR utf8 uncompatible
         let _input = self.input.clone();
@@ -118,10 +124,10 @@ impl Lexer {
         self.stack = stack;
         self.top = top;
 
-        if self.tokens.is_empty() {
+        if self.tokens.borrow().is_empty() {
             return None;
         } else {
-            return Some(self.tokens.remove(0));
+            return Some(self.tokens.borrow_mut().remove(0));
         }
     }
 
@@ -139,7 +145,7 @@ impl Lexer {
 
     fn emit(&mut self, token: Token) {
         println!("lexer.emit: {:?}", token);
-        self.tokens.push(token);
+        self.tokens.borrow_mut().push(token);
     }
 
 }

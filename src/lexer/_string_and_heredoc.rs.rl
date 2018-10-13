@@ -44,29 +44,62 @@ e_heredoc_nl = c_nl % {
   // end
 };
 
+# action extend_string {
+#   string = tok
+#
+#   # tLABEL_END is only possible in non-cond context on >= 2.2
+#   if @version >= 22 && !@cond.active?
+#     lookahead = @source_buffer.slice(@te...@te+2)
+#   end
+#
+#   current_literal = literal
+#   if !current_literal.heredoc? &&
+#         (token = current_literal.nest_and_try_closing(string, @ts, @te, lookahead))
+#     if token[0] == :tLABEL_END
+#       p += 1
+#       pop_literal
+#       fnext expr_labelarg;
+#     else
+#       fnext *pop_literal;
+#     end
+#     fbreak;
+#   else
+#     current_literal.extend_string(string, @ts, @te)
+#   end
+# }
 action extend_string {
-  // TODO
-  // string = tok
+    println!("action:extend_string invoking");
 
-  // # tLABEL_END is only possible in non-cond context on >= 2.2
-  // if @version >= 22 && !@cond.active?
-  //   lookahead = @source_buffer.slice(@te...@te+2)
-  // end
+    // NOTE ignored ruby22-and-below cases
+    // TODO INCOMPLETE handle @cond.active
+    let lookahead = self.get_input_slice(matched_slice_end_pos, matched_slice_end_pos + 2);
 
-  // current_literal = literal
-  // if !current_literal.heredoc? &&
-  //       (token = current_literal.nest_and_try_closing(string, @ts, @te, lookahead))
-  //   if token[0] == :tLABEL_END
-  //     p += 1
-  //     pop_literal
-  //     fnext expr_labelarg;
-  //   else
-  //     fnext *pop_literal;
-  //   end
-  //   fbreak;
-  // else
-  //   current_literal.extend_string(string, @ts, @te)
-  // end
+    let mut current_literal = self.literal().expect("literal_stack is empty").clone();
+    if !current_literal.is_heredoc() {
+        if let Some(token) = current_literal.nest_and_try_closing(&some_matched_slice, matched_slice_start_pos, matched_slice_end_pos, Some(lookahead)) {
+            if let Token::T_LABEL_END = token {
+                self.p += 1;
+                self.pop_literal();
+                fnext expr_labelarg;
+            } else {
+                // TODO fnext *
+                self.next_state = Some(self.pop_literal());
+            }
+
+            fbreak;
+        }
+    }
+
+    current_literal.extend_string(&some_matched_slice, matched_slice_start_pos, matched_slice_end_pos);
+
+    // NOTE
+    // due to limitations of borrowing in rust, we have to
+    // 1 clone current_literal
+    // 2 modify it 
+    // 3 re-save it to the stack
+    // TODO leverage RefCell
+    self.literal_stack.pop();
+    self.literal_stack.push(current_literal);
 }
 
 action extend_string_escaped {
