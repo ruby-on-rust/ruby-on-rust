@@ -37,6 +37,7 @@ pub enum Node {
 
     LVar(String),
     IVar(String),
+    GVar(String),
 
     Const { scope: Option<Box<Node>>, name: String },
     //                        ^ CBase/Lvar
@@ -49,6 +50,7 @@ pub enum Node {
     Ident(String),
 
     // assignable
+    // TODO maybe rename to LVAsgn?
     LVasgn(String, Nodes),
     IVasgn(String, Nodes),
 
@@ -453,6 +455,15 @@ pub fn ivar(token: Token) -> Node {
 //   n(:gvar, [ value(token).to_sym ],
 //     variable_map(token))
 // end
+pub fn gvar(token: Token) -> Node {
+    // token: Token::T_GVAR
+
+    if let Token::T_GVAR(var_str) = token {
+        // TODO variable_map
+        return Node::GVar(var_str);
+    }
+    unreachable!();
+}
 
 // def cvar(token)
 //   n(:cvar, [ value(token).to_sym ],

@@ -5,7 +5,8 @@
 expr_variable := |*
     global_var
     => {
-      // if    tok =~ /^\$([1-9][0-9]*)$/
+      // TODO
+      // if tok =~ /^\$([1-9][0-9]*)$/
       //   emit(:tNTH_REF, tok(@ts + 1).to_i)
       // elsif tok =~ /^\$([&`'+])$/
       //   emit(:tBACK_REF)
@@ -13,17 +14,21 @@ expr_variable := |*
       //   emit(:tGVAR)
       // end
 
-      // fnext *stack_pop; fbreak;
+      !emit T_GVAR;
+      !fnext_stack_pop;
+      fnbreak;
     };
 
     class_var_v
     => {
+      // TODO
       // if tok =~ /^@@[0-9]/
       //   diagnostic :error, :cvar_name, { :name => tok }
       // end
 
-      // emit(:tCVAR)
-      // fnext *stack_pop; fbreak;
+      emit :T_CVAR
+      !fnext_stack_pop;
+      fnbreak;
     };
 
     instance_var_v
@@ -34,7 +39,8 @@ expr_variable := |*
       // end
 
       !emit T_IVAR;
-      !fnext_stack_pop; fnbreak;
+      !fnext_stack_pop;
+      fnbreak;
     };
 *|;
 }%%

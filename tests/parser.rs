@@ -895,6 +895,7 @@ fn array_plain() {
 //       %q{$foo},
 //       %q{~~~~ expression})
 //   end
+#[test] fn gvar() { assert_parses!("$foo", Node::GVar(String::from("$foo"))); }
 
 //   def test_gvar_dash_empty
 //     assert_diagnoses(
@@ -1004,6 +1005,18 @@ fn array_plain() {
 //         |~~~~~~~~ expression (lvasgn)
 //         })
 //   end
+#[test]
+fn lvasgn() {
+    // WIP
+    // TODO Node::Begin
+    assert_parses!(
+        "var = 10; var",
+        Node::LVasgn(
+            String::from("var"),
+            vec![Node::Int(10)]
+        )
+    );
+}
 
 //   def test_ivasgn
 //     assert_parses(

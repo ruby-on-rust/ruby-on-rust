@@ -2230,6 +2230,11 @@ user_variable
 
         $$ = node::ivar(*$1.interior_token);
     }
+    | tGVAR {
+        |$1:Token| -> Node;
+
+        $$ = node::gvar(*$1.interior_token);
+    }
     | tCONSTANT {
         |$1:Token| -> Node;
 
