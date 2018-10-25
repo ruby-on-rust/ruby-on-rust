@@ -132,7 +132,7 @@ impl Lexer {
     }
 
     // TODO CRITICAL utf8 uncompatible
-    fn input_slice(&self, ts: i32, te: i32) -> String {
+    fn current_slice(&self, ts: i32, te: i32) -> String {
         self.input.chars().skip(ts as usize).take( ( te - ts ) as usize ).collect()
     }
 

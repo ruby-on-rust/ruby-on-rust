@@ -70,10 +70,10 @@ e_heredoc_nl = c_nl % {
 action extend_string {
     println!("action:extend_string invoking");
 
-    let temp_string = self.input_slice(ts, te);
+    let temp_string = self.current_slice(ts, te);
     // NOTE ignored ruby22-and-below cases
     // TODO INCOMPLETE handle @cond.active
-    let lookahead = self.input_slice(te, te + 2);
+    let lookahead = self.current_slice(te, te + 2);
 
     let mut current_literal = self.literal().expect("literal_stack is empty").clone();
     if !current_literal.is_heredoc() {
