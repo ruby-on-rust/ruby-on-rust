@@ -15,26 +15,26 @@
 # The default post-`expr_endarg` state is `expr_end`, so this state also handles
 # `do` (as `kDO_BLOCK` in `expr_beg`).
 expr_endarg := |*
-    e_lbrace
-    => {
-      if @lambda_stack.last == @paren_nest
-        @lambda_stack.pop
-        emit(:tLAMBEG, '{'.freeze)
-      else
-        emit(:tLBRACE_ARG, '{'.freeze)
-      end
-      fnext expr_value; fbreak;
-    };
+  e_lbrace
+  => {
+    if @lambda_stack.last == @paren_nest
+      @lambda_stack.pop
+      emit(:tLAMBEG, '{'.freeze)
+    else
+      emit(:tLBRACE_ARG, '{'.freeze)
+    end
+    fnext expr_value; fbreak;
+  };
 
-    'do'
-    => { emit_do(true)
-          fnext expr_value; fbreak; };
+  'do'
+  => { emit_do(true)
+        fnext expr_value; fbreak; };
 
-    w_space_comment;
+  w_space_comment;
 
-    c_any
-    => { fhold; fgoto expr_end; };
+  c_any
+  => { fhold; fgoto expr_end; };
 
-    c_eof => do_eof;
+  c_eof => do_eof;
 *|;
 }%%

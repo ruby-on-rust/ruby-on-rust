@@ -86,7 +86,7 @@ action extend_string {
                 self.next_state = Some(self.pop_literal());
             }
 
-            fbreak;
+            fnbreak;
         }
     }
 

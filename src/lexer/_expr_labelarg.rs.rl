@@ -6,11 +6,12 @@ expr_labelarg := |*
 
   w_newline
   => {
-    if @in_kwarg
-      fhold; fgoto expr_end;
-    else
-      fgoto line_begin;
-    end
+    // TODO
+    // if @in_kwarg
+    //   fhold; fgoto expr_end;
+    // else
+    //   fgoto line_begin;
+    // end
   };
 
   c_any

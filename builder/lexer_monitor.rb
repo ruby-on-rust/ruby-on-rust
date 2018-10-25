@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'bundler/inline'
+require_relative 'transform_lexer.rb'
 
 gemfile do
   source 'https://rubygems.org'
@@ -9,16 +10,16 @@ gemfile do
 end
 
 # lexer
-listener = Listen.to './src/lexer', only: /\.rs\.rl$/, latency: 5 do |modified, added, removed|
-  # puts "modified absolute path: #{modified}"
-  # puts "added absolute path: #{added}"
-  # puts "removed absolute path: #{removed}"
+listener = Listen.to './src/lexer', only: /\.rs\.rl$/, ignore: [/tmp/], latency: 5 do |modified, added, removed|
+  puts "modified absolute path: #{modified}"
+  puts "added absolute path: #{added}"
+  puts "removed absolute path: #{removed}"
 
   puts 'rebuilding lexer...'
 
   # transform syntax sugars
   puts 'transforming lexer...'
-  require './builder/transform_lexer.rb'
+  transform!
 
   # build lexer via remote ragel
   puts `scp ./src/lexer/tmp/*.rs.rl ragel-builder:/root/ragel/lexer/`
