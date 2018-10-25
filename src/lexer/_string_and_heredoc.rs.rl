@@ -70,27 +70,27 @@ e_heredoc_nl = c_nl % {
 action extend_string {
     println!("action:extend_string invoking");
 
+    let temp_string = self.input_slice(ts, te);
     // NOTE ignored ruby22-and-below cases
     // TODO INCOMPLETE handle @cond.active
-    let lookahead = self.get_input_slice(matched_slice_end_pos, matched_slice_end_pos + 2);
+    let lookahead = self.input_slice(te, te + 2);
 
     let mut current_literal = self.literal().expect("literal_stack is empty").clone();
     if !current_literal.is_heredoc() {
-        if let Some(token) = current_literal.nest_and_try_closing(&some_matched_slice, matched_slice_start_pos, matched_slice_end_pos, Some(lookahead)) {
+        if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
             if let Token::T_LABEL_END = token {
-                self.p += 1;
+                p += 1;
                 self.pop_literal();
                 fnext expr_labelarg;
             } else {
-                // TODO fnext *
-                self.next_state = Some(self.pop_literal());
+                fnext *self.pop_literal();
             }
 
             fnbreak;
         }
     }
 
-    current_literal.extend_string(&some_matched_slice, matched_slice_start_pos, matched_slice_end_pos);
+    current_literal.extend_string(&temp_string, ts, te);
 
     // NOTE
     // due to limitations of borrowing in rust, we have to

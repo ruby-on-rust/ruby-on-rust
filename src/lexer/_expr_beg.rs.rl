@@ -92,25 +92,29 @@ expr_beg := |*
     # #     p = @herebody_s - 1
     # #   end
     # # };
-# 
+
     # #
     # # SYMBOL LITERALS
     # #
-# 
+
     # # :&&, :||
     # ':' ('&&' | '||') => {
-    #   // fhold; fhold;
-    #   // emit(:tSYMBEG, tok(@ts, @ts + 1), @ts, @ts + 1)
-    #   // fgoto expr_fname;
+    #   fhold; fhold;
+    #   emit(:tSYMBEG, tok(@ts, @ts + 1), @ts, @ts + 1)
+    #   fgoto expr_fname;
     # };
-# 
-    # # :"bar", :'baz'
-    # ':' ['"] # '
-    # => {
-    #   // type, delimiter = tok, tok[-1].chr
-    #   // fgoto *push_literal(type, delimiter, @ts);
-    # };
-# 
+
+    # :"bar", :'baz'
+    ':' ['"] # '
+    => {
+        // type, delimiter = tok, tok[-1].chr
+        // fgoto *push_literal(type, delimiter, @ts);
+        let literal_type = self.input_slice(ts, te).clone();
+        let literal_delimiter = literal_type.chars().last().unwrap().to_string();
+        let literal = Literal::new(literal_type, literal_delimiter, ts, None, false, false, false, Rc::clone(&self.tokens));
+        fgoto *self.push_literal(literal);
+    };
+
     # # :!@ is :!
     # # :~@ is :~
     # ':' [!~] '@'
@@ -118,21 +122,23 @@ expr_beg := |*
     #   // emit(:tSYMBOL, tok(@ts + 1, @ts + 2))
     #   // fnext expr_end; fbreak;
     # };
-# 
+
     # ':' bareword ambiguous_symbol_suffix
     # => {
-    #   // emit(:tSYMBOL, tok(@ts + 1, tm), @ts, tm)
-    #   // p = tm - 1
-    #   // fnext expr_end; fbreak;
+    #     // emit(:tSYMBOL, tok(@ts + 1, tm), @ts, tm)
+    #     // p = tm - 1
+    #     // fnext expr_end; fbreak;
     # };
-# 
-    # ':' ( bareword | global_var | class_var | instance_var |
-    #       operator_fname | operator_arithmetic | operator_rest )
-    # => {
-    #   // emit(:tSYMBOL, tok(@ts + 1), @ts)
-    #   // fnext expr_end; fbreak;
-    # };
-# 
+
+    ':' ( bareword | global_var | class_var | instance_var |
+          operator_fname | operator_arithmetic | operator_rest )
+    => {
+      // emit(:tSYMBOL, tok(@ts + 1), @ts)
+      // fnext expr_end; fbreak;
+      !emit T_SYMBOL, ts + 1, te;
+      fnext expr_end; fnbreak;
+    };
+
     # #
     # # AMBIGUOUS TERNARY OPERATOR
     # #
@@ -212,7 +218,7 @@ expr_beg := |*
     #     // emit_table(PUNCTUATION_BEGIN)
     #     // fbreak;
     # };
-# 
+
     # # rescue Exception => e: Block rescue.
     # # Special because it should transition to expr_mid.
     # 'rescue' %{ tm = p } '=>'?
@@ -221,29 +227,29 @@ expr_beg := |*
     #     // p = tm - 1
     #     // fnext expr_mid; fbreak;
     # };
-# 
+
     # # if a: Statement if.
     # keyword_modifier
     # => {
     #     // emit_table(KEYWORDS_BEGIN)
     #     // fnext expr_value; fbreak;
     # };
-# 
+
     # #
     # # RUBY 1.9 HASH LABELS
     # #
-# 
+
     # label ( any - ':' )
     # => {
     #   // fhold;
-# 
+
     #   // if version?(18)
     #   //   ident = tok(@ts, @te - 2)
-# 
+
     #   //   emit((@source_buffer.slice(@ts) =~ /[A-Z]/) ? :tCONSTANT : :tIDENTIFIER,
     #   //         ident, @ts, @te - 2)
     #   //   fhold; # continue as a symbol
-# 
+
     #   //   if !@static_env.nil? && @static_env.declared?(ident)
     #   //     fnext expr_end;
     #   //   else
@@ -253,7 +259,7 @@ expr_beg := |*
     #   //   emit(:tLABEL, tok(@ts, @te - 2), @ts, @te - 1)
     #   //   fnext expr_labelarg;
     #   // end
-# 
+
     #   // fbreak;
     # };
 
@@ -281,7 +287,7 @@ expr_beg := |*
     # => {
     #   // emit(:tIDENTIFIER, ident_tok, ident_ts, ident_te)
     #   // p = ident_te - 1
-# 
+
     #   // if !@static_env.nil? && @static_env.declared?(ident_tok) && @version < 25
     #   //   fnext expr_endfn;
     #   // else

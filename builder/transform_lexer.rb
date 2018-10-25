@@ -85,22 +85,19 @@ def transform!
 
     # emit
     # 
-    # emit T_IDENTIFIER, token_start_offset, token_end_offset;
-    # 
-    #     for T_IDENTIFIER(ts+start_offset, te+start_offset)
-    # 
-    # emit T_IDENTIFIER; => emit T_IDENTIFIER, 0, 0;
+    #     !emit T_IDENTIFIER, ts, te;
+    #     !emit T_IDENTIFIER; => emit T_IDENTIFIER, ts, te;
     # 
     # TODO HACKING
     # for Token variant without value, like Token::T_LBRACK, use a trailing _
     # 
-    #     emit T_LBRACK_
+    #     !emit T_LBRACK_;
     # 
-    lexer_rs_rl_content.gsub!(/!emit (\w+);/) do |match| "!emit #$1, 0, 0;" end
-    lexer_rs_rl_content.gsub!(/!emit (\w+), (\d+), (\d+);/) do |match|
+    lexer_rs_rl_content.gsub!(/!emit ([^,;]+);$/m) do |match| "!emit #$1, ts, te;" end
+    lexer_rs_rl_content.gsub!(/!emit ([^,;]+), ([^,;]+), ([^,;]+);$/m) do |match|
       variant = $1
-      start_offset = $2
-      end_offset = $3
+      start_p = $2
+      end_p = $3
 
       token = if variant.end_with? '_'
                 "Token::#{variant.delete_suffix '_'}"
@@ -110,7 +107,7 @@ def transform!
 
       """
       {
-          let slice = self.input_slice(ts + #{start_offset}, te + #{end_offset});
+          let slice = self.input_slice(#{start_p}, te + #{end_p});
       
           let token = #{token};
           self.emit(token);

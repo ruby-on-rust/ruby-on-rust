@@ -6,7 +6,7 @@ require_relative 'transform_lexer.rb'
 gemfile do
   source 'https://rubygems.org'
   gem 'listen', '~> 3.0'
-  # gem 'byebug'
+  gem 'byebug'
 end
 
 # lexer

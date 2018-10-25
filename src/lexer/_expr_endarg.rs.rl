@@ -17,18 +17,22 @@
 expr_endarg := |*
   e_lbrace
   => {
-    if @lambda_stack.last == @paren_nest
-      @lambda_stack.pop
-      emit(:tLAMBEG, '{'.freeze)
-    else
-      emit(:tLBRACE_ARG, '{'.freeze)
-    end
-    fnext expr_value; fbreak;
+    // TODO
+    // if @lambda_stack.last == @paren_nest
+    //   @lambda_stack.pop
+    //   emit(:tLAMBEG, '{'.freeze)
+    // else
+    //   emit(:tLBRACE_ARG, '{'.freeze)
+    // end
+    // fnext expr_value; fbreak;
   };
 
   'do'
-  => { emit_do(true)
-        fnext expr_value; fbreak; };
+  => {
+      // TODO
+      // emit_do(true)
+      // fnext expr_value; fbreak;
+  };
 
   w_space_comment;
 

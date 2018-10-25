@@ -24,7 +24,7 @@ use lexer::literal::Literal;
     # include "_expr_dot.rs.rl";
     # include "_expr_arg.rs.rl";
     # include "_expr_cmdarg.rs.rl";
-    # include "_expr_endarg.rs.rl";
+    include "_expr_endarg.rs.rl";
     # include "_expr_mid.rs.rl";
     include "_expr_beg.rs.rl";
     include "_expr_labelarg.rs.rl";

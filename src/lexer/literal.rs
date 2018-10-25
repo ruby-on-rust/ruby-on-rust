@@ -524,11 +524,10 @@ impl Lexer {
     pub fn push_literal(&mut self, literal: Literal) -> i32 {
         // println!("### literal: push_literal: invoked. literal: {:?}", literal);
         // TODO DEBUG INFO
-        print!("push_literal");
+        print!("push_literal invoking");
 
         let next_state = self.next_state_for_literal(&literal);
         print!("push_literal: next_state: {}", next_state);
-
 
         self.literal_stack.push(literal);
 
@@ -620,7 +619,7 @@ impl Lexer {
     //     end
     //   end
     // TODO DUMMY
-    pub fn pop_literal(&mut self) -> String {
+    pub fn pop_literal(&mut self) -> i32 {
         println!("### literal: pop_literal: invoked");
 
         // let old_literal = self.literal_stack.pop().unwrap();
@@ -628,6 +627,6 @@ impl Lexer {
 
         // println!("### literal: literal_stack: {:?}", self.literal_stack);
 
-        String::from("expr_endarg")
+        lexer_en_expr_endarg
     }
 }
