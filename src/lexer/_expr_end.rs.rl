@@ -33,15 +33,17 @@ expr_end := |*
 #
 #      fnext expr_value; fbreak;
 #    };
-#
-#    #
-#    # KEYWORDS
-#    #
-#
-#    keyword_with_fname
-#    => { emit_table(KEYWORDS)
-#          fnext expr_fname; fbreak; };
-#
+
+    #
+    # KEYWORDS
+    #
+
+    keyword_with_fname
+    => {
+        !emit_table KEYWORDS;
+        fnext expr_fname; fnbreak;
+    };
+
 #    'class' w_any* '<<'
 #    => { emit(:kCLASS, 'class'.freeze, @ts, @ts + 5)
 #          emit(:tLSHFT, '<<'.freeze,    @te - 2, @te)
@@ -56,11 +58,13 @@ expr_end := |*
 #    keyword_with_value
 #    => { emit_table(KEYWORDS)
 #          fnext expr_value; fbreak; };
-#
-#    keyword_with_mid
-#    => { emit_table(KEYWORDS)
-#          fnext expr_mid; fbreak; };
-#
+
+    keyword_with_mid
+    => {
+        !emit_table KEYWORDS;
+        fnext expr_mid; fnbreak;
+    };
+
 #    keyword_with_arg
 #    => {
 #      emit_table(KEYWORDS)
@@ -85,17 +89,17 @@ expr_end := |*
 #      end
 #      fbreak;
 #    };
-#
+
     keyword_with_end
     => {
         !emit_table KEYWORDS;
         fnbreak;
     };
-#
-#    #
-#    # NUMERIC LITERALS
-#    #
-#
+
+    #
+    # NUMERIC LITERALS
+    #
+
 #    ( '0' [Xx] %{ @num_base = 16; @num_digits_s = p } int_hex
 #    | '0' [Dd] %{ @num_base = 10; @num_digits_s = p } int_dec
 #    | '0' [Oo] %{ @num_base = 8;  @num_digits_s = p } int_dec
@@ -312,20 +316,23 @@ expr_end := |*
     w_newline
     => { fgoto leading_dot; };
 
-#    ';'
-#    => { emit(:tSEMI, ';'.freeze)
-#          fnext expr_value; fbreak; };
-#
+    ';'
+    => {
+        // emit(:tSEMI, ';'.freeze)
+        !emit T_SEMI_;
+        fnext expr_value; fnbreak;
+    };
+
 #    '\\' c_line {
 #      diagnostic :error, :bare_backslash, nil, range(@ts, @ts + 1)
 #      fhold;
 #    };
-#
+
 #    c_any
 #    => {
 #      diagnostic :fatal, :unexpected, { :character => tok.inspect[1..-2] }
 #    };
-#
+
     c_eof => do_eof;
 *|;
 }%%

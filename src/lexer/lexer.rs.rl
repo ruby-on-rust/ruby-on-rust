@@ -20,13 +20,13 @@ use lexer::stack_state::StackState;
     include "_expression.rs.rl";
     #
     include "_expr_variable.rs.rl";
-    # include "_expr_fname.rs.rl";
+    include "_expr_fname.rs.rl";
     include "_expr_endfn.rs.rl";
     include "_expr_dot.rs.rl";
     # include "_expr_arg.rs.rl";
     # include "_expr_cmdarg.rs.rl";
     include "_expr_endarg.rs.rl";
-    # include "_expr_mid.rs.rl";
+    include "_expr_mid.rs.rl";
     include "_expr_beg.rs.rl";
     include "_expr_labelarg.rs.rl";
     include "_expr_value.rs.rl";

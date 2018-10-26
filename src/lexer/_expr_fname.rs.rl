@@ -10,20 +10,28 @@
 #
 expr_fname := |*
     keyword
-    => { emit_table(KEYWORDS_BEGIN);
-          fnext expr_endfn; fbreak; };
+    => {
+        !emit_table KEYWORDS_BEGIN;
+        fnext expr_endfn; fnbreak;
+    };
 
     constant
-    => { emit(:tCONSTANT)
-          fnext expr_endfn; fbreak; };
+    => {
+        !emit T_CONSTANT;
+        fnext expr_endfn; fnbreak;
+    };
 
     bareword [?=!]?
-    => { emit(:tIDENTIFIER)
-          fnext expr_endfn; fbreak; };
+    => {
+        !emit T_IDENTIFIER;
+        fnext expr_endfn; fnbreak;
+    };
 
     global_var
-    => { p = @ts - 1
-          fnext expr_end; fcall expr_variable; };
+    => {
+        p = ts - 1;
+        fnext expr_end; fncall expr_variable;
+    };
 
     # If the handling was to be delegated to expr_end,
     # these cases would transition to something else than
@@ -31,8 +39,9 @@ expr_fname := |*
     operator_fname      |
     operator_arithmetic |
     operator_rest
-    => { emit_table(PUNCTUATION)
-          fnext expr_endfn; fbreak; };
+    => {
+        !emit_table PUNCTUATION;
+          fnext expr_endfn; fnbreak; };
 
     '::'
     => { fhold; fhold; fgoto expr_end; };
@@ -40,16 +49,17 @@ expr_fname := |*
     ':'
     => { fhold; fgoto expr_beg; };
 
-    '%s' c_any
-    => {
-      if version?(23)
-        type, delimiter = tok[0..-2], tok[-1].chr
-        fgoto *push_literal(type, delimiter, @ts);
-      else
-        p = @ts - 1
-        fgoto expr_end;
-      end
-    };
+    # TODO
+    # '%s' c_any
+    # => {
+    #   if version?(23)
+    #     type, delimiter = tok[0..-2], tok[-1].chr
+    #     fgoto *push_literal(type, delimiter, @ts);
+    #   else
+    #     p = @ts - 1
+    #     fgoto expr_end;
+    #   end
+    # };
 
     w_any;
 

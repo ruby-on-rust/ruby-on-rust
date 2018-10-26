@@ -351,7 +351,7 @@ impl Tokenizer {
 
     // TODO
     pub fn has_more_tokens(&mut self) -> bool {
-        println!("has_more_tokens?");
+        println!("has_more_tokens? invoking, result: {}", !self.no_more_tokens);
 
         !self.no_more_tokens
     }

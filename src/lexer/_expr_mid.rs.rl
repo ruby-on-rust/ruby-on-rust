@@ -6,11 +6,13 @@
 #
 expr_mid := |*
     keyword_modifier
-    => { emit_table(KEYWORDS)
-          fnext expr_beg; fbreak; };
+    => {
+        !emit_table KEYWORDS;
+        fnext expr_beg; fnbreak;
+    };
 
     bareword
-    => { p = @ts - 1; fgoto expr_beg; };
+    => { p = ts - 1; fgoto expr_beg; };
 
     w_space_comment;
 
