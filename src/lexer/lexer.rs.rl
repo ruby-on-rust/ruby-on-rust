@@ -23,8 +23,8 @@ use lexer::stack_state::StackState;
     include "_expr_fname.rs.rl";
     include "_expr_endfn.rs.rl";
     include "_expr_dot.rs.rl";
-    # include "_expr_arg.rs.rl";
-    # include "_expr_cmdarg.rs.rl";
+    include "_expr_arg.rs.rl";
+    include "_expr_cmdarg.rs.rl";
     include "_expr_endarg.rs.rl";
     include "_expr_mid.rs.rl";
     include "_expr_beg.rs.rl";
@@ -60,6 +60,12 @@ pub struct Lexer {
     // TODO
     // @cond_stack   = []
     // @cmdarg_stack = []
+
+    // # If the lexer is in `command state' (aka expr_value)
+    // # at the entry to #advance, it will transition to expr_cmdarg
+    // # instead of expr_arg at certain points.
+    // @command_state = false
+    command_state: bool,
 }
 
 impl Lexer {
@@ -89,6 +95,8 @@ impl Lexer {
 
             cond: StackState::new(),
             cmdarg: StackState::new(),
+
+            command_state: false,
         }
     }
 
@@ -121,6 +129,10 @@ impl Lexer {
         // Seems like rust is same with ruby, since they're languages without `goto`
 
         let eof = self.pe;
+
+        // @command_state = (@cs == klass.lex_en_expr_value ||
+        //                   @cs == klass.lex_en_line_begin)
+        self.command_state = ( cs == lexer_en_expr_value || cs == lexer_en_line_begin );
 
         %% write exec;
 
@@ -158,4 +170,8 @@ impl Lexer {
         self.tokens.borrow_mut().push(token);
     }
 
+    // TODO NOTE
+    fn arg_or_cmdarg(&self) -> i32 {
+        if self.command_state { lexer_en_expr_cmdarg } else { lexer_en_expr_arg }
+    }
 }

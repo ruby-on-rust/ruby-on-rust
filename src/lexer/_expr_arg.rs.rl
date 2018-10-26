@@ -11,85 +11,95 @@ expr_arg := |*
     # See below the rationale about expr_endarg.
     w_space+ e_lparen
     => {
-      if version?(18)
-        emit(:tLPAREN2, '('.freeze, @te - 1, @te)
-        fnext expr_value; fbreak;
-      else
-        emit(:tLPAREN_ARG, '('.freeze, @te - 1, @te)
-        fnext expr_beg; fbreak;
-      end
+      // if version?(18)
+      //   emit(:tLPAREN2, '('.freeze, @te - 1, @te)
+      //   fnext expr_value; fbreak;
+      // else
+      //   emit(:tLPAREN_ARG, '('.freeze, @te - 1, @te)
+      //   fnext expr_beg; fbreak;
+      // end
+      // NOTE ignored ruby18
+      !emit T_LPAREN_ARG_;
+      fnext expr_beg; fnbreak;
     };
 
     # meth(1 + 2)
     # Regular method call.
     e_lparen
-    => { emit(:tLPAREN2, '('.freeze)
-          fnext expr_beg; fbreak; };
+    => {
+        // emit(:tLPAREN2, '('.freeze)
+        !emit T_LPAREN2_;
+        fnext expr_beg; fnbreak;
+    };
 
     # meth [...]
     # Array argument. Compare with indexing `meth[...]`.
     w_space+ e_lbrack
-    => { emit(:tLBRACK, '['.freeze, @te - 1, @te)
-          fnext expr_beg; fbreak; };
-
-    # cmd {}
-    # Command: method call without parentheses.
-    w_space* e_lbrace
     => {
-      if @lambda_stack.last == @paren_nest
-        @lambda_stack.pop
-        emit(:tLAMBEG, '{'.freeze, @te - 1, @te)
-      else
-        emit(:tLCURLY, '{'.freeze, @te - 1, @te)
-      end
-      fnext expr_value; fbreak;
+        // emit(:tLBRACK, '['.freeze, @te - 1, @te)
+        !emit T_LBRACK_;
+        fnext expr_beg; fnbreak;
     };
+
+# TODO
+#    # cmd {}
+#    # Command: method call without parentheses.
+#    w_space* e_lbrace
+#    => {
+#      if @lambda_stack.last == @paren_nest
+#        @lambda_stack.pop
+#        emit(:tLAMBEG, '{'.freeze, @te - 1, @te)
+#      else
+#        emit(:tLCURLY, '{'.freeze, @te - 1, @te)
+#      end
+#      fnext expr_value; fbreak;
+#    };
 
     #
     # AMBIGUOUS TOKENS RESOLVED VIA EXPR_BEG
     #
 
-    # a??
-    # Ternary operator
-    '?' c_space_nl
-    => {
-      # Unlike expr_beg as invoked in the next rule, do not warn
-      p = @ts - 1
-      fgoto expr_end;
-    };
+#    # a??
+#    # Ternary operator
+#    '?' c_space_nl
+#    => {
+#      # Unlike expr_beg as invoked in the next rule, do not warn
+#      p = @ts - 1
+#      fgoto expr_end;
+#    };
 
-    # a ?b, a? ?
-    # Character literal or ternary operator
-    w_space* '?'
-    => { fhold; fgoto expr_beg; };
+#    # a ?b, a? ?
+#    # Character literal or ternary operator
+#    w_space* '?'
+#    => { fhold; fgoto expr_beg; };
 
-    # a %{1}, a %[1] (but not "a %=1=" or "a % foo")
-    # a /foo/ (but not "a / foo" or "a /=foo")
-    # a <<HEREDOC
-    w_space+ %{ tm = p }
-    ( [%/] ( c_any - c_space_nl - '=' ) # /
-    | '<<'
-    )
-    => {
-      if tok(tm, tm + 1) == '/'.freeze
-        # Ambiguous regexp literal.
-        diagnostic :warning, :ambiguous_literal, nil, range(tm, tm + 1)
-      end
+#    # a %{1}, a %[1] (but not "a %=1=" or "a % foo")
+#    # a /foo/ (but not "a / foo" or "a /=foo")
+#    # a <<HEREDOC
+#    w_space+ %{ tm = p }
+#    ( [%/] ( c_any - c_space_nl - '=' ) # /
+#    | '<<'
+#    )
+#    => {
+#      if tok(tm, tm + 1) == '/'.freeze
+#        # Ambiguous regexp literal.
+#        diagnostic :warning, :ambiguous_literal, nil, range(tm, tm + 1)
+#      end
+#
+#      p = tm - 1
+#      fgoto expr_beg;
+#    };
 
-      p = tm - 1
-      fgoto expr_beg;
-    };
-
-    # x *1
-    # Ambiguous splat, kwsplat or block-pass.
-    w_space+ %{ tm = p } ( '+' | '-' | '*' | '&' | '**' )
-    => {
-      diagnostic :warning, :ambiguous_prefix, { :prefix => tok(tm, @te) },
-                  range(tm, @te)
-
-      p = tm - 1
-      fgoto expr_beg;
-    };
+#    # x *1
+#    # Ambiguous splat, kwsplat or block-pass.
+#    w_space+ %{ tm = p } ( '+' | '-' | '*' | '&' | '**' )
+#    => {
+#      diagnostic :warning, :ambiguous_prefix, { :prefix => tok(tm, @te) },
+#                  range(tm, @te)
+#
+#      p = tm - 1
+#      fgoto expr_beg;
+#    };
 
     # x ::Foo
     # Ambiguous toplevel constant access.
@@ -102,7 +112,7 @@ expr_arg := |*
     => { fhold; fgoto expr_beg; };
 
     w_space+ label
-    => { p = @ts - 1; fgoto expr_beg; };
+    => { p = ts - 1; fgoto expr_beg; };
 
     #
     # AMBIGUOUS TOKENS RESOLVED VIA EXPR_END
@@ -123,7 +133,7 @@ expr_arg := |*
     # Miscellanea.
     w_space* punctuation_end
     => {
-      p = @ts - 1
+      p = ts - 1;
       fgoto expr_end;
     };
 

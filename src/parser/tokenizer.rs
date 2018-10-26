@@ -339,10 +339,11 @@ impl Tokenizer {
         if let Some(interior_token) = self.interior_lexer.advance() {
             let token = interior_token.wrap_as_token();
 
-            println!("###### TOKENIZER#get_next_token: token: {:?}", token);
+            println!("###### TOKENIZER#get_next_token: got token: {:?}", token);
 
             token
         } else {
+            println!("###### TOKENIZER#get_next_token: no_more_tokens");
             self.no_more_tokens = true;
             get_an_eof_token()
         }

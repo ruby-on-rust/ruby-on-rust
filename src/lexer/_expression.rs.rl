@@ -64,6 +64,6 @@ action local_ident {
     // else
     //   fnext *arg_or_cmdarg; fbreak;
     // end
-    fnext expr_endfn; fnbreak;
+    fnext *self.arg_or_cmdarg(); fnbreak;
 }
 }%%

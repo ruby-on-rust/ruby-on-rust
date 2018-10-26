@@ -1008,15 +1008,15 @@ fn array_plain() {
 //   end
 #[test]
 fn lvasgn() {
-    // WIP
-    // TODO Node::Begin
     assert_parses!(
-        "var = 10; var",
-        Node::LVasgn(
-            String::from("var"),
-            vec![Node::Int(10)]
-        )
+        "var = :foo; var",
+        Node::Begin(vec![
+            Node::LVasgn(String::from("var"), vec![n_sym!("foo")] ),
+            Node::LVar(String::from("var")),
+        ])
     );
+
+    // TODO the original case uses int
 }
 
 //   def test_ivasgn
