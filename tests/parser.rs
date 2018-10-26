@@ -56,7 +56,7 @@ macro_rules! n_sym {
 //       %q{^ begin
 //         | ^ end
 //         |~~ expression})
-
+// 
 //     assert_parses(
 //       s(:kwbegin),
 //       %q{begin end},
@@ -64,6 +64,10 @@ macro_rules! n_sym {
 //         |      ~~~ end
 //         |~~~~~~~~~ expression})
 //   end
+#[test] fn nil_expression() {
+    assert_parses!("()", Node::Begin(vec![]));
+    assert_parses!("begin end", Node::KW_Begin);
+}
 
 //   def test_true
 //     assert_parses(
@@ -86,13 +90,13 @@ macro_rules! n_sym {
 //       s(:int, 42),
 //       %q{42},
 //       %q{~~ expression})
-
+// 
 //     assert_parses(
 //       s(:int, 42),
 //       %q{+42},
 //       %q{^ operator
 //         |~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:int, -42),
 //       %q{-42},
@@ -112,7 +116,7 @@ macro_rules! n_sym {
 //       s(:float, 1.33),
 //       %q{1.33},
 //       %q{~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:float, -1.33),
 //       %q{-1.33},
@@ -140,19 +144,19 @@ macro_rules! n_sym {
 //       %q{42i},
 //       %q{~~~ expression},
 //       SINCE_2_1)
-
+// 
 //     assert_parses(
 //       s(:complex, Complex(0, Rational(42))),
 //       %q{42ri},
 //       %q{~~~~ expression},
 //       SINCE_2_1)
-
+// 
 //     assert_parses(
 //       s(:complex, Complex(0, 42.1)),
 //       %q{42.1i},
 //       %q{~~~~~ expression},
 //       SINCE_2_1)
-
+// 
 //     assert_parses(
 //       s(:complex, Complex(0, Rational(421, 10))),
 //       %q{42.1ri},
@@ -180,7 +184,8 @@ macro_rules! n_sym {
 #[test]
 fn string_plain() {
     assert_parses!(r"'foobar'", n_str!("foobar"));
-    // TODO assert_parses!(r"%q(foobar)", n_str!("foobar"));
+    assert_parses!(r#""foobar""#, n_str!("foobar"));
+    assert_parses!(r"%q(foobar)", n_str!("foobar"));
 }
 
 //   def test_string_interp
@@ -621,6 +626,18 @@ fn array_plain() {
 //         |   ~~~ expression (str)
 //         |~~~~~~~~~~~ expression})
 //   end
+#[test]
+fn array_words() {
+    assert_parses!(
+        r"%w[foo bar]",
+        Node::Array( vec![ n_str!("foo"), n_str!("bar") ] )
+    );
+
+    assert_parses!(
+        r"%w(foo bar)",
+        Node::Array( vec![ n_str!("foo"), n_str!("bar") ] )
+    );
+}
 
 //   def test_array_words_interp
 //     assert_parses(
@@ -654,11 +671,23 @@ fn array_plain() {
 //       %q{^^^ begin
 //         |   ^ end
 //         |~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:array),
 //       %q{%W()})
 //   end
+#[test]
+fn array_words_empty() {
+    assert_parses!(
+        r"%w[]",
+        Node::Array(vec![])
+    );
+
+    assert_parses!(
+        r"%W[]",
+        Node::Array(vec![])
+    );
+}
 
 //   def test_array_symbols
 //     assert_parses(
@@ -723,6 +752,13 @@ fn array_plain() {
 //         |  ^ end
 //         |~~~ expression})
 //   end
+#[test]
+fn hash_empty() {
+    assert_parses!(
+        "{ }",
+        Node::Hash(vec![])
+    );
+}
 
 //   def test_hash_hashrocket
 //     assert_parses(
@@ -733,13 +769,31 @@ fn array_plain() {
 //         |    ^^ operator (pair)
 //         |  ~~~~~~ expression (pair)
 //         |~~~~~~~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:hash,
 //         s(:pair, s(:int, 1), s(:int, 2)),
 //         s(:pair, s(:sym, :foo), s(:str, 'bar'))),
 //       %q[{ 1 => 2, :foo => "bar" }])
 //   end
+#[test]
+fn hash_hashrocket() {
+    assert_parses!(
+        "{ 1 => 2 }",
+        Node::Hash(vec![
+            Node::Pair { key: Box::new(Node::Int(1)), value: Box::new(Node::Int(2)) }
+        ])
+    );
+
+    assert_parses!(
+        r#"{ 1 => 2, :foo => "bar" }"#,
+        Node::Hash(vec![
+            Node::Pair { key: Box::new(Node::Int(1)), value: Box::new(Node::Int(2)) },
+            Node::Pair { key: Box::new(Node::Sym(String::from("foo"))), value: Box::new(Node::Str(String::from("bar"))) }
+        ])
+    );
+
+}
 
 //   def test_hash_label
 //     assert_parses(
@@ -753,6 +807,15 @@ fn array_plain() {
 //         |~~~~~~~~~~ expression},
 //       SINCE_1_9)
 //   end
+#[test]
+fn hash_label() {
+    assert_parses!(
+        "{ foo: 2 }",
+        Node::Hash(vec![
+            Node::Pair { key: Box::new(Node::Sym(String::from("foo"))), value: Box::new(Node::Int(2)) }
+        ])
+    );
+}
 
 //   def test_hash_label_end
 //     assert_parses(
@@ -930,6 +993,13 @@ fn array_plain() {
 //         |~~ double_colon
 //         |~~~~~ expression})
 //   end
+#[test]
+fn const_toplevel() {
+    assert_parses!(
+        r"::Foo",
+        Node::Const { scope: Some(Box::new(Node::CBase)), name: String::from("Foo") }
+    );
+}
 
 //   def test_const_scoped
 //     assert_parses(
@@ -939,6 +1009,16 @@ fn array_plain() {
 //         |   ~~ double_colon
 //         |~~~~~~~~ expression})
 //   end
+#[test]
+fn const_scoped() {
+    assert_parses!(
+        r"Bar::Foo",
+        Node::Const {
+            scope: Some(Box::new(Node::Const { scope: None, name: String::from("Bar") } )),
+            name: String::from("Foo")
+        }
+    );
+}
 
 //   def test_const_unscoped
 //     assert_parses(
@@ -947,6 +1027,16 @@ fn array_plain() {
 //       %q{~~~ name
 //         |~~~ expression})
 //   end
+#[test]
+fn const_unscoped() {
+    assert_parses!(
+        r"Foo",
+        Node::Const {
+            scope: None,
+            name: String::from("Foo")
+        }
+    );
+}
 
 //   def test___ENCODING__
 //     assert_parses(

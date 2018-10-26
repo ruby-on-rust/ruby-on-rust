@@ -57,7 +57,9 @@ pub enum Node {
 
     Begin(Nodes),
 
-    Module()
+    Module(),
+
+    KW_Begin,
 }
 
 pub type Nodes = Vec<Node>;
@@ -332,7 +334,7 @@ pub fn words_compose(parts: Node) -> Node {
 //       part
 //     end
 //   end
-
+// 
 //   n(:array, [ *parts ],
 //     collection_map(begin_t, parts, end_t))
 // end
@@ -1128,7 +1130,7 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //   if body.type == :kwbegin
 //     type = :"#{type}_post"
 //   end
-
+// 
 //   n(type, [ check_condition(cond), body ],
 //     keyword_mod_map(body, keyword_t, cond))
 // end

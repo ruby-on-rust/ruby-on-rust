@@ -113,9 +113,9 @@ impl Literal {
             "%i"  => ( Token::T_QSYMBOLS_BEG, false ),
             "%I"  => ( Token::T_SYMBOLS_BEG,  true  ),
 
-            ":'"  => ( Token::T_SYMBEG,       false ),
-            "%s"  => ( Token::T_SYMBEG,       false ),
-            ":\""  => ( Token::T_SYMBEG,       true  ),
+            ":'"  => ( Token::T_SYMBEG(String::from(":'")),       false ),
+            "%s"  => ( Token::T_SYMBEG(String::from("%s")),       false ),
+            ":\""  => ( Token::T_SYMBEG(String::from(":\"")),       true  ),
 
             "/"   => ( Token::T_REGEXP_BEG,   true  ),
             "%r"  => ( Token::T_REGEXP_BEG,   true  ),

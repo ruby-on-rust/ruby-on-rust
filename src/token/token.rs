@@ -23,7 +23,7 @@ pub enum Token {
     T_WORDS_BEG,
     T_QSYMBOLS_BEG,
     T_SYMBOLS_BEG,
-    T_SYMBEG,
+    T_SYMBEG(String),
     T_REGEXP_BEG,
     T_XSTRING_BEG,
     T_STRING_DEND,
