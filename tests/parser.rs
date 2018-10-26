@@ -888,6 +888,7 @@ fn array_plain() {
 //       %q{@@foo},
 //       %q{~~~~~ expression})
 //   end
+#[test] fn cvar() { assert_parses!("@@foo", Node::CVar(String::from("@@foo"))); }
 
 //   def test_gvar
 //     assert_parses(

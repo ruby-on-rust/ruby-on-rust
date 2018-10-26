@@ -38,6 +38,7 @@ pub enum Node {
     LVar(String),
     IVar(String),
     GVar(String),
+    CVar(String),
 
     Const { scope: Option<Box<Node>>, name: String },
     //                        ^ CBase/Lvar
@@ -469,6 +470,15 @@ pub fn gvar(token: Token) -> Node {
 //   n(:cvar, [ value(token).to_sym ],
 //     variable_map(token))
 // end
+pub fn cvar(token: Token) -> Node {
+    // token: Token::T_CVAR
+
+    if let Token::T_CVAR(var_str) = token {
+        // TODO variable_map
+        return Node::CVar(var_str);
+    }
+    unreachable!();
+}
 
 // def back_ref(token)
 //   n(:back_ref, [ value(token).to_sym ],
