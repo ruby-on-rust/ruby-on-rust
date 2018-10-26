@@ -8,14 +8,15 @@ expr_endfn := |*
     label ( any - ':' )
     => {
         // emit(:tLABEL, tok(@ts, @te - 2), @ts, @te - 1)
-        // fhold; fnext expr_labelarg; fbreak;
+        !emit T_LABEL, ts, te - 2;
+        fhold; fnext expr_labelarg; fnbreak;
     };
 
     w_space_comment;
 
     c_any
     => {
-        // fhold; fgoto expr_end;
+        fhold; fgoto expr_end;
     };
 
     c_eof => do_eof;

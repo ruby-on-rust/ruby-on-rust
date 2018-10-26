@@ -1028,6 +1028,15 @@ fn lvasgn() {
 //         |~~~~~~~~~ expression
 //         })
 //   end
+#[test]
+fn ivasgn() {
+    assert_parses!(
+        "@var = :foo",
+        Node::IVasgn(String::from("@var"), vec![n_sym!("foo")] )
+    );
+
+    // TODO the original case uses int
+}
 
 //   def test_cvasgn
 //     assert_parses(
@@ -1053,7 +1062,7 @@ fn lvasgn() {
 //     assert_parses(
 //       s(:lvasgn, :foo, s(:send, nil, :m, s(:lvar, :foo))),
 //       %q{foo = m foo})
-
+// 
 //     assert_parses(
 //       s(:lvasgn, :foo,
 //         s(:lvasgn, :bar,
@@ -1062,33 +1071,45 @@ fn lvasgn() {
 //       %q{},
 //       ALL_VERSIONS - %w(1.8 mac ios))
 //   end
+#[test]
+fn asgn_cmd() {
+    panic!("WIP");
+    // assert_parses!(
+    //     "foo = m foo",
+    //     Node::LVasgn(
+    //         String::from("var"),
+    //         vec![
+    //         ]
+    //     )
+    // );
+}
 
 //   def test_asgn_keyword_invalid
 //     assert_diagnoses(
 //       [:error, :invalid_assignment],
 //       %q{nil = foo},
 //       %q{~~~ location})
-
+// 
 //     assert_diagnoses(
 //       [:error, :invalid_assignment],
 //       %q{self = foo},
 //       %q{~~~~ location})
-
+// 
 //     assert_diagnoses(
 //       [:error, :invalid_assignment],
 //       %q{true = foo},
 //       %q{~~~~ location})
-
+// 
 //     assert_diagnoses(
 //       [:error, :invalid_assignment],
 //       %q{false = foo},
 //       %q{~~~~~ location})
-
+// 
 //     assert_diagnoses(
 //       [:error, :invalid_assignment],
 //       %q{__FILE__ = foo},
 //       %q{~~~~~~~~ location})
-
+// 
 //     assert_diagnoses(
 //       [:error, :invalid_assignment],
 //       %q{__LINE__ = foo},
