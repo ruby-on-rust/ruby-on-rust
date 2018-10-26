@@ -124,7 +124,7 @@ pub enum Token {
     T_NL,
     T_NMATCH,
     T_OROP,
-    T_OP_ASGN,
+    T_OP_ASGN(String),
     T_PERCENT,
     T_PIPE,
     T_PLUS,

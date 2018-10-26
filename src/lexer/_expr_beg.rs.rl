@@ -13,18 +13,18 @@ expr_beg := |*
     #   // emit(:tUNARY_NUM, tok(@ts, @ts + 1), @ts, @ts + 1)
     #   // fhold; fnext expr_end; fbreak;
     # };
-# 
+
     # # splat *a
     # '*'
     # => {
     #   // emit(:tSTAR, '*'.freeze)
     #   //     fbreak;
     #   };
-# 
-    # #
-    # # STRING AND REGEXP LITERALS
-    # #
-# 
+
+    #
+    # STRING AND REGEXP LITERALS
+    #
+
     # # /regexp/oui
     # # /=/ (disambiguation with /=)
     # '/' c_any
@@ -32,26 +32,26 @@ expr_beg := |*
     #   // type = delimiter = tok[0].chr
     #   // fhold; fgoto *push_literal(type, delimiter, @ts);
     # };
-# 
+
     # # %<string>
     # '%' ( any - [A-Za-z] )
     # => {
     #   // type, delimiter = @source_buffer.slice(@ts).chr, tok[-1].chr
     #   // fgoto *push_literal(type, delimiter, @ts);
     # };
-# 
+
     # # %w(we are the people)
     # '%' [A-Za-z]+ c_any
     # => {
     #   // type, delimiter = tok[0..-2], tok[-1].chr
     #   // fgoto *push_literal(type, delimiter, @ts);
     # };
-# 
+
     # '%' c_eof
     # => {
     #   // diagnostic :fatal, :string_eof, nil, range(@ts, @ts + 1)
     # };
-# 
+
     # # # Heredoc start.
     # # # <<END  | <<'END'  | <<"END"  | <<`END`  |
     # # # <<-END | <<-'END' | <<-"END" | <<-`END` |
@@ -64,12 +64,12 @@ expr_beg := |*
     # #   c_line* c_nl % { new_herebody_s = p }
     # # => {
     # #   tok(@ts, heredoc_e) =~ /^<<(-?)(~?)(["'`]?)(.*)\3$/m
-# 
+
     # #   indent      = !$1.empty? || !$2.empty?
     # #   dedent_body = !$2.empty?
     # #   type        =  $3.empty? ? '<<"'.freeze : ('<<'.freeze + $3)
     # #   delimiter   =  $4
-# 
+
     # #   if @version >= 24
     # #     if delimiter.count("\n") > 0
     # #       if delimiter.end_with?("\n")
@@ -80,22 +80,22 @@ expr_beg := |*
     # #       end
     # #     end
     # #   end
-# 
+
     # #   if dedent_body && version?(18, 19, 20, 21, 22)
     # #     emit(:tLSHFT, '<<'.freeze, @ts, @ts + 2)
     # #     p = @ts + 1
     # #     fnext expr_beg; fbreak;
     # #   else
     # #     fnext *push_literal(type, delimiter, @ts, heredoc_e, indent, dedent_body);
-# 
+
     # #     @herebody_s ||= new_herebody_s
     # #     p = @herebody_s - 1
     # #   end
     # # };
 
-    # #
-    # # SYMBOL LITERALS
-    # #
+    #
+    # SYMBOL LITERALS
+    #
 
     # # :&&, :||
     # ':' ('&&' | '||') => {
@@ -139,10 +139,10 @@ expr_beg := |*
       fnext expr_end; fnbreak;
     };
 
-    # #
-    # # AMBIGUOUS TERNARY OPERATOR
-    # #
-# 
+    #
+    # AMBIGUOUS TERNARY OPERATOR
+    #
+
     # # Character constant, like ?a, ?\n, ?\u1000, and so on
     # # Don't accept \u escape with multiple codepoints, like \u{1 2 3}
     # '?' ( e_bs ( escape - ( '\u{' (xdigit+ [ \t]+)+ xdigit+ '}' ))
@@ -150,42 +150,42 @@ expr_beg := |*
     #     )
     # => {
     #   // value = @escape || tok(@ts + 1)
-# 
+    #
     #   // if version?(18)
     #   //   emit(:tINTEGER, value.getbyte(0))
     #   // else
     #   //   emit(:tCHARACTER, value)
     #   // end
-# 
+    # 
     #   // fnext expr_end; fbreak;
     # };
-# 
+
     # '?' c_space_nl
     # => {
     #   // escape = { " "  => '\s', "\r" => '\r', "\n" => '\n', "\t" => '\t',
     #   //             "\v" => '\v', "\f" => '\f' }[@source_buffer.slice(@ts + 1)]
     #   // diagnostic :warning, :invalid_escape_use, { :escape => escape }, range
-# 
+    # 
     #   // p = @ts - 1
     #   // fgoto expr_end;
     # };
-# 
+
     # '?' c_eof
     # => {
     #   // diagnostic :fatal, :incomplete_escape, nil, range(@ts, @ts + 1)
     # };
-# 
+
     # # f ?aa : b: Disambiguate with a character literal.
     # '?' [A-Za-z_] bareword
     # => {
     #   // p = @ts - 1
     #   // fgoto expr_end;
     # };
-# 
-    # #
-    # # KEYWORDS AND PUNCTUATION
-    # #
-# 
+
+    #
+    # KEYWORDS AND PUNCTUATION
+    #
+
     # # a({b=>c})
     # e_lbrace
     # => {
@@ -211,7 +211,7 @@ expr_beg := |*
     #     // emit(:tLPAREN, '('.freeze)
     #     // fbreak;
     # };
-# 
+
     # # a(+b)
     # punctuation_begin
     # => {
@@ -242,14 +242,14 @@ expr_beg := |*
     # label ( any - ':' )
     # => {
     #   // fhold;
-
+    #
     #   // if version?(18)
     #   //   ident = tok(@ts, @te - 2)
-
+    #
     #   //   emit((@source_buffer.slice(@ts) =~ /[A-Z]/) ? :tCONSTANT : :tIDENTIFIER,
     #   //         ident, @ts, @te - 2)
     #   //   fhold; # continue as a symbol
-
+    #
     #   //   if !@static_env.nil? && @static_env.declared?(ident)
     #   //     fnext expr_end;
     #   //   else
@@ -259,7 +259,7 @@ expr_beg := |*
     #   //   emit(:tLABEL, tok(@ts, @te - 2), @ts, @te - 1)
     #   //   fnext expr_labelarg;
     #   // end
-
+    #
     #   // fbreak;
     # };
 
@@ -287,7 +287,7 @@ expr_beg := |*
     # => {
     #   // emit(:tIDENTIFIER, ident_tok, ident_ts, ident_te)
     #   // p = ident_te - 1
-
+    #
     #   // if !@static_env.nil? && @static_env.declared?(ident_tok) && @version < 25
     #   //   fnext expr_endfn;
     #   // else

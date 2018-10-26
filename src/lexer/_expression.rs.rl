@@ -35,8 +35,8 @@ ambiguous_const_suffix =       # actual    parsed
 # @cond/@cmdarg-related code to e_lbrack, e_lparen and e_lbrace.
 
 e_lbrack = '[' % {
-    // TODO WIP
     //   @cond.push(false); @cmdarg.push(false)
+    self.cond.push(false); self.cmdarg.push(false);
 };
 
 # Ruby 1.9 lambdas require parentheses counting in order to
@@ -58,7 +58,7 @@ e_rparen = ')' % {
 action local_ident {
     !emit T_IDENTIFIER;
 
-    // TODO
+    // TODO WIP
     // if !@static_env.nil? && @static_env.declared?(tok)
     //   fnext expr_endfn; fbreak;
     // else

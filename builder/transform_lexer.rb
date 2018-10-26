@@ -107,7 +107,7 @@ def transform!
 
       """
       {
-          let slice = self.current_slice(#{start_p}, te + #{end_p});
+          let slice = self.current_slice(#{start_p}, #{end_p});
       
           let token = #{token};
           self.emit(token);

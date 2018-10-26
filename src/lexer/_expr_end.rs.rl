@@ -173,30 +173,33 @@ expr_end := |*
 #      end
 #      fbreak;
 #    };
-#
-#    #
-#    # STRING AND XSTRING LITERALS
-#    #
-#
+
+    #
+    # STRING AND XSTRING LITERALS
+    #
+
 #    # `echo foo`, "bar", 'baz'
 #    '`' | ['"] # '
 #    => {
 #      type, delimiter = tok, tok[-1].chr
 #      fgoto *push_literal(type, delimiter, @ts, nil, false, false, true);
 #    };
-#
-#    #
-#    # CONSTANTS AND VARIABLES
-#    #
-#
-#    constant
-#    => { emit(:tCONSTANT)
-#          fnext *arg_or_cmdarg; fbreak; };
-#
+
+    #
+    # CONSTANTS AND VARIABLES
+    #
+
+    constant
+    => {
+        // TODO
+        // emit(:tCONSTANT)
+        // fnext *arg_or_cmdarg; fbreak;
+    };
+
 #    constant ambiguous_const_suffix
 #    => { emit(:tCONSTANT, tok(@ts, tm), @ts, tm)
 #          p = tm - 1; fbreak; };
-#
+
     global_var | class_var_v | instance_var_v
     => { p = ts - 1; fncall expr_variable; };
 
@@ -253,7 +256,7 @@ expr_end := |*
     => {
         !emit_table PUNCTUATION;
 
-        // TODO WIP
+        // NOTE ignored ruby24
         // if @version < 24
         //   @cond.lexpop
         //   @cmdarg.lexpop
@@ -261,6 +264,8 @@ expr_end := |*
         //   @cond.pop
         //   @cmdarg.pop
         // end
+        self.cond.pop();
+        self.cmdarg.pop();
 
         // TODO WIP
         // if tok == '}'.freeze || tok == ']'.freeze
@@ -276,11 +281,14 @@ expr_end := |*
 
         fnbreak;
     };
-#
-#    operator_arithmetic '='
-#    => { emit(:tOP_ASGN, tok(@ts, @te - 1))
-#          fnext expr_beg; fbreak; };
-#
+
+    operator_arithmetic '='
+    => {
+        // emit(:tOP_ASGN, tok(@ts, @te - 1))
+        !emit T_OP_ASGN, ts, te - 1;
+        fnext expr_beg; fnbreak;
+    };
+
 #    '?'
 #    => { emit(:tEH, '?'.freeze)
 #          fnext expr_value; fbreak; };
@@ -289,19 +297,21 @@ expr_end := |*
 #    => { emit(:tLBRACK2, '['.freeze)
 #          fnext expr_beg; fbreak; };
 #
-#    punctuation_end
-#    => { emit_table(PUNCTUATION)
-#          fnext expr_beg; fbreak; };
-#
-#    #
-#    # WHITESPACE
-#    #
-#
-#    w_space_comment;
-#
-#    w_newline
-#    => { fgoto leading_dot; };
-#
+    punctuation_end
+    => {
+        !emit_table PUNCTUATION;
+        fnext expr_beg; fnbreak;
+    };
+
+    #
+    # WHITESPACE
+    #
+
+    w_space_comment;
+
+    w_newline
+    => { fgoto leading_dot; };
+
 #    ';'
 #    => { emit(:tSEMI, ';'.freeze)
 #          fnext expr_value; fbreak; };
@@ -316,6 +326,6 @@ expr_end := |*
 #      diagnostic :fatal, :unexpected, { :character => tok.inspect[1..-2] }
 #    };
 #
-#    c_eof => do_eof;
+    c_eof => do_eof;
 *|;
 }%%

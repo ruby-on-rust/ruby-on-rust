@@ -5,6 +5,7 @@ use std::rc::Rc;
 use std::cell::RefCell;
 use token::token::Token;
 use lexer::literal::Literal;
+use lexer::stack_state::StackState;
 
 %%{
     machine lexer;
@@ -30,7 +31,7 @@ use lexer::literal::Literal;
     include "_expr_labelarg.rs.rl";
     include "_expr_value.rs.rl";
     include "_expr_end.rs.rl";
-    # include "_leading_dot.rs.rl";
+    include "_leading_dot.rs.rl";
     # include "_line_comment.rs.rl";
     include "_line_begin.rs.rl";
 }%%
@@ -53,6 +54,12 @@ pub struct Lexer {
 
     tokens: Rc<RefCell<Vec<Token>>>,
     pub literal_stack: Vec<Literal>,
+
+    cond: StackState,
+    cmdarg: StackState,
+    // TODO
+    // @cond_stack   = []
+    // @cmdarg_stack = []
 }
 
 impl Lexer {
@@ -78,7 +85,10 @@ impl Lexer {
             act,
 
             tokens: Rc::new(RefCell::new(vec![])),
-            literal_stack: vec![]
+            literal_stack: vec![],
+
+            cond: StackState::new(),
+            cmdarg: StackState::new(),
         }
     }
 
