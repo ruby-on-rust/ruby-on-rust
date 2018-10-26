@@ -115,7 +115,10 @@ def transform!
       """
     end
 
-    # emit_table KEYWORD
+    # emit_table
+    # 
+    #     !emit_table KEYWORD;
+    # 
     lexer_rs_rl_content.gsub!(/!emit_table (\w+);/) do |match|
       table = $1
 

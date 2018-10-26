@@ -26,7 +26,7 @@ expr_variable := |*
       //   diagnostic :error, :cvar_name, { :name => tok }
       // end
 
-      emit :T_CVAR
+      !emit T_CVAR;
       !fnext_stack_pop;
       fnbreak;
     };

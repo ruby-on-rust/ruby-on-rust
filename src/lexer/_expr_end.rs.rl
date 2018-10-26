@@ -1,8 +1,9 @@
 %%{
 expr_end := |*
-    #
-    # STABBY LAMBDA
-    #
+
+#
+# STABBY LAMBDA
+#
 
 #    '->'
 #    => {
@@ -198,18 +199,20 @@ expr_end := |*
 #
     global_var | class_var_v | instance_var_v
     => { p = ts - 1; fncall expr_variable; };
-#
-#    #
-#    # METHOD CALLS
-#    #
-#
-#    '.' | '&.' | '::'
-#    => { emit_table(PUNCTUATION)
-#          fnext expr_dot; fbreak; };
-#
-#    call_or_var
-#    => local_ident;
-#
+
+    #
+    # METHOD CALLS
+    #
+
+    '.' | '&.' | '::'
+    => {
+        !emit_table PUNCTUATION;
+        fnext expr_dot; fnbreak;
+    };
+
+    call_or_var
+    => local_ident;
+
 #    bareword ambiguous_fid_suffix
 #    => {
 #      if tm == @te
@@ -246,30 +249,33 @@ expr_end := |*
 #    => { emit_table(PUNCTUATION)
 #          fnext expr_beg; fbreak; };
 #
-#    e_rbrace | e_rparen | ']'
-#    => {
-#      emit_table(PUNCTUATION)
-#
-#      if @version < 24
-#        @cond.lexpop
-#        @cmdarg.lexpop
-#      else
-#        @cond.pop
-#        @cmdarg.pop
-#      end
-#
-#      if tok == '}'.freeze || tok == ']'.freeze
-#        if @version >= 25
-#          fnext expr_end;
-#        else
-#          fnext expr_endarg;
-#        end
-#      else # )
-#        # fnext expr_endfn; ?
-#      end
-#
-#      fbreak;
-#    };
+    e_rbrace | e_rparen | ']'
+    => {
+        !emit_table PUNCTUATION;
+
+        // TODO WIP
+        // if @version < 24
+        //   @cond.lexpop
+        //   @cmdarg.lexpop
+        // else
+        //   @cond.pop
+        //   @cmdarg.pop
+        // end
+
+        // TODO WIP
+        // if tok == '}'.freeze || tok == ']'.freeze
+        //   if @version >= 25
+        //     fnext expr_end;
+        //   else
+        //     fnext expr_endarg;
+        //   end
+        // else # )
+        //   # fnext expr_endfn; ?
+        // end
+        fnext expr_end;
+
+        fnbreak;
+    };
 #
 #    operator_arithmetic '='
 #    => { emit(:tOP_ASGN, tok(@ts, @te - 1))

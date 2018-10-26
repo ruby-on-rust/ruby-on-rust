@@ -21,7 +21,7 @@ use lexer::literal::Literal;
     include "_expr_variable.rs.rl";
     # include "_expr_fname.rs.rl";
     include "_expr_endfn.rs.rl";
-    # include "_expr_dot.rs.rl";
+    include "_expr_dot.rs.rl";
     # include "_expr_arg.rs.rl";
     # include "_expr_cmdarg.rs.rl";
     include "_expr_endarg.rs.rl";

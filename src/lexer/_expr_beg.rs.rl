@@ -197,14 +197,14 @@ expr_beg := |*
     #   // end
     #   // fbreak;
     # };
-# 
-    # # a([1, 2])
-    # e_lbrack
-    # => {
-    #     // emit(:tLBRACK, '['.freeze)
-    #     // fbreak;
-    # };
-# 
+
+    # a([1, 2])
+    e_lbrack
+    => {
+        !emit T_LBRACK_;
+        fnbreak;
+    };
+
     # # a()
     # e_lparen
     # => {

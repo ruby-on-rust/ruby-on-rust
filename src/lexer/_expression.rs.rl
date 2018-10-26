@@ -35,20 +35,23 @@ ambiguous_const_suffix =       # actual    parsed
 # @cond/@cmdarg-related code to e_lbrack, e_lparen and e_lbrace.
 
 e_lbrack = '[' % {
-  @cond.push(false); @cmdarg.push(false)
+    // TODO WIP
+    //   @cond.push(false); @cmdarg.push(false)
 };
 
 # Ruby 1.9 lambdas require parentheses counting in order to
 # emit correct opening kDO/tLBRACE.
 
 e_lparen = '(' % {
-  // @cond.push(false); @cmdarg.push(false)
+    // TODO WIP
+    // @cond.push(false); @cmdarg.push(false)
 
-  // @paren_nest += 1
+    // @paren_nest += 1
 };
 
 e_rparen = ')' % {
-  // @paren_nest -= 1
+    // TODO WIP
+    // @paren_nest -= 1
 };
 
 # Ruby is context-sensitive wrt/ local identifiers.

@@ -1,19 +1,21 @@
 // TODO refine order of token variants
 #[derive(Debug, Clone, PartialEq, AsRefStr)]
 pub enum Token {
-    T_INTEGER( isize ),
-    T_GVAR( String ),
-    T_CONSTANT( String ),
-    T_IDENTIFIER( String ),
-    T_LABEL( String ),
-    T_LABEL_END,
-    T_IVAR( String ),
-    T_FID( String ),
-    T_UNARY_NUM( String ),
-    T_SYMBOL( String ),
+    T_INTEGER(isize),
 
-    T_STRING( String ),
-    T_STRING_CONTENT( String ),
+    T_GVAR(String),
+    T_CVAR(String),
+    T_CONSTANT(String),
+    T_IDENTIFIER(String),
+    T_LABEL(String),
+    T_LABEL_END,
+    T_IVAR(String),
+    T_FID(String),
+    T_UNARY_NUM(String),
+    T_SYMBOL(String),
+
+    T_STRING(String),
+    T_STRING_CONTENT(String),
 
     T_STRING_BEG,
     T_STRING_END,
