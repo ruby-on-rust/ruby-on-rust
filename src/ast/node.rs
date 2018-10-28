@@ -59,7 +59,7 @@ pub enum Node {
 
     Begin(Nodes),
 
-    Module(),
+    Module,
 
     KW_Begin,
 }

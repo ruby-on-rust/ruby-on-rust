@@ -522,11 +522,43 @@ impl Lexer {
 													
 												}
 												26  => {
-													{}
+													{self.cond.push(false); self.cmdarg.push(false);
+														
+														if let Some(literal) = self.literal_stack.last() {
+															let literal = literal.borrow_mut();
+															
+															literal.start_interp_brace()
+														}
+													}
 													
 												}
 												27  => {
-													{}
+													{if let Some(literal) = self.literal_stack.last() {
+															let literal = literal.borrow_mut();
+															
+															if literal.end_interp_brace_and_try_closing() {
+																// IGNORED ruby1819
+																
+																{
+																	let slice = self.current_slice(ts, te);
+																	
+																	let token = Token::T_STRING_DEND;
+																	self.emit(token);
+																}
+																
+																
+																// TODO herebody
+																
+																{p = p - 1;
+																}
+																{cs = (literal.next_state_for_literal());
+																}
+																{p+= 1;
+																	_cont = 0;
+																}
+															}
+														}
+													}
 													
 												}
 												28  => {
@@ -633,7 +665,12 @@ impl Lexer {
 												}
 												54  => {
 													{{te = p+1;
-															{}
+															{let literal = self.literal_stack.last().expect("unexpected empty literal stack").borrow_mut();
+																literal.flush_string();
+																literal.extend_content();
+																
+																panic!("WIP");
+															}
 														}}
 													
 												}
@@ -785,7 +822,12 @@ impl Lexer {
 												}
 												64  => {
 													{{te = p+1;
-															{}
+															{let literal = self.literal_stack.last().expect("unexpected empty literal stack").borrow_mut();
+																literal.flush_string();
+																literal.extend_content();
+																
+																panic!("WIP");
+															}
 														}}
 													
 												}
@@ -1109,7 +1151,12 @@ impl Lexer {
 												}
 												83  => {
 													{{te = p+1;
-															{}
+															{let literal = self.literal_stack.last().expect("unexpected empty literal stack").borrow_mut();
+																literal.flush_string();
+																literal.extend_content();
+																
+																panic!("WIP");
+															}
 														}}
 													
 												}
@@ -1281,7 +1328,12 @@ impl Lexer {
 												}
 												92  => {
 													{{te = p+1;
-															{}
+															{let literal = self.literal_stack.last().expect("unexpected empty literal stack").borrow_mut();
+																literal.flush_string();
+																literal.extend_content();
+																
+																panic!("WIP");
+															}
 														}}
 													
 												}

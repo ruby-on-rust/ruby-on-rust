@@ -15,17 +15,17 @@ macro_rules! assert_parses {
     };
 }
 
-// TODO NOTE
-macro_rules! n_str {
-    ($string:expr) => {
-        Node::Str(String::from($string))
-    };
-}
-
-// TODO NOTE
-macro_rules! n_sym {
-    ($string:expr) => {
-        Node::Sym(String::from($string))
+macro_rules! n_str { ($string:expr) => { Node::Str(String::from($string)) }; }
+macro_rules! n_sym { ($string:expr) => { Node::Sym(String::from($string)) }; }
+macro_rules! n_dstr {
+    ( $( $x:expr ),* ) => {
+        {
+            let mut temp_vec = Vec::new();
+            $(
+                temp_vec.push($x);
+            )*
+            Node::DStr(temp_vec)
+        }
     };
 }
 
@@ -212,13 +212,13 @@ fn string_plain() {
 fn string_interp() {
     assert_parses!(
         r"foo#{bar}baz",
-        Node::DStr(vec![
+        n_dstr![
             n_str!("foo"),
             Node::Begin(vec![
                 Node::LVar(String::from("bar"))
             ]),
-            n_str!("baz"),
-        ])
+            n_str!("baz")
+        ]
     );
 }
 
@@ -276,7 +276,7 @@ fn string_dvar() {
 //       %q{^ begin
 //         |~~ expression},
 //       SINCE_1_9)
-
+// 
 //     assert_parses(
 //       s(:int, 97),
 //       %q{?a},
@@ -496,6 +496,9 @@ fn symbol_plain() {
 //         |     ~~~~~~ expression (begin)
 //         |~~~~~~~~~~~~~~~ expression})
 //   end
+fn symbol_interp() {
+    panic!("UNIMPL");
+}
 
 //   def test_symbol_empty
 //     assert_diagnoses(
@@ -503,7 +506,7 @@ fn symbol_plain() {
 //       %q{:''},
 //       %q{^^^ location},
 //       %w(1.8))
-
+// 
 //     assert_diagnoses(
 //       [:error, :empty_symbol],
 //       %q{:""},
@@ -597,8 +600,8 @@ fn symbol_plain() {
 //   end
 #[test]
 fn array_plain() {
-    assert_parses!(r"[]", Node::Array(vec![]));
-    // TODO assert_parses!(r"[1, 2]", Node::Array(vec![ Node::Int(1), Node::Int(2) ]));
+    assert_parses!(r"[]", Node::Array(vec!()));
+    assert_parses!(r"[1, 2]", Node::Array(vec![ Node::Int(1), Node::Int(2) ]));
 }
 
 //   def test_array_splat
