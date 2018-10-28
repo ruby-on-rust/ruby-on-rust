@@ -5,6 +5,7 @@ expr_end := |*
 # STABBY LAMBDA
 #
 
+# TODO
 #    '->'
 #    => {
 #      emit(:tLAMBDA, '->'.freeze, @ts, @ts + 2)
@@ -12,7 +13,8 @@ expr_end := |*
 #      @lambda_stack.push @paren_nest
 #      fnext expr_endfn; fbreak;
 #    };
-#
+
+# TODO
 #    e_lbrace | 'do'
 #    => {
 #      if @lambda_stack.last == @paren_nest
@@ -44,20 +46,25 @@ expr_end := |*
         fnext expr_fname; fnbreak;
     };
 
+# TODO
 #    'class' w_any* '<<'
 #    => { emit(:kCLASS, 'class'.freeze, @ts, @ts + 5)
 #          emit(:tLSHFT, '<<'.freeze,    @te - 2, @te)
 #          fnext expr_value; fbreak; };
 #
-#    # a if b:c: Syntax error.
-#    keyword_modifier
-#    => { emit_table(KEYWORDS)
-#          fnext expr_beg; fbreak; };
-#
-#    # elsif b:c: elsif b(:c)
-#    keyword_with_value
-#    => { emit_table(KEYWORDS)
-#          fnext expr_value; fbreak; };
+    # a if b:c: Syntax error.
+    keyword_modifier
+    => {
+        !emit_table KEYWORDS;
+        fnext expr_beg; fnbreak;
+    };
+
+    # elsif b:c: elsif b(:c)
+    keyword_with_value
+    => {
+        !emit_table KEYWORDS;
+        fnext expr_value; fnbreak;
+    };
 
     keyword_with_mid
     => {
@@ -65,17 +72,20 @@ expr_end := |*
         fnext expr_mid; fnbreak;
     };
 
-#    keyword_with_arg
-#    => {
-#      emit_table(KEYWORDS)
-#
-#      if version?(18) && tok == 'not'.freeze
-#        fnext expr_beg; fbreak;
-#      else
-#        fnext expr_arg; fbreak;
-#      end
-#    };
-#
+    keyword_with_arg
+    => {
+        !emit_table KEYWORDS;
+
+        //   if version?(18) && tok == 'not'.freeze
+        //     fnext expr_beg; fbreak;
+        //   else
+        //     fnext expr_arg; fbreak;
+        //   end
+        // NOTE ignored ruby18
+        fnext expr_arg; fnbreak;
+    };
+
+# TODO
 #    '__ENCODING__'
 #    => {
 #      if version?(18)
@@ -100,6 +110,7 @@ expr_end := |*
     # NUMERIC LITERALS
     #
 
+# TODO
 #    ( '0' [Xx] %{ @num_base = 16; @num_digits_s = p } int_hex
 #    | '0' [Dd] %{ @num_base = 10; @num_digits_s = p } int_dec
 #    | '0' [Oo] %{ @num_base = 8;  @num_digits_s = p } int_dec
@@ -132,12 +143,14 @@ expr_end := |*
 #      end
 #      fbreak;
 #    };
-#
+
+# TODO
 #    flo_frac flo_pow?
 #    => {
 #      diagnostic :error, :no_dot_digit_literal
 #    };
-#
+
+# TODO
 #    flo_int [eE]
 #    => {
 #      if version?(18, 19, 20)
@@ -149,7 +162,8 @@ expr_end := |*
 #        fhold; fbreak;
 #      end
 #    };
-#
+
+# TODO
 #    flo_int flo_frac [eE]
 #    => {
 #      if version?(18, 19, 20)
@@ -161,7 +175,8 @@ expr_end := |*
 #        fhold; fbreak;
 #      end
 #    };
-#
+
+# TODO
 #    flo_int
 #    ( flo_frac? flo_pow %{ @num_suffix_s = p } flo_pow_suffix
 #    | flo_frac          %{ @num_suffix_s = p } flo_suffix
@@ -182,12 +197,16 @@ expr_end := |*
     # STRING AND XSTRING LITERALS
     #
 
-#    # `echo foo`, "bar", 'baz'
-#    '`' | ['"] # '
-#    => {
-#      type, delimiter = tok, tok[-1].chr
-#      fgoto *push_literal(type, delimiter, @ts, nil, false, false, true);
-#    };
+    # `echo foo`, "bar", 'baz'
+    '`' | ['"] # '
+    => {
+        // type, delimiter = tok, tok[-1].chr
+        // fgoto *push_literal(type, delimiter, @ts, nil, false, false, true);
+        let literal_type = self.current_slice(ts, te);
+        let literal_delimiter = self.current_slice(te - 1, te);
+        let literal = Literal::new(literal_type, literal_delimiter, ts, None, false, false, false, Rc::clone(&self.tokens));
+        fgoto *self.push_literal(literal);
+    };
 
     #
     # CONSTANTS AND VARIABLES
@@ -200,9 +219,12 @@ expr_end := |*
         // fnext *arg_or_cmdarg; fbreak;
     };
 
-#    constant ambiguous_const_suffix
-#    => { emit(:tCONSTANT, tok(@ts, tm), @ts, tm)
-#          p = tm - 1; fbreak; };
+    constant ambiguous_const_suffix
+    => {
+        !emit T_CONSTANT, ts, tm;
+        p = tm - 1;
+        fnbreak;
+    };
 
     global_var | class_var_v | instance_var_v
     => { p = ts - 1; fncall expr_variable; };
@@ -220,6 +242,7 @@ expr_end := |*
     call_or_var
     => local_ident;
 
+# TODO
 #    bareword ambiguous_fid_suffix
 #    => {
 #      if tm == @te
@@ -232,30 +255,32 @@ expr_end := |*
 #      end
 #      fnext expr_arg; fbreak;
 #    };
-#
-#    #
-#    # OPERATORS
-#    #
-#
-#    '*' | '=>'
-#    => {
-#      emit_table(PUNCTUATION)
-#      fgoto expr_value;
-#    };
-#
-#    # When '|', '~', '!', '=>' are used as operators
-#    # they do not accept any symbols (or quoted labels) after.
-#    # Other binary operators accept it.
-#    ( operator_arithmetic | operator_rest ) - ( '|' | '~' | '!' | '*' )
-#    => {
-#      emit_table(PUNCTUATION);
-#      fnext expr_value; fbreak;
-#    };
-#
-#    ( e_lparen | '|' | '~' | '!' )
-#    => { emit_table(PUNCTUATION)
-#          fnext expr_beg; fbreak; };
-#
+
+    #
+    # OPERATORS
+    #
+
+    '*' | '=>'
+    => {
+      !emit_table PUNCTUATION;
+      fgoto expr_value;
+    };
+
+    # When '|', '~', '!', '=>' are used as operators
+    # they do not accept any symbols (or quoted labels) after.
+    # Other binary operators accept it.
+    ( operator_arithmetic | operator_rest ) - ( '|' | '~' | '!' | '*' )
+    => {
+      !emit_table PUNCTUATION;
+      fnext expr_value; fnbreak;
+    };
+
+    ( e_lparen | '|' | '~' | '!' )
+    => {
+        !emit_table PUNCTUATION;
+        fnext expr_beg; fnbreak;
+    };
+
     e_rbrace | e_rparen | ']'
     => {
         !emit_table PUNCTUATION;
@@ -288,19 +313,22 @@ expr_end := |*
 
     operator_arithmetic '='
     => {
-        // emit(:tOP_ASGN, tok(@ts, @te - 1))
         !emit T_OP_ASGN, ts, te - 1;
         fnext expr_beg; fnbreak;
     };
 
-#    '?'
-#    => { emit(:tEH, '?'.freeze)
-#          fnext expr_value; fbreak; };
-#
-#    e_lbrack
-#    => { emit(:tLBRACK2, '['.freeze)
-#          fnext expr_beg; fbreak; };
-#
+    '?'
+    => {
+        !emit T_EH_;
+        fnext expr_value; fnbreak;
+    };
+
+    e_lbrack
+    => {
+        !emit T_LBRACK2_;
+        fnext expr_beg; fnbreak;
+    };
+
     punctuation_end
     => {
         !emit_table PUNCTUATION;
@@ -323,15 +351,17 @@ expr_end := |*
         fnext expr_value; fnbreak;
     };
 
+# TODO
 #    '\\' c_line {
 #      diagnostic :error, :bare_backslash, nil, range(@ts, @ts + 1)
 #      fhold;
 #    };
 
-#    c_any
-#    => {
-#      diagnostic :fatal, :unexpected, { :character => tok.inspect[1..-2] }
-#    };
+    c_any
+    => {
+        // diagnostic :fatal, :unexpected, { :character => tok.inspect[1..-2] }
+        panic!("lexer diagnostic");
+    };
 
     c_eof => do_eof;
 *|;

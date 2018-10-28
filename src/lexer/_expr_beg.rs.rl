@@ -26,6 +26,7 @@ expr_beg := |*
     # STRING AND REGEXP LITERALS
     #
 
+    # TODO
     # # /regexp/oui
     # # /=/ (disambiguation with /=)
     # '/' c_any
@@ -34,6 +35,7 @@ expr_beg := |*
     #   // fhold; fgoto *push_literal(type, delimiter, @ts);
     # };
 
+    # TODO
     # # %<string>
     # '%' ( any - [A-Za-z] )
     # => {
@@ -62,6 +64,7 @@ expr_beg := |*
         panic!("lexer diagnostic");
     };
 
+    # TODO
     # # Heredoc start.
     # # <<END  | <<'END'  | <<"END"  | <<`END`  |
     # # <<-END | <<-'END' | <<-"END" | <<-`END` |
@@ -152,6 +155,7 @@ expr_beg := |*
     # AMBIGUOUS TERNARY OPERATOR
     #
 
+    # TODO
     # # Character constant, like ?a, ?\n, ?\u1000, and so on
     # # Don't accept \u escape with multiple codepoints, like \u{1 2 3}
     # '?' ( e_bs ( escape - ( '\u{' (xdigit+ [ \t]+)+ xdigit+ '}' ))
@@ -169,6 +173,7 @@ expr_beg := |*
     #   // fnext expr_end; fbreak;
     # };
 
+    # TODO
     # '?' c_space_nl
     # => {
     #   // escape = { " "  => '\s', "\r" => '\r', "\n" => '\n', "\t" => '\t',
@@ -199,7 +204,6 @@ expr_beg := |*
     # a({b=>c})
     e_lbrace
     => {
-        panic!("WIP");
         // if @lambda_stack.last == @paren_nest
         //   @lambda_stack.pop
         //   emit(:tLAMBEG, '{'.freeze)
@@ -207,6 +211,16 @@ expr_beg := |*
         //   emit(:tLBRACE, '{'.freeze)
         // end
         // fbreak;
+
+        // TODO rust-ology, why can't compare &usize == usize
+        if *self.lambda_stack.last().unwrap() == self.paren_nest {
+            self.lambda_stack.pop();
+            !emit T_LAMBEG_;
+        } else {
+            !emit T_LBRACE_;
+        }
+
+        fnbreak;
     };
 
     # a([1, 2])
@@ -230,6 +244,7 @@ expr_beg := |*
         fnbreak;
     };
 
+    # TODO
     # # rescue Exception => e: Block rescue.
     # # Special because it should transition to expr_mid.
     # 'rescue' %{ tm = p } '=>'?
@@ -239,6 +254,7 @@ expr_beg := |*
     #     // fnext expr_mid; fbreak;
     # };
 
+    # TODO
     # # if a: Statement if.
     # keyword_modifier
     # => {
@@ -250,6 +266,7 @@ expr_beg := |*
     # RUBY 1.9 HASH LABELS
     #
 
+    # TODO
     # label ( any - ':' )
     # => {
     #   // fhold;
@@ -292,6 +309,7 @@ expr_beg := |*
     call_or_var
     => local_ident;
 
+    # TODO
     # (call_or_var - keyword)
     #   % { ident_tok = tok; ident_ts = @ts; ident_te = @te; }
     # w_space+ '('
@@ -313,6 +331,7 @@ expr_beg := |*
 
     w_any;
 
+    # TODO
     # e_heredoc_nl '=begin' ( c_space | c_nl_zlen )
     # => {
     #   // p = @ts - 1

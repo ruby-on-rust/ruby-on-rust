@@ -52,14 +52,47 @@ pub struct Lexer {
     stack: [i32; 16],
     top: i32,
 
-    tokens: Rc<RefCell<Vec<Token>>>,
-    pub literal_stack: Vec<RefCell<Literal>>,
-
     cond: StackState,
     cmdarg: StackState,
     // TODO
     // @cond_stack   = []
     // @cmdarg_stack = []
+
+    // # Lexer state:
+    // @token_queue   = []
+    // @literal_stack = []
+    tokens: Rc<RefCell<Vec<Token>>>,
+    pub literal_stack: Vec<RefCell<Literal>>,
+
+    // @eq_begin_s    = nil # location of last encountered =begin
+    // @sharp_s       = nil # location of last encountered #
+
+    // @newline_s     = nil # location of last encountered newline
+
+    // @num_base      = nil # last numeric base
+    // @num_digits_s  = nil # starting position of numeric digits
+    // @num_suffix_s  = nil # starting position of numeric suffix
+    // @num_xfrm      = nil # numeric suffix-induced transformation
+
+    // @escape_s      = nil # starting position of current sequence
+    // @escape        = nil # last escaped sequence, as string
+
+    // @herebody_s    = nil # starting position of current heredoc line
+
+    // # Ruby 1.9 ->() lambdas emit a distinct token if do/{ is
+    // # encountered after a matching closing parenthesis.
+    // @paren_nest    = 0
+    paren_nest: usize,
+    // @lambda_stack  = [],
+    lambda_stack: Vec<usize>,
+
+    // # After encountering the closing line of <<~SQUIGGLY_HEREDOC,
+    // # we store the indentation level and give it out to the parser
+    // # on request. It is not possible to infer indentation level just
+    // # from the AST because escape sequences such as `\ ` or `\t` are
+    // # expanded inside the lexer, but count as non-whitespace for
+    // # indentation purposes.
+    // @dedent_level  = nil
 
     // # If the lexer is in `command state' (aka expr_value)
     // # at the entry to #advance, it will transition to expr_cmdarg
@@ -90,11 +123,14 @@ impl Lexer {
             pe,
             act,
 
+            cond: StackState::new(),
+            cmdarg: StackState::new(),
+
             tokens: Rc::new(RefCell::new(vec![])),
             literal_stack: vec![],
 
-            cond: StackState::new(),
-            cmdarg: StackState::new(),
+            paren_nest: 0,
+            lambda_stack: vec![],
 
             command_state: false,
         }
