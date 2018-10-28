@@ -67,7 +67,7 @@ pub struct Lexer {
 	top: i32,
 	
 	tokens: Rc<RefCell<Vec<Token>>>,
-	pub literal_stack: Vec<Literal>,
+	pub literal_stack: Vec<RefCell<Literal>>,
 	
 	cond: StackState,
 	cmdarg: StackState,
@@ -550,7 +550,8 @@ impl Lexer {
 																// TODO INCOMPLETE handle @cond.active
 																let lookahead = self.current_slice(te, te + 2);
 																
-																let mut current_literal = self.literal().expect("literal_stack is empty").clone();
+																// NOTE clone one, and replace it later
+																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
 																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
 																		if let Token::T_LABEL_END = token {
@@ -570,14 +571,7 @@ impl Lexer {
 																
 																current_literal.extend_string(&temp_string, ts, te);
 																
-																// NOTE
-																// due to limitations of borrowing in rust, we have to
-																// 1 clone current_literal
-																// 2 modify it 
-																// 3 re-save it to the stack
-																// TODO leverage RefCell
-																self.literal_stack.pop();
-																self.literal_stack.push(current_literal);
+																self.literal_stack.last().unwrap().replace(current_literal);
 															}
 														}}
 													
@@ -599,7 +593,8 @@ impl Lexer {
 												45  => {
 													{{te = p;
 															p = p - 1;
-															{}
+															{self.literal_stack.last().unwrap().borrow_mut().extend_space(ts, te);
+															}
 														}}
 													
 												}
@@ -613,7 +608,8 @@ impl Lexer {
 																// TODO INCOMPLETE handle @cond.active
 																let lookahead = self.current_slice(te, te + 2);
 																
-																let mut current_literal = self.literal().expect("literal_stack is empty").clone();
+																// NOTE clone one, and replace it later
+																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
 																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
 																		if let Token::T_LABEL_END = token {
@@ -633,14 +629,7 @@ impl Lexer {
 																
 																current_literal.extend_string(&temp_string, ts, te);
 																
-																// NOTE
-																// due to limitations of borrowing in rust, we have to
-																// 1 clone current_literal
-																// 2 modify it 
-																// 3 re-save it to the stack
-																// TODO leverage RefCell
-																self.literal_stack.pop();
-																self.literal_stack.push(current_literal);
+																self.literal_stack.last().unwrap().replace(current_literal);
 															}
 														}}
 													
@@ -660,7 +649,8 @@ impl Lexer {
 																// TODO INCOMPLETE handle @cond.active
 																let lookahead = self.current_slice(te, te + 2);
 																
-																let mut current_literal = self.literal().expect("literal_stack is empty").clone();
+																// NOTE clone one, and replace it later
+																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
 																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
 																		if let Token::T_LABEL_END = token {
@@ -680,14 +670,7 @@ impl Lexer {
 																
 																current_literal.extend_string(&temp_string, ts, te);
 																
-																// NOTE
-																// due to limitations of borrowing in rust, we have to
-																// 1 clone current_literal
-																// 2 modify it 
-																// 3 re-save it to the stack
-																// TODO leverage RefCell
-																self.literal_stack.pop();
-																self.literal_stack.push(current_literal);
+																self.literal_stack.last().unwrap().replace(current_literal);
 															}
 														}}
 													
@@ -719,7 +702,8 @@ impl Lexer {
 																// TODO INCOMPLETE handle @cond.active
 																let lookahead = self.current_slice(te, te + 2);
 																
-																let mut current_literal = self.literal().expect("literal_stack is empty").clone();
+																// NOTE clone one, and replace it later
+																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
 																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
 																		if let Token::T_LABEL_END = token {
@@ -739,14 +723,7 @@ impl Lexer {
 																
 																current_literal.extend_string(&temp_string, ts, te);
 																
-																// NOTE
-																// due to limitations of borrowing in rust, we have to
-																// 1 clone current_literal
-																// 2 modify it 
-																// 3 re-save it to the stack
-																// TODO leverage RefCell
-																self.literal_stack.pop();
-																self.literal_stack.push(current_literal);
+																self.literal_stack.last().unwrap().replace(current_literal);
 															}
 														}}
 													
@@ -775,7 +752,8 @@ impl Lexer {
 																// TODO INCOMPLETE handle @cond.active
 																let lookahead = self.current_slice(te, te + 2);
 																
-																let mut current_literal = self.literal().expect("literal_stack is empty").clone();
+																// NOTE clone one, and replace it later
+																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
 																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
 																		if let Token::T_LABEL_END = token {
@@ -795,14 +773,7 @@ impl Lexer {
 																
 																current_literal.extend_string(&temp_string, ts, te);
 																
-																// NOTE
-																// due to limitations of borrowing in rust, we have to
-																// 1 clone current_literal
-																// 2 modify it 
-																// 3 re-save it to the stack
-																// TODO leverage RefCell
-																self.literal_stack.pop();
-																self.literal_stack.push(current_literal);
+																self.literal_stack.last().unwrap().replace(current_literal);
 															}
 														}}
 													
@@ -822,7 +793,8 @@ impl Lexer {
 																// TODO INCOMPLETE handle @cond.active
 																let lookahead = self.current_slice(te, te + 2);
 																
-																let mut current_literal = self.literal().expect("literal_stack is empty").clone();
+																// NOTE clone one, and replace it later
+																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
 																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
 																		if let Token::T_LABEL_END = token {
@@ -842,14 +814,7 @@ impl Lexer {
 																
 																current_literal.extend_string(&temp_string, ts, te);
 																
-																// NOTE
-																// due to limitations of borrowing in rust, we have to
-																// 1 clone current_literal
-																// 2 modify it 
-																// 3 re-save it to the stack
-																// TODO leverage RefCell
-																self.literal_stack.pop();
-																self.literal_stack.push(current_literal);
+																self.literal_stack.last().unwrap().replace(current_literal);
 															}
 														}}
 													
@@ -875,7 +840,8 @@ impl Lexer {
 																// TODO INCOMPLETE handle @cond.active
 																let lookahead = self.current_slice(te, te + 2);
 																
-																let mut current_literal = self.literal().expect("literal_stack is empty").clone();
+																// NOTE clone one, and replace it later
+																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
 																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
 																		if let Token::T_LABEL_END = token {
@@ -895,14 +861,7 @@ impl Lexer {
 																
 																current_literal.extend_string(&temp_string, ts, te);
 																
-																// NOTE
-																// due to limitations of borrowing in rust, we have to
-																// 1 clone current_literal
-																// 2 modify it 
-																// 3 re-save it to the stack
-																// TODO leverage RefCell
-																self.literal_stack.pop();
-																self.literal_stack.push(current_literal);
+																self.literal_stack.last().unwrap().replace(current_literal);
 															}
 														}}
 													
@@ -910,7 +869,8 @@ impl Lexer {
 												61  => {
 													{{te = p;
 															p = p - 1;
-															{}
+															{self.literal_stack.last().unwrap().borrow_mut().extend_space(ts, te);
+															}
 														}}
 													
 												}
@@ -924,7 +884,8 @@ impl Lexer {
 																// TODO INCOMPLETE handle @cond.active
 																let lookahead = self.current_slice(te, te + 2);
 																
-																let mut current_literal = self.literal().expect("literal_stack is empty").clone();
+																// NOTE clone one, and replace it later
+																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
 																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
 																		if let Token::T_LABEL_END = token {
@@ -944,14 +905,7 @@ impl Lexer {
 																
 																current_literal.extend_string(&temp_string, ts, te);
 																
-																// NOTE
-																// due to limitations of borrowing in rust, we have to
-																// 1 clone current_literal
-																// 2 modify it 
-																// 3 re-save it to the stack
-																// TODO leverage RefCell
-																self.literal_stack.pop();
-																self.literal_stack.push(current_literal);
+																self.literal_stack.last().unwrap().replace(current_literal);
 															}
 														}}
 													
@@ -983,7 +937,8 @@ impl Lexer {
 																// TODO INCOMPLETE handle @cond.active
 																let lookahead = self.current_slice(te, te + 2);
 																
-																let mut current_literal = self.literal().expect("literal_stack is empty").clone();
+																// NOTE clone one, and replace it later
+																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
 																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
 																		if let Token::T_LABEL_END = token {
@@ -1003,14 +958,7 @@ impl Lexer {
 																
 																current_literal.extend_string(&temp_string, ts, te);
 																
-																// NOTE
-																// due to limitations of borrowing in rust, we have to
-																// 1 clone current_literal
-																// 2 modify it 
-																// 3 re-save it to the stack
-																// TODO leverage RefCell
-																self.literal_stack.pop();
-																self.literal_stack.push(current_literal);
+																self.literal_stack.last().unwrap().replace(current_literal);
 															}
 														}}
 													
@@ -1025,7 +973,8 @@ impl Lexer {
 																// TODO INCOMPLETE handle @cond.active
 																let lookahead = self.current_slice(te, te + 2);
 																
-																let mut current_literal = self.literal().expect("literal_stack is empty").clone();
+																// NOTE clone one, and replace it later
+																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
 																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
 																		if let Token::T_LABEL_END = token {
@@ -1045,14 +994,7 @@ impl Lexer {
 																
 																current_literal.extend_string(&temp_string, ts, te);
 																
-																// NOTE
-																// due to limitations of borrowing in rust, we have to
-																// 1 clone current_literal
-																// 2 modify it 
-																// 3 re-save it to the stack
-																// TODO leverage RefCell
-																self.literal_stack.pop();
-																self.literal_stack.push(current_literal);
+																self.literal_stack.last().unwrap().replace(current_literal);
 															}
 														}}
 													
@@ -1084,7 +1026,8 @@ impl Lexer {
 																// TODO INCOMPLETE handle @cond.active
 																let lookahead = self.current_slice(te, te + 2);
 																
-																let mut current_literal = self.literal().expect("literal_stack is empty").clone();
+																// NOTE clone one, and replace it later
+																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
 																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
 																		if let Token::T_LABEL_END = token {
@@ -1104,14 +1047,7 @@ impl Lexer {
 																
 																current_literal.extend_string(&temp_string, ts, te);
 																
-																// NOTE
-																// due to limitations of borrowing in rust, we have to
-																// 1 clone current_literal
-																// 2 modify it 
-																// 3 re-save it to the stack
-																// TODO leverage RefCell
-																self.literal_stack.pop();
-																self.literal_stack.push(current_literal);
+																self.literal_stack.last().unwrap().replace(current_literal);
 															}
 														}}
 													
@@ -1133,7 +1069,8 @@ impl Lexer {
 																// TODO INCOMPLETE handle @cond.active
 																let lookahead = self.current_slice(te, te + 2);
 																
-																let mut current_literal = self.literal().expect("literal_stack is empty").clone();
+																// NOTE clone one, and replace it later
+																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
 																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
 																		if let Token::T_LABEL_END = token {
@@ -1153,14 +1090,7 @@ impl Lexer {
 																
 																current_literal.extend_string(&temp_string, ts, te);
 																
-																// NOTE
-																// due to limitations of borrowing in rust, we have to
-																// 1 clone current_literal
-																// 2 modify it 
-																// 3 re-save it to the stack
-																// TODO leverage RefCell
-																self.literal_stack.pop();
-																self.literal_stack.push(current_literal);
+																self.literal_stack.last().unwrap().replace(current_literal);
 															}
 														}}
 													
@@ -1174,7 +1104,8 @@ impl Lexer {
 																// TODO INCOMPLETE handle @cond.active
 																let lookahead = self.current_slice(te, te + 2);
 																
-																let mut current_literal = self.literal().expect("literal_stack is empty").clone();
+																// NOTE clone one, and replace it later
+																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
 																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
 																		if let Token::T_LABEL_END = token {
@@ -1194,14 +1125,7 @@ impl Lexer {
 																
 																current_literal.extend_string(&temp_string, ts, te);
 																
-																// NOTE
-																// due to limitations of borrowing in rust, we have to
-																// 1 clone current_literal
-																// 2 modify it 
-																// 3 re-save it to the stack
-																// TODO leverage RefCell
-																self.literal_stack.pop();
-																self.literal_stack.push(current_literal);
+																self.literal_stack.last().unwrap().replace(current_literal);
 															}
 														}}
 													
@@ -1221,7 +1145,8 @@ impl Lexer {
 																// TODO INCOMPLETE handle @cond.active
 																let lookahead = self.current_slice(te, te + 2);
 																
-																let mut current_literal = self.literal().expect("literal_stack is empty").clone();
+																// NOTE clone one, and replace it later
+																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
 																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
 																		if let Token::T_LABEL_END = token {
@@ -1241,14 +1166,7 @@ impl Lexer {
 																
 																current_literal.extend_string(&temp_string, ts, te);
 																
-																// NOTE
-																// due to limitations of borrowing in rust, we have to
-																// 1 clone current_literal
-																// 2 modify it 
-																// 3 re-save it to the stack
-																// TODO leverage RefCell
-																self.literal_stack.pop();
-																self.literal_stack.push(current_literal);
+																self.literal_stack.last().unwrap().replace(current_literal);
 															}
 														}}
 													
@@ -1280,7 +1198,8 @@ impl Lexer {
 																// TODO INCOMPLETE handle @cond.active
 																let lookahead = self.current_slice(te, te + 2);
 																
-																let mut current_literal = self.literal().expect("literal_stack is empty").clone();
+																// NOTE clone one, and replace it later
+																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
 																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
 																		if let Token::T_LABEL_END = token {
@@ -1300,14 +1219,7 @@ impl Lexer {
 																
 																current_literal.extend_string(&temp_string, ts, te);
 																
-																// NOTE
-																// due to limitations of borrowing in rust, we have to
-																// 1 clone current_literal
-																// 2 modify it 
-																// 3 re-save it to the stack
-																// TODO leverage RefCell
-																self.literal_stack.pop();
-																self.literal_stack.push(current_literal);
+																self.literal_stack.last().unwrap().replace(current_literal);
 															}
 														}}
 													
@@ -1322,7 +1234,8 @@ impl Lexer {
 												82  => {
 													{{te = p;
 															p = p - 1;
-															{}
+															{self.literal_stack.last().unwrap().borrow_mut().extend_space(ts, te);
+															}
 														}}
 													
 												}
@@ -1336,7 +1249,8 @@ impl Lexer {
 																// TODO INCOMPLETE handle @cond.active
 																let lookahead = self.current_slice(te, te + 2);
 																
-																let mut current_literal = self.literal().expect("literal_stack is empty").clone();
+																// NOTE clone one, and replace it later
+																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
 																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
 																		if let Token::T_LABEL_END = token {
@@ -1356,14 +1270,7 @@ impl Lexer {
 																
 																current_literal.extend_string(&temp_string, ts, te);
 																
-																// NOTE
-																// due to limitations of borrowing in rust, we have to
-																// 1 clone current_literal
-																// 2 modify it 
-																// 3 re-save it to the stack
-																// TODO leverage RefCell
-																self.literal_stack.pop();
-																self.literal_stack.push(current_literal);
+																self.literal_stack.last().unwrap().replace(current_literal);
 															}
 														}}
 													
@@ -1377,7 +1284,8 @@ impl Lexer {
 																// TODO INCOMPLETE handle @cond.active
 																let lookahead = self.current_slice(te, te + 2);
 																
-																let mut current_literal = self.literal().expect("literal_stack is empty").clone();
+																// NOTE clone one, and replace it later
+																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
 																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
 																		if let Token::T_LABEL_END = token {
@@ -1397,14 +1305,7 @@ impl Lexer {
 																
 																current_literal.extend_string(&temp_string, ts, te);
 																
-																// NOTE
-																// due to limitations of borrowing in rust, we have to
-																// 1 clone current_literal
-																// 2 modify it 
-																// 3 re-save it to the stack
-																// TODO leverage RefCell
-																self.literal_stack.pop();
-																self.literal_stack.push(current_literal);
+																self.literal_stack.last().unwrap().replace(current_literal);
 															}
 														}}
 													
@@ -1424,7 +1325,8 @@ impl Lexer {
 																// TODO INCOMPLETE handle @cond.active
 																let lookahead = self.current_slice(te, te + 2);
 																
-																let mut current_literal = self.literal().expect("literal_stack is empty").clone();
+																// NOTE clone one, and replace it later
+																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
 																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
 																		if let Token::T_LABEL_END = token {
@@ -1444,14 +1346,7 @@ impl Lexer {
 																
 																current_literal.extend_string(&temp_string, ts, te);
 																
-																// NOTE
-																// due to limitations of borrowing in rust, we have to
-																// 1 clone current_literal
-																// 2 modify it 
-																// 3 re-save it to the stack
-																// TODO leverage RefCell
-																self.literal_stack.pop();
-																self.literal_stack.push(current_literal);
+																self.literal_stack.last().unwrap().replace(current_literal);
 															}
 														}}
 													
@@ -1459,7 +1354,8 @@ impl Lexer {
 												87  => {
 													{{te = p;
 															p = p - 1;
-															{}
+															{self.literal_stack.last().unwrap().borrow_mut().extend_space(ts, te);
+															}
 														}}
 													
 												}

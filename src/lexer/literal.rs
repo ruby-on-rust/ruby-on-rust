@@ -532,7 +532,7 @@ impl Lexer {
         let next_state = self.next_state_for_literal(&literal);
         print!("push_literal: next_state: {}", next_state);
 
-        self.literal_stack.push(literal);
+        self.literal_stack.push(RefCell::new(literal));
 
         return next_state;
     }
@@ -603,9 +603,9 @@ impl Lexer {
     //   def literal
     //     @literal_stack.last
     //   end
-    pub fn literal(&mut self) -> Option<&Literal> {
-        self.literal_stack.last()
-    }
+    // pub fn literal(&mut self) -> Literal {
+    //     *self.literal_stack.last().expect("no current literal").borrow_mut()
+    // }
 
     //   def pop_literal
     //     old_literal = @literal_stack.pop

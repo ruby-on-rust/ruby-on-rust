@@ -581,7 +581,7 @@ fn array_plain() {
 //         |    ~~~~ expression (splat)
 //         |~~~~~~~~~~~~ expression},
 //       SINCE_1_9)
-
+// 
 //     assert_parses(
 //       s(:array,
 //         s(:int, 1),
@@ -592,13 +592,13 @@ fn array_plain() {
 //         |    ^ operator (splat)
 //         |    ~~~~ expression (splat)
 //         |~~~~~~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:array,
 //         s(:splat, s(:lvar, :foo))),
 //       %q{[*foo]})
 //   end
-
+// 
 //   def test_array_assocs
 //     assert_parses(
 //       s(:array,
@@ -607,7 +607,7 @@ fn array_plain() {
 //       %q{    ~~ operator (hash.pair)
 //         |  ~~~~~~ expression (hash.pair)
 //         |  ~~~~~~ expression (hash)})
-
+// 
 //     assert_parses(
 //       s(:array,
 //         s(:int, 1),
@@ -653,7 +653,7 @@ fn array_words() {
 //         |   ~~~ expression (str)
 //         |         ~~~ expression (dstr.begin.lvar)
 //         |~~~~~~~~~~~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:array,
 //         s(:str, 'foo'),

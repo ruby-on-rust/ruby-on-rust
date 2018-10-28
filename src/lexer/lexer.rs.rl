@@ -53,7 +53,7 @@ pub struct Lexer {
     top: i32,
 
     tokens: Rc<RefCell<Vec<Token>>>,
-    pub literal_stack: Vec<Literal>,
+    pub literal_stack: Vec<RefCell<Literal>>,
 
     cond: StackState,
     cmdarg: StackState,
