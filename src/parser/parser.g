@@ -2240,6 +2240,11 @@ user_variable
 
         $$ = node::build_const(*$1.interior_token);
     }
+    | tCVAR {
+        |$1:Token| -> Node;
+
+        $$ = node::cvar(*$1.interior_token);
+    }
 ;
 
 // keyword_variable: kNIL

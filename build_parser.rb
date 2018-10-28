@@ -143,8 +143,11 @@ File.open parser_file, "w" do |file| file.puts content end
 # to
 # { "T_INTEGER" => 14, ... }
 
+puts '---'
+puts "Handling tokens map..."
 original_map_str = File.read('src/parser/parser.rs').scan(/hashmap!\ \{.*\};/).last.delete_prefix('hashmap! ').delete_suffix(';')
 original_map = eval original_map_str
+pp original_map
 tokens_map = original_map.transform_keys do |k|
   case
   when k.start_with?('t')
