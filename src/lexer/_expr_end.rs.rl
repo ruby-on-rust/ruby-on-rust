@@ -313,6 +313,7 @@ expr_end := |*
 
     operator_arithmetic '='
     => {
+        // emit(:tOP_ASGN, tok(@ts, @te - 1))
         !emit T_OP_ASGN, ts, te - 1;
         fnext expr_beg; fnbreak;
     };
@@ -360,7 +361,7 @@ expr_end := |*
     c_any
     => {
         // diagnostic :fatal, :unexpected, { :character => tok.inspect[1..-2] }
-        panic!("lexer diagnostic");
+        panic!("lexer diagnostic: unexpected char: {}", self.current_slice(ts, te)); // TODO char position
     };
 
     c_eof => do_eof;

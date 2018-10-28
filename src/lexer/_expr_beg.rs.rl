@@ -61,7 +61,7 @@ expr_beg := |*
     '%' c_eof
     => {
         // diagnostic :fatal, :string_eof, nil, range(@ts, @ts + 1)
-        panic!("lexer diagnostic");
+        panic!("lexer diagnostic: string_eof");
     };
 
     # TODO
@@ -187,7 +187,7 @@ expr_beg := |*
     '?' c_eof
     => {
         // diagnostic :fatal, :incomplete_escape, nil, range(@ts, @ts + 1)
-        panic!("lexer diagnostic");
+        panic!("lexer diagnostic: incomplete_escape");
     };
 
     # f ?aa : b: Disambiguate with a character literal.
@@ -212,8 +212,8 @@ expr_beg := |*
         // end
         // fbreak;
 
-        // TODO rust-ology, why can't compare &usize == usize
-        if *self.lambda_stack.last().unwrap() == self.paren_nest {
+        // TODO chain if-let after this lands: https://github.com/rust-lang/rfcs/pull/2497
+        if !self.lambda_stack.is_empty() && self.lambda_stack.last().unwrap() == &self.paren_nest {
             self.lambda_stack.pop();
             !emit T_LAMBEG_;
         } else {
@@ -254,42 +254,43 @@ expr_beg := |*
     #     // fnext expr_mid; fbreak;
     # };
 
-    # TODO
-    # # if a: Statement if.
-    # keyword_modifier
-    # => {
-    #     // emit_table(KEYWORDS_BEGIN)
-    #     // fnext expr_value; fbreak;
-    # };
+    # if a: Statement if.
+    keyword_modifier
+    => {
+        !emit_table KEYWORDS_BEGIN;
+        fnext expr_value; fnbreak;
+    };
 
     #
     # RUBY 1.9 HASH LABELS
     #
 
-    # TODO
-    # label ( any - ':' )
-    # => {
-    #   // fhold;
-    #
-    #   // if version?(18)
-    #   //   ident = tok(@ts, @te - 2)
-    #
-    #   //   emit((@source_buffer.slice(@ts) =~ /[A-Z]/) ? :tCONSTANT : :tIDENTIFIER,
-    #   //         ident, @ts, @te - 2)
-    #   //   fhold; # continue as a symbol
-    #
-    #   //   if !@static_env.nil? && @static_env.declared?(ident)
-    #   //     fnext expr_end;
-    #   //   else
-    #   //     fnext *arg_or_cmdarg;
-    #   //   end
-    #   // else
-    #   //   emit(:tLABEL, tok(@ts, @te - 2), @ts, @te - 1)
-    #   //   fnext expr_labelarg;
-    #   // end
-    #
-    #   // fbreak;
-    # };
+    label ( any - ':' )
+    => {
+        fhold;
+
+        // if version?(18)
+        //   ident = tok(@ts, @te - 2)
+        // 
+        //   emit((@source_buffer.slice(@ts) =~ /[A-Z]/) ? :tCONSTANT : :tIDENTIFIER,
+        //         ident, @ts, @te - 2)
+        //   fhold; # continue as a symbol
+        // 
+        //   if !@static_env.nil? && @static_env.declared?(ident)
+        //     fnext expr_end;
+        //   else
+        //     fnext *arg_or_cmdarg;
+        //   end
+        // else
+        //   emit(:tLABEL, tok(@ts, @te - 2), @ts, @te - 1)
+        //   fnext expr_labelarg;
+        // end
+
+        // NOTE ignored ruby18
+        !emit T_LABEL, ts, te - 2;
+        fnext expr_labelarg;
+        fnbreak;
+    };
 
     #
     # CONTEXT-DEPENDENT VARIABLE LOOKUP OR COMMAND INVOCATION

@@ -11,7 +11,7 @@ let tokens_map: HashMap<&str, isize> = hashmap! {"T_EQL"=>40, "T_COMMA"=>41, "T_
 // END OF TOKENS_MAP
 
         let token_variant = self.as_ref();
-        let kind = tokens_map.get(&token_variant).unwrap();
+        let kind = tokens_map.get(&token_variant).expect(&format!("unknown token type {}", token_variant));
 
         Token {
             kind: *kind as i32,

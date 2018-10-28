@@ -812,7 +812,7 @@ fn hash_label() {
     assert_parses!(
         "{ foo: 2 }",
         Node::Hash(vec![
-            Node::Pair { key: Box::new(Node::Sym(String::from("foo"))), value: Box::new(Node::Int(2)) }
+            Node::Pair { key: Box::new(n_sym!(String::from("foo"))), value: Box::new(Node::Int(2)) }
         ])
     );
 }
