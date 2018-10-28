@@ -812,7 +812,14 @@ fn hash_label() {
     assert_parses!(
         "{ foo: 2 }",
         Node::Hash(vec![
-            Node::Pair { key: Box::new(n_sym!(String::from("foo"))), value: Box::new(Node::Int(2)) }
+            Node::Pair { key: Box::new(n_sym!("foo")), value: Box::new(Node::Int(2)) }
+        ])
+    );
+
+    assert_parses!(
+        "{ foo: :bar }",
+        Node::Hash(vec![
+            Node::Pair { key: Box::new(n_sym!("foo")), value: Box::new(n_sym!("bar")) }
         ])
     );
 }
@@ -830,7 +837,7 @@ fn hash_label() {
 //         |  ~~~~~~~~ expression (pair)
 //         |~~~~~~~~~~~~ expression},
 //       SINCE_2_2)
-
+// 
 //     assert_parses(
 //       s(:hash,
 //         s(:pair, s(:sym, :foo), s(:int, 2)),
@@ -838,7 +845,7 @@ fn hash_label() {
 //       %q[{ 'foo': 2, 'bar': {}}],
 //       %q{},
 //       SINCE_2_2)
-
+// 
 //     assert_parses(
 //       s(:send, nil, :f,
 //         s(:if, s(:send, nil, :a),
@@ -905,7 +912,7 @@ fn hash_label() {
 //       %q{~~~ expression
 //         | ~~ operator},
 //       SINCE_2_6)
-
+// 
 //     assert_parses(
 //       s(:erange,
 //         s(:int, 1), nil),
@@ -5546,20 +5553,20 @@ fn asgn_cmd() {
 //     with_versions(ALL_VERSIONS) do |_ver, parser|
 //       source_file = Parser::Source::Buffer.new('(tokenize)')
 //       source_file.source = "1 + # foo\n 2"
-
+// 
 //       range = lambda do |from, to|
 //         Parser::Source::Range.new(source_file, from, to)
 //       end
-
+// 
 //       ast, comments, tokens = parser.tokenize(source_file)
-
+// 
 //       assert_equal s(:send, s(:int, 1), :+, s(:int, 2)),
 //                    ast
-
+// 
 //       assert_equal [
 //                      Parser::Source::Comment.new(range.call(4, 9))
 //                    ], comments
-
+// 
 //       assert_equal [
 //                      [:tINTEGER, [ 1,       range.call(0, 1) ]],
 //                      [:tPLUS,    [ '+',     range.call(2, 3) ]],
@@ -5573,19 +5580,19 @@ fn asgn_cmd() {
 //     with_versions(ALL_VERSIONS) do |_ver, parser|
 //       source_file = Parser::Source::Buffer.new('(tokenize)')
 //       source_file.source = "1 + # foo\n "
-
+// 
 //       range = lambda do |from, to|
 //         Parser::Source::Range.new(source_file, from, to)
 //       end
-
+// 
 //       ast, comments, tokens = parser.tokenize(source_file, true)
-
+// 
 //       assert_nil ast
-
+// 
 //       assert_equal [
 //                      Parser::Source::Comment.new(range.call(4, 9))
 //                    ], comments
-
+// 
 //       assert_equal [
 //                      [:tINTEGER, [ 1,       range.call(0, 1) ]],
 //                      [:tPLUS,    [ '+',     range.call(2, 3) ]],

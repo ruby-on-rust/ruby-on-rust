@@ -12,7 +12,7 @@ use lexer::stack_state::StackState;
 
     include "_character_classes.rs.rl";
     include "_token_definitions.rs.rl";
-    # include "_numeric.rs.rl";
+    include "_numeric.rs.rl";
     include "_escape_sequence.rs.rl";
     include "_string_and_heredoc.rs.rl";
     include "_interpolation.rs.rl";
@@ -73,6 +73,10 @@ pub struct Lexer {
     // @num_digits_s  = nil # starting position of numeric digits
     // @num_suffix_s  = nil # starting position of numeric suffix
     // @num_xfrm      = nil # numeric suffix-induced transformation
+    // TODO Do we need Optional for these values?
+    num_base: usize,
+    num_digits_s: i32,
+    num_suffix_s: i32,
 
     // @escape_s      = nil # starting position of current sequence
     // @escape        = nil # last escaped sequence, as string
@@ -128,6 +132,10 @@ impl Lexer {
 
             tokens: Rc::new(RefCell::new(vec![])),
             literal_stack: vec![],
+
+            num_base: 0,
+            num_digits_s: 0,
+            num_suffix_s: 0,
 
             paren_nest: 0,
             lambda_stack: vec![],

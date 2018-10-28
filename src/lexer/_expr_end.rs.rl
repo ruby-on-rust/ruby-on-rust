@@ -110,39 +110,46 @@ expr_end := |*
     # NUMERIC LITERALS
     #
 
-# TODO
-#    ( '0' [Xx] %{ @num_base = 16; @num_digits_s = p } int_hex
-#    | '0' [Dd] %{ @num_base = 10; @num_digits_s = p } int_dec
-#    | '0' [Oo] %{ @num_base = 8;  @num_digits_s = p } int_dec
-#    | '0' [Bb] %{ @num_base = 2;  @num_digits_s = p } int_bin
-#    | [1-9] digit* '_'? %{ @num_base = 10; @num_digits_s = @ts } int_dec
-#    | '0'   digit* '_'? %{ @num_base = 8;  @num_digits_s = @ts } int_dec
-#    ) %{ @num_suffix_s = p } int_suffix
-#    => {
-#      digits = tok(@num_digits_s, @num_suffix_s)
-#
-#      if digits.end_with? '_'.freeze
-#        diagnostic :error, :trailing_in_number, { :character => '_'.freeze },
-#                    range(@te - 1, @te)
-#      elsif digits.empty? && @num_base == 8 && version?(18)
-#        # 1.8 did not raise an error on 0o.
-#        digits = '0'.freeze
-#      elsif digits.empty?
-#        diagnostic :error, :empty_numeric
-#      elsif @num_base == 8 && (invalid_idx = digits.index(/[89]/))
-#        invalid_s = @num_digits_s + invalid_idx
-#        diagnostic :error, :invalid_octal, nil,
-#                    range(invalid_s, invalid_s + 1)
-#      end
-#
-#      if version?(18, 19, 20)
-#        emit(:tINTEGER, digits.to_i(@num_base), @ts, @num_suffix_s)
-#        p = @num_suffix_s - 1
-#      else
-#        @num_xfrm.call(digits.to_i(@num_base))
-#      end
-#      fbreak;
-#    };
+    ( '0' [Xx] %{ self.num_base = 16; self.num_digits_s = p } int_hex
+    | '0' [Dd] %{ self.num_base = 10; self.num_digits_s = p } int_dec
+    | '0' [Oo] %{ self.num_base = 8;  self.num_digits_s = p } int_dec
+    | '0' [Bb] %{ self.num_base = 2;  self.num_digits_s = p } int_bin
+    | [1-9] digit* '_'? %{ self.num_base = 10; self.num_digits_s = ts } int_dec
+    | '0'   digit* '_'? %{ self.num_base = 8;  self.num_digits_s = ts } int_dec
+    ) %{ self.num_suffix_s = p } int_suffix
+    => {
+        // TODO WIP
+
+        // digits = tok(@num_digits_s, @num_suffix_s)
+        let digits = self.current_slice(self.num_digits_s, self.num_suffix_s);
+
+        // if digits.end_with? '_'.freeze
+        //   diagnostic :error, :trailing_in_number, { :character => '_'.freeze },
+        //               range(@te - 1, @te)
+        // elsif digits.empty? && @num_base == 8 && version?(18)
+        //   # 1.8 did not raise an error on 0o.
+        //   digits = '0'.freeze
+        // elsif digits.empty?
+        //   diagnostic :error, :empty_numeric
+        // elsif @num_base == 8 && (invalid_idx = digits.index(/[89]/))
+        //   invalid_s = @num_digits_s + invalid_idx
+        //   diagnostic :error, :invalid_octal, nil,
+        //               range(invalid_s, invalid_s + 1)
+        // end
+        // 
+        // if version?(18, 19, 20)
+        //   emit(:tINTEGER, digits.to_i(@num_base), @ts, @num_suffix_s)
+        //   p = @num_suffix_s - 1
+        // else
+        //   @num_xfrm.call(digits.to_i(@num_base))
+        // end
+        // fbreak;
+
+        let token = Token::T_INTEGER(digits.parse::<isize>().unwrap());
+        self.emit(token);
+
+        fnbreak;
+    };
 
 # TODO
 #    flo_frac flo_pow?
