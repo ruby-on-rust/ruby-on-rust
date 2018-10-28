@@ -103,6 +103,12 @@ macro_rules! n_sym {
 //       %q{^ operator
 //         |~~~ expression})
 //   end
+#[test]
+fn int() {
+    assert_parses!("42", Node::Int(42));
+    assert_parses!("+42", Node::Int(42));
+    assert_parses!("-42", Node::Int(-42));
+}
 
 //   def test_int___LINE__
 //     assert_parses(
@@ -130,7 +136,7 @@ macro_rules! n_sym {
 //       %q{42r},
 //       %q{~~~ expression},
 //       SINCE_2_1)
-
+// 
 //     assert_parses(
 //       s(:rational, Rational(421, 10)),
 //       %q{42.1r},
@@ -202,6 +208,19 @@ fn string_plain() {
 //         |    ~~~~~~ expression (begin)
 //         |~~~~~~~~~~~~~~ expression})
 //   end
+#[test]
+fn string_interp() {
+    assert_parses!(
+        r"foo#{bar}baz",
+        Node::DStr(vec![
+            n_str!("foo"),
+            Node::Begin(vec![
+                Node::LVar(String::from("bar"))
+            ]),
+            n_str!("baz"),
+        ])
+    );
+}
 
 //   def test_string_dvar
 //     assert_parses(
@@ -213,6 +232,19 @@ fn string_plain() {
 //         s(:gvar, :$a)),
 //       %q{"#@a #@@a #$a"})
 //   end
+#[test]
+fn string_dvar() {
+    assert_parses!(
+        r"#@a #@@a #$a",
+        Node::DStr(vec![
+            Node::IVar(String::from("@a")),
+            n_str!(" "),
+            Node::CVar(String::from("@@a")),
+            n_str!(" "),
+            Node::GVar(String::from("$a")),
+        ])
+    );
+}
 
 //   def test_string_concat
 //     assert_parses(
@@ -228,6 +260,7 @@ fn string_plain() {
 //         |             ^ end (str)
 //         |~~~~~~~~~~~~~~ expression})
 //   end
+#[test] fn string_concat() { panic!("UNIMPL"); }
 
 //   def test_string___FILE__
 //     assert_parses(
@@ -1106,14 +1139,12 @@ fn const_unscoped() {
 #[test]
 fn lvasgn() {
     assert_parses!(
-        "var = :foo; var",
+        "var = 10; var",
         Node::Begin(vec![
-            Node::LVasgn(String::from("var"), vec![n_sym!("foo")] ),
+            Node::LVasgn(String::from("var"), vec![Node::Int(10)] ),
             Node::LVar(String::from("var")),
         ])
     );
-
-    // TODO the original case uses int
 }
 
 //   def test_ivasgn
@@ -1128,11 +1159,9 @@ fn lvasgn() {
 #[test]
 fn ivasgn() {
     assert_parses!(
-        "@var = :foo",
-        Node::IVasgn(String::from("@var"), vec![n_sym!("foo")] )
+        "@var = 10",
+        Node::IVasgn(String::from("@var"), vec![Node::Int(10)] )
     );
-
-    // TODO the original case uses int
 }
 
 //   def test_cvasgn
@@ -1144,6 +1173,13 @@ fn ivasgn() {
 //         |~~~~~~~~~~ expression
 //         })
 //   end
+#[test]
+fn cvasgn() {
+    assert_parses!(
+        "@@var = 10",
+        Node::CVasgn(String::from("@@var"), vec![Node::Int(10)] )
+    );
+}
 
 //   def test_gvasgn
 //     assert_parses(

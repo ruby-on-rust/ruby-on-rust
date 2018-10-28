@@ -54,6 +54,8 @@ pub enum Node {
     // TODO maybe rename to LVAsgn?
     LVasgn(String, Nodes),
     IVasgn(String, Nodes),
+    CVasgn(String, Nodes),
+    GVasgn(String, Nodes),
 
     Begin(Nodes),
 
@@ -633,11 +635,14 @@ pub fn const_fetch(scope: Node, _colon2: Token, name: Token) -> Node {
 // TODO INCOMPLETE
 pub fn assignable(node: Node) -> Node {
     match node {
-
-        //   when :ivar
-        //     node.updated(:ivasgn)
+        Node::CVar(cvar_str) => {
+            return Node::CVasgn(cvar_str, vec![]);
+        },
         Node::IVar(ivar_str) => {
             return Node::IVasgn(ivar_str, vec![]);
+        },
+        Node::GVar(gvar_str) => {
+            return Node::GVasgn(gvar_str, vec![]);
         },
 
         //   when :const
