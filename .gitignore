@@ -20,6 +20,6 @@
 
 # parser
 /src/parser/table
-/src/parser/parser.rs
+# /src/parser/parser.rs
 
 .byebug_history
