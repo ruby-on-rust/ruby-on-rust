@@ -2400,11 +2400,11 @@ impl Lexer {
 												}
 												173  => {
 													{{te = p+1;
-															{panic!("WIP");
-																// let literal_type = self.current_slice(ts, te).clone();
-																// let literal_delimiter = literal_type.chars().last().unwrap().to_string();
-																// let literal = Literal::new(literal_type, literal_delimiter, ts, None, false, false, false, Rc::clone(&self.tokens));
-																// fgoto *self.push_literal(literal);
+															{let literal_type = self.current_slice(ts, te - 1);
+																let literal_delimiter = self.current_slice(te - 1, te);
+																let literal = Literal::new(literal_type, literal_delimiter, ts, None, false, false, false, Rc::clone(&self.tokens));
+																{cs = (self.push_literal(literal));
+																}
 															}
 														}}
 													
@@ -2553,11 +2553,11 @@ impl Lexer {
 												185  => {
 													{{te = p;
 															p = p - 1;
-															{panic!("WIP");
-																// let literal_type = self.current_slice(ts, te).clone();
-																// let literal_delimiter = literal_type.chars().last().unwrap().to_string();
-																// let literal = Literal::new(literal_type, literal_delimiter, ts, None, false, false, false, Rc::clone(&self.tokens));
-																// fgoto *self.push_literal(literal);
+															{let literal_type = self.current_slice(ts, te - 1);
+																let literal_delimiter = self.current_slice(te - 1, te);
+																let literal = Literal::new(literal_type, literal_delimiter, ts, None, false, false, false, Rc::clone(&self.tokens));
+																{cs = (self.push_literal(literal));
+																}
 															}
 														}}
 													

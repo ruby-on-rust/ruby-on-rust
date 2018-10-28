@@ -113,6 +113,9 @@ impl Literal {
             "%i"  => ( Token::T_QSYMBOLS_BEG, false ),
             "%I"  => ( Token::T_SYMBOLS_BEG,  true  ),
 
+            // TODO
+            // these seems not elegant
+            // maybe we should consider make all Token variants contain a value
             ":'"  => ( Token::T_SYMBEG(String::from(":'")),       false ),
             "%s"  => ( Token::T_SYMBEG(String::from("%s")),       false ),
             ":\""  => ( Token::T_SYMBEG(String::from(":\"")),       true  ),

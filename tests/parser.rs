@@ -285,28 +285,28 @@ fn string_plain() {
 //       %Q{p <<~E\nE},
 //       %q{},
 //       %w(1.8 1.9 2.0 2.1 2.2 ios mac))
-
+// 
 //     assert_parses(
 //       s(:send, nil, :p,
 //         s(:dstr)),
 //       %Q{p <<~E\nE},
 //       %q{},
 //       SINCE_2_3)
-
+// 
 //     assert_parses(
 //       s(:send, nil, :p,
 //         s(:dstr)),
 //       %Q{p <<~E\n  E},
 //       %q{},
 //       SINCE_2_3)
-
+// 
 //     assert_parses(
 //       s(:send, nil, :p,
 //         s(:str, "x\n")),
 //       %Q{p <<~E\n  x\nE},
 //       %q{},
 //       SINCE_2_3)
-
+// 
 //     assert_parses(
 //       s(:send, nil, :p,
 //         s(:dstr,
@@ -315,7 +315,7 @@ fn string_plain() {
 //       %Q{p <<~E\n  x\n    y\nE},
 //       %q{},
 //       SINCE_2_3)
-
+// 
 //     assert_parses(
 //       s(:send, nil, :p,
 //         s(:dstr,
@@ -324,7 +324,7 @@ fn string_plain() {
 //       %Q{p <<~E\n\tx\n    y\nE},
 //       %q{},
 //       SINCE_2_3)
-
+// 
 //     assert_parses(
 //       s(:send, nil, :p,
 //         s(:dstr,
@@ -333,7 +333,7 @@ fn string_plain() {
 //       %Q{p <<~E\n\tx\n        y\nE},
 //       %q{},
 //       SINCE_2_3)
-
+// 
 //     assert_parses(
 //       s(:send, nil, :p,
 //         s(:dstr,
@@ -342,7 +342,7 @@ fn string_plain() {
 //       %Q{p <<~E\n    \tx\n        y\nE},
 //       %q{},
 //       SINCE_2_3)
-
+// 
 //     assert_parses(
 //       s(:send, nil, :p,
 //         s(:dstr,
@@ -351,7 +351,7 @@ fn string_plain() {
 //       %Q{p <<~E\n        \tx\n\ty\nE},
 //       %q{},
 //       SINCE_2_3)
-
+// 
 //     assert_parses(
 //       s(:send, nil, :p,
 //         s(:dstr,
@@ -361,7 +361,7 @@ fn string_plain() {
 //       %Q{p <<~E\n  x\n\ny\nE},
 //       %q{},
 //       SINCE_2_3)
-
+// 
 //     assert_parses(
 //       s(:send, nil, :p,
 //         s(:dstr,
@@ -371,7 +371,7 @@ fn string_plain() {
 //       %Q{p <<~E\n  x\n    \n  y\nE},
 //       %q{},
 //       SINCE_2_3)
-
+// 
 //     assert_parses(
 //       s(:send, nil, :p,
 //         s(:dstr,
@@ -380,7 +380,7 @@ fn string_plain() {
 //       %Q{p <<~E\n    x\n  \\  y\nE},
 //       %q{},
 //       SINCE_2_3)
-
+// 
 //     assert_parses(
 //       s(:send, nil, :p,
 //         s(:dstr,
@@ -389,7 +389,7 @@ fn string_plain() {
 //       %Q{p <<~E\n    x\n  \\\ty\nE},
 //       %q{},
 //       SINCE_2_3)
-
+// 
 //     assert_parses(
 //       s(:send, nil, :p,
 //         s(:dstr,
@@ -401,7 +401,7 @@ fn string_plain() {
 //       %Q{p <<~"E"\n    x\n  \#{foo}\nE},
 //       %q{},
 //       SINCE_2_3)
-
+// 
 //     assert_parses(
 //       s(:send, nil, :p,
 //         s(:xstr,
@@ -413,7 +413,7 @@ fn string_plain() {
 //       %Q{p <<~`E`\n    x\n  \#{foo}\nE},
 //       %q{},
 //       SINCE_2_3)
-
+// 
 //     assert_parses(
 //       s(:send, nil, :p,
 //         s(:dstr,

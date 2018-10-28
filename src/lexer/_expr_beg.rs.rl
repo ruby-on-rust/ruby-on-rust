@@ -42,16 +42,18 @@ expr_beg := |*
     # };
 
     # %w(we are the people)
-    '%' [A-Za-z]+ c_any
+    '%' [A-Za-z]+ c_any # TODO NOTE why [A-Za-z]? There isn't `%ww[]` right?
     => {
         // type, delimiter = tok[0..-2], tok[-1].chr
         // fgoto *push_literal(type, delimiter, @ts);
 
-        panic!("WIP");
-        // let literal_type = self.current_slice(ts, te).clone();
-        // let literal_delimiter = literal_type.chars().last().unwrap().to_string();
-        // let literal = Literal::new(literal_type, literal_delimiter, ts, None, false, false, false, Rc::clone(&self.tokens));
-        // fgoto *self.push_literal(literal);
+        // NOTE
+        // current slice is like `%w[`
+        // type is like `%w`, slice without the last char; delimiter is the last char like `[`
+        let literal_type = self.current_slice(ts, te - 1);
+        let literal_delimiter = self.current_slice(te - 1, te);
+        let literal = Literal::new(literal_type, literal_delimiter, ts, None, false, false, false, Rc::clone(&self.tokens));
+        fgoto *self.push_literal(literal);
     };
 
     '%' c_eof
