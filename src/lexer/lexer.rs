@@ -3326,7 +3326,18 @@ impl Lexer {
 												258  => {
 													{{te = p;
 															p = p - 1;
-															{}
+															{{
+																	let slice = self.current_slice(ts, te);
+																	
+																	let token = Token::T_CONSTANT(slice);
+																	self.emit(token);
+																}
+																
+																{cs = (self.arg_or_cmdarg());
+																} {p+= 1;
+																	_cont = 0;
+																}
+															}
 														}}
 													
 												}
@@ -3688,7 +3699,18 @@ impl Lexer {
 																}
 																124  => {
 																	p = ((te))-1;
-																	{}
+																	{{
+																			let slice = self.current_slice(ts, te);
+																			
+																			let token = Token::T_CONSTANT(slice);
+																			self.emit(token);
+																		}
+																		
+																		{cs = (self.arg_or_cmdarg());
+																		} {p+= 1;
+																			_cont = 0;
+																		}
+																	}
 																	
 																}
 																128  => {

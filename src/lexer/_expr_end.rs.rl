@@ -221,9 +221,8 @@ expr_end := |*
 
     constant
     => {
-        // TODO
-        // emit(:tCONSTANT)
-        // fnext *arg_or_cmdarg; fbreak;
+        !emit T_CONSTANT;
+        fnext *self.arg_or_cmdarg(); fnbreak;
     };
 
     constant ambiguous_const_suffix
