@@ -66,6 +66,32 @@ pub enum Node {
 
 pub type Nodes = Vec<Node>;
 
+// TODO generate macros via procedure and macro, like in strum
+#[macro_export]
+macro_rules! n_str { ($string:expr) => { Node::Str(String::from($string)) }; }
+#[macro_export]
+macro_rules! n_sym { ($string:expr) => { Node::Sym(String::from($string)) }; }
+#[macro_export]
+macro_rules! n_lvar { ($string:expr) => { Node::LVar(String::from($string)) }; }
+#[macro_export]
+macro_rules! n_ivar { ($string:expr) => { Node::IVar(String::from($string)) }; }
+#[macro_export]
+macro_rules! n_cvar { ($string:expr) => { Node::CVar(String::from($string)) }; }
+#[macro_export]
+macro_rules! n_gvar { ($string:expr) => { Node::GVar(String::from($string)) }; }
+#[macro_export]
+macro_rules! n_dstr {
+    ( $( $x:expr ),* ) => {
+        {
+            let mut temp_vec = Vec::new();
+            $(
+                temp_vec.push($x);
+            )*
+            Node::DStr(temp_vec)
+        }
+    };
+}
+
 impl Node {
     pub fn push_children(&mut self, node: Node) {
         match self {

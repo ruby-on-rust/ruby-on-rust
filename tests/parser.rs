@@ -1,5 +1,6 @@
 // // BASED ON https://github.com/whitequark/parser/blob/2a73841d6da04a5ab9bd270561165fd766722d43/test/test_parser.rb
 
+#[macro_use]
 extern crate ruby_on_rust;
 
 use ruby_on_rust::parser::parser::Parser;
@@ -12,24 +13,6 @@ macro_rules! assert_parses {
         let mut parser = Parser::new();
         let node = parser.parse($content);
         assert_eq!(node, $node);
-    };
-}
-
-macro_rules! n_str { ($string:expr) => { Node::Str(String::from($string)) }; }
-macro_rules! n_sym { ($string:expr) => { Node::Sym(String::from($string)) }; }
-macro_rules! n_lvar { ($string:expr) => { Node::LVar(String::from($string)) }; }
-macro_rules! n_ivar { ($string:expr) => { Node::IVar(String::from($string)) }; }
-macro_rules! n_cvar { ($string:expr) => { Node::CVar(String::from($string)) }; }
-macro_rules! n_gvar { ($string:expr) => { Node::GVar(String::from($string)) }; }
-macro_rules! n_dstr {
-    ( $( $x:expr ),* ) => {
-        {
-            let mut temp_vec = Vec::new();
-            $(
-                temp_vec.push($x);
-            )*
-            Node::DStr(temp_vec)
-        }
     };
 }
 
