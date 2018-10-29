@@ -10,9 +10,9 @@ expr_beg := |*
     # +5, -5, -  5
     [+\-] w_any* [0-9]
     => {
-      // emit(:tUNARY_NUM, tok(@ts, @ts + 1), @ts, @ts + 1)
-      !emit T_UNARY_NUM, ts, ts + 1;
-      fhold; fnext expr_end; fnbreak;
+        // emit(:tUNARY_NUM, tok(@ts, @ts + 1), @ts, @ts + 1)
+        !emit T_UNARY_NUM, ts, ts + 1;
+        fhold; fnext expr_end; fnbreak;
     };
 
     # splat *a
@@ -39,8 +39,8 @@ expr_beg := |*
     '%' ( any - [A-Za-z] )
     => {
         panic!("UNIMPL");
-      // type, delimiter = @source_buffer.slice(@ts).chr, tok[-1].chr
-      // fgoto *push_literal(type, delimiter, @ts);
+        // type, delimiter = @source_buffer.slice(@ts).chr, tok[-1].chr
+        // fgoto *push_literal(type, delimiter, @ts);
     };
 
     # %w(we are the people)
