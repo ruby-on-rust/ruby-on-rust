@@ -35,7 +35,7 @@
 
 %%{
 e_heredoc_nl = c_nl % {
-  // TODO
+    panic!("UNIMPL");
   // # After every heredoc was parsed, @herebody_s contains the
   // # position of next token after all heredocs.
   // if @herebody_s
@@ -97,6 +97,8 @@ action extend_string {
 }
 
 action extend_string_escaped {
+    panic!("UNIMPL");
+
   // TODO
   // current_literal = literal
   // # Get the first character after the backslash.
@@ -153,7 +155,7 @@ action extend_string_escaped {
 # As heredoc closing line can immediately precede EOF, this action
 # has to handle such case specially.
 action extend_string_eol {
-  // TODO
+    panic!("UNIMPL");
   // current_literal = literal
   // if @te == pe
   //   diagnostic :fatal, :string_eof, nil,

@@ -38,8 +38,10 @@ expr_cmdarg := |*
     # Disambiguate with the `do' rule above.
     w_space* bareword |
     w_space* label
-    => { p = ts - 1;
-          fgoto expr_arg; };
+    => {
+        p = ts - 1;
+        fgoto expr_arg;
+    };
 
     c_eof => do_eof;
 *|;

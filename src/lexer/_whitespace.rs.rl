@@ -18,15 +18,16 @@ w_space =
   ;
 
 
-# TODO
 w_comment =
     '#' %{
+        panic!("UNIMPL");
       // @sharp_s = p - 1
     }
 
     # The (p == pe) condition compensates for added "\0" and
     # the way Ragel handles EOF.
     c_line* %{
+        panic!("UNIMPL");
       // emit_comment(@sharp_s, p == pe ? p - 2 : p)
     }
   ;

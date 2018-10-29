@@ -17,6 +17,10 @@ macro_rules! assert_parses {
 
 macro_rules! n_str { ($string:expr) => { Node::Str(String::from($string)) }; }
 macro_rules! n_sym { ($string:expr) => { Node::Sym(String::from($string)) }; }
+macro_rules! n_lvar { ($string:expr) => { Node::LVar(String::from($string)) }; }
+macro_rules! n_ivar { ($string:expr) => { Node::IVar(String::from($string)) }; }
+macro_rules! n_cvar { ($string:expr) => { Node::CVar(String::from($string)) }; }
+macro_rules! n_gvar { ($string:expr) => { Node::GVar(String::from($string)) }; }
 macro_rules! n_dstr {
     ( $( $x:expr ),* ) => {
         {
@@ -25,6 +29,18 @@ macro_rules! n_dstr {
                 temp_vec.push($x);
             )*
             Node::DStr(temp_vec)
+        }
+    };
+}
+
+macro_rules! n_begin {
+    ( $( $x:expr ),* ) => {
+        {
+            let mut temp_vec = Vec::new();
+            $(
+                temp_vec.push($x);
+            )*
+            Node::Begin(temp_vec)
         }
     };
 }
@@ -65,7 +81,7 @@ macro_rules! n_dstr {
 //         |~~~~~~~~~ expression})
 //   end
 #[test] fn nil_expression() {
-    assert_parses!("()", Node::Begin(vec![]));
+    assert_parses!("()", n_begin![]);
     assert_parses!("begin end", Node::KW_Begin);
 }
 
@@ -214,9 +230,9 @@ fn string_interp() {
         r"foo#{bar}baz",
         n_dstr![
             n_str!("foo"),
-            Node::Begin(vec![
-                Node::LVar(String::from("bar"))
-            ]),
+            n_begin![
+                n_lvar!("bar")
+            ],
             n_str!("baz")
         ]
     );
@@ -235,7 +251,7 @@ fn string_interp() {
 #[test]
 fn string_dvar() {
     assert_parses!(
-        r"#@a #@@a #$a",
+        r#"#@a #@@a #$a"#,
         Node::DStr(vec![
             Node::IVar(String::from("@a")),
             n_str!(" "),

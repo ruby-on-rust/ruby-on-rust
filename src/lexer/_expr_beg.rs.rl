@@ -26,22 +26,22 @@ expr_beg := |*
     # STRING AND REGEXP LITERALS
     #
 
-    # TODO
-    # # /regexp/oui
-    # # /=/ (disambiguation with /=)
-    # '/' c_any
-    # => {
-    #   // type = delimiter = tok[0].chr
-    #   // fhold; fgoto *push_literal(type, delimiter, @ts);
-    # };
+    # /regexp/oui
+    # /=/ (disambiguation with /=)
+    '/' c_any
+    => {
+        panic!("UNIMPL");
+        // type = delimiter = tok[0].chr
+        // fhold; fgoto *push_literal(type, delimiter, @ts);
+    };
 
-    # TODO
-    # # %<string>
-    # '%' ( any - [A-Za-z] )
-    # => {
-    #   // type, delimiter = @source_buffer.slice(@ts).chr, tok[-1].chr
-    #   // fgoto *push_literal(type, delimiter, @ts);
-    # };
+    # %<string>
+    '%' ( any - [A-Za-z] )
+    => {
+        panic!("UNIMPL");
+      // type, delimiter = @source_buffer.slice(@ts).chr, tok[-1].chr
+      // fgoto *push_literal(type, delimiter, @ts);
+    };
 
     # %w(we are the people)
     '%' [A-Za-z]+ c_any # TODO NOTE why [A-Za-z]? There isn't `%ww[]` right?
@@ -64,46 +64,47 @@ expr_beg := |*
         panic!("lexer diagnostic: string_eof");
     };
 
-    # TODO
-    # # Heredoc start.
-    # # <<END  | <<'END'  | <<"END"  | <<`END`  |
-    # # <<-END | <<-'END' | <<-"END" | <<-`END` |
-    # # <<~END | <<~'END' | <<~"END" | <<~`END`
-    # '<<' [~\-]?
-    #   ( '"' ( any - '"' )* '"'
-    #   | "'" ( any - "'" )* "'"
-    #   | "`" ( any - "`" )* "`"
-    #   | bareword ) % { heredoc_e      = p }
-    #   c_line* c_nl % { new_herebody_s = p }
-    # => {
-    #   tok(@ts, heredoc_e) =~ /^<<(-?)(~?)(["'`]?)(.*)\3$/m
-    #
-    #   indent      = !$1.empty? || !$2.empty?
-    #   dedent_body = !$2.empty?
-    #   type        =  $3.empty? ? '<<"'.freeze : ('<<'.freeze + $3)
-    #   delimiter   =  $4
-    #
-    #   if @version >= 24
-    #     if delimiter.count("\n") > 0
-    #       if delimiter.end_with?("\n")
-    #         diagnostic :warning, :heredoc_id_ends_with_nl, nil, range(@ts, @ts + 1)
-    #         delimiter = delimiter.rstrip
-    #       else
-    #         diagnostic :fatal, :heredoc_id_has_newline, nil, range(@ts, @ts + 1)
-    #       end
-    #     end
-    #   end
-    #
-    #   if dedent_body && version?(18, 19, 20, 21, 22)
-    #     emit(:tLSHFT, '<<'.freeze, @ts, @ts + 2)
-    #     p = @ts + 1
-    #     fnext expr_beg; fbreak;
-    #   else
-    #     fnext *push_literal(type, delimiter, @ts, heredoc_e, indent, dedent_body);
-    #
-    #     @herebody_s ||= new_herebody_s
-    #     p = @herebody_s - 1
-    #   end
+    ## TODO
+    ## Heredoc start.
+    ## <<END  | <<'END'  | <<"END"  | <<`END`  |
+    ## <<-END | <<-'END' | <<-"END" | <<-`END` |
+    ## <<~END | <<~'END' | <<~"END" | <<~`END`
+    #'<<' [~\-]?
+    #  ( '"' ( any - '"' )* '"'
+    #  | "'" ( any - "'" )* "'"
+    #  | "`" ( any - "`" )* "`"
+    #  | bareword ) % { heredoc_e      = p } # TODO handle these two vars
+    #  c_line* c_nl % { new_herebody_s = p }
+    #=> {
+    #    panic!("UNIMPL");
+    #    //   tok(@ts, heredoc_e) =~ /^<<(-?)(~?)(["'`]?)(.*)\3$/m
+    #    
+    #    //   indent      = !$1.empty? || !$2.empty?
+    #    //   dedent_body = !$2.empty?
+    #    //   type        =  $3.empty? ? '<<"'.freeze : ('<<'.freeze + $3)
+    #    //   delimiter   =  $4
+
+    #    //   if @version >= 24
+    #    //     if delimiter.count("\n") > 0
+    #    //       if delimiter.end_with?("\n")
+    #    //         diagnostic :warning, :heredoc_id_ends_with_nl, nil, range(@ts, @ts + 1)
+    #    //         delimiter = delimiter.rstrip
+    #    //       else
+    #    //         diagnostic :fatal, :heredoc_id_has_newline, nil, range(@ts, @ts + 1)
+    #    //       end
+    #    //     end
+    #    //   end
+
+    #    //   if dedent_body && version?(18, 19, 20, 21, 22)
+    #    //     emit(:tLSHFT, '<<'.freeze, @ts, @ts + 2)
+    #    //     p = @ts + 1
+    #    //     fnext expr_beg; fbreak;
+    #    //   else
+    #    //     fnext *push_literal(type, delimiter, @ts, heredoc_e, indent, dedent_body);
+
+    #    //     @herebody_s ||= new_herebody_s
+    #    //     p = @herebody_s - 1
+    #    //   end
     # };
 
     #
@@ -146,9 +147,9 @@ expr_beg := |*
     ':' ( bareword | global_var | class_var | instance_var |
           operator_fname | operator_arithmetic | operator_rest )
     => {
-      // emit(:tSYMBOL, tok(@ts + 1), @ts)
-      !emit T_SYMBOL, ts + 1, te;
-      fnext expr_end; fnbreak;
+        // emit(:tSYMBOL, tok(@ts + 1), @ts)
+        !emit T_SYMBOL, ts + 1, te;
+        fnext expr_end; fnbreak;
     };
 
     #
@@ -156,21 +157,22 @@ expr_beg := |*
     #
 
     # TODO
-    # # Character constant, like ?a, ?\n, ?\u1000, and so on
-    # # Don't accept \u escape with multiple codepoints, like \u{1 2 3}
+    # Character constant, like ?a, ?\n, ?\u1000, and so on
+    # Don't accept \u escape with multiple codepoints, like \u{1 2 3}
     # '?' ( e_bs ( escape - ( '\u{' (xdigit+ [ \t]+)+ xdigit+ '}' ))
     #     | (c_any - c_space_nl - e_bs) % { @escape = nil }
     #     )
     # => {
-    #   // value = @escape || tok(@ts + 1)
-    #
-    #   // if version?(18)
-    #   //   emit(:tINTEGER, value.getbyte(0))
-    #   // else
-    #   //   emit(:tCHARACTER, value)
-    #   // end
-    # 
-    #   // fnext expr_end; fbreak;
+    #     panic!("UNIMPL");
+    #     // value = @escape || tok(@ts + 1)
+    #     //
+    #     // if version?(18)
+    #     //   emit(:tINTEGER, value.getbyte(0))
+    #     // else
+    #     //   emit(:tCHARACTER, value)
+    #     // end
+    #     //
+    #     // fnext expr_end; fbreak;
     # };
 
     # TODO
@@ -193,8 +195,8 @@ expr_beg := |*
     # f ?aa : b: Disambiguate with a character literal.
     '?' [A-Za-z_] bareword
     => {
-      p = ts - 1;
-      fgoto expr_end;
+        p = ts - 1;
+        fgoto expr_end;
     };
 
     #

@@ -9,7 +9,6 @@
 interp_var = '#' ( global_var | class_var_v | instance_var_v );
 
 action extend_interp_var {
-    // TODO WIP
     // current_literal = literal
     // current_literal.flush_string
     // current_literal.extend_content
@@ -18,6 +17,17 @@ action extend_interp_var {
 
     // p = @ts
     // fcall expr_variable;
+
+    let mut literal = self.literal_stack.last().expect("unexpected empty literal stack").borrow_mut().clone();
+    literal.flush_string();
+    literal.extend_content();
+
+    !emit T_STRING_DVAR_;
+
+    self.literal_stack.last().expect("unexpected empty literal stack").replace(literal);
+
+    p = ts;
+    fncall expr_variable;
 }
 
 # Interpolations with code blocks must match nested curly braces, as
@@ -38,7 +48,7 @@ e_lbrace = '{' % {
     self.cond.push(false); self.cmdarg.push(false);
 
     if let Some(literal) = self.literal_stack.last() {
-        let literal = literal.borrow_mut();
+        let mut literal = literal.borrow_mut();
 
         literal.start_interp_brace()
     }
@@ -70,17 +80,18 @@ e_rbrace = '}' % {
     //     fbreak;
     //   end
     // end
-    if let Some(literal) = self.literal_stack.last() {
-        let literal = literal.borrow_mut();
 
-        if literal.end_interp_brace_and_try_closing() {
+    let literal_stack_is_empty = self.literal_stack.is_empty();
+    if !literal_stack_is_empty {
+        let mut literal = self.literal_stack.last().unwrap().borrow_mut().clone();
+        if !literal.end_interp_brace_and_try_closing() {
             // IGNORED ruby1819
             !emit T_STRING_DEND_;
 
             // TODO herebody
 
             fhold;
-            fnext *literal.next_state_for_literal();
+            fnext *self.next_state_for_literal(&literal);
             fnbreak;
         }
     }
@@ -102,9 +113,11 @@ action extend_interp_code {
     // fnext expr_value;
     // fbreak;
 
-    let literal = self.literal_stack.last().expect("unexpected empty literal stack").borrow_mut();
+    let mut literal = self.literal_stack.last().expect("unexpected empty literal stack").borrow_mut();
     literal.flush_string();
     literal.extend_content();
+
+    // TODO heredoc
 
     panic!("WIP");
 }
@@ -172,13 +185,13 @@ plain_backslash_delimited_words := |*
 regexp_modifiers := |*
     [A-Za-z]+
     => {
-        //   TODO
+        panic!("UNIMPL");
         //   unknown_options = tok.scan(/[^imxouesn]/)
         //   if unknown_options.any?
         //     diagnostic :error, :regexp_options,
         //                 { :options => unknown_options.join }
         //   end
-
+        // 
         //   emit(:tREGEXP_OPT)
         //   fnext expr_end;
         //   fbreak;
@@ -186,7 +199,7 @@ regexp_modifiers := |*
 
     any
     => {
-        //   TODO
+        panic!("UNIMPL");
         //   emit(:tREGEXP_OPT, tok(@ts, @te - 1), @ts, @te - 1)
         //   fhold;
         //   fgoto expr_end;

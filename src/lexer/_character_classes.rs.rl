@@ -8,13 +8,13 @@
 %%{
 
 action do_nl {
-  // TODO
-  // # Record position of a newline for precise location reporting on tNL
-  // # tokens.
-  // #
-  // # This action is embedded directly into c_nl, as it is idempotent and
-  // # there are no cases when we need to skip it.
-  // @newline_s = p
+    panic!("UNIMPL");
+    // # Record position of a newline for precise location reporting on tNL
+    // # tokens.
+    // #
+    // # This action is embedded directly into c_nl, as it is idempotent and
+    // # there are no cases when we need to skip it.
+    // @newline_s = p
 }
 
 c_nl       = '\n' $ do_nl;

@@ -683,8 +683,9 @@ pub fn assignable(node: Node) -> Node {
 // end
 // TODO INCOMPLETE
 pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
+    // TODO WIP why can't match CVasgn?
     match lhs_node {
-        Node::LVasgn(_, _) | Node::IVasgn(_, _) => {
+        Node::LVasgn(_, _) | Node::IVasgn(_, _) | Node::CVasgn(_, _) => {
             lhs_node.push_children(rhs_node);
             return lhs_node;
         },

@@ -11,6 +11,8 @@ expr_value := |*
     # "bar", 'baz'
     ['"] # '
     => {
+        // fgoto *push_literal(tok, tok, @ts);
+
         let literal = Literal::new(self.current_slice(ts,te), self.current_slice(ts,te), ts, None, false, false, false, Rc::clone(&self.tokens));
 
         fgoto *self.push_literal(literal);
