@@ -1,5 +1,6 @@
 // TODO refine order of token variants
 #[derive(Debug, Clone, PartialEq, AsRefStr)]
+#[allow(non_camel_case_types)]
 pub enum Token {
     T_INTEGER(isize),
 

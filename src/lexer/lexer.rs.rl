@@ -1,6 +1,8 @@
 // TODO
 // set starting cs as lexer_en_line_begin
 
+// TODO set #[allow(non_upper_case_globals)] for generated static vars
+
 use std::rc::Rc;
 use std::cell::RefCell;
 use token::token::Token;
