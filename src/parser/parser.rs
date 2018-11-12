@@ -552,19 +552,12 @@ impl Parser {
     }
 
     fn unexpected_token(&mut self, token: &Token) {
-        if token.value == EOF && !self.tokenizer.has_more_tokens() {
-            self.unexpected_end_of_input();
-        }
+        
+  if token.value == EOF && !self.tokenizer.has_more_tokens() {
+    panic!("Unexpected end of input.");
+  }
+  self.tokenizer.panic_unexpected_token(token.value, token.start_line, token.start_column);
 
-        self.tokenizer.panic_unexpected_token(
-            token.value,
-            token.start_line,
-            token.start_column
-        );
-    }
-
-    fn unexpected_end_of_input(&mut self) {
-        panic!("\n\nUnexpected end of input.\n\n");
     }
 
     fn _handler0(&mut self) -> SV {
@@ -634,9 +627,8 @@ let mut _3 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
-let mut nodes = _1;
-        nodes.push(_3);
-        let __ = nodes;
+_1.push(_3);
+        let __ = _1;
 SV::_1(__)
 }
 
@@ -734,9 +726,8 @@ fn _handler13(&mut self) -> SV {
   // Semantic values prologue.
 
 
-// TODO shared macro
-        let __ = Node::Nodes(vec![]);
-SV::_2(__)
+let __ = vec![];
+SV::_1(__)
 }
 
 
@@ -772,8 +763,8 @@ fn _handler16(&mut self) -> SV {
   // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
-let __ = Node::Nodes(vec![_1]);
-SV::_2(__)
+let __ = vec![_1];
+SV::_1(__)
 }
 
 
@@ -784,16 +775,11 @@ fn _handler17(&mut self) -> SV {
   // Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = pop!(self.values_stack, _0);
-let mut _1 = pop!(self.values_stack, _2);
+let mut _1 = pop!(self.values_stack, _1);
 
-// Node::Nodes, , Node
-
-        let __;
-        if let Node::Nodes(mut nodes) = _1 {
-            nodes.push(_3);
-            __ = Node::Nodes(nodes);
-        } else {unreachable!();};
-SV::_2(__)
+_1.push(_3);
+        let __ = _1;
+SV::_1(__)
 }
 
 
@@ -890,7 +876,7 @@ fn _handler25(&mut self) -> SV {
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _0);
-let mut _2 = pop!(self.values_stack, _2);
+let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _0);
 
 let __ = node::array(_2);
@@ -965,7 +951,7 @@ fn _handler31(&mut self) -> SV {
     println!("   *** PARSER: _handler31");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-let mut _1 = pop!(self.values_stack, _2);
+let mut _1 = pop!(self.values_stack, _1);
 
 let __ = node::string_compose(_1);
 SV::_2(__)
@@ -979,8 +965,8 @@ fn _handler32(&mut self) -> SV {
   // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
-let __ = Node::Nodes(vec![_1]);
-SV::_2(__)
+let __ = vec![_1];
+SV::_1(__)
 }
 
 
@@ -990,7 +976,7 @@ fn _handler33(&mut self) -> SV {
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _0);
-let mut _2 = pop!(self.values_stack, _2);
+let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _0);
 
 let __ = node::string_compose(_2);
@@ -1021,7 +1007,7 @@ fn _handler35(&mut self) -> SV {
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 self.values_stack.pop();
-let mut _2 = pop!(self.values_stack, _2);
+let mut _2 = pop!(self.values_stack, _1);
 self.values_stack.pop();
 
 let __ = node::words_compose(_2);
@@ -1036,8 +1022,8 @@ fn _handler36(&mut self) -> SV {
   // Semantic values prologue.
 
 
-let __ = Node::Nodes(vec![]);
-SV::_2(__)
+let __ = vec![];
+SV::_1(__)
 }
 
 
@@ -1048,14 +1034,11 @@ fn _handler37(&mut self) -> SV {
   // Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _0);
 let mut _2 = pop!(self.values_stack, _2);
-let mut _1 = pop!(self.values_stack, _2);
+let mut _1 = pop!(self.values_stack, _1);
 
-let __;
-        if let Node::Nodes(mut nodes) = _1 {
-            nodes.push(_2);
-            __ = Node::Nodes(nodes);
-        } else {unreachable!();};
-SV::_2(__)
+_1.push(_2);
+        let __ = _1;
+SV::_1(__)
 }
 
 
@@ -1066,8 +1049,8 @@ fn _handler38(&mut self) -> SV {
   // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
-let __ = Node::Nodes(vec![_1]);
-SV::_2(__)
+let __ = vec![_1];
+SV::_1(__)
 }
 
 
@@ -1077,14 +1060,11 @@ fn _handler39(&mut self) -> SV {
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
-let mut _1 = pop!(self.values_stack, _2);
+let mut _1 = pop!(self.values_stack, _1);
 
-let __;
-        if let Node::Nodes(mut nodes) = _1 {
-            nodes.push(_2);
-            __ = Node::Nodes(nodes);
-        } else { unreachable!(); };
-SV::_2(__)
+_1.push(_2);
+        let __ = _1;
+SV::_1(__)
 }
 
 
@@ -1094,7 +1074,7 @@ fn _handler40(&mut self) -> SV {
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 self.values_stack.pop();
-let mut _2 = pop!(self.values_stack, _2);
+let mut _2 = pop!(self.values_stack, _1);
 self.values_stack.pop();
 
 let __ = node::words_compose(_2);
@@ -1109,8 +1089,8 @@ fn _handler41(&mut self) -> SV {
   // Semantic values prologue.
 
 
-let __ = Node::Nodes(vec![]);
-SV::_2(__)
+let __ = vec![];
+SV::_1(__)
 }
 
 
@@ -1121,14 +1101,11 @@ fn _handler42(&mut self) -> SV {
   // Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _0);
 let mut _2 = pop!(self.values_stack, _0);
-let mut _1 = pop!(self.values_stack, _2);
+let mut _1 = pop!(self.values_stack, _1);
 
-let __;
-        if let Node::Nodes(mut nodes) = _1 {
-            nodes.push(node::string_internal(*_2.interior_token));
-            __ = Node::Nodes(nodes);
-        } else {unreachable!();};
-SV::_2(__)
+_1.push(node::string_internal(*_2.interior_token));
+        let __ = _1;
+SV::_1(__)
 }
 
 
@@ -1139,8 +1116,8 @@ fn _handler43(&mut self) -> SV {
   // Semantic values prologue.
 
 
-let __ = Node::Nodes(vec![]);
-SV::_2(__)
+let __ = vec![];
+SV::_1(__)
 }
 
 
@@ -1150,17 +1127,11 @@ fn _handler44(&mut self) -> SV {
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
-let mut _1 = pop!(self.values_stack, _2);
+let mut _1 = pop!(self.values_stack, _1);
 
-// string_contents: Node::Nodes
-        // string_content: Node::Str
-
-        let __;
-        if let Node::Nodes(mut n_strs) = _1 {
-            n_strs.push(_2);
-            __ = Node::Nodes(n_strs);
-        } else { unreachable!(); };
-SV::_2(__)
+_1.push(_2);
+        let __ = _1;
+SV::_1(__)
 }
 
 
@@ -1171,8 +1142,8 @@ fn _handler45(&mut self) -> SV {
   // Semantic values prologue.
 
 
-let __ = Node::Nodes(vec![]);
-SV::_2(__)
+let __ = vec![];
+SV::_1(__)
 }
 
 
@@ -1182,14 +1153,11 @@ fn _handler46(&mut self) -> SV {
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
-let mut _1 = pop!(self.values_stack, _2);
+let mut _1 = pop!(self.values_stack, _1);
 
-let __;
-        if let Node::Nodes(mut nodes) = _1 {
-            nodes.push(_2);
-            __ = Node::Nodes(nodes);
-        } else { unreachable!(); };
-SV::_2(__)
+_1.push(_2);
+        let __ = _1;
+SV::_1(__)
 }
 
 
@@ -1227,7 +1195,7 @@ fn _handler49(&mut self) -> SV {
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _0);
-let mut _2 = pop!(self.values_stack, _2);
+let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _0);
 
 // TODO lexer.state

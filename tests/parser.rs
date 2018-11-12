@@ -1208,15 +1208,15 @@ fn cvasgn() {
 //   end
 #[test]
 fn asgn_cmd() {
-    panic!("WIP");
-    // assert_parses!(
-    //     "foo = m foo",
-    //     Node::LVasgn(
-    //         String::from("var"),
-    //         vec![
-    //         ]
-    //     )
-    // );
+    // TODO
+    assert_parses!(
+        "foo = m foo",
+        Node::LVasgn(
+            String::from("var"),
+            vec![
+            ]
+        )
+    );
 }
 
 //   def test_asgn_keyword_invalid

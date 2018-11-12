@@ -1,20 +1,16 @@
-// TODO
-// maybe, we could use a separate Nodes instead of Node::Nodes
-
 // https://raw.githubusercontent.com/whitequark/parser/2a73841d6da04a5ab9bd270561165fd766722d43/lib/parser/builders/default.rb
 
 use token::token::Token;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Node {
-    // for rules which returns a vec of nodes
-    // TODO migrate to Nodes
-    Nodes(Vec<Node>),
-
     // for rules which may returns a result being `nil`, and the rule is acutally applied so we cannot return a None, i guess.
     // TODO still not sure about this.
     Null,
 
+    // 
+    // primitive values
+    // 
     Nil,
 
     True,
@@ -28,7 +24,7 @@ pub enum Node {
     Sym(String),
     DSym(Vec<Node>),
 
-    Array(Vec<Node>),
+    Array(Nodes),
 
     Pair { key: Box<Node>, value: Box<Node> },
     Hash(Nodes), // NOTE Hash(Vec<Node::Pair>) 
@@ -61,26 +57,20 @@ pub enum Node {
 
     Module,
 
+    // TODO why
     KW_Begin,
 }
 
 pub type Nodes = Vec<Node>;
 
 // TODO generate macros via procedure and macro, like in strum
-#[macro_export]
-macro_rules! n_str { ($string:expr) => { Node::Str(String::from($string)) }; }
-#[macro_export]
-macro_rules! n_sym { ($string:expr) => { Node::Sym(String::from($string)) }; }
-#[macro_export]
-macro_rules! n_lvar { ($string:expr) => { Node::LVar(String::from($string)) }; }
-#[macro_export]
-macro_rules! n_ivar { ($string:expr) => { Node::IVar(String::from($string)) }; }
-#[macro_export]
-macro_rules! n_cvar { ($string:expr) => { Node::CVar(String::from($string)) }; }
-#[macro_export]
-macro_rules! n_gvar { ($string:expr) => { Node::GVar(String::from($string)) }; }
-#[macro_export]
-macro_rules! n_dstr {
+#[macro_export] macro_rules! n_str { ($string:expr) => { Node::Str(String::from($string)) }; }
+#[macro_export] macro_rules! n_sym { ($string:expr) => { Node::Sym(String::from($string)) }; }
+#[macro_export] macro_rules! n_lvar { ($string:expr) => { Node::LVar(String::from($string)) }; }
+#[macro_export] macro_rules! n_ivar { ($string:expr) => { Node::IVar(String::from($string)) }; }
+#[macro_export] macro_rules! n_cvar { ($string:expr) => { Node::CVar(String::from($string)) }; }
+#[macro_export] macro_rules! n_gvar { ($string:expr) => { Node::GVar(String::from($string)) }; }
+#[macro_export] macro_rules! n_dstr {
     ( $( $x:expr ),* ) => {
         {
             let mut temp_vec = Vec::new();
@@ -170,19 +160,15 @@ pub fn string_internal(string_t: Token) -> Node {
 //       string_map(begin_t, parts, end_t))
 //   end
 // end
-// TODO INCOMPLETE
-pub fn string_compose(parts: Node) -> Node {
-    if is_collapse_string_parts(&parts) {}
-
-    // TODO DUMMY
-    if let Node::Str(string_value) = parts { return Node::Str(string_value); }
-    if let Node::Nodes(str_nodes) = parts {
-        if let Node::Str(str_value) = (*str_nodes.get(0).unwrap()).clone() {
-            return Node::Str(str_value);
-        }
+// TODO note
+// TODO INCOMPLETE DUMMY
+pub fn string_compose(parts: Nodes) -> Node {
+    if is_collapse_string_parts(&parts) {
+        // TODO DUMMY
+        return parts.get(0).unwrap().clone()
+    } else {
+        return Node::DStr(parts)
     }
-
-    panic!("string_compose UNIMPL");
 }
 
 // def character(char_t)
@@ -231,24 +217,21 @@ pub fn symbol(symbol_t: Token) -> Node {
 //   end
 // end
 // TODO note
-pub fn symbol_compose(parts: Node) -> Node {
-    // parts: Node::Nodes<Node::Str>
+pub fn symbol_compose(parts: Nodes) -> Node {
+    // parts: Nodes(Vec<Node::Str>)
 
     if is_collapse_string_parts(&parts) {
-        if let Node::Nodes(nodes) = parts {
-            let n_str = nodes.get(0).unwrap();
-            if let Node::Str(str_value) = n_str {
-                return Node::Sym(str_value.to_string());
-            } else { unreachable!(); }
+        let n_str = parts.get(0).unwrap();
+
+        // TODO DUMMY collection_map
+        if let Node::Str(str_value) = n_str {
+            return Node::Sym(str_value.to_string());
         } else { unreachable!(); }
     } else {
         // NOTE ignored ruby18
-        if let Node::Nodes(nodes) = parts {
-            return Node::DSym(nodes);
-        }
+        // TODO DUMMY collection_map
+        return Node::DSym(parts);
     }
-
-    unreachable!();
 }
 
 // # Executable strings
@@ -312,12 +295,8 @@ pub fn symbol_compose(parts: Node) -> Node {
 //     collection_map(begin_t, elements, end_t))
 // end
 // TODO INCOMPLETE
-// elements: Node::Nodes
-pub fn array(elements: Node) -> Node {
-    if let Node::Nodes(nodes) = elements {
-        return Node::Array(nodes);
-    }
-    unreachable!();
+pub fn array(elements: Nodes) -> Node {
+    Node::Array(elements)
 }
 
 // def splat(star_t, arg=nil)
@@ -343,11 +322,8 @@ pub fn array(elements: Node) -> Node {
 //   n(:array, [ *parts ],
 //     collection_map(begin_t, parts, end_t))
 // end
-pub fn words_compose(parts: Node) -> Node {
-    // part: Node::Nodes
-    // 
-    if let Node::Nodes(nodes) = parts { return Node::Array(nodes); }
-    unreachable!();
+pub fn words_compose(parts: Nodes) -> Node {
+    return Node::Array(parts);
 }
 
 // def symbols_compose(begin_t, parts, end_t)
@@ -1098,7 +1074,7 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //   else
 //     if receiver.nil?
 //       nil_node = n0(:begin, collection_map(begin_t, nil, end_t))
-
+// 
 //       n(:send, [
 //         nil_node, :'!'
 //       ], send_unary_op_map(not_t, nil_node))
@@ -1337,7 +1313,7 @@ pub fn compstmt(nodes: Nodes) -> Node {
 //     def static_regexp(parts, options)
 //       source = static_string(parts)
 //       return nil if source.nil?
-
+// 
 //       source = case
 //       when options.children.include?(:u)
 //         source.encode(Encoding::UTF_8)
@@ -1350,7 +1326,7 @@ pub fn compstmt(nodes: Nodes) -> Node {
 //       else
 //         source
 //       end
-
+// 
 //       Regexp.new(source, (Regexp::EXTENDED if options.children.include?(:x)))
 //     end
 
@@ -1366,21 +1342,18 @@ pub fn compstmt(nodes: Nodes) -> Node {
 //           [:str, :dstr].include?(parts.first.type)
 //     end
 // TODO note
-fn is_collapse_string_parts(parts: &Node) -> bool {
-    // parts: Node::Nodes(nodes)
-    if let Node::Nodes(nodes) = parts {
-        if nodes.len() == 1 {
-            match nodes.get(0).unwrap() {
-                // TODO emm why can't we just use
-                // Node::Str(_str) | Node::DStr(_dstr) => { return true; },
-                Node::Str(_str) => { return true; },
-                Node::DStr(_dstr) => { return true; },
-                _ => { return false; }
-            }
-        } else { return false; }
+fn is_collapse_string_parts(parts: &Nodes) -> bool {
+    if parts.len() == 1 {
+        match parts.get(0).unwrap() {
+            // TODO emm why can't we just use
+            // Node::Str(_str) | Node::DStr(_dstr) => { return true; },
+            Node::Str(_str) => { return true; },
+            Node::DStr(_dstr) => { return true; },
+            _ => {}
+        }
     }
 
-    unreachable!();
+    false
 }
 
 //     def value(token)
@@ -1391,7 +1364,7 @@ fn is_collapse_string_parts(parts: &Node) -> bool {
 //       unless token[0].valid_encoding?
 //         diagnostic(:error, :invalid_encoding, nil, token[1])
 //       end
-
+// 
 //       token[0]
 //     end
 
@@ -1403,7 +1376,7 @@ fn is_collapse_string_parts(parts: &Node) -> bool {
 //     def diagnostic(type, reason, arguments, location, highlights=[])
 //       @parser.diagnostics.process(
 //           Diagnostic.new(type, reason, arguments, location, highlights))
-
+// 
 //       if type == :error
 //         @parser.send :yyerror
 //       end

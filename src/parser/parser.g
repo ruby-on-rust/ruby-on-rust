@@ -122,9 +122,8 @@ top_stmts
     | top_stmts terms top_stmt {
         |$1: Nodes; $3: Node| -> Nodes;
 
-        let mut nodes = $1;
-        nodes.push($3);
-        $$ = nodes;
+        $1.push($3);
+        $$ = $1;
     }
 ;
 
@@ -867,10 +866,8 @@ arg_value: arg;
 // TODO
 aref_args
     : {
-        || -> Node;
-
-        // TODO shared macro
-        $$ = Node::Nodes(vec![]);
+        || -> Nodes;
+        $$ = vec![];
     }
     | args trailer { $$ = $1; }
 ;
@@ -983,18 +980,15 @@ arg_rhs
 // TODO INCOMPLETE
 args
     : arg_value {
-        |$1:Node| -> Node;
-        $$ = Node::Nodes(vec![$1]);
+        |$1:Node| -> Nodes;
+
+        $$ = vec![$1];
     }
     | args tCOMMA arg_value {
-        |$1:Node, $2:Token, $3:Node| -> Node;
-        // Node::Nodes, , Node
+        |$1:Nodes, $2:Token, $3:Node| -> Nodes;
 
-        let $$;
-        if let Node::Nodes(mut nodes) = $1 {
-            nodes.push($3);
-            <REMOVE THIS LET>$$ = Node::Nodes(nodes);
-        } else {unreachable!();}
+        $1.push($3);
+        $$ = $1;
     }
 ;
 
@@ -1099,7 +1093,7 @@ primary
 //                       result = @builder.array(val[0], val[1], val[2])
 //                     }
     | tLBRACK aref_args tRBRACK {
-        |$1:Token; $2:Node; $3:Token| -> Node;
+        |$1:Token; $2:Nodes; $3:Token| -> Node;
 
         $$ = node::array($2);
     }
@@ -1822,7 +1816,7 @@ literal
 // TODO
 strings
     : string {
-        |$1:Node| -> Node;
+        |$1:Nodes| -> Node;
 
         $$ = node::string_compose($1);
     }
@@ -1839,9 +1833,9 @@ strings
 // TODO
 string
     :string1 {
-        |$1:Node| -> Node;
+        |$1:Node| -> Nodes;
 
-        $$ = Node::Nodes(vec![$1]);
+        $$ = vec![$1];
     }
     // TODO
 ;
@@ -1863,7 +1857,7 @@ string
 // TODO
 string1
     : tSTRING_BEG string_contents tSTRING_END {
-        |$1:Token, $2:Node, $3:Token| -> Node;
+        |$1:Token, $2:Nodes, $3:Token| -> Node;
 
         $$ = node::string_compose($2);
         // TODO dedent_string
@@ -1897,7 +1891,7 @@ string1
 //                     }
 words
     : tWORDS_BEG word_list tSTRING_END {
-        |$2:Node| -> Node;
+        |$2:Nodes| -> Node;
 
         $$ = node::words_compose($2);
     }
@@ -1913,16 +1907,14 @@ words
 //                     }
 word_list
     : {
-        || -> Node;
-        $$ = Node::Nodes(vec![]);
+        || -> Nodes;
+        $$ = vec![];
     }
     | word_list word tSPACE {
-        |$1:Node, $2:Node, $3:Token| -> Node;
-        let $$;
-        if let Node::Nodes(mut nodes) = $1 {
-            nodes.push($2);
-            <REMOVE THIS LET>$$ = Node::Nodes(nodes);
-        } else {unreachable!();}
+        |$1:Nodes, $2:Node, $3:Token| -> Nodes;
+
+        $1.push($2);
+        $$ = $1;
     }
 ;
 
@@ -1936,16 +1928,13 @@ word_list
 //                     }
 word
     : string_content {
-        |$1:Node| -> Node;
-        $$ = Node::Nodes(vec![$1]);
+        |$1:Node| -> Nodes;
+        $$ = vec![$1];
     }
     | word string_content {
-        |$1:Node, $2:Node| -> Node;
-        let $$;
-        if let Node::Nodes(mut nodes) = $1 {
-            nodes.push($2);
-            <REMOVE THIS LET>$$ = Node::Nodes(nodes);
-        } else { unreachable!(); }
+        |$1:Nodes, $2:Node| -> Nodes;
+        $1.push($2);
+        $$ = $1;
     }
 ;
 
@@ -1968,7 +1957,7 @@ word
 //                       result = @builder.words_compose(val[0], val[1], val[2])
 //                     }
 qwords: tQWORDS_BEG qword_list tSTRING_END {
-    |$2:Node| -> Node;
+    |$2: Nodes| -> Node;
 
     $$ = node::words_compose($2);
 };
@@ -1988,16 +1977,14 @@ qwords: tQWORDS_BEG qword_list tSTRING_END {
 //                     }
 qword_list
     : {
-        || -> Node;
-        $$ = Node::Nodes(vec![]);
+        || -> Nodes;
+        $$ = vec![];
     }
     | qword_list tSTRING_CONTENT tSPACE {
-        |$1:Node, $2:Token, $3:Token| -> Node;
-        let $$;
-        if let Node::Nodes(mut nodes) = $1 {
-            nodes.push(node::string_internal(*$2.interior_token));
-            <REMOVE THIS LET>$$ = Node::Nodes(nodes);
-        } else {unreachable!();}
+        |$1:Nodes, $2:Token, $3:Token| -> Nodes;
+
+        $1.push(node::string_internal(*$2.interior_token));
+        $$ = $1;
     }
 ;
 
@@ -2021,21 +2008,14 @@ qword_list
 // TODO
 string_contents
     : {
-        || -> Node;
-
-        $$ = Node::Nodes(vec![]);
+        || -> Nodes;
+        $$ = vec![];
     }
     | string_contents string_content {
-        |$1:Node, $2:Node| -> Node;
+        |$1:Nodes, $2:Node| -> Nodes;
 
-        // string_contents: Node::Nodes
-        // string_content: Node::Str
-
-        let $$;
-        if let Node::Nodes(mut n_strs) = $1 {
-            n_strs.push($2);
-            <REMOVE THIS LET>$$ = Node::Nodes(n_strs);
-        } else { unreachable!(); }
+        $1.push($2);
+        $$ = $1;
     }
 ;
 
@@ -2049,16 +2029,13 @@ string_contents
 //                     }
 xstring_contents
     : {
-        || -> Node;
-        $$ = Node::Nodes(vec![]);
+        || -> Nodes;
+        $$ = vec![];
     }
     | xstring_contents string_content {
-        |$1:Node, $2:Node| -> Node;
-        let $$;
-        if let Node::Nodes(mut nodes) = $1 {
-            nodes.push($2);
-            <REMOVE THIS LET>$$ = Node::Nodes(nodes);
-        } else { unreachable!(); }
+        |$1:Nodes, $2:Node| -> Nodes;
+        $1.push($2);
+        $$ = $1;
     }
 ;
 
@@ -2139,7 +2116,7 @@ symbol
 //                     }
 dsym
     : tSYMBEG xstring_contents tSTRING_END {
-        |$1:Token, $2:Node, $3:Token| -> Node;
+        |$1:Token, $2:Nodes, $3:Token| -> Node;
 
         // TODO lexer.state
         $$ = node::symbol_compose($2);
