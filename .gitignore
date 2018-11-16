@@ -19,7 +19,6 @@
 !/src/lexer/tmp/.keep
 
 # parser
-/src/parser/table
 # /src/parser/parser.rs
 
 .byebug_history

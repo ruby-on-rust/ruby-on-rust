@@ -4,11 +4,11 @@
 
 puts "invoking generator..."
 
-puts "validating grammar..."
-puts `syntax-cli -g src/parser/parser.g -m LALR1 --validate`
+# puts "validating grammar..."
+# puts `syntax-cli -g src/parser/parser.g -m LALR1 --validate`
 
-puts table = `syntax-cli -g src/parser/parser.g -m lalr1 -t -s first`
-File.write './src/parser/table', table
+# puts table = `syntax-cli -g src/parser/parser.g -m lalr1 -t -s first`
+# File.write './src/parser/table', table
 
 puts `syntax-cli -g src/parser/parser.g -m LALR1 -o src/parser/parser.rs`
 
@@ -132,6 +132,11 @@ end
 # 
 content.gsub! 'pub fn parse(&mut self, string: &\'static str) -> TResult {', 'pub fn parse(&mut self, string: &str) -> TResult {'
 
+# 
+# parser: return value for methods migrating WIP
+# TODO CLEANUP
+# 
+content.gsub! "wip!();\n__\n", "wip!();\nSV::Undefined\n"
 
 File.open parser_file, "w" do |file| file.puts content end
 
@@ -157,7 +162,7 @@ tokens_map = original_map.transform_keys do |k|
   when k == '$'
     k
   else
-    raise 'unreachable!'
+    raise "unreachable! don't know how to transform key `#{k}`"
   end
 end
 

@@ -65,7 +65,9 @@ macro_rules! n_begin {
 //   end
 #[test] fn nil_expression() {
     assert_parses!("()", n_begin![]);
-    assert_parses!("begin end", Node::KW_Begin);
+    // NOTE ignored kw_begin
+    // https://github.com/whitequark/parser/blob/fbe0e8cbec557c96b0e0f4a8c5201155ee478284/README.md#begin-and-kwbegin
+    assert_parses!("begin end", n_begin![]);
 }
 
 //   def test_true
@@ -1107,7 +1109,7 @@ fn const_unscoped() {
 //       %q{defined? foo},
 //       %q{~~~~~~~~ keyword
 //         |~~~~~~~~~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:defined?, s(:lvar, :foo)),
 //       %q{defined?(foo)},
@@ -1115,7 +1117,7 @@ fn const_unscoped() {
 //         |        ^ begin
 //         |            ^ end
 //         |~~~~~~~~~~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:defined?, s(:ivar, :@foo)),
 //       %q{defined? @foo})
@@ -1217,7 +1219,7 @@ fn asgn_cmd() {
             ]
         )
     );
-}
+} 
 
 //   def test_asgn_keyword_invalid
 //     assert_diagnoses(
@@ -3062,13 +3064,13 @@ fn asgn_cmd() {
 //       %q{fun},
 //       %q{~~~ selector
 //         |~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:send, nil, :fun!),
 //       %q{fun!},
 //       %q{~~~~ selector
 //         |~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:send, nil, :fun, s(:int, 1)),
 //       %q{fun(1)},
@@ -3077,20 +3079,34 @@ fn asgn_cmd() {
 //         |     ^ end
 //         |~~~~~~ expression})
 //   end
+#[test]
+fn send_self() {
+    // TODO WIP
+    assert_parses!(
+        r"fun", n_send!(None, "fun")
+    );
 
+    assert_parses!(
+        r"fun!", n_send!(None, "fun!")
+    );
+
+    assert_parses!(
+        r"fun(1)", n_send!(None, "fun")
+    );
+}
 //   def test_send_self_block
 //     assert_parses(
 //       s(:block, s(:send, nil, :fun), s(:args), nil),
 //       %q{fun { }})
-
+// 
 //     assert_parses(
 //       s(:block, s(:send, nil, :fun), s(:args), nil),
 //       %q{fun() { }})
-
+// 
 //     assert_parses(
 //       s(:block, s(:send, nil, :fun, s(:int, 1)), s(:args), nil),
 //       %q{fun(1) { }})
-
+// 
 //     assert_parses(
 //       s(:block, s(:send, nil, :fun), s(:args), nil),
 //       %q{fun do end})
@@ -3124,14 +3140,14 @@ fn asgn_cmd() {
 //       %q{    ~~~ selector
 //         |   ^ dot
 //         |~~~~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:send, s(:lvar, :foo), :fun),
 //       %q{foo::fun},
 //       %q{     ~~~ selector
 //         |   ^^ dot
 //         |~~~~~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:send, s(:lvar, :foo), :Fun),
 //       %q{foo::Fun()},

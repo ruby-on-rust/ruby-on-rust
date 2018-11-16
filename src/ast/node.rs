@@ -2,8 +2,118 @@
 
 use token::token::Token;
 
+macro_rules! wip { () => { panic!("WIP"); }; }
+
+// enum node_type {
+//     NODE_SCOPE,
+//     NODE_BLOCK,
+//     NODE_IF,
+//     NODE_UNLESS,
+//     NODE_CASE,
+//     NODE_CASE2,
+//     NODE_WHEN,
+//     NODE_WHILE,
+//     NODE_UNTIL,
+//     NODE_ITER,
+//     NODE_FOR,
+//     NODE_FOR_MASGN,
+//     NODE_BREAK,
+//     NODE_NEXT,
+//     NODE_REDO,
+//     NODE_RETRY,
+//     NODE_BEGIN,
+//     NODE_RESCUE,
+//     NODE_RESBODY,
+//     NODE_ENSURE,
+//     NODE_AND,
+//     NODE_OR,
+//     NODE_MASGN,
+//     NODE_LASGN,
+//     NODE_DASGN,
+//     NODE_DASGN_CURR,
+//     NODE_GASGN,
+//     NODE_IASGN,
+//     NODE_CDECL,
+//     NODE_CVASGN,
+//     NODE_OP_ASGN1,
+//     NODE_OP_ASGN2,
+//     NODE_OP_ASGN_AND,
+//     NODE_OP_ASGN_OR,
+//     NODE_OP_CDECL,
+//     NODE_CALL,
+//     NODE_OPCALL,
+//     NODE_FCALL,
+//     NODE_VCALL,
+//     NODE_QCALL,
+//     NODE_SUPER,
+//     NODE_ZSUPER,
+//     NODE_ARRAY,
+//     NODE_ZARRAY,
+//     NODE_VALUES,
+//     NODE_HASH,
+//     NODE_RETURN,
+//     NODE_YIELD,
+//     NODE_LVAR,
+//     NODE_DVAR,
+//     NODE_GVAR,
+//     NODE_IVAR,
+//     NODE_CONST,
+//     NODE_CVAR,
+//     NODE_NTH_REF,
+//     NODE_BACK_REF,
+//     NODE_MATCH,
+//     NODE_MATCH2,
+//     NODE_MATCH3,
+//     NODE_LIT,
+//     NODE_STR,
+//     NODE_DSTR,
+//     NODE_XSTR,
+//     NODE_DXSTR,
+//     NODE_EVSTR,
+//     NODE_DREGX,
+//     NODE_ONCE,
+//     NODE_ARGS,
+//     NODE_ARGS_AUX,
+//     NODE_OPT_ARG,
+//     NODE_KW_ARG,
+//     NODE_POSTARG,
+//     NODE_ARGSCAT,
+//     NODE_ARGSPUSH,
+//     NODE_SPLAT,
+//     NODE_BLOCK_PASS,
+//     NODE_DEFN,
+//     NODE_DEFS,
+//     NODE_ALIAS,
+//     NODE_VALIAS,
+//     NODE_UNDEF,
+//     NODE_CLASS,
+//     NODE_MODULE,
+//     NODE_SCLASS,
+//     NODE_COLON2,
+//     NODE_COLON3,
+//     NODE_DOT2,
+//     NODE_DOT3,
+//     NODE_FLIP2,
+//     NODE_FLIP3,
+//     NODE_SELF,
+//     NODE_NIL,
+//     NODE_TRUE,
+//     NODE_FALSE,
+//     NODE_ERRINFO,
+//     NODE_DEFINED,
+//     NODE_POSTEXE,
+//     NODE_DSYM,
+//     NODE_ATTRASGN,
+//     NODE_LAMBDA,
+//     NODE_LAST
+// };
+
 #[derive(Debug, PartialEq, Clone)]
 pub enum Node {
+    // TODO CLEANUP
+    // for migrating rules in grammar
+    DUMMY,
+
     // for rules which may returns a result being `nil`, and the rule is acutally applied so we cannot return a None, i guess.
     // TODO still not sure about this.
     Null,
@@ -55,10 +165,14 @@ pub enum Node {
 
     Begin(Nodes),
 
-    Module,
+    // TODO
+    // Module,
 
-    // TODO why
-    KW_Begin,
+    Send { receiver: Option<Box<Node>>, selector: String, args: Nodes },
+    // https://github.com/whitequark/parser/blob/master/doc/AST_FORMAT.md#send
+    // NOTE
+    //     receiver being None means sending to self
+    // send_map(receiver_e, dot_t, selector_t, begin_t=nil, args=[], end_t=nil)
 }
 
 pub type Nodes = Vec<Node>;
@@ -81,6 +195,7 @@ pub type Nodes = Vec<Node>;
         }
     };
 }
+#[macro_export] macro_rules! n_send { ($receiver:expr, $message:expr) => { Node::Send { receiver: $receiver, selector: String::from($message), args: vec![] } }; }
 
 impl Node {
     pub fn push_children(&mut self, node: Node) {
@@ -536,15 +651,13 @@ pub fn cvar(token: Token) -> Node {
 // TODO INCOMPLETE
 pub fn accessible(node: Node) -> Node {
     println!("building node:accessible, node: {:?}", node);
-    return match node {
+    match node {
         Node::Ident(n_ident_value) => {
-            // TODO DUMMY
-            // TODO handle static_env
-            let node = Node::LVar(n_ident_value);
-            return node;
+            // TODO DUMMY handle static_env
+            Node::LVar(n_ident_value)
         }
-        _ => node
-    };
+        _ => { panic!("UNIMPL"); }
+    }
 }
 
 // def const(name_t)
@@ -957,16 +1070,16 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 
 // def block(method_call, begin_t, args, body, end_t)
 //   _receiver, _selector, *call_args = *method_call
-
+// 
 //   if method_call.type == :yield
 //     diagnostic :error, :block_given_to_yield, nil, method_call.loc.keyword, [loc(begin_t)]
 //   end
-
+// 
 //   last_arg = call_args.last
 //   if last_arg && last_arg.type == :block_pass
 //     diagnostic :error, :block_and_blockarg, nil, last_arg.loc.expression, [loc(begin_t)]
 //   end
-
+// 
 //   if [:send, :csend, :super, :zsuper, :lambda].include?(method_call.type)
 //     n(:block, [ method_call, args, body ],
 //       block_map(method_call.loc.expression, begin_t, end_t))
@@ -977,7 +1090,7 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //     block =
 //       n(:block, [ actual_send, args, body ],
 //         block_map(actual_send.loc.expression, begin_t, end_t))
-
+// 
 //     n(method_call.type, [ block ],
 //       method_call.loc.with_expression(join_exprs(method_call, block)))
 //   end
@@ -1000,7 +1113,7 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 // def attr_asgn(receiver, dot_t, selector_t)
 //   method_name = (value(selector_t) + '=').to_sym
 //   type = call_type_for_dot(dot_t)
-
+// 
 //   # Incomplete method call.
 //   n(type, [ receiver, method_name ],
 //     send_map(receiver, dot_t, selector_t))
@@ -1169,11 +1282,19 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //   n(:preexe, [ compstmt ],
 //     keyword_map(preexe_t, lbrace_t, [], rbrace_t))
 // end
+// TODO NOTE
+pub fn preexe(compstmt: Node) -> Node {
+    wip!();
+}
 
 // def postexe(postexe_t, lbrace_t, compstmt, rbrace_t)
 //   n(:postexe, [ compstmt ],
 //     keyword_map(postexe_t, lbrace_t, [], rbrace_t))
 // end
+// TODO NOTE
+pub fn postexe(compstmt: Node) -> Node {
+    wip!();
+}
 
 // # Exception handling
 
