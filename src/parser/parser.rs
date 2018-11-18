@@ -2663,7 +2663,7 @@ self.values_stack.pop();
         //                                   rescue_bodies,
         //                                   else_t,   else_,
         //                                   ensure_t, ensure_)
-        wip!();
+        let __ = Node::DUMMY;
 SV::_2(__)
 }
 
@@ -2716,8 +2716,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = val[0] << val[2]
-        wip!();
-SV::Undefined
+        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -2744,8 +2744,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // diagnostic :error, :begin_in_method, nil, val[0]
-        wip!();
-SV::Undefined
+        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -2757,8 +2757,8 @@ fn _handler15(&mut self) -> SV {
 
 
 // @lexer.state = :expr_fname
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -2773,8 +2773,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.alias(val[0], val[1], val[3])
-        wip!();
-SV::Undefined
+        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -2790,8 +2790,8 @@ self.values_stack.pop();
 // result = @builder.alias(val[0],
         //             @builder.gvar(val[1]),
         //             @builder.gvar(val[2]))
-        wip!();
-SV::Undefined
+        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -2807,8 +2807,8 @@ self.values_stack.pop();
 // result = @builder.alias(val[0],
         //             @builder.gvar(val[1]),
         //             @builder.back_ref(val[2]))
-        wip!();
-SV::Undefined
+        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -2822,8 +2822,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // diagnostic :error, :nth_ref_alias, nil, val[2]
-        wip!();
-SV::Undefined
+        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -2836,8 +2836,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.undef_method(val[0], val[1])
-        wip!();
-SV::Undefined
+        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -2852,8 +2852,8 @@ self.values_stack.pop();
 
 // result = @builder.condition_mod(val[0], nil,
         //                                 val[1], val[2])
-        wip!();
-SV::Undefined
+        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -2868,8 +2868,8 @@ self.values_stack.pop();
 
 // result = @builder.condition_mod(nil, val[0],
         //                                 val[1], val[2])
-        wip!();
-SV::Undefined
+        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -2883,8 +2883,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.loop_mod(:while, val[0], val[1], val[2])
-        wip!();
-SV::Undefined
+        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -2898,8 +2898,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.loop_mod(:until, val[0], val[1], val[2])
-        wip!();
-SV::Undefined
+        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -2917,8 +2917,8 @@ self.values_stack.pop();
         //                 nil, val[2])
 
         // result = @builder.begin_body(val[0], [ rescue_body ])
-        wip!();
-SV::Undefined
+        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -2933,8 +2933,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.postexe(val[0], val[1], val[2], val[3])
-        wip!();
-SV::Undefined
+        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -2960,8 +2960,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.multi_assign(val[0], val[1], val[2])
-        wip!();
-SV::Undefined
+        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -2976,8 +2976,8 @@ self.values_stack.pop();
 
 // result = @builder.assign(val[0], val[1],
         //             @builder.array(nil, val[2], nil))
-        wip!();
-SV::Undefined
+        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -2991,8 +2991,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.multi_assign(val[0], val[1], val[2])
-        wip!();
-SV::Undefined
+        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3018,8 +3018,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.assign(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3033,8 +3033,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.op_assign(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3054,8 +3054,8 @@ self.values_stack.pop();
                     //             @builder.index(
                     //             val[0], val[1], val[2], val[3]),
                     //             val[4], val[5])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3074,8 +3074,8 @@ self.values_stack.pop();
                     //             @builder.call_method(
                     //             val[0], val[1], val[2]),
                     //             val[3], val[4])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3094,8 +3094,8 @@ self.values_stack.pop();
                     //             @builder.call_method(
                     //             val[0], val[1], val[2]),
                     //             val[3], val[4])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3113,8 +3113,8 @@ self.values_stack.pop();
 // const  = @builder.const_op_assignable(
                     //             @builder.const_fetch(val[0], val[1], val[2]))
                     // result = @builder.op_assign(const, val[3], val[4])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3133,8 +3133,8 @@ self.values_stack.pop();
                     //             @builder.call_method(
                     //             val[0], val[1], val[2]),
                     //             val[3], val[4])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3148,8 +3148,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // @builder.op_assign(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3179,8 +3179,8 @@ self.values_stack.pop();
                     //                     nil, val[2])
 
                     //   result = @builder.begin_body(val[0], [ rescue_body ])
-                        wip!();
-SV::Undefined
+                        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3218,8 +3218,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.logical_op(:and, val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3233,8 +3233,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.logical_op(:or, val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3248,8 +3248,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.not_op(val[0], nil, val[2], nil)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3262,8 +3262,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.not_op(val[0], nil, val[1], nil)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3339,8 +3339,8 @@ self.values_stack.pop();
 
 // result = @builder.call_method(val[0], val[1], val[2],
         //             nil, val[3], nil)
-        wip!();
-SV::Undefined
+        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3354,8 +3354,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = [ val[0], *val[1], val[2] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3381,8 +3381,8 @@ self.values_stack.pop();
 
 //   result = @builder.call_method(nil, nil, val[0],
                     //               nil, val[1], nil)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3401,8 +3401,8 @@ self.values_stack.pop();
                     //   begin_t, args, body, end_t = val[2]
                     //   result      = @builder.block(method_call,
                     //                   begin_t, args, body, end_t)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3418,8 +3418,8 @@ self.values_stack.pop();
 
 //   result = @builder.call_method(val[0], val[1], val[2],
                     //               nil, val[3], nil)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3440,8 +3440,8 @@ self.values_stack.pop();
                     //   begin_t, args, body, end_t = val[4]
                     //   result      = @builder.block(method_call,
                     //                   begin_t, args, body, end_t)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3457,8 +3457,8 @@ self.values_stack.pop();
 
 //   result = @builder.call_method(val[0], val[1], val[2],
                     //               nil, val[3], nil)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3479,8 +3479,8 @@ self.values_stack.pop();
                     //   begin_t, args, body, end_t = val[4]
                     //   result      = @builder.block(method_call,
                     //                   begin_t, args, body, end_t)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3494,8 +3494,8 @@ self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:super, val[0],
                     //               nil, val[1], nil)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3509,8 +3509,8 @@ self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:yield, val[0],
                     //               nil, val[1], nil)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3524,8 +3524,8 @@ self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:return, val[0],
                     //               nil, val[1], nil)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3539,8 +3539,8 @@ self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:break, val[0],
                     //               nil, val[1], nil)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3554,8 +3554,8 @@ self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:next, val[0],
                     //               nil, val[1], nil)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3567,8 +3567,8 @@ fn _handler67(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.multi_lhs(nil, val[0], nil)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3582,8 +3582,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.begin(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3595,8 +3595,8 @@ fn _handler69(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.multi_lhs(nil, val[0], nil)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3610,8 +3610,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.multi_lhs(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3637,8 +3637,8 @@ self.values_stack.pop();
 
 //   result = val[0].
                     //               push(val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3653,8 +3653,8 @@ self.values_stack.pop();
 
 //   result = val[0].
                     //               push(@builder.splat(val[1], val[2]))
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3672,8 +3672,8 @@ self.values_stack.pop();
 //   result = val[0].
                     //               push(@builder.splat(val[1], val[2])).
                     //               concat(val[4])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3687,8 +3687,8 @@ self.values_stack.pop();
 
 //   result = val[0].
                     //               push(@builder.splat(val[1]))
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3705,8 +3705,8 @@ self.values_stack.pop();
 //   result = val[0].
                     //               push(@builder.splat(val[1])).
                     //               concat(val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3719,8 +3719,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = [ @builder.splat(val[0], val[1]) ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3736,8 +3736,8 @@ self.values_stack.pop();
 
 //   result = [ @builder.splat(val[0], val[1]),
                     //              *val[3] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3749,8 +3749,8 @@ fn _handler79(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [ @builder.splat(val[0]) ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3765,8 +3765,8 @@ self.values_stack.pop();
 
 //   result = [ @builder.splat(val[0]),
                     //              *val[2] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3792,8 +3792,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.begin(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3806,8 +3806,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = [ val[0] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3821,8 +3821,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0] << val[1]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3834,8 +3834,8 @@ fn _handler85(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [ val[0] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3849,8 +3849,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0] << val[2]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3862,8 +3862,8 @@ fn _handler87(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.assignable(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3875,8 +3875,8 @@ fn _handler88(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.assignable(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3891,8 +3891,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.index_asgn(val[0], val[1], val[2], val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3906,8 +3906,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.attr_asgn(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3921,8 +3921,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.attr_asgn(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3936,8 +3936,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.attr_asgn(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3952,8 +3952,8 @@ self.values_stack.pop();
 
 //   result = @builder.assignable(
                     //               @builder.const_fetch(val[0], val[1], val[2]))
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3967,8 +3967,8 @@ self.values_stack.pop();
 
 //   result = @builder.assignable(
                     //               @builder.const_global(val[0], val[1]))
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -3980,8 +3980,8 @@ fn _handler95(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.assignable(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -4005,8 +4005,8 @@ fn _handler97(&mut self) -> SV {
 self.values_stack.pop();
 
 // result = @builder.assignable(val[0])
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -4021,8 +4021,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.index_asgn(val[0], val[1], val[2], val[3])
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 
@@ -4036,8 +4036,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.attr_asgn(val[0], val[1], val[2])
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler100(&mut self) -> SV {
@@ -4047,8 +4047,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.attr_asgn(val[0], val[1], val[2])
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler101(&mut self) -> SV {
@@ -4058,8 +4058,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.attr_asgn(val[0], val[1], val[2])
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler102(&mut self) -> SV {
@@ -4070,8 +4070,8 @@ self.values_stack.pop();
 
 // result = @builder.assignable(
             //             @builder.const_fetch(val[0], val[1], val[2]))
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler103(&mut self) -> SV {
@@ -4081,8 +4081,8 @@ self.values_stack.pop();
 
 // result = @builder.assignable(
             //             @builder.const_global(val[0], val[1]))
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler104(&mut self) -> SV {
@@ -4090,8 +4090,8 @@ fn _handler104(&mut self) -> SV {
 self.values_stack.pop();
 
 // result = @builder.assignable(val[0])
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler105(&mut self) -> SV {
@@ -4099,8 +4099,8 @@ fn _handler105(&mut self) -> SV {
 self.values_stack.pop();
 
 //   diagnostic :error, :module_name_const, nil, val[0]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler106(&mut self) -> SV {
@@ -4117,8 +4117,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.const_global(val[0], val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler108(&mut self) -> SV {
@@ -4126,8 +4126,8 @@ fn _handler108(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.const(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler109(&mut self) -> SV {
@@ -4137,8 +4137,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.const_fetch(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler110(&mut self) -> SV {
@@ -4186,8 +4186,8 @@ fn _handler115(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.symbol(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler116(&mut self) -> SV {
@@ -4219,8 +4219,8 @@ fn _handler119(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [ val[0] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler120(&mut self) -> SV {
@@ -4231,8 +4231,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0] << val[3]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler121(&mut self) -> SV {
@@ -4240,8 +4240,8 @@ fn _handler121(&mut self) -> SV {
 
 
 //   @lexer.state = :expr_fname
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler122(&mut self) -> SV {
@@ -4829,8 +4829,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.op_assign(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler195(&mut self) -> SV {
@@ -4846,8 +4846,8 @@ self.values_stack.pop();
             //             @builder.index(
             //             val[0], val[1], val[2], val[3]),
             //             val[4], val[5])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler196(&mut self) -> SV {
@@ -4862,8 +4862,8 @@ self.values_stack.pop();
             //             @builder.call_method(
             //             val[0], val[1], val[2]),
             //             val[3], val[4])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler197(&mut self) -> SV {
@@ -4878,8 +4878,8 @@ self.values_stack.pop();
             //             @builder.call_method(
             //             val[0], val[1], val[2]),
             //             val[3], val[4])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler198(&mut self) -> SV {
@@ -4894,8 +4894,8 @@ self.values_stack.pop();
             //             @builder.call_method(
             //             val[0], val[1], val[2]),
             //             val[3], val[4])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler199(&mut self) -> SV {
@@ -4909,8 +4909,8 @@ self.values_stack.pop();
 // const  = @builder.const_op_assignable(
             //             @builder.const_fetch(val[0], val[1], val[2]))
             // result = @builder.op_assign(const, val[3], val[4])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler200(&mut self) -> SV {
@@ -4923,8 +4923,8 @@ self.values_stack.pop();
 // const  = @builder.const_op_assignable(
             //             @builder.const_global(val[0], val[1]))
             // result = @builder.op_assign(const, val[2], val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler201(&mut self) -> SV {
@@ -4934,8 +4934,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.op_assign(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler202(&mut self) -> SV {
@@ -4945,8 +4945,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.range_inclusive(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler203(&mut self) -> SV {
@@ -4956,8 +4956,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.range_exclusive(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler204(&mut self) -> SV {
@@ -4967,8 +4967,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.binary_op(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler205(&mut self) -> SV {
@@ -4978,8 +4978,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.binary_op(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler206(&mut self) -> SV {
@@ -4989,8 +4989,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.binary_op(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler207(&mut self) -> SV {
@@ -5000,8 +5000,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.binary_op(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler208(&mut self) -> SV {
@@ -5011,8 +5011,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.binary_op(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler209(&mut self) -> SV {
@@ -5022,8 +5022,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.binary_op(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler210(&mut self) -> SV {
@@ -5036,8 +5036,8 @@ self.values_stack.pop();
 // result = @builder.unary_op(val[0],
             //             @builder.binary_op(
             //             val[1], val[2], val[3]))
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler211(&mut self) -> SV {
@@ -5046,8 +5046,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.unary_op(val[0], val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler212(&mut self) -> SV {
@@ -5056,8 +5056,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.unary_op(val[0], val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler213(&mut self) -> SV {
@@ -5067,8 +5067,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.binary_op(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler214(&mut self) -> SV {
@@ -5078,8 +5078,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.binary_op(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler215(&mut self) -> SV {
@@ -5089,8 +5089,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.binary_op(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler216(&mut self) -> SV {
@@ -5100,8 +5100,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.binary_op(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler217(&mut self) -> SV {
@@ -5119,8 +5119,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.binary_op(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler219(&mut self) -> SV {
@@ -5130,8 +5130,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.binary_op(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler220(&mut self) -> SV {
@@ -5141,8 +5141,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.binary_op(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler221(&mut self) -> SV {
@@ -5152,8 +5152,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.match_op(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler222(&mut self) -> SV {
@@ -5163,8 +5163,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.binary_op(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler223(&mut self) -> SV {
@@ -5173,8 +5173,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.not_op(val[0], nil, val[1], nil)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler224(&mut self) -> SV {
@@ -5183,8 +5183,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.unary_op(val[0], val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler225(&mut self) -> SV {
@@ -5194,8 +5194,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.binary_op(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler226(&mut self) -> SV {
@@ -5205,8 +5205,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.binary_op(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler227(&mut self) -> SV {
@@ -5216,8 +5216,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.logical_op(:and, val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler228(&mut self) -> SV {
@@ -5227,8 +5227,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.logical_op(:or, val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler229(&mut self) -> SV {
@@ -5238,8 +5238,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.keyword_cmd(:defined?, val[0], nil, [ val[2] ], nil)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler230(&mut self) -> SV {
@@ -5253,8 +5253,8 @@ self.values_stack.pop();
 
 // result = @builder.ternary(val[0], val[1],
             //                         val[2], val[4], val[5])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler231(&mut self) -> SV {
@@ -5304,8 +5304,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.binary_op(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler237(&mut self) -> SV {
@@ -5315,8 +5315,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.binary_op(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler238(&mut self) -> SV {
@@ -5352,8 +5352,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = val[0] << @builder.associate(nil, val[2], nil)
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler242(&mut self) -> SV {
@@ -5362,8 +5362,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = [ @builder.associate(nil, val[0], nil) ]
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler243(&mut self) -> SV {
@@ -5385,8 +5385,8 @@ self.values_stack.pop();
             //                 nil, val[2])
 
             // result = @builder.begin_body(val[0], [ rescue_body ])
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler245(&mut self) -> SV {
@@ -5396,8 +5396,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler246(&mut self) -> SV {
@@ -5405,8 +5405,8 @@ fn _handler246(&mut self) -> SV {
 
 
 //   result = [ nil, [], nil ]
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler247(&mut self) -> SV {
@@ -5422,8 +5422,8 @@ fn _handler248(&mut self) -> SV {
 
 
 //   result = []
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler249(&mut self) -> SV {
@@ -5451,8 +5451,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0] << @builder.associate(nil, val[2], nil)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler252(&mut self) -> SV {
@@ -5461,8 +5461,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = [ @builder.associate(nil, val[0], nil) ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler253(&mut self) -> SV {
@@ -5470,8 +5470,8 @@ fn _handler253(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [ val[0] ]
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler254(&mut self) -> SV {
@@ -5480,8 +5480,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0].concat(val[1])
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler255(&mut self) -> SV {
@@ -5491,8 +5491,8 @@ self.values_stack.pop();
 
 //   result = [ @builder.associate(nil, val[0], nil) ]
                     //   result.concat(val[1])
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler256(&mut self) -> SV {
@@ -5505,8 +5505,8 @@ self.values_stack.pop();
 //   assocs = @builder.associate(nil, val[2], nil)
                     //   result = val[0] << assocs
                     //   result.concat(val[3])
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler257(&mut self) -> SV {
@@ -5514,8 +5514,8 @@ fn _handler257(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result =  [ val[0] ]
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler258(&mut self) -> SV {
@@ -5526,8 +5526,8 @@ self.values_stack.pop();
 //   @lexer.cmdarg = val[0]
 
                     //   result = val[1]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler259(&mut self) -> SV {
@@ -5536,8 +5536,8 @@ fn _handler259(&mut self) -> SV {
 
 //   result = @lexer.cmdarg.dup
     //   @lexer.cmdarg.push(true)
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler260(&mut self) -> SV {
@@ -5546,8 +5546,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.block_pass(val[0], val[1])
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler261(&mut self) -> SV {
@@ -5556,8 +5556,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = [ val[1] ]
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler262(&mut self) -> SV {
@@ -5565,8 +5565,8 @@ fn _handler262(&mut self) -> SV {
 
 
 //   result = []
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler263(&mut self) -> SV {
@@ -5583,8 +5583,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = [ @builder.splat(val[0], val[1]) ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler265(&mut self) -> SV {
@@ -5605,8 +5605,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0] << @builder.splat(val[2], val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler267(&mut self) -> SV {
@@ -5614,8 +5614,8 @@ fn _handler267(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.array(nil, val[0], nil)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler268(&mut self) -> SV {
@@ -5633,8 +5633,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0] << val[2]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler270(&mut self) -> SV {
@@ -5645,8 +5645,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0] << @builder.splat(val[2], val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler271(&mut self) -> SV {
@@ -5655,8 +5655,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = [ @builder.splat(val[0], val[1]) ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler272(&mut self) -> SV {
@@ -5665,8 +5665,8 @@ fn _handler272(&mut self) -> SV {
 
 // result = @lexer.cmdarg.dup
     // @lexer.cmdarg.clear
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler273(&mut self) -> SV {
@@ -5675,8 +5675,8 @@ fn _handler273(&mut self) -> SV {
 
 // result = @lexer.cmdarg.dup
     // @lexer.cmdarg.clear
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler274(&mut self) -> SV {
@@ -5684,8 +5684,8 @@ fn _handler274(&mut self) -> SV {
 
 
 // @lexer.state = :expr_endarg
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler275(&mut self) -> SV {
@@ -5693,8 +5693,8 @@ fn _handler275(&mut self) -> SV {
 
 
 // @lexer.state = :expr_endarg
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler276(&mut self) -> SV {
@@ -5702,8 +5702,8 @@ fn _handler276(&mut self) -> SV {
 
 
 //   @lexer.cond.push(true)
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler277(&mut self) -> SV {
@@ -5711,8 +5711,8 @@ fn _handler277(&mut self) -> SV {
 
 
 //   @lexer.cond.pop
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler278(&mut self) -> SV {
@@ -5720,8 +5720,8 @@ fn _handler278(&mut self) -> SV {
 
 
 //   @lexer.cond.push(true)
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler279(&mut self) -> SV {
@@ -5729,8 +5729,8 @@ fn _handler279(&mut self) -> SV {
 
 
 //   @lexer.cond.pop
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler280(&mut self) -> SV {
@@ -5738,8 +5738,8 @@ fn _handler280(&mut self) -> SV {
 
 
 //   @lexer.cond.push(true)
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler281(&mut self) -> SV {
@@ -5747,8 +5747,8 @@ fn _handler281(&mut self) -> SV {
 
 
 //   @lexer.cond.pop
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler282(&mut self) -> SV {
@@ -5757,8 +5757,8 @@ fn _handler282(&mut self) -> SV {
 
 //   @static_env.extend_static
     //   @lexer.push_cmdarg
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler283(&mut self) -> SV {
@@ -5770,8 +5770,8 @@ fn _handler283(&mut self) -> SV {
 
     //   @static_env.extend_static
     //   @lexer.push_cmdarg
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler284(&mut self) -> SV {
@@ -5780,8 +5780,8 @@ fn _handler284(&mut self) -> SV {
 
 //   @static_env.extend_static
     //   @lexer.push_cmdarg
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler285(&mut self) -> SV {
@@ -5791,8 +5791,8 @@ fn _handler285(&mut self) -> SV {
 //   @def_level += 1
     //   @static_env.extend_static
     //   @lexer.push_cmdarg
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler286(&mut self) -> SV {
@@ -5800,8 +5800,8 @@ fn _handler286(&mut self) -> SV {
 
 
 //   @lexer.state = :expr_fname
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler287(&mut self) -> SV {
@@ -5811,8 +5811,8 @@ fn _handler287(&mut self) -> SV {
 //   @def_level += 1
     //   @static_env.extend_static
     //   @lexer.push_cmdarg
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler288(&mut self) -> SV {
@@ -5900,8 +5900,8 @@ fn _handler298(&mut self) -> SV {
 self.values_stack.pop();
 
 // result = @builder.call_method(nil, nil, val[0])
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler299(&mut self) -> SV {
@@ -5914,8 +5914,8 @@ self.values_stack.pop();
 // @lexer.cmdarg = val[1]
 
             // result = @builder.begin_keyword(val[0], val[2], val[3])
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler300(&mut self) -> SV {
@@ -5929,8 +5929,8 @@ self.values_stack.pop();
 // @lexer.cmdarg = val[1]
 
             // result = @builder.begin(val[0], val[2], val[4])
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler301(&mut self) -> SV {
@@ -5941,8 +5941,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.begin(val[0], nil, val[3])
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler302(&mut self) -> SV {
@@ -5952,8 +5952,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = @builder.begin(val[0], val[1], val[2])
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler303(&mut self) -> SV {
@@ -6000,8 +6000,8 @@ fn _handler307(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:return, val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler308(&mut self) -> SV {
@@ -6012,8 +6012,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:yield, val[0], val[1], val[2], val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler309(&mut self) -> SV {
@@ -6023,8 +6023,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:yield, val[0], val[1], [], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler310(&mut self) -> SV {
@@ -6032,8 +6032,8 @@ fn _handler310(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:yield, val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler311(&mut self) -> SV {
@@ -6046,8 +6046,8 @@ self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:defined?, val[0],
                     //                                 val[2], [ val[3] ], val[4])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler312(&mut self) -> SV {
@@ -6058,8 +6058,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.not_op(val[0], val[1], val[2], val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler313(&mut self) -> SV {
@@ -6069,8 +6069,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.not_op(val[0], val[1], nil, val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler314(&mut self) -> SV {
@@ -6083,8 +6083,8 @@ self.values_stack.pop();
                     //   begin_t, args, body, end_t = val[1]
                     //   result      = @builder.block(method_call,
                     //                   begin_t, args, body, end_t)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler315(&mut self) -> SV {
@@ -6103,8 +6103,8 @@ self.values_stack.pop();
 //   begin_t, args, body, end_t = val[1]
                     //   result      = @builder.block(val[0],
                     //                   begin_t, args, body, end_t)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler317(&mut self) -> SV {
@@ -6117,8 +6117,8 @@ self.values_stack.pop();
                     //   args, (begin_t, body, end_t) = val[1]
                     //   result      = @builder.block(lambda_call,
                     //                   begin_t, args, body, end_t)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler318(&mut self) -> SV {
@@ -6134,8 +6134,8 @@ self.values_stack.pop();
                     //   result = @builder.condition(val[0], val[1], val[2],
                     //                               val[3], else_t,
                     //                               else_,  val[5])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler319(&mut self) -> SV {
@@ -6151,8 +6151,8 @@ self.values_stack.pop();
                     //   result = @builder.condition(val[0], val[1], val[2],
                     //                               else_,  else_t,
                     //                               val[3], val[5])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler320(&mut self) -> SV {
@@ -6167,8 +6167,8 @@ self.values_stack.pop();
 
 //   result = @builder.loop(:while, val[0], val[2], val[3],
                         //                          val[5], val[6])
-                        wip!();
-SV::Undefined
+                        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler321(&mut self) -> SV {
@@ -6183,8 +6183,8 @@ self.values_stack.pop();
 
 //   result = @builder.loop(:until, val[0], val[2], val[3],
                     //                          val[5], val[6])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler322(&mut self) -> SV {
@@ -6200,8 +6200,8 @@ self.values_stack.pop();
                     //   result = @builder.case(val[0], val[1],
                     //                          when_bodies, else_t, else_body,
                     //                          val[4])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler323(&mut self) -> SV {
@@ -6216,8 +6216,8 @@ self.values_stack.pop();
                     //   result = @builder.case(val[0], nil,
                     //                          when_bodies, else_t, else_body,
                     //                          val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler324(&mut self) -> SV {
@@ -6235,8 +6235,8 @@ self.values_stack.pop();
 //   result = @builder.for(val[0], val[1],
                     //                         val[2], val[4],
                     //                         val[5], val[7], val[8])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler325(&mut self) -> SV {
@@ -6259,8 +6259,8 @@ self.values_stack.pop();
 
                     //   @lexer.pop_cmdarg
                     //   @static_env.unextend
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler326(&mut self) -> SV {
@@ -6280,8 +6280,8 @@ self.values_stack.pop();
                     //   @static_env.unextend
 
                     //   @def_level = val[4]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler327(&mut self) -> SV {
@@ -6301,8 +6301,8 @@ self.values_stack.pop();
 
                     //   @lexer.pop_cmdarg
                     //   @static_env.unextend
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler328(&mut self) -> SV {
@@ -6320,8 +6320,8 @@ self.values_stack.pop();
                     //   @lexer.pop_cmdarg
                     //   @static_env.unextend
                     //   @def_level -= 1
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler329(&mut self) -> SV {
@@ -6342,8 +6342,8 @@ self.values_stack.pop();
                     //   @lexer.pop_cmdarg
                     //   @static_env.unextend
                     //   @def_level -= 1
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler330(&mut self) -> SV {
@@ -6351,8 +6351,8 @@ fn _handler330(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:break, val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler331(&mut self) -> SV {
@@ -6360,8 +6360,8 @@ fn _handler331(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:next, val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler332(&mut self) -> SV {
@@ -6369,8 +6369,8 @@ fn _handler332(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:redo, val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler333(&mut self) -> SV {
@@ -6378,8 +6378,8 @@ fn _handler333(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:retry, val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler334(&mut self) -> SV {
@@ -6412,8 +6412,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[1]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler338(&mut self) -> SV {
@@ -6454,8 +6454,8 @@ self.values_stack.pop();
                     //                                 val[3], else_t,
                     //                                 else_,  nil),
                     //            ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler342(&mut self) -> SV {
@@ -6472,8 +6472,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler344(&mut self) -> SV {
@@ -6497,8 +6497,8 @@ fn _handler346(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.arg(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler347(&mut self) -> SV {
@@ -6508,8 +6508,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.multi_lhs(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler348(&mut self) -> SV {
@@ -6517,8 +6517,8 @@ fn _handler348(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [ val[0] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler349(&mut self) -> SV {
@@ -6528,8 +6528,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0] << val[2]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler350(&mut self) -> SV {
@@ -6549,8 +6549,8 @@ self.values_stack.pop();
 
 //   result = val[0].
                     //               push(@builder.restarg(val[2], val[3]))
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler352(&mut self) -> SV {
@@ -6565,8 +6565,8 @@ self.values_stack.pop();
 //   result = val[0].
                     //               push(@builder.restarg(val[2], val[3])).
                     //               concat(val[5])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler353(&mut self) -> SV {
@@ -6577,8 +6577,8 @@ self.values_stack.pop();
 
 //   result = val[0].
                     //               push(@builder.restarg(val[2]))
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler354(&mut self) -> SV {
@@ -6592,8 +6592,8 @@ self.values_stack.pop();
 //   result = val[0].
                     //               push(@builder.restarg(val[2])).
                     //               concat(val[4])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler355(&mut self) -> SV {
@@ -6602,8 +6602,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = [ @builder.restarg(val[0], val[1]) ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler356(&mut self) -> SV {
@@ -6615,8 +6615,8 @@ self.values_stack.pop();
 
 //   result = [ @builder.restarg(val[0], val[1]),
                     //              *val[3] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler357(&mut self) -> SV {
@@ -6624,8 +6624,8 @@ fn _handler357(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [ @builder.restarg(val[0]) ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler358(&mut self) -> SV {
@@ -6636,8 +6636,8 @@ self.values_stack.pop();
 
 //   result = [ @builder.restarg(val[0]),
                     //              *val[2] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler359(&mut self) -> SV {
@@ -6648,8 +6648,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0].concat(val[2]).concat(val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler360(&mut self) -> SV {
@@ -6658,8 +6658,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0].concat(val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler361(&mut self) -> SV {
@@ -6668,8 +6668,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0].concat(val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler362(&mut self) -> SV {
@@ -6677,8 +6677,8 @@ fn _handler362(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [ val[0] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler363(&mut self) -> SV {
@@ -6687,8 +6687,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[1]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler364(&mut self) -> SV {
@@ -6696,8 +6696,8 @@ fn _handler364(&mut self) -> SV {
 
 
 //   result = []
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler365(&mut self) -> SV {
@@ -6713,8 +6713,8 @@ self.values_stack.pop();
                     //               concat(val[2]).
                     //               concat(val[4]).
                     //               concat(val[5])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler366(&mut self) -> SV {
@@ -6733,8 +6733,8 @@ self.values_stack.pop();
                     //               concat(val[4]).
                     //               concat(val[6]).
                     //               concat(val[7])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler367(&mut self) -> SV {
@@ -6747,8 +6747,8 @@ self.values_stack.pop();
 //   result = val[0].
                     //               concat(val[2]).
                     //               concat(val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler368(&mut self) -> SV {
@@ -6764,8 +6764,8 @@ self.values_stack.pop();
                     //               concat(val[2]).
                     //               concat(val[4]).
                     //               concat(val[5])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler369(&mut self) -> SV {
@@ -6778,8 +6778,8 @@ self.values_stack.pop();
 //   result = val[0].
                     //               concat(val[2]).
                     //               concat(val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler370(&mut self) -> SV {
@@ -6804,8 +6804,8 @@ self.values_stack.pop();
                     //               concat(val[2]).
                     //               concat(val[4]).
                     //               concat(val[5])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler372(&mut self) -> SV {
@@ -6818,8 +6818,8 @@ self.values_stack.pop();
                     //   else
                     //     result = val[0].concat(val[1])
                     //   end
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler373(&mut self) -> SV {
@@ -6832,8 +6832,8 @@ self.values_stack.pop();
 //   result = val[0].
                     //               concat(val[2]).
                     //               concat(val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler374(&mut self) -> SV {
@@ -6849,8 +6849,8 @@ self.values_stack.pop();
                     //               concat(val[2]).
                     //               concat(val[4]).
                     //               concat(val[5])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler375(&mut self) -> SV {
@@ -6860,8 +6860,8 @@ self.values_stack.pop();
 
 //   result = val[0].
                     //               concat(val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler376(&mut self) -> SV {
@@ -6873,8 +6873,9 @@ self.values_stack.pop();
 
 //   result = val[0].
                     //               concat(val[2]).
-                    //               concat(val[3]);
-__
+                    //               concat(val[3])
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler377(&mut self) -> SV {
@@ -6884,8 +6885,8 @@ self.values_stack.pop();
 
 //   result = val[0].
                     //               concat(val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler378(&mut self) -> SV {
@@ -6898,8 +6899,8 @@ self.values_stack.pop();
 //   result = val[0].
                     //               concat(val[2]).
                     //               concat(val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler379(&mut self) -> SV {
@@ -6915,8 +6916,8 @@ fn _handler380(&mut self) -> SV {
 
 
 //   result = @builder.args(nil, [], nil)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler381(&mut self) -> SV {
@@ -6924,8 +6925,8 @@ fn _handler381(&mut self) -> SV {
 self.values_stack.pop();
 
 //   @lexer.state = :expr_value
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler382(&mut self) -> SV {
@@ -6935,8 +6936,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.args(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler383(&mut self) -> SV {
@@ -6944,8 +6945,8 @@ fn _handler383(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.args(val[0], [], val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler384(&mut self) -> SV {
@@ -6956,8 +6957,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.args(val[0], val[1].concat(val[2]), val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler385(&mut self) -> SV {
@@ -6965,8 +6966,8 @@ fn _handler385(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = []
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler386(&mut self) -> SV {
@@ -6977,8 +6978,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[2]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler387(&mut self) -> SV {
@@ -6986,8 +6987,8 @@ fn _handler387(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [ val[0] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler388(&mut self) -> SV {
@@ -6997,8 +6998,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0] << val[2]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler389(&mut self) -> SV {
@@ -7007,8 +7008,8 @@ self.values_stack.pop();
 
 //   @static_env.declare val[0][0]
                     //   result = @builder.shadowarg(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler390(&mut self) -> SV {
@@ -7024,8 +7025,8 @@ fn _handler391(&mut self) -> SV {
 
 
 //   @static_env.extend_dynamic
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler392(&mut self) -> SV {
@@ -7034,8 +7035,8 @@ fn _handler392(&mut self) -> SV {
 
 //   result = @lexer.cmdarg.dup
     //   @lexer.cmdarg.clear
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler393(&mut self) -> SV {
@@ -7051,8 +7052,8 @@ self.values_stack.pop();
                     //   result = [ val[1], val[3] ]
 
                     //   @static_env.unextend
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler394(&mut self) -> SV {
@@ -7063,8 +7064,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.args(val[0], val[1].concat(val[2]), val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler395(&mut self) -> SV {
@@ -7072,8 +7073,8 @@ fn _handler395(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.args(nil, val[0], nil)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler396(&mut self) -> SV {
@@ -7083,8 +7084,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = [ val[0], val[1], val[2] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler397(&mut self) -> SV {
@@ -7094,8 +7095,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = [ val[0], val[1], val[2] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler398(&mut self) -> SV {
@@ -7105,8 +7106,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = [ val[0], *val[1], val[2] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler399(&mut self) -> SV {
@@ -7117,8 +7118,8 @@ self.values_stack.pop();
 //   begin_t, block_args, body, end_t = val[1]
                     //   result      = @builder.block(val[0],
                     //                   begin_t, block_args, body, end_t)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler400(&mut self) -> SV {
@@ -7131,8 +7132,8 @@ self.values_stack.pop();
 //   lparen_t, args, rparen_t = val[3]
                     //   result = @builder.call_method(val[0], val[1], val[2],
                     //               lparen_t, args, rparen_t)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler401(&mut self) -> SV {
@@ -7150,8 +7151,8 @@ self.values_stack.pop();
                     //   begin_t, args, body, end_t = val[4]
                     //   result      = @builder.block(method_call,
                     //                   begin_t, args, body, end_t)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler402(&mut self) -> SV {
@@ -7168,8 +7169,8 @@ self.values_stack.pop();
                     //   begin_t, args, body, end_t = val[4]
                     //   result      = @builder.block(method_call,
                     //                   begin_t, args, body, end_t)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler403(&mut self) -> SV {
@@ -7180,8 +7181,8 @@ self.values_stack.pop();
 //   lparen_t, args, rparen_t = val[1]
                     //   result = @builder.call_method(nil, nil, val[0],
                     //               lparen_t, args, rparen_t)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler404(&mut self) -> SV {
@@ -7194,8 +7195,8 @@ self.values_stack.pop();
 //   lparen_t, args, rparen_t = val[3]
                     //   result = @builder.call_method(val[0], val[1], val[2],
                     //               lparen_t, args, rparen_t)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler405(&mut self) -> SV {
@@ -7208,8 +7209,8 @@ self.values_stack.pop();
 //   lparen_t, args, rparen_t = val[3]
                     //   result = @builder.call_method(val[0], val[1], val[2],
                     //               lparen_t, args, rparen_t)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler406(&mut self) -> SV {
@@ -7219,8 +7220,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.call_method(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler407(&mut self) -> SV {
@@ -7232,8 +7233,8 @@ self.values_stack.pop();
 //   lparen_t, args, rparen_t = val[2]
                     //   result = @builder.call_method(val[0], val[1], nil,
                     //               lparen_t, args, rparen_t)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler408(&mut self) -> SV {
@@ -7244,8 +7245,9 @@ self.values_stack.pop();
 
 //   lparen_t, args, rparen_t = val[2]
                     //   result = @builder.call_method(val[0], val[1], nil,
-                    //               lparen_t, args, rparen_t);
-__
+                    //               lparen_t, args, rparen_t)
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler409(&mut self) -> SV {
@@ -7255,8 +7257,9 @@ self.values_stack.pop();
 
 //   lparen_t, args, rparen_t = val[1]
                     //   result = @builder.keyword_cmd(:super, val[0],
-                    //               lparen_t, args, rparen_t);
-__
+                    //               lparen_t, args, rparen_t)
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler410(&mut self) -> SV {
@@ -7264,8 +7267,8 @@ fn _handler410(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:zsuper, val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler411(&mut self) -> SV {
@@ -7276,8 +7279,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.index(val[0], val[1], val[2], val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler412(&mut self) -> SV {
@@ -7287,8 +7290,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = [ val[0], *val[1], val[2] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler413(&mut self) -> SV {
@@ -7298,8 +7301,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = [ val[0], *val[1], val[2] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler414(&mut self) -> SV {
@@ -7307,8 +7310,8 @@ fn _handler414(&mut self) -> SV {
 
 
 //   @static_env.extend_dynamic
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler415(&mut self) -> SV {
@@ -7317,8 +7320,8 @@ fn _handler415(&mut self) -> SV {
 
 // result = @lexer.cmdarg.dup
     // @lexer.cmdarg.clear
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler416(&mut self) -> SV {
@@ -7333,8 +7336,8 @@ self.values_stack.pop();
                     //   @static_env.unextend
                     //   @lexer.cmdarg = val[1]
                     //   @lexer.cmdarg.pop
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler417(&mut self) -> SV {
@@ -7342,8 +7345,8 @@ fn _handler417(&mut self) -> SV {
 
 
 //   @static_env.extend_dynamic
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler418(&mut self) -> SV {
@@ -7352,8 +7355,8 @@ fn _handler418(&mut self) -> SV {
 
 //   result = @lexer.cmdarg.dup
     //   @lexer.cmdarg.clear
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler419(&mut self) -> SV {
@@ -7367,8 +7370,8 @@ self.values_stack.pop();
 
                     //   @static_env.unextend
                     //   @lexer.cmdarg = val[1]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler420(&mut self) -> SV {
@@ -7381,8 +7384,8 @@ self.values_stack.pop();
 
 //   result = [ @builder.when(val[0], val[1], val[2], val[3]),
                     //              *val[4] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler421(&mut self) -> SV {
@@ -7390,8 +7393,8 @@ fn _handler421(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [ val[0] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler422(&mut self) -> SV {
@@ -7421,8 +7424,8 @@ self.values_stack.pop();
                     //                   exc_list, assoc_t, exc_var,
                     //                   val[3], val[4]),
                     //              *val[5] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler424(&mut self) -> SV {
@@ -7430,8 +7433,8 @@ fn _handler424(&mut self) -> SV {
 
 
 //   result = []
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler425(&mut self) -> SV {
@@ -7439,8 +7442,8 @@ fn _handler425(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [ val[0] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler426(&mut self) -> SV {
@@ -7465,8 +7468,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = [ val[0], val[1] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler429(&mut self) -> SV {
@@ -7483,8 +7486,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = [ val[0], val[1] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler431(&mut self) -> SV {
@@ -7543,8 +7546,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = val[0] << val[1]
-            wip!();
-SV::Undefined
+        wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler438(&mut self) -> SV {
@@ -7581,8 +7584,8 @@ fn _handler440(&mut self) -> SV {
 self.values_stack.pop();
 
 // result = @builder.character(val[0])
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler441(&mut self) -> SV {
@@ -7593,8 +7596,8 @@ self.values_stack.pop();
 
 //   string = @builder.xstring_compose(val[0], val[1], val[2])
                     //   result = @builder.dedent_string(string, @lexer.dedent_level)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler442(&mut self) -> SV {
@@ -7606,8 +7609,8 @@ self.values_stack.pop();
 
 //   opts   = @builder.regexp_options(val[3])
                     //   result = @builder.regexp_compose(val[0], val[1], val[2], opts)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler443(&mut self) -> SV {
@@ -7667,8 +7670,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.symbols_compose(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler449(&mut self) -> SV {
@@ -7676,8 +7679,8 @@ fn _handler449(&mut self) -> SV {
 
 
 //   result = []
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler450(&mut self) -> SV {
@@ -7687,8 +7690,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0] << @builder.word(val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler451(&mut self) -> SV {
@@ -7708,8 +7711,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.symbols_compose(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler453(&mut self) -> SV {
@@ -7736,8 +7739,8 @@ fn _handler455(&mut self) -> SV {
 
 
 //   result = []
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler456(&mut self) -> SV {
@@ -7747,8 +7750,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0] << @builder.symbol_internal(val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler457(&mut self) -> SV {
@@ -7792,8 +7795,8 @@ fn _handler461(&mut self) -> SV {
 
 
 //   result = []
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler462(&mut self) -> SV {
@@ -7802,8 +7805,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0] << val[1]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler463(&mut self) -> SV {
@@ -7812,8 +7815,8 @@ fn _handler463(&mut self) -> SV {
 
 // @lexer.cond.push(false)
     // @lexer.cmdarg.push(false)
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler464(&mut self) -> SV {
@@ -7835,8 +7838,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // result = val[1]
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler466(&mut self) -> SV {
@@ -7850,8 +7853,8 @@ self.values_stack.pop();
             // @lexer.cmdarg.lexpop
 
             // result = @builder.begin(val[0], val[2], val[3])
-            wip!();
-SV::Undefined
+            wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler467(&mut self) -> SV {
@@ -7859,8 +7862,8 @@ fn _handler467(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.gvar(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler468(&mut self) -> SV {
@@ -7868,8 +7871,8 @@ fn _handler468(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.ivar(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler469(&mut self) -> SV {
@@ -7877,8 +7880,8 @@ fn _handler469(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.cvar(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler470(&mut self) -> SV {
@@ -7917,11 +7920,10 @@ SV::_2(__)
 
 fn _handler473(&mut self) -> SV {
 // Semantic values prologue.
-self.values_stack.pop();
+let mut _1 = self.values_stack.pop().unwrap();
 
-//   result = val[0]
-                    wip!();
-SV::Undefined
+let __ = _1;
+__
 }
 
 fn _handler474(&mut self) -> SV {
@@ -7935,8 +7937,8 @@ self.values_stack.pop();
                     //   else
                     //     result = @builder.unary_num(val[0], val[1])
                     //   end
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler475(&mut self) -> SV {
@@ -7962,8 +7964,8 @@ self.values_stack.pop();
 
 // @lexer.state = :expr_endarg
             // result = @builder.float(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler477(&mut self) -> SV {
@@ -7972,8 +7974,8 @@ self.values_stack.pop();
 
 // @lexer.state = :expr_endarg
             // result = @builder.rational(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler478(&mut self) -> SV {
@@ -7982,8 +7984,8 @@ self.values_stack.pop();
 
 // @lexer.state = :expr_endarg
             // result = @builder.complex(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler479(&mut self) -> SV {
@@ -8063,8 +8065,8 @@ fn _handler488(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.__FILE__(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler489(&mut self) -> SV {
@@ -8072,8 +8074,8 @@ fn _handler489(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.__LINE__(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler490(&mut self) -> SV {
@@ -8081,8 +8083,8 @@ fn _handler490(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.__ENCODING__(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler491(&mut self) -> SV {
@@ -8106,8 +8108,8 @@ fn _handler493(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.assignable(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler494(&mut self) -> SV {
@@ -8115,8 +8117,8 @@ fn _handler494(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.assignable(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler495(&mut self) -> SV {
@@ -8124,8 +8126,8 @@ fn _handler495(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.nth_ref(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler496(&mut self) -> SV {
@@ -8133,8 +8135,8 @@ fn _handler496(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.back_ref(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler497(&mut self) -> SV {
@@ -8142,8 +8144,8 @@ fn _handler497(&mut self) -> SV {
 
 
 //   @lexer.state = :expr_value
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler498(&mut self) -> SV {
@@ -8153,8 +8155,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = [ val[0], val[2] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler499(&mut self) -> SV {
@@ -8162,8 +8164,8 @@ fn _handler499(&mut self) -> SV {
 
 
 //   result = nil
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler500(&mut self) -> SV {
@@ -8172,8 +8174,8 @@ fn _handler500(&mut self) -> SV {
 
 //   result = @lexer.in_kwarg
     //   @lexer.in_kwarg = true
-    wip!();
-SV::Undefined
+    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler501(&mut self) -> SV {
@@ -8185,8 +8187,8 @@ self.values_stack.pop();
 //   result = @builder.args(val[0], val[1], val[2])
 
                     //   @lexer.state = :expr_value
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler502(&mut self) -> SV {
@@ -8197,8 +8199,8 @@ self.values_stack.pop();
 
 //   @lexer.in_kwarg = val[0]
                     //   result = @builder.args(nil, val[1], nil)
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler503(&mut self) -> SV {
@@ -8209,8 +8211,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0].concat(val[2]).concat(val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler504(&mut self) -> SV {
@@ -8219,8 +8221,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0].concat(val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler505(&mut self) -> SV {
@@ -8229,8 +8231,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0].concat(val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler506(&mut self) -> SV {
@@ -8238,8 +8240,8 @@ fn _handler506(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [ val[0] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler507(&mut self) -> SV {
@@ -8248,8 +8250,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[1]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler508(&mut self) -> SV {
@@ -8257,8 +8259,8 @@ fn _handler508(&mut self) -> SV {
 
 
 //   result = []
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler509(&mut self) -> SV {
@@ -8274,8 +8276,8 @@ self.values_stack.pop();
                     //               concat(val[2]).
                     //               concat(val[4]).
                     //               concat(val[5])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler510(&mut self) -> SV {
@@ -8294,8 +8296,8 @@ self.values_stack.pop();
                     //               concat(val[4]).
                     //               concat(val[6]).
                     //               concat(val[7])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler511(&mut self) -> SV {
@@ -8308,8 +8310,8 @@ self.values_stack.pop();
 //   result = val[0].
                     //               concat(val[2]).
                     //               concat(val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler512(&mut self) -> SV {
@@ -8325,8 +8327,8 @@ self.values_stack.pop();
                     //               concat(val[2]).
                     //               concat(val[4]).
                     //               concat(val[5])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler513(&mut self) -> SV {
@@ -8339,8 +8341,8 @@ self.values_stack.pop();
 //   result = val[0].
                     //               concat(val[2]).
                     //               concat(val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler514(&mut self) -> SV {
@@ -8356,8 +8358,8 @@ self.values_stack.pop();
                     //               concat(val[2]).
                     //               concat(val[4]).
                     //               concat(val[5])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler515(&mut self) -> SV {
@@ -8367,8 +8369,8 @@ self.values_stack.pop();
 
 //   result = val[0].
                     //               concat(val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler516(&mut self) -> SV {
@@ -8381,8 +8383,8 @@ self.values_stack.pop();
 //   result = val[0].
                     //               concat(val[2]).
                     //               concat(val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler517(&mut self) -> SV {
@@ -8398,8 +8400,8 @@ self.values_stack.pop();
                     //               concat(val[2]).
                     //               concat(val[4]).
                     //               concat(val[5])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler518(&mut self) -> SV {
@@ -8409,8 +8411,8 @@ self.values_stack.pop();
 
 //   result = val[0].
                     //               concat(val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler519(&mut self) -> SV {
@@ -8423,8 +8425,8 @@ self.values_stack.pop();
 //   result = val[0].
                     //               concat(val[2]).
                     //               concat(val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler520(&mut self) -> SV {
@@ -8434,8 +8436,8 @@ self.values_stack.pop();
 
 //   result = val[0].
                     //               concat(val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler521(&mut self) -> SV {
@@ -8448,8 +8450,8 @@ self.values_stack.pop();
 //   result = val[0].
                     //               concat(val[2]).
                     //               concat(val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler522(&mut self) -> SV {
@@ -8457,8 +8459,8 @@ fn _handler522(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = val[0]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler523(&mut self) -> SV {
@@ -8466,8 +8468,8 @@ fn _handler523(&mut self) -> SV {
 
 
 //   result = []
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler524(&mut self) -> SV {
@@ -8475,8 +8477,8 @@ fn _handler524(&mut self) -> SV {
 self.values_stack.pop();
 
 //   diagnostic :error, :argument_const, nil, val[0]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler525(&mut self) -> SV {
@@ -8484,8 +8486,8 @@ fn _handler525(&mut self) -> SV {
 self.values_stack.pop();
 
 //   diagnostic :error, :argument_ivar, nil, val[0]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler526(&mut self) -> SV {
@@ -8493,8 +8495,8 @@ fn _handler526(&mut self) -> SV {
 self.values_stack.pop();
 
 //   diagnostic :error, :argument_gvar, nil, val[0]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler527(&mut self) -> SV {
@@ -8502,8 +8504,8 @@ fn _handler527(&mut self) -> SV {
 self.values_stack.pop();
 
 //   diagnostic :error, :argument_cvar, nil, val[0]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler528(&mut self) -> SV {
@@ -8521,8 +8523,8 @@ self.values_stack.pop();
 //   @static_env.declare val[0][0]
 
                     //   result = val[0]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler530(&mut self) -> SV {
@@ -8530,8 +8532,8 @@ fn _handler530(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = val[0]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler531(&mut self) -> SV {
@@ -8539,8 +8541,8 @@ fn _handler531(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.arg(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler532(&mut self) -> SV {
@@ -8550,8 +8552,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.multi_lhs(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler533(&mut self) -> SV {
@@ -8559,8 +8561,8 @@ fn _handler533(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [ val[0] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler534(&mut self) -> SV {
@@ -8570,8 +8572,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0] << val[2]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler535(&mut self) -> SV {
@@ -8583,8 +8585,8 @@ self.values_stack.pop();
                     //   @static_env.declare val[0][0]
 
                     //   result = val[0]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler536(&mut self) -> SV {
@@ -8593,8 +8595,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.kwoptarg(val[0], val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler537(&mut self) -> SV {
@@ -8602,8 +8604,8 @@ fn _handler537(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.kwarg(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler538(&mut self) -> SV {
@@ -8612,8 +8614,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.kwoptarg(val[0], val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler539(&mut self) -> SV {
@@ -8621,8 +8623,8 @@ fn _handler539(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.kwarg(val[0])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler540(&mut self) -> SV {
@@ -8630,8 +8632,8 @@ fn _handler540(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [ val[0] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler541(&mut self) -> SV {
@@ -8641,8 +8643,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0] << val[2]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler542(&mut self) -> SV {
@@ -8650,8 +8652,8 @@ fn _handler542(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [ val[0] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler543(&mut self) -> SV {
@@ -8661,8 +8663,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0] << val[2]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler544(&mut self) -> SV {
@@ -8689,8 +8691,8 @@ self.values_stack.pop();
 //   @static_env.declare val[1][0]
 
                     //   result = [ @builder.kwrestarg(val[0], val[1]) ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler547(&mut self) -> SV {
@@ -8698,8 +8700,8 @@ fn _handler547(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [ @builder.kwrestarg(val[0]) ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler548(&mut self) -> SV {
@@ -8709,8 +8711,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.optarg(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler549(&mut self) -> SV {
@@ -8720,8 +8722,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.optarg(val[0], val[1], val[2])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler550(&mut self) -> SV {
@@ -8729,8 +8731,8 @@ fn _handler550(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [ val[0] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler551(&mut self) -> SV {
@@ -8740,8 +8742,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0] << val[2]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler552(&mut self) -> SV {
@@ -8749,8 +8751,8 @@ fn _handler552(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [ val[0] ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler553(&mut self) -> SV {
@@ -8760,8 +8762,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[0] << val[2]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler554(&mut self) -> SV {
@@ -8788,8 +8790,8 @@ self.values_stack.pop();
 //   @static_env.declare val[1][0]
 
                     //   result = [ @builder.restarg(val[0], val[1]) ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler557(&mut self) -> SV {
@@ -8797,8 +8799,8 @@ fn _handler557(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [ @builder.restarg(val[0]) ]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler558(&mut self) -> SV {
@@ -8825,13 +8827,13 @@ self.values_stack.pop();
 //   @static_env.declare val[1][0]
 
                     //   result = @builder.blockarg(val[0], val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler561(&mut self) -> SV {
 // Semantic values prologue.
-let mut _2 = self.values_stack.pop().unwrap();
+let mut _2 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 
 let __ = vec![_2];
@@ -8929,8 +8931,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.pair_quoted(val[0], val[1], val[2], val[3])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler572(&mut self) -> SV {
@@ -8939,8 +8941,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = @builder.kwsplat(val[0], val[1])
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler573(&mut self) -> SV {
@@ -9044,8 +9046,8 @@ fn _handler585(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [:dot, val[0][1]]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler586(&mut self) -> SV {
@@ -9053,8 +9055,8 @@ fn _handler586(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = [:anddot, val[0][1]]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler587(&mut self) -> SV {
@@ -9095,8 +9097,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[1]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler592(&mut self) -> SV {
@@ -9105,8 +9107,8 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = val[1]
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 
 fn _handler593(&mut self) -> SV {
@@ -9135,10 +9137,11 @@ __
 
 fn _handler596(&mut self) -> SV {
 // Semantic values prologue.
-self.values_stack.pop();
+let mut _1 = self.values_stack.pop().unwrap();
 
 // yyerrok
-        // TODO;
+        // TODO
+        let __ = _1;
 __
 }
 
@@ -9172,7 +9175,7 @@ fn _handler600(&mut self) -> SV {
 
 
 // result = nil
-                    wip!();
-SV::Undefined
+                    wip!(); let __ =Node::DUMMY;
+SV::_2(__)
 }
 }

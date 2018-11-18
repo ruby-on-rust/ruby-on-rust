@@ -656,7 +656,7 @@ pub fn accessible(node: Node) -> Node {
             // TODO DUMMY handle static_env
             Node::LVar(n_ident_value)
         }
-        _ => { panic!("UNIMPL"); }
+        _ => { node }
     }
 }
 

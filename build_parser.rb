@@ -132,12 +132,6 @@ end
 # 
 content.gsub! 'pub fn parse(&mut self, string: &\'static str) -> TResult {', 'pub fn parse(&mut self, string: &str) -> TResult {'
 
-# 
-# parser: return value for methods migrating WIP
-# TODO CLEANUP
-# 
-content.gsub! "wip!();\n__\n", "wip!();\nSV::Undefined\n"
-
 File.open parser_file, "w" do |file| file.puts content end
 
 #

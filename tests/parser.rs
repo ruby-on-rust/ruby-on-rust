@@ -826,7 +826,7 @@ fn hash_hashrocket() {
         r#"{ 1 => 2, :foo => "bar" }"#,
         Node::Hash(vec![
             Node::Pair { key: Box::new(Node::Int(1)), value: Box::new(Node::Int(2)) },
-            Node::Pair { key: Box::new(Node::Sym(String::from("foo"))), value: Box::new(Node::Str(String::from("bar"))) }
+            Node::Pair { key: Box::new(n_sym!("foo")), value: Box::new(n_str!("bar")) }
         ])
     );
 
