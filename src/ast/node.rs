@@ -184,29 +184,10 @@ pub type Nodes = Vec<Node>;
 #[macro_export] macro_rules! n_ivar { ($string:expr) => { Node::IVar(String::from($string)) }; }
 #[macro_export] macro_rules! n_cvar { ($string:expr) => { Node::CVar(String::from($string)) }; }
 #[macro_export] macro_rules! n_gvar { ($string:expr) => { Node::GVar(String::from($string)) }; }
-#[macro_export] macro_rules! n_dstr {
-    ( $( $x:expr ),* ) => {
-        {
-            let mut temp_vec = Vec::new();
-            $(
-                temp_vec.push($x);
-            )*
-            Node::DStr(temp_vec)
-        }
-    };
-}
+#[macro_export] macro_rules! n_begin { ( $( $x:expr ),* ) => { { Node::Begin(vec![ $($x),* ]) } }; }
+#[macro_export] macro_rules! n_dstr { ( $( $x:expr ),* ) => { { Node::DStr(vec![ $($x),* ]) } }; }
 #[macro_export] macro_rules! n_send { ($receiver:expr, $selector:expr, $args:expr) => { Node::Send { receiver: $receiver, selector: String::from($selector), args: $args } }; }
-#[macro_export] macro_rules! n_hash {
-    ( $( $x:expr ),* ) => {
-        {
-            let mut temp_vec = Vec::new();
-            $(
-                temp_vec.push($x);
-            )*
-            Node::Hash(temp_vec)
-        }
-    };
-}
+#[macro_export] macro_rules! n_hash { ( $( $x:expr ),* ) => { { Node::Hash(vec![ $($x),* ]) } }; }
 #[macro_export] macro_rules! n_pair { ($key:expr, $value:expr) => { Node::Pair { key: Box::new($key), value: Box::new($value) }; } }
 
 impl Node {
@@ -435,6 +416,13 @@ pub fn array(elements: Nodes) -> Node {
 //       unary_op_map(star_t, arg))
 //   end
 // end
+pub fn splat(star_t: Token, arg: Option<Node>) -> Node {
+    wip!();
+    // if let Some(n_arg) = arg {
+    // } else {
+    //     wip!();
+    // }
+}
 
 // def word(parts)
 //   if collapse_string_parts?(parts)
@@ -532,7 +520,6 @@ pub fn pair_keyword(key_t: Token, value: Node) -> Node {
 //     collection_map(begin_t, pairs, end_t))
 // end
 pub fn associate(pairs: Nodes) -> Node {
-    // pairs: Nodes
     return Node::Hash(pairs);
 }
 
@@ -1112,6 +1099,7 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //   n(:block_pass, [ arg ],
 //     unary_op_map(amper_t, arg))
 // end
+// pub fn block_pass(amper_t: Token, arg: Node) -> Node
 
 // def objc_varargs(pair, rest_of_varargs)
 //   value, first_vararg = *pair

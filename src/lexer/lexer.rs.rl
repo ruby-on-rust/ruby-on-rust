@@ -1,7 +1,8 @@
 // TODO
 // set starting cs as lexer_en_line_begin
 
-// TODO set #[allow(non_upper_case_globals)] for generated static vars
+// NOTE this is not effective
+#[allow(non_upper_case_globals)]
 
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -54,8 +55,8 @@ pub struct Lexer {
     stack: [i32; 16],
     top: i32,
 
-    cond: StackState,
-    cmdarg: StackState,
+    pub cond: StackState,
+    pub cmdarg: StackState,
     // TODO
     // @cond_stack   = []
     // @cmdarg_stack = []
@@ -148,6 +149,7 @@ impl Lexer {
 
     // TODO DOC
     // return a Token
+    #[allow(unused_parens, unused_assignments, unused_variables)]
     pub fn advance(&mut self) -> Option<Token> {
         println!("---\nlexer.advance");
 

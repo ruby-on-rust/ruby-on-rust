@@ -16,18 +16,6 @@ macro_rules! assert_parses {
     };
 }
 
-macro_rules! n_begin {
-    ( $( $x:expr ),* ) => {
-        {
-            let mut temp_vec = Vec::new();
-            $(
-                temp_vec.push($x);
-            )*
-            Node::Begin(temp_vec)
-        }
-    };
-}
-
 //   #
 //   # Literals
 //   #

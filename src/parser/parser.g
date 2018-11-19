@@ -75,6 +75,7 @@
 
 %{
 
+use lexer::stack_state::StackState;
 use token::token::Token as InteriorToken;
 use parser::token::Token;
 use parser::tokenizer::Tokenizer;
@@ -174,22 +175,26 @@ stmts
 stmt_or_begin
     : stmt
     | klBEGIN tLCURLY top_compstmt tRCURLY {
-        // diagnostic :error, :begin_in_method, nil, val[0]
         ||->Node;
-        wip!(); $$=Node::DUMMY;
+
+        // diagnostic :error, :begin_in_method, nil, val[0]
+        panic!("diagnostic error");
+
+        $$=Node::DUMMY;
     }
 ;
 
+// TODO actually dont need a return value
 fake_embedded_action__stmt__1: {
+    || -> Node; $$ = Node::DUMMY;
     // @lexer.state = :expr_fname
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    wip!();
 };
 
 stmt
     : kALIAS fitem fake_embedded_action__stmt__1 fitem {
-        // result = @builder.alias(val[0], val[1], val[3])
         ||->Node;
+        // result = @builder.alias(val[0], val[1], val[3])
         wip!(); $$=Node::DUMMY;
     }
     | kALIAS tGVAR tGVAR {
@@ -1170,53 +1175,63 @@ arg_rhs
 
        call_args: command
                     {
-                    //   result = [ val[0] ]
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
+                        |$1:Node|->Nodes;
+
+                        //   result = [ val[0] ]
+                        $$ = vec![$1];
                     }
                 | args opt_block_arg
                     {
-                    //   result = val[0].concat(val[1])
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
+                        |$1:Nodes, $2:Nodes| -> Nodes;
+
+                        //   result = val[0].concat(val[1])
+                        $1.append(&mut $2);
+                        $$ = $1;
                     }
                 | assocs opt_block_arg
                     {
-                    //   result = [ @builder.associate(nil, val[0], nil) ]
-                    //   result.concat(val[1])
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
+                        |$1:Nodes, $2:Nodes| -> Nodes;
+                        //   result = [ @builder.associate(nil, val[0], nil) ]
+                        //   result.concat(val[1])
+                        let mut result = vec![node::associate($1)];
+                        result.append(&mut $2);
+                        $$ = result;
                     }
                 | args tCOMMA assocs opt_block_arg
                     {
-                    //   assocs = @builder.associate(nil, val[2], nil)
-                    //   result = val[0] << assocs
-                    //   result.concat(val[3])
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
+                        |$1:Nodes, $3:Nodes, $4:Nodes| -> Nodes;
+
+                        //   assocs = @builder.associate(nil, val[2], nil)
+                        //   result = val[0] << assocs
+                        //   result.concat(val[3])
+                        let mut assocs = node::associate($3);
+                        $1.push(assocs);
+                        $1.append(&mut $4);
+                        $$ = $1;
                     }
-                | block_arg
-                    {
-                    //   result =  [ val[0] ]
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-                    }
+                | block_arg {
+                    |$1:Node|->Nodes; $$ = vec![$1];
+                }
 ;
 
-    command_args: fake_embedded_action_command_args call_args {
-                    //   @lexer.cmdarg = val[0]
+    command_args: fake_embedded_action__command_args call_args {
+        |$1:StackState, $2:Nodes| -> Nodes;
 
-                    //   result = val[1]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+        // @lexer.cmdarg = val[0]
+        // result = val[1]
+        self.tokenizer.interior_lexer.cmdarg = $1;
+        $$ = $2;
+    }
 ;
 
-fake_embedded_action_command_args: {
+fake_embedded_action__command_args: {
+    ||->StackState;
+
     //   result = @lexer.cmdarg.dup
     //   @lexer.cmdarg.push(true)
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+
+    $$ = self.tokenizer.interior_lexer.cmdarg.clone();
+    self.tokenizer.interior_lexer.cmdarg.push(true);
 };
 
        block_arg: tAMPER arg_value
@@ -1227,18 +1242,13 @@ fake_embedded_action_command_args: {
                     }
 ;
 
-   opt_block_arg: tCOMMA block_arg
-                    {
-                    //   result = [ val[1] ]
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-                    }
-                |
-                    {
-                    //   result = []
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-                    }
+opt_block_arg
+    : tCOMMA block_arg {
+        |$2:Node|->Nodes; $$ = vec![$2];
+    }
+    | {
+        ||->Nodes; $$ = vec![];
+    }
 ;
 
 args
@@ -1247,9 +1257,10 @@ args
     }
                 | tSTAR arg_value
                     {
-                    //   result = [ @builder.splat(val[0], val[1]) ]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
+                        //   result = [ @builder.splat(val[0], val[1]) ]
+
+                        ||->Node;
+                        wip!(); $$=Node::DUMMY;
                     }
                 | args tCOMMA arg_value
                     {
@@ -1295,10 +1306,10 @@ args
 ;
 
 fake_embedded_action_primary_kBEGIN: {
-    // result = @lexer.cmdarg.dup
-    // @lexer.cmdarg.clear
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    || -> StackState;
+
+    $$ = self.tokenizer.interior_lexer.cmdarg.clone();
+    self.tokenizer.interior_lexer.cmdarg.clear();
 };
 
 fake_embedded_action_primary_tLPAREN_ARG: {
@@ -3255,7 +3266,7 @@ assoc_list
     : {
         || -> Nodes; $$ = vec![];
     }
-    | assocs trailer { $$ = $1; } // TODO i thought `$$ = $1;` is the default one, yet the generator does not yield it.
+    | assocs trailer { $$ = $1; }
 ;
 
 assocs
@@ -3322,16 +3333,12 @@ opt_terms:  | terms ;
 
           rparen: opt_nl tRPAREN
                     {
-                    //   result = val[1]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
+                        $$ = $2;
                     };
 
         rbracket: opt_nl tRBRACK
                     {
-                    //   result = val[1]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
+                        $$ = $2;
                     }
 ;
 

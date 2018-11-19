@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 #![allow(unused_mut)]
+#![allow(unreachable_code)]
 
 use regex::Regex;
 use std::collections::HashMap;
@@ -14,7 +15,8 @@ enum SV {
     Undefined,
     _0(Token),
     _1(Nodes),
-    _2(Node)
+    _2(Node),
+    _3(StackState)
 }
 
 /**
@@ -1751,6 +1753,7 @@ lazy_static! {
 //   }
 //
 
+use lexer::stack_state::StackState;
 use token::token::Token as InteriorToken;
 use parser::token::Token;
 use parser::tokenizer::Tokenizer;
@@ -2546,6 +2549,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: $accept -> program
+
 }
 
 
@@ -2558,6 +2563,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: program -> top_compstmt
+
 }
 
 
@@ -2571,6 +2578,8 @@ let mut _1 = pop!(self.values_stack, _1);
 
 let __ = node::compstmt(_1);
 SV::_2(__)
+// raw production: top_compstmt -> top_stmts opt_terms
+
 }
 
 
@@ -2583,6 +2592,8 @@ fn _handler3(&mut self) -> SV {
 
 let __ = vec![];
 SV::_1(__)
+// raw production: top_stmts -> undefined
+
 }
 
 
@@ -2595,6 +2606,8 @@ let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
 SV::_1(__)
+// raw production: top_stmts -> top_stmt
+
 }
 
 
@@ -2610,6 +2623,8 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.push(_3);
         let __ = _1;
 SV::_1(__)
+// raw production: top_stmts -> top_stmts terms top_stmt
+
 }
 
 
@@ -2622,6 +2637,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: top_stmt -> stmt
+
 }
 
 
@@ -2638,6 +2655,8 @@ self.values_stack.pop();
 // result = @builder.preexe(val[0], val[1], val[2], val[3])
         let __ = node::preexe(_3);
 SV::_2(__)
+// raw production: top_stmt -> klBEGIN tLCURLY top_compstmt tRCURLY
+
 }
 
 
@@ -2665,6 +2684,8 @@ self.values_stack.pop();
         //                                   ensure_t, ensure_)
         let __ = Node::DUMMY;
 SV::_2(__)
+// raw production: bodystmt -> compstmt opt_rescue opt_else opt_ensure
+
 }
 
 
@@ -2679,6 +2700,8 @@ let mut _1 = pop!(self.values_stack, _1);
 // result = @builder.compstmt(val[0])
     let __ = node::compstmt(_1);
 SV::_2(__)
+// raw production: compstmt -> stmts opt_terms
+
 }
 
 
@@ -2691,6 +2714,8 @@ fn _handler10(&mut self) -> SV {
 
 let __ = vec![];
 SV::_1(__)
+// raw production: stmts -> undefined
+
 }
 
 
@@ -2703,6 +2728,8 @@ let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
 SV::_1(__)
+// raw production: stmts -> stmt_or_begin
+
 }
 
 
@@ -2718,6 +2745,8 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.push(_3);
         let __ = _1;
 SV::_1(__)
+// raw production: stmts -> stmts terms stmt_or_begin
+
 }
 
 
@@ -2730,6 +2759,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: stmt_or_begin -> stmt
+
 }
 
 
@@ -2744,8 +2775,12 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 // diagnostic :error, :begin_in_method, nil, val[0]
-        wip!(); let __ =Node::DUMMY;
+        panic!("diagnostic error");
+
+        let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: stmt_or_begin -> klBEGIN tLCURLY top_compstmt tRCURLY
+
 }
 
 
@@ -2756,9 +2791,12 @@ fn _handler15(&mut self) -> SV {
   // Semantic values prologue.
 
 
-// @lexer.state = :expr_fname
-    wip!(); let __ =Node::DUMMY;
+let __ = Node::DUMMY;
+    // @lexer.state = :expr_fname
+    wip!();
 SV::_2(__)
+// raw production: fake_embedded_action__stmt__1 -> undefined
+
 }
 
 
@@ -2775,6 +2813,8 @@ self.values_stack.pop();
 // result = @builder.alias(val[0], val[1], val[3])
         wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: stmt -> kALIAS fitem fake_embedded_action__stmt__1 fitem
+
 }
 
 
@@ -2792,6 +2832,8 @@ self.values_stack.pop();
         //             @builder.gvar(val[2]))
         wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: stmt -> kALIAS tGVAR tGVAR
+
 }
 
 
@@ -2809,6 +2851,8 @@ self.values_stack.pop();
         //             @builder.back_ref(val[2]))
         wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: stmt -> kALIAS tGVAR tBACK_REF
+
 }
 
 
@@ -2824,6 +2868,8 @@ self.values_stack.pop();
 // diagnostic :error, :nth_ref_alias, nil, val[2]
         wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: stmt -> kALIAS tGVAR tNTH_REF
+
 }
 
 
@@ -2838,6 +2884,8 @@ self.values_stack.pop();
 // result = @builder.undef_method(val[0], val[1])
         wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: stmt -> kUNDEF undef_list
+
 }
 
 
@@ -2854,6 +2902,8 @@ self.values_stack.pop();
         //                                 val[1], val[2])
         wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: stmt -> stmt kIF_MOD expr_value
+
 }
 
 
@@ -2870,6 +2920,8 @@ self.values_stack.pop();
         //                                 val[1], val[2])
         wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: stmt -> stmt kUNLESS_MOD expr_value
+
 }
 
 
@@ -2885,6 +2937,8 @@ self.values_stack.pop();
 // result = @builder.loop_mod(:while, val[0], val[1], val[2])
         wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: stmt -> stmt kWHILE_MOD expr_value
+
 }
 
 
@@ -2900,6 +2954,8 @@ self.values_stack.pop();
 // result = @builder.loop_mod(:until, val[0], val[1], val[2])
         wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: stmt -> stmt kUNTIL_MOD expr_value
+
 }
 
 
@@ -2919,6 +2975,8 @@ self.values_stack.pop();
         // result = @builder.begin_body(val[0], [ rescue_body ])
         wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: stmt -> stmt kRESCUE_MOD stmt
+
 }
 
 
@@ -2935,6 +2993,8 @@ self.values_stack.pop();
 // result = @builder.postexe(val[0], val[1], val[2], val[3])
         wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: stmt -> klEND tLCURLY compstmt tRCURLY
+
 }
 
 
@@ -2947,6 +3007,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: stmt -> command_asgn
+
 }
 
 
@@ -2962,6 +3024,8 @@ self.values_stack.pop();
 // result = @builder.multi_assign(val[0], val[1], val[2])
         wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: stmt -> mlhs tEQL command_call
+
 }
 
 
@@ -2978,6 +3042,8 @@ self.values_stack.pop();
         //             @builder.array(nil, val[2], nil))
         wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: stmt -> lhs tEQL mrhs
+
 }
 
 
@@ -2993,6 +3059,8 @@ self.values_stack.pop();
 // result = @builder.multi_assign(val[0], val[1], val[2])
         wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: stmt -> mlhs tEQL mrhs_arg
+
 }
 
 
@@ -3005,6 +3073,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: stmt -> expr
+
 }
 
 
@@ -3020,6 +3090,8 @@ self.values_stack.pop();
 // result = @builder.assign(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command_asgn -> lhs tEQL command_rhs
+
 }
 
 
@@ -3035,6 +3107,8 @@ self.values_stack.pop();
 // result = @builder.op_assign(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command_asgn -> var_lhs tOP_ASGN command_rhs
+
 }
 
 
@@ -3056,6 +3130,8 @@ self.values_stack.pop();
                     //             val[4], val[5])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command_asgn -> primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN command_rhs
+
 }
 
 
@@ -3076,6 +3152,8 @@ self.values_stack.pop();
                     //             val[3], val[4])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command_asgn -> primary_value call_op tIDENTIFIER tOP_ASGN command_rhs
+
 }
 
 
@@ -3096,6 +3174,8 @@ self.values_stack.pop();
                     //             val[3], val[4])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command_asgn -> primary_value call_op tCONSTANT tOP_ASGN command_rhs
+
 }
 
 
@@ -3115,6 +3195,8 @@ self.values_stack.pop();
                     // result = @builder.op_assign(const, val[3], val[4])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command_asgn -> primary_value tCOLON2 tCONSTANT tOP_ASGN command_rhs
+
 }
 
 
@@ -3135,6 +3217,8 @@ self.values_stack.pop();
                     //             val[3], val[4])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command_asgn -> primary_value tCOLON2 tIDENTIFIER tOP_ASGN command_rhs
+
 }
 
 
@@ -3150,6 +3234,8 @@ self.values_stack.pop();
 // @builder.op_assign(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command_asgn -> backref tOP_ASGN command_rhs
+
 }
 
 
@@ -3162,6 +3248,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: command_rhs -> command_call
+
 }
 
 
@@ -3181,6 +3269,8 @@ self.values_stack.pop();
                     //   result = @builder.begin_body(val[0], [ rescue_body ])
                         wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command_rhs -> command_call kRESCUE_MOD stmt
+
 }
 
 
@@ -3193,6 +3283,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: command_rhs -> command_asgn
+
 }
 
 
@@ -3205,6 +3297,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: expr -> command_call
+
 }
 
 
@@ -3220,6 +3314,8 @@ self.values_stack.pop();
 //   result = @builder.logical_op(:and, val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: expr -> expr kAND expr
+
 }
 
 
@@ -3235,6 +3331,8 @@ self.values_stack.pop();
 //   result = @builder.logical_op(:or, val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: expr -> expr kOR expr
+
 }
 
 
@@ -3250,6 +3348,8 @@ self.values_stack.pop();
 //   result = @builder.not_op(val[0], nil, val[2], nil)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: expr -> kNOT opt_nl expr
+
 }
 
 
@@ -3264,6 +3364,8 @@ self.values_stack.pop();
 //   result = @builder.not_op(val[0], nil, val[1], nil)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: expr -> tBANG command_call
+
 }
 
 
@@ -3276,6 +3378,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: expr -> arg
+
 }
 
 
@@ -3288,6 +3392,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: expr_value -> expr
+
 }
 
 
@@ -3300,6 +3406,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: command_call -> command
+
 }
 
 
@@ -3312,6 +3420,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: command_call -> block_command
+
 }
 
 
@@ -3324,6 +3434,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: block_command -> block_call
+
 }
 
 
@@ -3341,6 +3453,8 @@ self.values_stack.pop();
         //             nil, val[3], nil)
         wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_command -> block_call dot_or_colon operation2 command_args
+
 }
 
 
@@ -3356,6 +3470,8 @@ self.values_stack.pop();
 //   result = [ val[0], *val[1], val[2] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: cmd_brace_block -> tLBRACE_ARG brace_body tRCURLY
+
 }
 
 
@@ -3368,6 +3484,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: fcall -> operation
+
 }
 
 
@@ -3383,6 +3501,8 @@ self.values_stack.pop();
                     //               nil, val[1], nil)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command -> fcall command_args
+
 }
 
 
@@ -3403,6 +3523,8 @@ self.values_stack.pop();
                     //                   begin_t, args, body, end_t)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command -> fcall command_args cmd_brace_block
+
 }
 
 
@@ -3420,6 +3542,8 @@ self.values_stack.pop();
                     //               nil, val[3], nil)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command -> primary_value call_op operation2 command_args
+
 }
 
 
@@ -3442,6 +3566,8 @@ self.values_stack.pop();
                     //                   begin_t, args, body, end_t)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command -> primary_value call_op operation2 command_args cmd_brace_block
+
 }
 
 
@@ -3459,6 +3585,8 @@ self.values_stack.pop();
                     //               nil, val[3], nil)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command -> primary_value tCOLON2 operation2 command_args
+
 }
 
 
@@ -3481,6 +3609,8 @@ self.values_stack.pop();
                     //                   begin_t, args, body, end_t)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command -> primary_value tCOLON2 operation2 command_args cmd_brace_block
+
 }
 
 
@@ -3496,6 +3626,8 @@ self.values_stack.pop();
                     //               nil, val[1], nil)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command -> kSUPER command_args
+
 }
 
 
@@ -3511,6 +3643,8 @@ self.values_stack.pop();
                     //               nil, val[1], nil)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command -> kYIELD command_args
+
 }
 
 
@@ -3526,6 +3660,8 @@ self.values_stack.pop();
                     //               nil, val[1], nil)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command -> kRETURN call_args
+
 }
 
 
@@ -3541,6 +3677,8 @@ self.values_stack.pop();
                     //               nil, val[1], nil)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command -> kBREAK call_args
+
 }
 
 
@@ -3556,6 +3694,8 @@ self.values_stack.pop();
                     //               nil, val[1], nil)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: command -> kNEXT call_args
+
 }
 
 
@@ -3569,6 +3709,8 @@ self.values_stack.pop();
 //   result = @builder.multi_lhs(nil, val[0], nil)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs -> mlhs_basic
+
 }
 
 
@@ -3584,6 +3726,8 @@ self.values_stack.pop();
 //   result = @builder.begin(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs -> tLPAREN mlhs_inner rparen
+
 }
 
 
@@ -3597,6 +3741,8 @@ self.values_stack.pop();
 //   result = @builder.multi_lhs(nil, val[0], nil)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_inner -> mlhs_basic
+
 }
 
 
@@ -3612,6 +3758,8 @@ self.values_stack.pop();
 //   result = @builder.multi_lhs(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_inner -> tLPAREN mlhs_inner rparen
+
 }
 
 
@@ -3624,6 +3772,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: mlhs_basic -> mlhs_head
+
 }
 
 
@@ -3640,6 +3790,8 @@ let mut _1 = pop!(self.values_stack, _1);
                         _1.push(_2);
                         let __ = _1;
 SV::_1(__)
+// raw production: mlhs_basic -> mlhs_head mlhs_item
+
 }
 
 
@@ -3656,6 +3808,8 @@ self.values_stack.pop();
                     //               push(@builder.splat(val[1], val[2]))
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_basic -> mlhs_head tSTAR mlhs_node
+
 }
 
 
@@ -3675,6 +3829,8 @@ self.values_stack.pop();
                     //               concat(val[4])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_basic -> mlhs_head tSTAR mlhs_node tCOMMA mlhs_post
+
 }
 
 
@@ -3690,6 +3846,8 @@ self.values_stack.pop();
                     //               push(@builder.splat(val[1]))
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_basic -> mlhs_head tSTAR
+
 }
 
 
@@ -3708,6 +3866,8 @@ self.values_stack.pop();
                     //               concat(val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_basic -> mlhs_head tSTAR tCOMMA mlhs_post
+
 }
 
 
@@ -3722,6 +3882,8 @@ self.values_stack.pop();
 //   result = [ @builder.splat(val[0], val[1]) ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_basic -> tSTAR mlhs_node
+
 }
 
 
@@ -3739,6 +3901,8 @@ self.values_stack.pop();
                     //              *val[3] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_basic -> tSTAR mlhs_node tCOMMA mlhs_post
+
 }
 
 
@@ -3752,6 +3916,8 @@ self.values_stack.pop();
 //   result = [ @builder.splat(val[0]) ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_basic -> tSTAR
+
 }
 
 
@@ -3768,6 +3934,8 @@ self.values_stack.pop();
                     //              *val[2] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_basic -> tSTAR tCOMMA mlhs_post
+
 }
 
 
@@ -3780,6 +3948,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: mlhs_item -> mlhs_node
+
 }
 
 
@@ -3795,6 +3965,8 @@ self.values_stack.pop();
 //   result = @builder.begin(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_item -> tLPAREN mlhs_inner rparen
+
 }
 
 
@@ -3809,6 +3981,8 @@ self.values_stack.pop();
 //   result = [ val[0] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_head -> mlhs_item tCOMMA
+
 }
 
 
@@ -3824,6 +3998,8 @@ self.values_stack.pop();
 //   result = val[0] << val[1]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_head -> mlhs_head mlhs_item tCOMMA
+
 }
 
 
@@ -3837,6 +4013,8 @@ self.values_stack.pop();
 //   result = [ val[0] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_post -> mlhs_item
+
 }
 
 
@@ -3852,6 +4030,8 @@ self.values_stack.pop();
 //   result = val[0] << val[2]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_post -> mlhs_post tCOMMA mlhs_item
+
 }
 
 
@@ -3865,6 +4045,8 @@ self.values_stack.pop();
 //   result = @builder.assignable(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_node -> user_variable
+
 }
 
 
@@ -3878,6 +4060,8 @@ self.values_stack.pop();
 //   result = @builder.assignable(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_node -> keyword_variable
+
 }
 
 
@@ -3894,6 +4078,8 @@ self.values_stack.pop();
 //   result = @builder.index_asgn(val[0], val[1], val[2], val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_node -> primary_value tLBRACK2 opt_call_args rbracket
+
 }
 
 
@@ -3909,6 +4095,8 @@ self.values_stack.pop();
 //   result = @builder.attr_asgn(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_node -> primary_value call_op tIDENTIFIER
+
 }
 
 
@@ -3924,6 +4112,8 @@ self.values_stack.pop();
 //   result = @builder.attr_asgn(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_node -> primary_value tCOLON2 tIDENTIFIER
+
 }
 
 
@@ -3939,6 +4129,8 @@ self.values_stack.pop();
 //   result = @builder.attr_asgn(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_node -> primary_value call_op tCONSTANT
+
 }
 
 
@@ -3955,6 +4147,8 @@ self.values_stack.pop();
                     //               @builder.const_fetch(val[0], val[1], val[2]))
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_node -> primary_value tCOLON2 tCONSTANT
+
 }
 
 
@@ -3970,6 +4164,8 @@ self.values_stack.pop();
                     //               @builder.const_global(val[0], val[1]))
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_node -> tCOLON3 tCONSTANT
+
 }
 
 
@@ -3983,6 +4179,8 @@ self.values_stack.pop();
 //   result = @builder.assignable(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mlhs_node -> backref
+
 }
 
 
@@ -3995,6 +4193,8 @@ let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::assignable(_1);
 SV::_2(__)
+// raw production: lhs -> user_variable
+
 }
 
 
@@ -4008,6 +4208,8 @@ self.values_stack.pop();
 // result = @builder.assignable(val[0])
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: lhs -> keyword_variable
+
 }
 
 
@@ -4024,6 +4226,8 @@ self.values_stack.pop();
 // result = @builder.index_asgn(val[0], val[1], val[2], val[3])
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: lhs -> primary_value tLBRACK2 opt_call_args rbracket
+
 }
 
 
@@ -4039,6 +4243,8 @@ self.values_stack.pop();
 // result = @builder.attr_asgn(val[0], val[1], val[2])
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: lhs -> primary_value call_op tIDENTIFIER
+
 }
 
 
@@ -4054,6 +4260,8 @@ self.values_stack.pop();
 // result = @builder.attr_asgn(val[0], val[1], val[2])
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: lhs -> primary_value tCOLON2 tIDENTIFIER
+
 }
 
 
@@ -4069,6 +4277,8 @@ self.values_stack.pop();
 // result = @builder.attr_asgn(val[0], val[1], val[2])
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: lhs -> primary_value call_op tCONSTANT
+
 }
 
 
@@ -4085,6 +4295,8 @@ self.values_stack.pop();
             //             @builder.const_fetch(val[0], val[1], val[2]))
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: lhs -> primary_value tCOLON2 tCONSTANT
+
 }
 
 
@@ -4100,6 +4312,8 @@ self.values_stack.pop();
             //             @builder.const_global(val[0], val[1]))
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: lhs -> tCOLON3 tCONSTANT
+
 }
 
 
@@ -4113,6 +4327,8 @@ self.values_stack.pop();
 // result = @builder.assignable(val[0])
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: lhs -> backref
+
 }
 
 
@@ -4126,6 +4342,8 @@ self.values_stack.pop();
 //   diagnostic :error, :module_name_const, nil, val[0]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: cname -> tIDENTIFIER
+
 }
 
 
@@ -4138,6 +4356,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: cname -> tCONSTANT
+
 }
 
 
@@ -4152,6 +4372,8 @@ self.values_stack.pop();
 //   result = @builder.const_global(val[0], val[1])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: cpath -> tCOLON3 cname
+
 }
 
 
@@ -4165,6 +4387,8 @@ self.values_stack.pop();
 //   result = @builder.const(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: cpath -> cname
+
 }
 
 
@@ -4180,6 +4404,8 @@ self.values_stack.pop();
 //   result = @builder.const_fetch(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: cpath -> primary_value tCOLON2 cname
+
 }
 
 
@@ -4192,6 +4418,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: fname -> tIDENTIFIER
+
 }
 
 
@@ -4204,6 +4432,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: fname -> tCONSTANT
+
 }
 
 
@@ -4216,6 +4446,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: fname -> tFID
+
 }
 
 
@@ -4228,6 +4460,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: fname -> op
+
 }
 
 
@@ -4240,6 +4474,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: fname -> reswords
+
 }
 
 
@@ -4253,6 +4489,8 @@ self.values_stack.pop();
 //   result = @builder.symbol(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fsym -> fname
+
 }
 
 
@@ -4265,6 +4503,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: fsym -> symbol
+
 }
 
 
@@ -4277,6 +4517,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: fitem -> fsym
+
 }
 
 
@@ -4289,6 +4531,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: fitem -> dsym
+
 }
 
 
@@ -4302,6 +4546,8 @@ self.values_stack.pop();
 //   result = [ val[0] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: undef_list -> fitem
+
 }
 
 
@@ -4318,6 +4564,8 @@ self.values_stack.pop();
 //   result = val[0] << val[3]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: undef_list -> undef_list tCOMMA fake_embedded_action_undef_list fitem
+
 }
 
 
@@ -4331,6 +4579,8 @@ fn _handler121(&mut self) -> SV {
 //   @lexer.state = :expr_fname
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action_undef_list -> undefined
+
 }
 
 
@@ -4343,6 +4593,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tPIPE
+
 }
 
 
@@ -4355,6 +4607,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tCARET
+
 }
 
 
@@ -4367,6 +4621,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tAMPER2
+
 }
 
 
@@ -4379,6 +4635,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tCMP
+
 }
 
 
@@ -4391,6 +4649,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tEQ
+
 }
 
 
@@ -4403,6 +4663,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tEQQ
+
 }
 
 
@@ -4415,6 +4677,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tMATCH
+
 }
 
 
@@ -4427,6 +4691,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tNMATCH
+
 }
 
 
@@ -4439,6 +4705,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tGT
+
 }
 
 
@@ -4451,6 +4719,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tGEQ
+
 }
 
 
@@ -4463,6 +4733,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tLT
+
 }
 
 
@@ -4475,6 +4747,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tLEQ
+
 }
 
 
@@ -4487,6 +4761,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tNEQ
+
 }
 
 
@@ -4499,6 +4775,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tLSHFT
+
 }
 
 
@@ -4511,6 +4789,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tRSHFT
+
 }
 
 
@@ -4523,6 +4803,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tPLUS
+
 }
 
 
@@ -4535,6 +4817,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tMINUS
+
 }
 
 
@@ -4547,6 +4831,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tSTAR2
+
 }
 
 
@@ -4559,6 +4845,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tSTAR
+
 }
 
 
@@ -4571,6 +4859,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tDIVIDE
+
 }
 
 
@@ -4583,6 +4873,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tPERCENT
+
 }
 
 
@@ -4595,6 +4887,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tPOW
+
 }
 
 
@@ -4607,6 +4901,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tBANG
+
 }
 
 
@@ -4619,6 +4915,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tTILDE
+
 }
 
 
@@ -4631,6 +4929,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tUPLUS
+
 }
 
 
@@ -4643,6 +4943,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tUMINUS
+
 }
 
 
@@ -4655,6 +4957,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tAREF
+
 }
 
 
@@ -4667,6 +4971,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tASET
+
 }
 
 
@@ -4679,6 +4985,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tDSTAR
+
 }
 
 
@@ -4691,6 +4999,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: op -> tBACK_REF2
+
 }
 
 
@@ -4703,6 +5013,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> k__LINE__
+
 }
 
 
@@ -4715,6 +5027,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> k__FILE__
+
 }
 
 
@@ -4727,6 +5041,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> k__ENCODING__
+
 }
 
 
@@ -4739,6 +5055,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> klBEGIN
+
 }
 
 
@@ -4751,6 +5069,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> klEND
+
 }
 
 
@@ -4763,6 +5083,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kALIAS
+
 }
 
 
@@ -4775,6 +5097,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kAND
+
 }
 
 
@@ -4787,6 +5111,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kBEGIN
+
 }
 
 
@@ -4799,6 +5125,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kBREAK
+
 }
 
 
@@ -4811,6 +5139,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kCASE
+
 }
 
 
@@ -4823,6 +5153,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kCLASS
+
 }
 
 
@@ -4835,6 +5167,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kDEF
+
 }
 
 
@@ -4847,6 +5181,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kDEFINED
+
 }
 
 
@@ -4859,6 +5195,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kDO
+
 }
 
 
@@ -4871,6 +5209,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kELSE
+
 }
 
 
@@ -4883,6 +5223,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kELSIF
+
 }
 
 
@@ -4895,6 +5237,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kEND
+
 }
 
 
@@ -4907,6 +5251,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kENSURE
+
 }
 
 
@@ -4919,6 +5265,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kFALSE
+
 }
 
 
@@ -4931,6 +5279,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kFOR
+
 }
 
 
@@ -4943,6 +5293,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kIN
+
 }
 
 
@@ -4955,6 +5307,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kMODULE
+
 }
 
 
@@ -4967,6 +5321,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kNEXT
+
 }
 
 
@@ -4979,6 +5335,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kNIL
+
 }
 
 
@@ -4991,6 +5349,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kNOT
+
 }
 
 
@@ -5003,6 +5363,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kOR
+
 }
 
 
@@ -5015,6 +5377,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kREDO
+
 }
 
 
@@ -5027,6 +5391,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kRESCUE
+
 }
 
 
@@ -5039,6 +5405,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kRETRY
+
 }
 
 
@@ -5051,6 +5419,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kRETURN
+
 }
 
 
@@ -5063,6 +5433,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kSELF
+
 }
 
 
@@ -5075,6 +5447,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kSUPER
+
 }
 
 
@@ -5087,6 +5461,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kTHEN
+
 }
 
 
@@ -5099,6 +5475,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kTRUE
+
 }
 
 
@@ -5111,6 +5489,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kUNDEF
+
 }
 
 
@@ -5123,6 +5503,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kWHEN
+
 }
 
 
@@ -5135,6 +5517,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kYIELD
+
 }
 
 
@@ -5147,6 +5531,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kIF
+
 }
 
 
@@ -5159,6 +5545,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kUNLESS
+
 }
 
 
@@ -5171,6 +5559,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kWHILE
+
 }
 
 
@@ -5183,6 +5573,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: reswords -> kUNTIL
+
 }
 
 
@@ -5197,6 +5589,8 @@ let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::assign(_1, *_2.interior_token, _3);
 SV::_2(__)
+// raw production: arg -> lhs tEQL arg_rhs
+
 }
 
 
@@ -5212,6 +5606,8 @@ self.values_stack.pop();
 // result = @builder.op_assign(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> var_lhs tOP_ASGN arg_rhs
+
 }
 
 
@@ -5233,6 +5629,8 @@ self.values_stack.pop();
             //             val[4], val[5])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN arg_rhs
+
 }
 
 
@@ -5253,6 +5651,8 @@ self.values_stack.pop();
             //             val[3], val[4])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> primary_value call_op tIDENTIFIER tOP_ASGN arg_rhs
+
 }
 
 
@@ -5273,6 +5673,8 @@ self.values_stack.pop();
             //             val[3], val[4])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> primary_value call_op tCONSTANT tOP_ASGN arg_rhs
+
 }
 
 
@@ -5293,6 +5695,8 @@ self.values_stack.pop();
             //             val[3], val[4])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> primary_value tCOLON2 tIDENTIFIER tOP_ASGN arg_rhs
+
 }
 
 
@@ -5312,6 +5716,8 @@ self.values_stack.pop();
             // result = @builder.op_assign(const, val[3], val[4])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> primary_value tCOLON2 tCONSTANT tOP_ASGN arg_rhs
+
 }
 
 
@@ -5330,6 +5736,8 @@ self.values_stack.pop();
             // result = @builder.op_assign(const, val[2], val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> tCOLON3 tCONSTANT tOP_ASGN arg_rhs
+
 }
 
 
@@ -5345,6 +5753,8 @@ self.values_stack.pop();
 // result = @builder.op_assign(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> backref tOP_ASGN arg_rhs
+
 }
 
 
@@ -5360,6 +5770,8 @@ self.values_stack.pop();
 // result = @builder.range_inclusive(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tDOT2 arg
+
 }
 
 
@@ -5375,6 +5787,8 @@ self.values_stack.pop();
 // result = @builder.range_exclusive(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tDOT3 arg
+
 }
 
 
@@ -5390,6 +5804,8 @@ self.values_stack.pop();
 // result = @builder.binary_op(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tPLUS arg
+
 }
 
 
@@ -5405,6 +5821,8 @@ self.values_stack.pop();
 // result = @builder.binary_op(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tMINUS arg
+
 }
 
 
@@ -5420,6 +5838,8 @@ self.values_stack.pop();
 // result = @builder.binary_op(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tSTAR2 arg
+
 }
 
 
@@ -5435,6 +5855,8 @@ self.values_stack.pop();
 // result = @builder.binary_op(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tDIVIDE arg
+
 }
 
 
@@ -5450,6 +5872,8 @@ self.values_stack.pop();
 // result = @builder.binary_op(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tPERCENT arg
+
 }
 
 
@@ -5465,6 +5889,8 @@ self.values_stack.pop();
 // result = @builder.binary_op(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tPOW arg
+
 }
 
 
@@ -5483,6 +5909,8 @@ self.values_stack.pop();
             //             val[1], val[2], val[3]))
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> tUNARY_NUM simple_numeric tPOW arg
+
 }
 
 
@@ -5497,6 +5925,8 @@ self.values_stack.pop();
 // result = @builder.unary_op(val[0], val[1])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> tUPLUS arg
+
 }
 
 
@@ -5511,6 +5941,8 @@ self.values_stack.pop();
 // result = @builder.unary_op(val[0], val[1])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> tUMINUS arg
+
 }
 
 
@@ -5526,6 +5958,8 @@ self.values_stack.pop();
 // result = @builder.binary_op(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tPIPE arg
+
 }
 
 
@@ -5541,6 +5975,8 @@ self.values_stack.pop();
 // result = @builder.binary_op(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tCARET arg
+
 }
 
 
@@ -5556,6 +5992,8 @@ self.values_stack.pop();
 // result = @builder.binary_op(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tAMPER2 arg
+
 }
 
 
@@ -5571,6 +6009,8 @@ self.values_stack.pop();
 // result = @builder.binary_op(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tCMP arg
+
 }
 
 
@@ -5583,6 +6023,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: arg -> rel_expr
+
 }
 
 
@@ -5598,6 +6040,8 @@ self.values_stack.pop();
 // result = @builder.binary_op(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tEQ arg
+
 }
 
 
@@ -5613,6 +6057,8 @@ self.values_stack.pop();
 // result = @builder.binary_op(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tEQQ arg
+
 }
 
 
@@ -5628,6 +6074,8 @@ self.values_stack.pop();
 // result = @builder.binary_op(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tNEQ arg
+
 }
 
 
@@ -5643,6 +6091,8 @@ self.values_stack.pop();
 // result = @builder.match_op(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tMATCH arg
+
 }
 
 
@@ -5658,6 +6108,8 @@ self.values_stack.pop();
 // result = @builder.binary_op(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tNMATCH arg
+
 }
 
 
@@ -5672,6 +6124,8 @@ self.values_stack.pop();
 // result = @builder.not_op(val[0], nil, val[1], nil)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> tBANG arg
+
 }
 
 
@@ -5686,6 +6140,8 @@ self.values_stack.pop();
 // result = @builder.unary_op(val[0], val[1])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> tTILDE arg
+
 }
 
 
@@ -5701,6 +6157,8 @@ self.values_stack.pop();
 // result = @builder.binary_op(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tLSHFT arg
+
 }
 
 
@@ -5716,6 +6174,8 @@ self.values_stack.pop();
 // result = @builder.binary_op(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tRSHFT arg
+
 }
 
 
@@ -5731,6 +6191,8 @@ self.values_stack.pop();
 // result = @builder.logical_op(:and, val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tANDOP arg
+
 }
 
 
@@ -5746,6 +6208,8 @@ self.values_stack.pop();
 // result = @builder.logical_op(:or, val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tOROP arg
+
 }
 
 
@@ -5761,6 +6225,8 @@ self.values_stack.pop();
 // result = @builder.keyword_cmd(:defined?, val[0], nil, [ val[2] ], nil)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> kDEFINED opt_nl arg
+
 }
 
 
@@ -5780,6 +6246,8 @@ self.values_stack.pop();
             //                         val[2], val[4], val[5])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg -> arg tEH arg opt_nl tCOLON arg
+
 }
 
 
@@ -5792,6 +6260,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: arg -> primary
+
 }
 
 
@@ -5804,6 +6274,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: relop -> tGT
+
 }
 
 
@@ -5816,6 +6288,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: relop -> tLT
+
 }
 
 
@@ -5828,6 +6302,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: relop -> tGEQ
+
 }
 
 
@@ -5840,6 +6316,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: relop -> tLEQ
+
 }
 
 
@@ -5855,6 +6333,8 @@ self.values_stack.pop();
 //   result = @builder.binary_op(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: rel_expr -> arg relop arg
+
 }
 
 
@@ -5870,6 +6350,8 @@ self.values_stack.pop();
 //   result = @builder.binary_op(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: rel_expr -> rel_expr relop arg
+
 }
 
 
@@ -5882,6 +6364,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: arg_value -> arg
+
 }
 
 
@@ -5894,6 +6378,8 @@ fn _handler239(&mut self) -> SV {
 
 let __ = vec![];
 SV::_1(__)
+// raw production: aref_args -> undefined
+
 }
 
 
@@ -5907,6 +6393,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: aref_args -> args trailer
+
 }
 
 
@@ -5923,6 +6411,8 @@ self.values_stack.pop();
 // result = val[0] << @builder.associate(nil, val[2], nil)
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: aref_args -> args tCOMMA assocs trailer
+
 }
 
 
@@ -5937,6 +6427,8 @@ self.values_stack.pop();
 // result = [ @builder.associate(nil, val[0], nil) ]
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: aref_args -> assocs trailer
+
 }
 
 
@@ -5949,6 +6441,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: arg_rhs -> arg
+
 }
 
 
@@ -5968,6 +6462,8 @@ self.values_stack.pop();
             // result = @builder.begin_body(val[0], [ rescue_body ])
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: arg_rhs -> arg kRESCUE_MOD arg
+
 }
 
 
@@ -5983,6 +6479,8 @@ self.values_stack.pop();
 //   result = val
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: paren_args -> tLPAREN2 opt_call_args rparen
+
 }
 
 
@@ -5996,6 +6494,8 @@ fn _handler246(&mut self) -> SV {
 //   result = [ nil, [], nil ]
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: opt_paren_args -> undefined
+
 }
 
 
@@ -6008,6 +6508,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: opt_paren_args -> paren_args
+
 }
 
 
@@ -6021,6 +6523,8 @@ fn _handler248(&mut self) -> SV {
 //   result = []
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: opt_call_args -> undefined
+
 }
 
 
@@ -6033,6 +6537,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: opt_call_args -> call_args
+
 }
 
 
@@ -6046,6 +6552,8 @@ self.values_stack.pop();
 
 let __ = SV::Undefined;
 __
+// raw production: opt_call_args -> args tCOMMA
+
 }
 
 
@@ -6062,6 +6570,8 @@ self.values_stack.pop();
 //   result = val[0] << @builder.associate(nil, val[2], nil)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: opt_call_args -> args tCOMMA assocs tCOMMA
+
 }
 
 
@@ -6076,6 +6586,8 @@ self.values_stack.pop();
 //   result = [ @builder.associate(nil, val[0], nil) ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: opt_call_args -> assocs tCOMMA
+
 }
 
 
@@ -6084,11 +6596,13 @@ fn _handler253(&mut self) -> SV {
     println!("   *** PARSER: _handler253");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
+let mut _1 = pop!(self.values_stack, _2);
 
 //   result = [ val[0] ]
-            wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+                        let __ = vec![_1];
+SV::_1(__)
+// raw production: call_args -> command
+
 }
 
 
@@ -6097,12 +6611,15 @@ fn _handler254(&mut self) -> SV {
     println!("   *** PARSER: _handler254");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _2 = pop!(self.values_stack, _1);
+let mut _1 = pop!(self.values_stack, _1);
 
 //   result = val[0].concat(val[1])
-            wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+                        _1.append(&mut _2);
+                        let __ = _1;
+SV::_1(__)
+// raw production: call_args -> args opt_block_arg
+
 }
 
 
@@ -6111,13 +6628,17 @@ fn _handler255(&mut self) -> SV {
     println!("   *** PARSER: _handler255");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _2 = pop!(self.values_stack, _1);
+let mut _1 = pop!(self.values_stack, _1);
 
 //   result = [ @builder.associate(nil, val[0], nil) ]
-                    //   result.concat(val[1])
-            wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+                        //   result.concat(val[1])
+                        let mut result = vec![node::associate(_1)];
+                        result.append(&mut _2);
+                        let __ = result;
+SV::_1(__)
+// raw production: call_args -> assocs opt_block_arg
+
 }
 
 
@@ -6126,16 +6647,21 @@ fn _handler256(&mut self) -> SV {
     println!("   *** PARSER: _handler256");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
+let mut _4 = pop!(self.values_stack, _1);
+let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _1 = pop!(self.values_stack, _1);
 
 //   assocs = @builder.associate(nil, val[2], nil)
-                    //   result = val[0] << assocs
-                    //   result.concat(val[3])
-            wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+                        //   result = val[0] << assocs
+                        //   result.concat(val[3])
+                        let mut assocs = node::associate(_3);
+                        _1.push(assocs);
+                        _1.append(&mut _4);
+                        let __ = _1;
+SV::_1(__)
+// raw production: call_args -> args tCOMMA assocs opt_block_arg
+
 }
 
 
@@ -6144,11 +6670,12 @@ fn _handler257(&mut self) -> SV {
     println!("   *** PARSER: _handler257");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
+let mut _1 = pop!(self.values_stack, _2);
 
-//   result =  [ val[0] ]
-            wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+let __ = vec![_1];
+SV::_1(__)
+// raw production: call_args -> block_arg
+
 }
 
 
@@ -6157,14 +6684,16 @@ fn _handler258(&mut self) -> SV {
     println!("   *** PARSER: _handler258");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _2 = pop!(self.values_stack, _1);
+let mut _1 = pop!(self.values_stack, _3);
 
-//   @lexer.cmdarg = val[0]
+// @lexer.cmdarg = val[0]
+        // result = val[1]
+        self.tokenizer.interior_lexer.cmdarg = _1;
+        let __ = _2;
+SV::_1(__)
+// raw production: command_args -> fake_embedded_action__command_args call_args
 
-                    //   result = val[1]
-                    wip!(); let __ =Node::DUMMY;
-SV::_2(__)
 }
 
 
@@ -6177,8 +6706,12 @@ fn _handler259(&mut self) -> SV {
 
 //   result = @lexer.cmdarg.dup
     //   @lexer.cmdarg.push(true)
-    wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+
+    let __ = self.tokenizer.interior_lexer.cmdarg.clone();
+    self.tokenizer.interior_lexer.cmdarg.push(true);
+SV::_3(__)
+// raw production: fake_embedded_action__command_args -> undefined
+
 }
 
 
@@ -6193,6 +6726,8 @@ self.values_stack.pop();
 //   result = @builder.block_pass(val[0], val[1])
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_arg -> tAMPER arg_value
+
 }
 
 
@@ -6201,12 +6736,13 @@ fn _handler261(&mut self) -> SV {
     println!("   *** PARSER: _handler261");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
+let mut _2 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 
-//   result = [ val[1] ]
-            wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+let __ = vec![_2];
+SV::_1(__)
+// raw production: opt_block_arg -> tCOMMA block_arg
+
 }
 
 
@@ -6217,9 +6753,10 @@ fn _handler262(&mut self) -> SV {
   // Semantic values prologue.
 
 
-//   result = []
-            wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+let __ = vec![];
+SV::_1(__)
+// raw production: opt_block_arg -> undefined
+
 }
 
 
@@ -6232,6 +6769,8 @@ let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
 SV::_1(__)
+// raw production: args -> arg_value
+
 }
 
 
@@ -6244,8 +6783,10 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = [ @builder.splat(val[0], val[1]) ]
-                    wip!(); let __ =Node::DUMMY;
+                        wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: args -> tSTAR arg_value
+
 }
 
 
@@ -6260,6 +6801,8 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3); let __ = _1;
 SV::_1(__)
+// raw production: args -> args tCOMMA arg_value
+
 }
 
 
@@ -6276,6 +6819,8 @@ self.values_stack.pop();
 //   result = val[0] << @builder.splat(val[2], val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: args -> args tCOMMA tSTAR arg_value
+
 }
 
 
@@ -6289,6 +6834,8 @@ self.values_stack.pop();
 //   result = @builder.array(nil, val[0], nil)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mrhs_arg -> mrhs
+
 }
 
 
@@ -6301,6 +6848,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: mrhs_arg -> arg_value
+
 }
 
 
@@ -6316,6 +6865,8 @@ self.values_stack.pop();
 //   result = val[0] << val[2]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mrhs -> args tCOMMA arg_value
+
 }
 
 
@@ -6332,6 +6883,8 @@ self.values_stack.pop();
 //   result = val[0] << @builder.splat(val[2], val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mrhs -> args tCOMMA tSTAR arg_value
+
 }
 
 
@@ -6346,6 +6899,8 @@ self.values_stack.pop();
 //   result = [ @builder.splat(val[0], val[1]) ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: mrhs -> tSTAR arg_value
+
 }
 
 
@@ -6356,10 +6911,11 @@ fn _handler272(&mut self) -> SV {
   // Semantic values prologue.
 
 
-// result = @lexer.cmdarg.dup
-    // @lexer.cmdarg.clear
-    wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+let __ = self.tokenizer.interior_lexer.cmdarg.clone();
+    self.tokenizer.interior_lexer.cmdarg.clear();
+SV::_3(__)
+// raw production: fake_embedded_action_primary_kBEGIN -> undefined
+
 }
 
 
@@ -6374,6 +6930,8 @@ fn _handler273(&mut self) -> SV {
     // @lexer.cmdarg.clear
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action_primary_tLPAREN_ARG -> undefined
+
 }
 
 
@@ -6387,6 +6945,8 @@ fn _handler274(&mut self) -> SV {
 // @lexer.state = :expr_endarg
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action_primary_tLPAREN_ARG_stmt -> undefined
+
 }
 
 
@@ -6400,6 +6960,8 @@ fn _handler275(&mut self) -> SV {
 // @lexer.state = :expr_endarg
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action_primary_tLPAREN_ARG_2 -> undefined
+
 }
 
 
@@ -6413,6 +6975,8 @@ fn _handler276(&mut self) -> SV {
 //   @lexer.cond.push(true)
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action_primary_kWHILE_1 -> undefined
+
 }
 
 
@@ -6426,6 +6990,8 @@ fn _handler277(&mut self) -> SV {
 //   @lexer.cond.pop
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action_primary_kWHILE_2 -> undefined
+
 }
 
 
@@ -6439,6 +7005,8 @@ fn _handler278(&mut self) -> SV {
 //   @lexer.cond.push(true)
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action_primary_kUNTIL_1 -> undefined
+
 }
 
 
@@ -6452,6 +7020,8 @@ fn _handler279(&mut self) -> SV {
 //   @lexer.cond.pop
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action_primary_kUNTIL_2 -> undefined
+
 }
 
 
@@ -6465,6 +7035,8 @@ fn _handler280(&mut self) -> SV {
 //   @lexer.cond.push(true)
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action__primary__kFOR_1 -> undefined
+
 }
 
 
@@ -6478,6 +7050,8 @@ fn _handler281(&mut self) -> SV {
 //   @lexer.cond.pop
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action__primary__kFOR_2 -> undefined
+
 }
 
 
@@ -6492,6 +7066,8 @@ fn _handler282(&mut self) -> SV {
     //   @lexer.push_cmdarg
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action__primary__kCLASS_1 -> undefined
+
 }
 
 
@@ -6509,6 +7085,8 @@ fn _handler283(&mut self) -> SV {
     //   @lexer.push_cmdarg
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action__primary__kCLASS_2 -> undefined
+
 }
 
 
@@ -6523,6 +7101,8 @@ fn _handler284(&mut self) -> SV {
     //   @lexer.push_cmdarg
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action__primary__kMODULE_1 -> undefined
+
 }
 
 
@@ -6538,6 +7118,8 @@ fn _handler285(&mut self) -> SV {
     //   @lexer.push_cmdarg
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action__primary__kDEF_1 -> undefined
+
 }
 
 
@@ -6551,6 +7133,8 @@ fn _handler286(&mut self) -> SV {
 //   @lexer.state = :expr_fname
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action__primary__kDEF_2 -> undefined
+
 }
 
 
@@ -6566,6 +7150,8 @@ fn _handler287(&mut self) -> SV {
     //   @lexer.push_cmdarg
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action__primary__kDEF_3 -> undefined
+
 }
 
 
@@ -6578,6 +7164,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: primary -> literal
+
 }
 
 
@@ -6590,6 +7178,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: primary -> strings
+
 }
 
 
@@ -6602,6 +7192,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: primary -> xstring
+
 }
 
 
@@ -6614,6 +7206,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: primary -> regexp
+
 }
 
 
@@ -6626,6 +7220,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: primary -> words
+
 }
 
 
@@ -6638,6 +7234,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: primary -> qwords
+
 }
 
 
@@ -6650,6 +7248,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: primary -> symbols
+
 }
 
 
@@ -6662,6 +7262,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: primary -> qsymbols
+
 }
 
 
@@ -6674,6 +7276,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: primary -> var_ref
+
 }
 
 
@@ -6686,6 +7290,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: primary -> backref
+
 }
 
 
@@ -6699,6 +7305,8 @@ self.values_stack.pop();
 // result = @builder.call_method(nil, nil, val[0])
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> tFID
+
 }
 
 
@@ -6717,6 +7325,8 @@ self.values_stack.pop();
             // result = @builder.begin_keyword(val[0], val[2], val[3])
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kBEGIN fake_embedded_action_primary_kBEGIN bodystmt kEND
+
 }
 
 
@@ -6736,6 +7346,8 @@ self.values_stack.pop();
             // result = @builder.begin(val[0], val[2], val[4])
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG stmt fake_embedded_action_primary_tLPAREN_ARG_stmt rparen
+
 }
 
 
@@ -6752,6 +7364,8 @@ self.values_stack.pop();
 // result = @builder.begin(val[0], nil, val[3])
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG_2 opt_nl tRPAREN
+
 }
 
 
@@ -6767,6 +7381,8 @@ self.values_stack.pop();
 // result = @builder.begin(val[0], val[1], val[2])
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> tLPAREN compstmt tRPAREN
+
 }
 
 
@@ -6781,6 +7397,8 @@ let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::const_fetch(_1, *_2.interior_token, *_3.interior_token);
 SV::_2(__)
+// raw production: primary -> primary_value tCOLON2 tCONSTANT
+
 }
 
 
@@ -6794,6 +7412,8 @@ let mut _1 = pop!(self.values_stack, _0);
 
 let __ = node::const_global(*_1.interior_token, *_2.interior_token);
 SV::_2(__)
+// raw production: primary -> tCOLON3 tCONSTANT
+
 }
 
 
@@ -6808,6 +7428,8 @@ let mut _1 = pop!(self.values_stack, _0);
 
 let __ = node::array(_2);
 SV::_2(__)
+// raw production: primary -> tLBRACK aref_args tRBRACK
+
 }
 
 
@@ -6822,6 +7444,8 @@ let mut _1 = pop!(self.values_stack, _0);
 
 let __ = node::associate(_2);
 SV::_2(__)
+// raw production: primary -> tLBRACE assoc_list tRCURLY
+
 }
 
 
@@ -6835,6 +7459,8 @@ self.values_stack.pop();
 //   result = @builder.keyword_cmd(:return, val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kRETURN
+
 }
 
 
@@ -6851,6 +7477,8 @@ self.values_stack.pop();
 //   result = @builder.keyword_cmd(:yield, val[0], val[1], val[2], val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kYIELD tLPAREN2 call_args rparen
+
 }
 
 
@@ -6866,6 +7494,8 @@ self.values_stack.pop();
 //   result = @builder.keyword_cmd(:yield, val[0], val[1], [], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kYIELD tLPAREN2 rparen
+
 }
 
 
@@ -6879,6 +7509,8 @@ self.values_stack.pop();
 //   result = @builder.keyword_cmd(:yield, val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kYIELD
+
 }
 
 
@@ -6897,6 +7529,8 @@ self.values_stack.pop();
                     //                                 val[2], [ val[3] ], val[4])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kDEFINED opt_nl tLPAREN2 expr rparen
+
 }
 
 
@@ -6913,6 +7547,8 @@ self.values_stack.pop();
 //   result = @builder.not_op(val[0], val[1], val[2], val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kNOT tLPAREN2 expr rparen
+
 }
 
 
@@ -6928,6 +7564,8 @@ self.values_stack.pop();
 //   result = @builder.not_op(val[0], val[1], nil, val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kNOT tLPAREN2 rparen
+
 }
 
 
@@ -6946,6 +7584,8 @@ self.values_stack.pop();
                     //                   begin_t, args, body, end_t)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> fcall brace_block
+
 }
 
 
@@ -6958,6 +7598,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: primary -> method_call
+
 }
 
 
@@ -6974,6 +7616,8 @@ self.values_stack.pop();
                     //                   begin_t, args, body, end_t)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> method_call brace_block
+
 }
 
 
@@ -6992,6 +7636,8 @@ self.values_stack.pop();
                     //                   begin_t, args, body, end_t)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> tLAMBDA lambda
+
 }
 
 
@@ -7013,6 +7659,8 @@ self.values_stack.pop();
                     //                               else_,  val[5])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kIF expr_value then compstmt if_tail kEND
+
 }
 
 
@@ -7034,6 +7682,8 @@ self.values_stack.pop();
                     //                               val[3], val[5])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kUNLESS expr_value then compstmt opt_else kEND
+
 }
 
 
@@ -7054,6 +7704,8 @@ self.values_stack.pop();
                         //                          val[5], val[6])
                         wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kWHILE fake_embedded_action_primary_kWHILE_1 expr_value do fake_embedded_action_primary_kWHILE_2 compstmt kEND
+
 }
 
 
@@ -7074,6 +7726,8 @@ self.values_stack.pop();
                     //                          val[5], val[6])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kUNTIL fake_embedded_action_primary_kUNTIL_1 expr_value do fake_embedded_action_primary_kUNTIL_2 compstmt kEND
+
 }
 
 
@@ -7095,6 +7749,8 @@ self.values_stack.pop();
                     //                          val[4])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kCASE expr_value opt_terms case_body kEND
+
 }
 
 
@@ -7115,6 +7771,8 @@ self.values_stack.pop();
                     //                          val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kCASE opt_terms case_body kEND
+
 }
 
 
@@ -7138,6 +7796,8 @@ self.values_stack.pop();
                     //                         val[5], val[7], val[8])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kFOR for_var kIN fake_embedded_action__primary__kFOR_1 expr_value do fake_embedded_action__primary__kFOR_2 compstmt kEND
+
 }
 
 
@@ -7166,6 +7826,8 @@ self.values_stack.pop();
                     //   @static_env.unextend
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kCLASS cpath superclass fake_embedded_action__primary__kCLASS_1 bodystmt kEND
+
 }
 
 
@@ -7191,6 +7853,8 @@ self.values_stack.pop();
                     //   @def_level = val[4]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kCLASS tLSHFT expr term fake_embedded_action__primary__kCLASS_2 bodystmt kEND
+
 }
 
 
@@ -7216,6 +7880,8 @@ self.values_stack.pop();
                     //   @static_env.unextend
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kMODULE cpath fake_embedded_action__primary__kMODULE_1 bodystmt kEND
+
 }
 
 
@@ -7239,6 +7905,8 @@ self.values_stack.pop();
                     //   @def_level -= 1
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kDEF fname fake_embedded_action__primary__kDEF_1 f_arglist bodystmt kEND
+
 }
 
 
@@ -7265,6 +7933,8 @@ self.values_stack.pop();
                     //   @def_level -= 1
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kDEF singleton dot_or_colon fake_embedded_action__primary__kDEF_2 fname fake_embedded_action__primary__kDEF_3 f_arglist bodystmt kEND
+
 }
 
 
@@ -7278,6 +7948,8 @@ self.values_stack.pop();
 //   result = @builder.keyword_cmd(:break, val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kBREAK
+
 }
 
 
@@ -7291,6 +7963,8 @@ self.values_stack.pop();
 //   result = @builder.keyword_cmd(:next, val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kNEXT
+
 }
 
 
@@ -7304,6 +7978,8 @@ self.values_stack.pop();
 //   result = @builder.keyword_cmd(:redo, val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kREDO
+
 }
 
 
@@ -7317,6 +7993,8 @@ self.values_stack.pop();
 //   result = @builder.keyword_cmd(:retry, val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: primary -> kRETRY
+
 }
 
 
@@ -7329,6 +8007,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: primary_value -> primary
+
 }
 
 
@@ -7341,6 +8021,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: then -> term
+
 }
 
 
@@ -7353,6 +8035,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: then -> kTHEN
+
 }
 
 
@@ -7367,6 +8051,8 @@ self.values_stack.pop();
 //   result = val[1]
                         let __ = _2;
 SV::_0(__)
+// raw production: then -> term kTHEN
+
 }
 
 
@@ -7379,6 +8065,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: do -> term
+
 }
 
 
@@ -7391,6 +8079,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: do -> kDO_COND
+
 }
 
 
@@ -7403,6 +8093,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: if_tail -> opt_else
+
 }
 
 
@@ -7425,6 +8117,8 @@ self.values_stack.pop();
                     //            ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: if_tail -> kELSIF expr_value then compstmt if_tail
+
 }
 
 
@@ -7437,6 +8131,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: opt_else -> none
+
 }
 
 
@@ -7451,6 +8147,8 @@ self.values_stack.pop();
 //   result = val
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: opt_else -> kELSE compstmt
+
 }
 
 
@@ -7463,6 +8161,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: for_var -> lhs
+
 }
 
 
@@ -7475,6 +8175,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: for_var -> mlhs
+
 }
 
 
@@ -7488,6 +8190,8 @@ self.values_stack.pop();
 //   result = @builder.arg(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_marg -> f_norm_arg
+
 }
 
 
@@ -7503,6 +8207,8 @@ self.values_stack.pop();
 //   result = @builder.multi_lhs(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_marg -> tLPAREN f_margs rparen
+
 }
 
 
@@ -7516,6 +8222,8 @@ self.values_stack.pop();
 //   result = [ val[0] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_marg_list -> f_marg
+
 }
 
 
@@ -7531,6 +8239,8 @@ self.values_stack.pop();
 //   result = val[0] << val[2]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_marg_list -> f_marg_list tCOMMA f_marg
+
 }
 
 
@@ -7543,6 +8253,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: f_margs -> f_marg_list
+
 }
 
 
@@ -7560,6 +8272,8 @@ self.values_stack.pop();
                     //               push(@builder.restarg(val[2], val[3]))
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_margs -> f_marg_list tCOMMA tSTAR f_norm_arg
+
 }
 
 
@@ -7580,6 +8294,8 @@ self.values_stack.pop();
                     //               concat(val[5])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_margs -> f_marg_list tCOMMA tSTAR f_norm_arg tCOMMA f_marg_list
+
 }
 
 
@@ -7596,6 +8312,8 @@ self.values_stack.pop();
                     //               push(@builder.restarg(val[2]))
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_margs -> f_marg_list tCOMMA tSTAR
+
 }
 
 
@@ -7615,6 +8333,8 @@ self.values_stack.pop();
                     //               concat(val[4])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_margs -> f_marg_list tCOMMA tSTAR tCOMMA f_marg_list
+
 }
 
 
@@ -7629,6 +8349,8 @@ self.values_stack.pop();
 //   result = [ @builder.restarg(val[0], val[1]) ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_margs -> tSTAR f_norm_arg
+
 }
 
 
@@ -7646,6 +8368,8 @@ self.values_stack.pop();
                     //              *val[3] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_margs -> tSTAR f_norm_arg tCOMMA f_marg_list
+
 }
 
 
@@ -7659,6 +8383,8 @@ self.values_stack.pop();
 //   result = [ @builder.restarg(val[0]) ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_margs -> tSTAR
+
 }
 
 
@@ -7675,6 +8401,8 @@ self.values_stack.pop();
                     //              *val[2] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_margs -> tSTAR tCOMMA f_marg_list
+
 }
 
 
@@ -7691,6 +8419,8 @@ self.values_stack.pop();
 //   result = val[0].concat(val[2]).concat(val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_args_tail -> f_block_kwarg tCOMMA f_kwrest opt_f_block_arg
+
 }
 
 
@@ -7705,6 +8435,8 @@ self.values_stack.pop();
 //   result = val[0].concat(val[1])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_args_tail -> f_block_kwarg opt_f_block_arg
+
 }
 
 
@@ -7719,6 +8451,8 @@ self.values_stack.pop();
 //   result = val[0].concat(val[1])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_args_tail -> f_kwrest opt_f_block_arg
+
 }
 
 
@@ -7732,6 +8466,8 @@ self.values_stack.pop();
 //   result = [ val[0] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_args_tail -> f_block_arg
+
 }
 
 
@@ -7746,6 +8482,8 @@ self.values_stack.pop();
 //   result = val[1]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: opt_block_args_tail -> tCOMMA block_args_tail
+
 }
 
 
@@ -7759,6 +8497,8 @@ fn _handler364(&mut self) -> SV {
 //   result = []
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: opt_block_args_tail -> undefined
+
 }
 
 
@@ -7780,6 +8520,8 @@ self.values_stack.pop();
                     //               concat(val[5])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_param -> f_arg tCOMMA f_block_optarg tCOMMA f_rest_arg opt_block_args_tail
+
 }
 
 
@@ -7804,6 +8546,8 @@ self.values_stack.pop();
                     //               concat(val[7])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_param -> f_arg tCOMMA f_block_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_block_args_tail
+
 }
 
 
@@ -7822,6 +8566,8 @@ self.values_stack.pop();
                     //               concat(val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_param -> f_arg tCOMMA f_block_optarg opt_block_args_tail
+
 }
 
 
@@ -7843,6 +8589,8 @@ self.values_stack.pop();
                     //               concat(val[5])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_param -> f_arg tCOMMA f_block_optarg tCOMMA f_arg opt_block_args_tail
+
 }
 
 
@@ -7861,6 +8609,8 @@ self.values_stack.pop();
                     //               concat(val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_param -> f_arg tCOMMA f_rest_arg opt_block_args_tail
+
 }
 
 
@@ -7874,6 +8624,8 @@ self.values_stack.pop();
 
 let __ = SV::Undefined;
 __
+// raw production: block_param -> f_arg tCOMMA
+
 }
 
 
@@ -7895,6 +8647,8 @@ self.values_stack.pop();
                     //               concat(val[5])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_param -> f_arg tCOMMA f_rest_arg tCOMMA f_arg opt_block_args_tail
+
 }
 
 
@@ -7913,6 +8667,8 @@ self.values_stack.pop();
                     //   end
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_param -> f_arg opt_block_args_tail
+
 }
 
 
@@ -7931,6 +8687,8 @@ self.values_stack.pop();
                     //               concat(val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_param -> f_block_optarg tCOMMA f_rest_arg opt_block_args_tail
+
 }
 
 
@@ -7952,6 +8710,8 @@ self.values_stack.pop();
                     //               concat(val[5])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_param -> f_block_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_block_args_tail
+
 }
 
 
@@ -7967,6 +8727,8 @@ self.values_stack.pop();
                     //               concat(val[1])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_param -> f_block_optarg opt_block_args_tail
+
 }
 
 
@@ -7985,6 +8747,8 @@ self.values_stack.pop();
                     //               concat(val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_param -> f_block_optarg tCOMMA f_arg opt_block_args_tail
+
 }
 
 
@@ -8000,6 +8764,8 @@ self.values_stack.pop();
                     //               concat(val[1])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_param -> f_rest_arg opt_block_args_tail
+
 }
 
 
@@ -8018,6 +8784,8 @@ self.values_stack.pop();
                     //               concat(val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_param -> f_rest_arg tCOMMA f_arg opt_block_args_tail
+
 }
 
 
@@ -8030,6 +8798,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: block_param -> block_args_tail
+
 }
 
 
@@ -8043,6 +8813,8 @@ fn _handler380(&mut self) -> SV {
 //   result = @builder.args(nil, [], nil)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: opt_block_param -> undefined
+
 }
 
 
@@ -8056,6 +8828,8 @@ self.values_stack.pop();
 //   @lexer.state = :expr_value
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: opt_block_param -> block_param_def
+
 }
 
 
@@ -8071,6 +8845,8 @@ self.values_stack.pop();
 //   result = @builder.args(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_param_def -> tPIPE opt_bv_decl tPIPE
+
 }
 
 
@@ -8084,6 +8860,8 @@ self.values_stack.pop();
 //   result = @builder.args(val[0], [], val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_param_def -> tOROP
+
 }
 
 
@@ -8100,6 +8878,8 @@ self.values_stack.pop();
 //   result = @builder.args(val[0], val[1].concat(val[2]), val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_param_def -> tPIPE block_param opt_bv_decl tPIPE
+
 }
 
 
@@ -8113,6 +8893,8 @@ self.values_stack.pop();
 //   result = []
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: opt_bv_decl -> opt_nl
+
 }
 
 
@@ -8129,6 +8911,8 @@ self.values_stack.pop();
 //   result = val[2]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: opt_bv_decl -> opt_nl tSEMI bv_decls opt_nl
+
 }
 
 
@@ -8142,6 +8926,8 @@ self.values_stack.pop();
 //   result = [ val[0] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: bv_decls -> bvar
+
 }
 
 
@@ -8157,6 +8943,8 @@ self.values_stack.pop();
 //   result = val[0] << val[2]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: bv_decls -> bv_decls tCOMMA bvar
+
 }
 
 
@@ -8171,6 +8959,8 @@ self.values_stack.pop();
                     //   result = @builder.shadowarg(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: bvar -> tIDENTIFIER
+
 }
 
 
@@ -8183,6 +8973,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: bvar -> f_bad_arg
+
 }
 
 
@@ -8196,6 +8988,8 @@ fn _handler391(&mut self) -> SV {
 //   @static_env.extend_dynamic
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action_lambda_1 -> undefined
+
 }
 
 
@@ -8210,6 +9004,8 @@ fn _handler392(&mut self) -> SV {
     //   @lexer.cmdarg.clear
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action_lambda_2 -> undefined
+
 }
 
 
@@ -8231,6 +9027,8 @@ self.values_stack.pop();
                     //   @static_env.unextend
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: lambda -> fake_embedded_action_lambda_1 f_larglist fake_embedded_action_lambda_2 lambda_body
+
 }
 
 
@@ -8247,6 +9045,8 @@ self.values_stack.pop();
 //   result = @builder.args(val[0], val[1].concat(val[2]), val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_larglist -> tLPAREN2 f_args opt_bv_decl tRPAREN
+
 }
 
 
@@ -8260,6 +9060,8 @@ self.values_stack.pop();
 //   result = @builder.args(nil, val[0], nil)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_larglist -> f_args
+
 }
 
 
@@ -8275,6 +9077,8 @@ self.values_stack.pop();
 //   result = [ val[0], val[1], val[2] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: lambda_body -> tLAMBEG compstmt tRCURLY
+
 }
 
 
@@ -8290,6 +9094,8 @@ self.values_stack.pop();
 //   result = [ val[0], val[1], val[2] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: lambda_body -> kDO_LAMBDA compstmt kEND
+
 }
 
 
@@ -8305,6 +9111,8 @@ self.values_stack.pop();
 //   result = [ val[0], *val[1], val[2] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: do_block -> kDO_BLOCK do_body kEND
+
 }
 
 
@@ -8321,6 +9129,8 @@ self.values_stack.pop();
                     //                   begin_t, block_args, body, end_t)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_call -> command do_block
+
 }
 
 
@@ -8339,6 +9149,8 @@ self.values_stack.pop();
                     //               lparen_t, args, rparen_t)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_call -> block_call dot_or_colon operation2 opt_paren_args
+
 }
 
 
@@ -8362,6 +9174,8 @@ self.values_stack.pop();
                     //                   begin_t, args, body, end_t)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_call -> block_call dot_or_colon operation2 opt_paren_args brace_block
+
 }
 
 
@@ -8384,6 +9198,8 @@ self.values_stack.pop();
                     //                   begin_t, args, body, end_t)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: block_call -> block_call dot_or_colon operation2 command_args do_block
+
 }
 
 
@@ -8400,6 +9216,8 @@ self.values_stack.pop();
                     //               lparen_t, args, rparen_t)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: method_call -> fcall paren_args
+
 }
 
 
@@ -8418,6 +9236,8 @@ self.values_stack.pop();
                     //               lparen_t, args, rparen_t)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: method_call -> primary_value call_op operation2 opt_paren_args
+
 }
 
 
@@ -8436,6 +9256,8 @@ self.values_stack.pop();
                     //               lparen_t, args, rparen_t)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: method_call -> primary_value tCOLON2 operation2 paren_args
+
 }
 
 
@@ -8451,6 +9273,8 @@ self.values_stack.pop();
 //   result = @builder.call_method(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: method_call -> primary_value tCOLON2 operation3
+
 }
 
 
@@ -8468,6 +9292,8 @@ self.values_stack.pop();
                     //               lparen_t, args, rparen_t)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: method_call -> primary_value call_op paren_args
+
 }
 
 
@@ -8485,6 +9311,8 @@ self.values_stack.pop();
                     //               lparen_t, args, rparen_t)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: method_call -> primary_value tCOLON2 paren_args
+
 }
 
 
@@ -8501,6 +9329,8 @@ self.values_stack.pop();
                     //               lparen_t, args, rparen_t)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: method_call -> kSUPER paren_args
+
 }
 
 
@@ -8514,6 +9344,8 @@ self.values_stack.pop();
 //   result = @builder.keyword_cmd(:zsuper, val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: method_call -> kSUPER
+
 }
 
 
@@ -8530,6 +9362,8 @@ self.values_stack.pop();
 //   result = @builder.index(val[0], val[1], val[2], val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: method_call -> primary_value tLBRACK2 opt_call_args rbracket
+
 }
 
 
@@ -8545,6 +9379,8 @@ self.values_stack.pop();
 //   result = [ val[0], *val[1], val[2] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: brace_block -> tLCURLY brace_body tRCURLY
+
 }
 
 
@@ -8560,6 +9396,8 @@ self.values_stack.pop();
 //   result = [ val[0], *val[1], val[2] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: brace_block -> kDO do_body kEND
+
 }
 
 
@@ -8573,6 +9411,8 @@ fn _handler414(&mut self) -> SV {
 //   @static_env.extend_dynamic
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action_brace_body_1 -> undefined
+
 }
 
 
@@ -8587,6 +9427,8 @@ fn _handler415(&mut self) -> SV {
     // @lexer.cmdarg.clear
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action_brace_body_2 -> undefined
+
 }
 
 
@@ -8607,6 +9449,8 @@ self.values_stack.pop();
                     //   @lexer.cmdarg.pop
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: brace_body -> fake_embedded_action_brace_body_1 fake_embedded_action_brace_body_2 opt_block_param compstmt
+
 }
 
 
@@ -8620,6 +9464,8 @@ fn _handler417(&mut self) -> SV {
 //   @static_env.extend_dynamic
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action_do_body_1 -> undefined
+
 }
 
 
@@ -8634,6 +9480,8 @@ fn _handler418(&mut self) -> SV {
     //   @lexer.cmdarg.clear
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action_do_body_2 -> undefined
+
 }
 
 
@@ -8653,6 +9501,8 @@ self.values_stack.pop();
                     //   @lexer.cmdarg = val[1]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: do_body -> fake_embedded_action_do_body_1 fake_embedded_action_do_body_2 opt_block_param bodystmt
+
 }
 
 
@@ -8671,6 +9521,8 @@ self.values_stack.pop();
                     //              *val[4] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: case_body -> kWHEN args then compstmt cases
+
 }
 
 
@@ -8684,6 +9536,8 @@ self.values_stack.pop();
 //   result = [ val[0] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: cases -> opt_else
+
 }
 
 
@@ -8696,6 +9550,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: cases -> case_body
+
 }
 
 
@@ -8723,6 +9579,8 @@ self.values_stack.pop();
                     //              *val[5] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: opt_rescue -> kRESCUE exc_list exc_var then compstmt opt_rescue
+
 }
 
 
@@ -8736,6 +9594,8 @@ fn _handler424(&mut self) -> SV {
 //   result = []
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: opt_rescue -> undefined
+
 }
 
 
@@ -8749,6 +9609,8 @@ self.values_stack.pop();
 //   result = [ val[0] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: exc_list -> arg_value
+
 }
 
 
@@ -8761,6 +9623,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: exc_list -> mrhs
+
 }
 
 
@@ -8773,6 +9637,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: exc_list -> none
+
 }
 
 
@@ -8787,6 +9653,8 @@ self.values_stack.pop();
 //   result = [ val[0], val[1] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: exc_var -> tASSOC lhs
+
 }
 
 
@@ -8799,6 +9667,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: exc_var -> none
+
 }
 
 
@@ -8813,6 +9683,8 @@ self.values_stack.pop();
 //   result = [ val[0], val[1] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: opt_ensure -> kENSURE compstmt
+
 }
 
 
@@ -8825,6 +9697,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: opt_ensure -> none
+
 }
 
 
@@ -8837,6 +9711,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: literal -> numeric
+
 }
 
 
@@ -8849,6 +9725,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: literal -> symbol
+
 }
 
 
@@ -8861,6 +9739,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: literal -> dsym
+
 }
 
 
@@ -8875,6 +9755,8 @@ let mut _1 = pop!(self.values_stack, _1);
 
         let __ = node::string_compose(_1);
 SV::_2(__)
+// raw production: strings -> string
+
 }
 
 
@@ -8887,6 +9769,8 @@ let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
 SV::_1(__)
+// raw production: string -> string1
+
 }
 
 
@@ -8901,6 +9785,8 @@ self.values_stack.pop();
 // result = val[0] << val[1]
         wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: string -> string string1
+
 }
 
 
@@ -8919,6 +9805,8 @@ let mut _1 = pop!(self.values_stack, _0);
         let __ = node::string_compose(_2);
         // TODO dedent_string;
 SV::_2(__)
+// raw production: string1 -> tSTRING_BEG string_contents tSTRING_END
+
 }
 
 
@@ -8938,6 +9826,8 @@ let mut _1 = pop!(self.values_stack, _0);
         } else { unreachable!(); }
         // TODO builder.dedent_string;
 SV::_2(__)
+// raw production: string1 -> tSTRING
+
 }
 
 
@@ -8951,6 +9841,8 @@ self.values_stack.pop();
 // result = @builder.character(val[0])
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: string1 -> tCHARACTER
+
 }
 
 
@@ -8967,6 +9859,8 @@ self.values_stack.pop();
                     //   result = @builder.dedent_string(string, @lexer.dedent_level)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: xstring -> tXSTRING_BEG xstring_contents tSTRING_END
+
 }
 
 
@@ -8984,6 +9878,8 @@ self.values_stack.pop();
                     //   result = @builder.regexp_compose(val[0], val[1], val[2], opts)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: regexp -> tREGEXP_BEG regexp_contents tSTRING_END tREGEXP_OPT
+
 }
 
 
@@ -9000,6 +9896,8 @@ self.values_stack.pop();
 
         let __ = node::words_compose(_2);
 SV::_2(__)
+// raw production: words -> tWORDS_BEG word_list tSTRING_END
+
 }
 
 
@@ -9012,6 +9910,8 @@ fn _handler444(&mut self) -> SV {
 
 let __ = vec![];
 SV::_1(__)
+// raw production: word_list -> undefined
+
 }
 
 
@@ -9029,6 +9929,8 @@ let mut _1 = pop!(self.values_stack, _1);
         _1.push(_2);
         let __ = _1;
 SV::_1(__)
+// raw production: word_list -> word_list word tSPACE
+
 }
 
 
@@ -9041,6 +9943,8 @@ let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
 SV::_1(__)
+// raw production: word -> string_content
+
 }
 
 
@@ -9054,6 +9958,8 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_2); let __ = _1;
 SV::_1(__)
+// raw production: word -> word string_content
+
 }
 
 
@@ -9069,6 +9975,8 @@ self.values_stack.pop();
 //   result = @builder.symbols_compose(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: symbols -> tSYMBOLS_BEG symbol_list tSTRING_END
+
 }
 
 
@@ -9082,6 +9990,8 @@ fn _handler449(&mut self) -> SV {
 //   result = []
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: symbol_list -> undefined
+
 }
 
 
@@ -9097,6 +10007,8 @@ self.values_stack.pop();
 //   result = val[0] << @builder.word(val[1])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: symbol_list -> symbol_list word tSPACE
+
 }
 
 
@@ -9111,6 +10023,8 @@ self.values_stack.pop();
 
 let __ = node::words_compose(_2);
 SV::_2(__)
+// raw production: qwords -> tQWORDS_BEG qword_list tSTRING_END
+
 }
 
 
@@ -9126,6 +10040,8 @@ self.values_stack.pop();
 //   result = @builder.symbols_compose(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: qsymbols -> tQSYMBOLS_BEG qsym_list tSTRING_END
+
 }
 
 
@@ -9138,6 +10054,8 @@ fn _handler453(&mut self) -> SV {
 
 let __ = vec![];
 SV::_1(__)
+// raw production: qword_list -> undefined
+
 }
 
 
@@ -9153,6 +10071,8 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.push(node::string_internal(*_2.interior_token));
         let __ = _1;
 SV::_1(__)
+// raw production: qword_list -> qword_list tSTRING_CONTENT tSPACE
+
 }
 
 
@@ -9166,6 +10086,8 @@ fn _handler455(&mut self) -> SV {
 //   result = []
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: qsym_list -> undefined
+
 }
 
 
@@ -9181,6 +10103,8 @@ self.values_stack.pop();
 //   result = val[0] << @builder.symbol_internal(val[1])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: qsym_list -> qsym_list tSTRING_CONTENT tSPACE
+
 }
 
 
@@ -9193,6 +10117,8 @@ fn _handler457(&mut self) -> SV {
 
 let __ = vec![];
 SV::_1(__)
+// raw production: string_contents -> undefined
+
 }
 
 
@@ -9207,6 +10133,8 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.push(_2);
         let __ = _1;
 SV::_1(__)
+// raw production: string_contents -> string_contents string_content
+
 }
 
 
@@ -9219,6 +10147,8 @@ fn _handler459(&mut self) -> SV {
 
 let __ = vec![];
 SV::_1(__)
+// raw production: xstring_contents -> undefined
+
 }
 
 
@@ -9233,6 +10163,8 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.push(_2);
         let __ = _1;
 SV::_1(__)
+// raw production: xstring_contents -> xstring_contents string_content
+
 }
 
 
@@ -9246,6 +10178,8 @@ fn _handler461(&mut self) -> SV {
 //   result = []
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: regexp_contents -> undefined
+
 }
 
 
@@ -9260,6 +10194,8 @@ self.values_stack.pop();
 //   result = val[0] << val[1]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: regexp_contents -> regexp_contents string_content
+
 }
 
 
@@ -9274,6 +10210,8 @@ fn _handler463(&mut self) -> SV {
     // @lexer.cmdarg.push(false)
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action__string_content__tSTRING_DBEG -> undefined
+
 }
 
 
@@ -9291,6 +10229,8 @@ let mut _1 = pop!(self.values_stack, _0);
             __ = Node::Str(string_value);
         } else { unreachable!(); };
 SV::_2(__)
+// raw production: string_content -> tSTRING_CONTENT
+
 }
 
 
@@ -9305,6 +10245,8 @@ self.values_stack.pop();
 // result = val[1]
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: string_content -> tSTRING_DVAR string_dvar
+
 }
 
 
@@ -9324,6 +10266,8 @@ self.values_stack.pop();
             // result = @builder.begin(val[0], val[2], val[3])
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: string_content -> tSTRING_DBEG fake_embedded_action__string_content__tSTRING_DBEG compstmt tSTRING_DEND
+
 }
 
 
@@ -9337,6 +10281,8 @@ self.values_stack.pop();
 //   result = @builder.gvar(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: string_dvar -> tGVAR
+
 }
 
 
@@ -9350,6 +10296,8 @@ self.values_stack.pop();
 //   result = @builder.ivar(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: string_dvar -> tIVAR
+
 }
 
 
@@ -9363,6 +10311,8 @@ self.values_stack.pop();
 //   result = @builder.cvar(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: string_dvar -> tCVAR
+
 }
 
 
@@ -9375,6 +10325,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: string_dvar -> backref
+
 }
 
 
@@ -9391,6 +10343,8 @@ let mut _1 = pop!(self.values_stack, _0);
         // TODO lexer.state
         let __ = node::symbol(*_1.interior_token);
 SV::_2(__)
+// raw production: symbol -> tSYMBOL
+
 }
 
 
@@ -9409,6 +10363,8 @@ let mut _1 = pop!(self.values_stack, _0);
         // TODO lexer.state
         let __ = node::symbol_compose(_2);
 SV::_2(__)
+// raw production: dsym -> tSYMBEG xstring_contents tSTRING_END
+
 }
 
 
@@ -9421,6 +10377,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: numeric -> simple_numeric
+
 }
 
 
@@ -9440,6 +10398,8 @@ self.values_stack.pop();
                     //   end
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: numeric -> tUNARY_NUM simple_numeric
+
 }
 
 
@@ -9461,6 +10421,8 @@ let mut _1 = self.values_stack.pop().unwrap();
             } else { unreachable!(); }
         } else { unreachable!(); };
 SV::_2(__)
+// raw production: simple_numeric -> tINTEGER
+
 }
 
 
@@ -9475,6 +10437,8 @@ self.values_stack.pop();
             // result = @builder.float(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: simple_numeric -> tFLOAT
+
 }
 
 
@@ -9489,6 +10453,8 @@ self.values_stack.pop();
             // result = @builder.rational(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: simple_numeric -> tRATIONAL
+
 }
 
 
@@ -9503,6 +10469,8 @@ self.values_stack.pop();
             // result = @builder.complex(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: simple_numeric -> tIMAGINARY
+
 }
 
 
@@ -9515,6 +10483,8 @@ let mut _1 = pop!(self.values_stack, _0);
 
 let __ = node::ident(*_1.interior_token);
 SV::_2(__)
+// raw production: user_variable -> tIDENTIFIER
+
 }
 
 
@@ -9527,6 +10497,8 @@ let mut _1 = pop!(self.values_stack, _0);
 
 let __ = node::ivar(*_1.interior_token);
 SV::_2(__)
+// raw production: user_variable -> tIVAR
+
 }
 
 
@@ -9539,6 +10511,8 @@ let mut _1 = pop!(self.values_stack, _0);
 
 let __ = node::gvar(*_1.interior_token);
 SV::_2(__)
+// raw production: user_variable -> tGVAR
+
 }
 
 
@@ -9551,6 +10525,8 @@ let mut _1 = pop!(self.values_stack, _0);
 
 let __ = node::build_const(*_1.interior_token);
 SV::_2(__)
+// raw production: user_variable -> tCONSTANT
+
 }
 
 
@@ -9563,6 +10539,8 @@ let mut _1 = pop!(self.values_stack, _0);
 
 let __ = node::cvar(*_1.interior_token);
 SV::_2(__)
+// raw production: user_variable -> tCVAR
+
 }
 
 
@@ -9575,6 +10553,8 @@ self.values_stack.pop();
 
 let __ = Node::Nil;
 SV::_2(__)
+// raw production: keyword_variable -> kNIL
+
 }
 
 
@@ -9587,6 +10567,8 @@ self.values_stack.pop();
 
 let __ = Node::NSelf;
 SV::_2(__)
+// raw production: keyword_variable -> kSELF
+
 }
 
 
@@ -9599,6 +10581,8 @@ self.values_stack.pop();
 
 let __ = Node::True;
 SV::_2(__)
+// raw production: keyword_variable -> kTRUE
+
 }
 
 
@@ -9611,6 +10595,8 @@ self.values_stack.pop();
 
 let __ = Node::False;
 SV::_2(__)
+// raw production: keyword_variable -> kFALSE
+
 }
 
 
@@ -9624,6 +10610,8 @@ self.values_stack.pop();
 //   result = @builder.__FILE__(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: keyword_variable -> k__FILE__
+
 }
 
 
@@ -9637,6 +10625,8 @@ self.values_stack.pop();
 //   result = @builder.__LINE__(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: keyword_variable -> k__LINE__
+
 }
 
 
@@ -9650,6 +10640,8 @@ self.values_stack.pop();
 //   result = @builder.__ENCODING__(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: keyword_variable -> k__ENCODING__
+
 }
 
 
@@ -9662,6 +10654,8 @@ let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::accessible(_1);
 SV::_2(__)
+// raw production: var_ref -> user_variable
+
 }
 
 
@@ -9674,6 +10668,8 @@ let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::accessible(_1);
 SV::_2(__)
+// raw production: var_ref -> keyword_variable
+
 }
 
 
@@ -9687,6 +10683,8 @@ self.values_stack.pop();
 //   result = @builder.assignable(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: var_lhs -> user_variable
+
 }
 
 
@@ -9700,6 +10698,8 @@ self.values_stack.pop();
 //   result = @builder.assignable(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: var_lhs -> keyword_variable
+
 }
 
 
@@ -9713,6 +10713,8 @@ self.values_stack.pop();
 //   result = @builder.nth_ref(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: backref -> tNTH_REF
+
 }
 
 
@@ -9726,6 +10728,8 @@ self.values_stack.pop();
 //   result = @builder.back_ref(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: backref -> tBACK_REF
+
 }
 
 
@@ -9739,6 +10743,8 @@ fn _handler497(&mut self) -> SV {
 //   @lexer.state = :expr_value
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action__superclass__tLT -> undefined
+
 }
 
 
@@ -9754,6 +10760,8 @@ self.values_stack.pop();
 //   result = [ val[0], val[2] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: superclass -> tLT expr_value term
+
 }
 
 
@@ -9767,6 +10775,8 @@ fn _handler499(&mut self) -> SV {
 //   result = nil
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: superclass -> undefined
+
 }
 
 
@@ -9781,6 +10791,8 @@ fn _handler500(&mut self) -> SV {
     //   @lexer.in_kwarg = true
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: fake_embedded_action__f_arglist__episolon -> undefined
+
 }
 
 
@@ -9798,6 +10810,8 @@ self.values_stack.pop();
                     //   @lexer.state = :expr_value
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_arglist -> tLPAREN2 f_args rparen
+
 }
 
 
@@ -9814,6 +10828,8 @@ self.values_stack.pop();
                     //   result = @builder.args(nil, val[1], nil)
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_arglist -> fake_embedded_action__f_arglist__episolon f_args term
+
 }
 
 
@@ -9830,6 +10846,8 @@ self.values_stack.pop();
 //   result = val[0].concat(val[2]).concat(val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: args_tail -> f_kwarg tCOMMA f_kwrest opt_f_block_arg
+
 }
 
 
@@ -9844,6 +10862,8 @@ self.values_stack.pop();
 //   result = val[0].concat(val[1])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: args_tail -> f_kwarg opt_f_block_arg
+
 }
 
 
@@ -9858,6 +10878,8 @@ self.values_stack.pop();
 //   result = val[0].concat(val[1])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: args_tail -> f_kwrest opt_f_block_arg
+
 }
 
 
@@ -9871,6 +10893,8 @@ self.values_stack.pop();
 //   result = [ val[0] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: args_tail -> f_block_arg
+
 }
 
 
@@ -9885,6 +10909,8 @@ self.values_stack.pop();
 //   result = val[1]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: opt_args_tail -> tCOMMA args_tail
+
 }
 
 
@@ -9898,6 +10924,8 @@ fn _handler508(&mut self) -> SV {
 //   result = []
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: opt_args_tail -> undefined
+
 }
 
 
@@ -9919,6 +10947,8 @@ self.values_stack.pop();
                     //               concat(val[5])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_args -> f_arg tCOMMA f_optarg tCOMMA f_rest_arg opt_args_tail
+
 }
 
 
@@ -9943,6 +10973,8 @@ self.values_stack.pop();
                     //               concat(val[7])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_args -> f_arg tCOMMA f_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_args_tail
+
 }
 
 
@@ -9961,6 +10993,8 @@ self.values_stack.pop();
                     //               concat(val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_args -> f_arg tCOMMA f_optarg opt_args_tail
+
 }
 
 
@@ -9982,6 +11016,8 @@ self.values_stack.pop();
                     //               concat(val[5])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_args -> f_arg tCOMMA f_optarg tCOMMA f_arg opt_args_tail
+
 }
 
 
@@ -10000,6 +11036,8 @@ self.values_stack.pop();
                     //               concat(val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_args -> f_arg tCOMMA f_rest_arg opt_args_tail
+
 }
 
 
@@ -10021,6 +11059,8 @@ self.values_stack.pop();
                     //               concat(val[5])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_args -> f_arg tCOMMA f_rest_arg tCOMMA f_arg opt_args_tail
+
 }
 
 
@@ -10036,6 +11076,8 @@ self.values_stack.pop();
                     //               concat(val[1])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_args -> f_arg opt_args_tail
+
 }
 
 
@@ -10054,6 +11096,8 @@ self.values_stack.pop();
                     //               concat(val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_args -> f_optarg tCOMMA f_rest_arg opt_args_tail
+
 }
 
 
@@ -10075,6 +11119,8 @@ self.values_stack.pop();
                     //               concat(val[5])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_args -> f_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_args_tail
+
 }
 
 
@@ -10090,6 +11136,8 @@ self.values_stack.pop();
                     //               concat(val[1])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_args -> f_optarg opt_args_tail
+
 }
 
 
@@ -10108,6 +11156,8 @@ self.values_stack.pop();
                     //               concat(val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_args -> f_optarg tCOMMA f_arg opt_args_tail
+
 }
 
 
@@ -10123,6 +11173,8 @@ self.values_stack.pop();
                     //               concat(val[1])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_args -> f_rest_arg opt_args_tail
+
 }
 
 
@@ -10141,6 +11193,8 @@ self.values_stack.pop();
                     //               concat(val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_args -> f_rest_arg tCOMMA f_arg opt_args_tail
+
 }
 
 
@@ -10154,6 +11208,8 @@ self.values_stack.pop();
 //   result = val[0]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_args -> args_tail
+
 }
 
 
@@ -10167,6 +11223,8 @@ fn _handler523(&mut self) -> SV {
 //   result = []
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_args -> undefined
+
 }
 
 
@@ -10180,6 +11238,8 @@ self.values_stack.pop();
 //   diagnostic :error, :argument_const, nil, val[0]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_bad_arg -> tCONSTANT
+
 }
 
 
@@ -10193,6 +11253,8 @@ self.values_stack.pop();
 //   diagnostic :error, :argument_ivar, nil, val[0]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_bad_arg -> tIVAR
+
 }
 
 
@@ -10206,6 +11268,8 @@ self.values_stack.pop();
 //   diagnostic :error, :argument_gvar, nil, val[0]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_bad_arg -> tGVAR
+
 }
 
 
@@ -10219,6 +11283,8 @@ self.values_stack.pop();
 //   diagnostic :error, :argument_cvar, nil, val[0]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_bad_arg -> tCVAR
+
 }
 
 
@@ -10231,6 +11297,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: f_norm_arg -> f_bad_arg
+
 }
 
 
@@ -10246,6 +11314,8 @@ self.values_stack.pop();
                     //   result = val[0]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_norm_arg -> tIDENTIFIER
+
 }
 
 
@@ -10259,6 +11329,8 @@ self.values_stack.pop();
 //   result = val[0]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_arg_asgn -> f_norm_arg
+
 }
 
 
@@ -10272,6 +11344,8 @@ self.values_stack.pop();
 //   result = @builder.arg(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_arg_item -> f_arg_asgn
+
 }
 
 
@@ -10287,6 +11361,8 @@ self.values_stack.pop();
 //   result = @builder.multi_lhs(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_arg_item -> tLPAREN f_margs rparen
+
 }
 
 
@@ -10300,6 +11376,8 @@ self.values_stack.pop();
 //   result = [ val[0] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_arg -> f_arg_item
+
 }
 
 
@@ -10315,6 +11393,8 @@ self.values_stack.pop();
 //   result = val[0] << val[2]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_arg -> f_arg tCOMMA f_arg_item
+
 }
 
 
@@ -10332,6 +11412,8 @@ self.values_stack.pop();
                     //   result = val[0]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_label -> tLABEL
+
 }
 
 
@@ -10346,6 +11428,8 @@ self.values_stack.pop();
 //   result = @builder.kwoptarg(val[0], val[1])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_kw -> f_label arg_value
+
 }
 
 
@@ -10359,6 +11443,8 @@ self.values_stack.pop();
 //   result = @builder.kwarg(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_kw -> f_label
+
 }
 
 
@@ -10373,6 +11459,8 @@ self.values_stack.pop();
 //   result = @builder.kwoptarg(val[0], val[1])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_block_kw -> f_label primary_value
+
 }
 
 
@@ -10386,6 +11474,8 @@ self.values_stack.pop();
 //   result = @builder.kwarg(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_block_kw -> f_label
+
 }
 
 
@@ -10399,6 +11489,8 @@ self.values_stack.pop();
 //   result = [ val[0] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_block_kwarg -> f_block_kw
+
 }
 
 
@@ -10414,6 +11506,8 @@ self.values_stack.pop();
 //   result = val[0] << val[2]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_block_kwarg -> f_block_kwarg tCOMMA f_block_kw
+
 }
 
 
@@ -10427,6 +11521,8 @@ self.values_stack.pop();
 //   result = [ val[0] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_kwarg -> f_kw
+
 }
 
 
@@ -10442,6 +11538,8 @@ self.values_stack.pop();
 //   result = val[0] << val[2]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_kwarg -> f_kwarg tCOMMA f_kw
+
 }
 
 
@@ -10454,6 +11552,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: kwrest_mark -> tPOW
+
 }
 
 
@@ -10466,6 +11566,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: kwrest_mark -> tDSTAR
+
 }
 
 
@@ -10482,6 +11584,8 @@ self.values_stack.pop();
                     //   result = [ @builder.kwrestarg(val[0], val[1]) ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_kwrest -> kwrest_mark tIDENTIFIER
+
 }
 
 
@@ -10495,6 +11599,8 @@ self.values_stack.pop();
 //   result = [ @builder.kwrestarg(val[0]) ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_kwrest -> kwrest_mark
+
 }
 
 
@@ -10510,6 +11616,8 @@ self.values_stack.pop();
 //   result = @builder.optarg(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_opt -> f_arg_asgn tEQL arg_value
+
 }
 
 
@@ -10525,6 +11633,8 @@ self.values_stack.pop();
 //   result = @builder.optarg(val[0], val[1], val[2])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_block_opt -> f_arg_asgn tEQL primary_value
+
 }
 
 
@@ -10538,6 +11648,8 @@ self.values_stack.pop();
 //   result = [ val[0] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_block_optarg -> f_block_opt
+
 }
 
 
@@ -10553,6 +11665,8 @@ self.values_stack.pop();
 //   result = val[0] << val[2]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_block_optarg -> f_block_optarg tCOMMA f_block_opt
+
 }
 
 
@@ -10566,6 +11680,8 @@ self.values_stack.pop();
 //   result = [ val[0] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_optarg -> f_opt
+
 }
 
 
@@ -10581,6 +11697,8 @@ self.values_stack.pop();
 //   result = val[0] << val[2]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_optarg -> f_optarg tCOMMA f_opt
+
 }
 
 
@@ -10593,6 +11711,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: restarg_mark -> tSTAR2
+
 }
 
 
@@ -10605,6 +11725,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: restarg_mark -> tSTAR
+
 }
 
 
@@ -10621,6 +11743,8 @@ self.values_stack.pop();
                     //   result = [ @builder.restarg(val[0], val[1]) ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_rest_arg -> restarg_mark tIDENTIFIER
+
 }
 
 
@@ -10634,6 +11758,8 @@ self.values_stack.pop();
 //   result = [ @builder.restarg(val[0]) ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_rest_arg -> restarg_mark
+
 }
 
 
@@ -10646,6 +11772,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: blkarg_mark -> tAMPER2
+
 }
 
 
@@ -10658,6 +11786,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: blkarg_mark -> tAMPER
+
 }
 
 
@@ -10674,6 +11804,8 @@ self.values_stack.pop();
                     //   result = @builder.blockarg(val[0], val[1])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: f_block_arg -> blkarg_mark tIDENTIFIER
+
 }
 
 
@@ -10687,6 +11819,8 @@ self.values_stack.pop();
 
 let __ = vec![_2];
 SV::_1(__)
+// raw production: opt_f_block_arg -> tCOMMA f_block_arg
+
 }
 
 
@@ -10699,6 +11833,8 @@ fn _handler562(&mut self) -> SV {
 
 let __ = vec![];
 SV::_1(__)
+// raw production: opt_f_block_arg -> undefined
+
 }
 
 
@@ -10711,6 +11847,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: singleton -> var_ref
+
 }
 
 
@@ -10725,6 +11863,8 @@ self.values_stack.pop();
 
 let __ = vec![_2];
 SV::_1(__)
+// raw production: singleton -> tLPAREN2 expr rparen
+
 }
 
 
@@ -10737,6 +11877,8 @@ fn _handler565(&mut self) -> SV {
 
 let __ = vec![];
 SV::_1(__)
+// raw production: assoc_list -> undefined
+
 }
 
 
@@ -10750,6 +11892,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: assoc_list -> assocs trailer
+
 }
 
 
@@ -10762,6 +11906,8 @@ let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
 SV::_1(__)
+// raw production: assocs -> assoc
+
 }
 
 
@@ -10777,6 +11923,8 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.push(_3);
         let __ = _1;
 SV::_1(__)
+// raw production: assocs -> assocs tCOMMA assoc
+
 }
 
 
@@ -10792,6 +11940,8 @@ let mut _1 = pop!(self.values_stack, _2);
 //   result = @builder.pair(val[0], val[1], val[2])
                         let __ = node::pair(_1, *_2.interior_token, _3);
 SV::_2(__)
+// raw production: assoc -> arg_value tASSOC arg_value
+
 }
 
 
@@ -10806,6 +11956,8 @@ let mut _1 = pop!(self.values_stack, _0);
 //   result = @builder.pair_keyword(val[0], val[1])
                         let __ = node::pair_keyword(*_1.interior_token, _2);
 SV::_2(__)
+// raw production: assoc -> tLABEL arg_value
+
 }
 
 
@@ -10822,6 +11974,8 @@ self.values_stack.pop();
 //   result = @builder.pair_quoted(val[0], val[1], val[2], val[3])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: assoc -> tSTRING_BEG string_contents tLABEL_END arg_value
+
 }
 
 
@@ -10836,6 +11990,8 @@ self.values_stack.pop();
 //   result = @builder.kwsplat(val[0], val[1])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: assoc -> tDSTAR arg_value
+
 }
 
 
@@ -10848,6 +12004,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: operation -> tIDENTIFIER
+
 }
 
 
@@ -10860,6 +12018,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: operation -> tCONSTANT
+
 }
 
 
@@ -10872,6 +12032,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: operation -> tFID
+
 }
 
 
@@ -10884,6 +12046,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: operation2 -> tIDENTIFIER
+
 }
 
 
@@ -10896,6 +12060,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: operation2 -> tCONSTANT
+
 }
 
 
@@ -10908,6 +12074,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: operation2 -> tFID
+
 }
 
 
@@ -10920,6 +12088,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: operation2 -> op
+
 }
 
 
@@ -10932,6 +12102,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: operation3 -> tIDENTIFIER
+
 }
 
 
@@ -10944,6 +12116,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: operation3 -> tFID
+
 }
 
 
@@ -10956,6 +12130,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: operation3 -> op
+
 }
 
 
@@ -10968,6 +12144,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: dot_or_colon -> call_op
+
 }
 
 
@@ -10980,6 +12158,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: dot_or_colon -> tCOLON2
+
 }
 
 
@@ -10993,6 +12173,8 @@ self.values_stack.pop();
 //   result = [:dot, val[0][1]]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: call_op -> tDOT
+
 }
 
 
@@ -11006,6 +12188,8 @@ self.values_stack.pop();
 //   result = [:anddot, val[0][1]]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: call_op -> tANDDOT
+
 }
 
 
@@ -11018,6 +12202,8 @@ fn _handler587(&mut self) -> SV {
 
 let __ = SV::Undefined;
 __
+// raw production: opt_terms -> undefined
+
 }
 
 
@@ -11030,6 +12216,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: opt_terms -> terms
+
 }
 
 
@@ -11042,6 +12230,8 @@ fn _handler589(&mut self) -> SV {
 
 let __ = SV::Undefined;
 __
+// raw production: opt_nl -> undefined
+
 }
 
 
@@ -11054,6 +12244,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: opt_nl -> tNL
+
 }
 
 
@@ -11062,12 +12254,13 @@ fn _handler591(&mut self) -> SV {
     println!("   *** PARSER: _handler591");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
+let mut _2 = self.values_stack.pop().unwrap();
 self.values_stack.pop();
 
-//   result = val[1]
-                    wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+let __ = _2;
+__
+// raw production: rparen -> opt_nl tRPAREN
+
 }
 
 
@@ -11076,12 +12269,13 @@ fn _handler592(&mut self) -> SV {
     println!("   *** PARSER: _handler592");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
+let mut _2 = self.values_stack.pop().unwrap();
 self.values_stack.pop();
 
-//   result = val[1]
-                    wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+let __ = _2;
+__
+// raw production: rbracket -> opt_nl tRBRACK
+
 }
 
 
@@ -11094,6 +12288,8 @@ fn _handler593(&mut self) -> SV {
 
 let __ = SV::Undefined;
 __
+// raw production: trailer -> undefined
+
 }
 
 
@@ -11106,6 +12302,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: trailer -> tNL
+
 }
 
 
@@ -11118,6 +12316,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: trailer -> tCOMMA
+
 }
 
 
@@ -11132,6 +12332,8 @@ let mut _1 = self.values_stack.pop().unwrap();
         // TODO
         let __ = _1;
 __
+// raw production: term -> tSEMI
+
 }
 
 
@@ -11144,6 +12346,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: term -> tNL
+
 }
 
 
@@ -11156,6 +12360,8 @@ let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
+// raw production: terms -> term
+
 }
 
 
@@ -11169,6 +12375,8 @@ self.values_stack.pop();
 
 let __ = SV::Undefined;
 __
+// raw production: terms -> terms tSEMI
+
 }
 
 
@@ -11182,5 +12390,7 @@ fn _handler600(&mut self) -> SV {
 // result = nil
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
+// raw production: none -> undefined
+
 }
 }

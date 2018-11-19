@@ -10,7 +10,9 @@ puts "invoking generator..."
 # puts table = `syntax-cli -g src/parser/parser.g -m lalr1 -t -s first`
 # File.write './src/parser/table', table
 
-puts `syntax-cli -g src/parser/parser.g -m LALR1 -o src/parser/parser.rs`
+syntax_cli_path = 'node ../syntax/dist/bin/syntax.js'
+
+puts `#{syntax_cli_path} -g src/parser/parser.g -m LALR1 -o src/parser/parser.rs`
 
 puts "cleaning..."
 

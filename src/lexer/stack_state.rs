@@ -2,6 +2,7 @@ use lexer::lexer::*;
 
 // TODO NOTE
 // TODO optimize via bits
+#[derive(Debug, Clone)]
 pub struct StackState {
     stack: Vec<bool>,
 }
@@ -16,6 +17,9 @@ impl StackState {
     // def clear
     //   @stack = 0
     // end
+    pub fn clear(&mut self) {
+        self.stack = vec![];
+    }
 
     // def push(bit)
     //   bit_value = bit ? 1 : 0
