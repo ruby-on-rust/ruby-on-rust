@@ -861,37 +861,45 @@ fn hash_label() {
     );
 }
 
-//   def test_hash_label_end
-//     assert_parses(
-//       s(:hash, s(:pair, s(:sym, :foo), s(:int, 2))),
-//       %q[{ 'foo': 2 }],
-//       %q{^ begin
-//         |           ^ end
-//         |       ^ operator (pair)
-//         |  ^ begin (pair.sym)
-//         |      ^ end (pair.sym)
-//         |  ~~~~~ expression (pair.sym)
-//         |  ~~~~~~~~ expression (pair)
-//         |~~~~~~~~~~~~ expression},
-//       SINCE_2_2)
-// 
-//     assert_parses(
-//       s(:hash,
-//         s(:pair, s(:sym, :foo), s(:int, 2)),
-//         s(:pair, s(:sym, :bar), s(:hash))),
-//       %q[{ 'foo': 2, 'bar': {}}],
-//       %q{},
-//       SINCE_2_2)
-// 
-//     assert_parses(
-//       s(:send, nil, :f,
-//         s(:if, s(:send, nil, :a),
-//           s(:str, "a"),
-//           s(:int, 1))),
-//       %q{f(a ? "a":1)},
-//       %q{},
-//       SINCE_2_2)
-//   end
+#[test]
+fn hash_label_end() {
+    //     assert_parses(
+    //       s(:hash, s(:pair, s(:sym, :foo), s(:int, 2))),
+    //       %q[{ 'foo': 2 }],
+    //       %q{^ begin
+    //         |           ^ end
+    //         |       ^ operator (pair)
+    //         |  ^ begin (pair.sym)
+    //         |      ^ end (pair.sym)
+    //         |  ~~~~~ expression (pair.sym)
+    //         |  ~~~~~~~~ expression (pair)
+    //         |~~~~~~~~~~~~ expression},
+    //       SINCE_2_2)
+    assert_parses!(
+        "{ 'foo': 2 }",
+        n_hash![
+            n_pair!( n_sym!("foo"), Node::Int(2) )
+        ]
+    );
+
+    // TODO
+    //     assert_parses(
+    //       s(:hash,
+    //         s(:pair, s(:sym, :foo), s(:int, 2)),
+    //         s(:pair, s(:sym, :bar), s(:hash))),
+    //       %q[{ 'foo': 2, 'bar': {}}],
+    //       %q{},
+    //       SINCE_2_2)
+    // 
+    //     assert_parses(
+    //       s(:send, nil, :f,
+    //         s(:if, s(:send, nil, :a),
+    //           s(:str, "a"),
+    //           s(:int, 1))),
+    //       %q{f(a ? "a":1)},
+    //       %q{},
+    //       SINCE_2_2)
+}
 
 //   def test_hash_kwsplat
 //     assert_parses(

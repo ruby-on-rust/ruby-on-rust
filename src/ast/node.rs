@@ -196,6 +196,18 @@ pub type Nodes = Vec<Node>;
     };
 }
 #[macro_export] macro_rules! n_send { ($receiver:expr, $message:expr) => { Node::Send { receiver: $receiver, selector: String::from($message), args: vec![] } }; }
+#[macro_export] macro_rules! n_hash {
+    ( $( $x:expr ),* ) => {
+        {
+            let mut temp_vec = Vec::new();
+            $(
+                temp_vec.push($x);
+            )*
+            Node::Hash(temp_vec)
+        }
+    };
+}
+#[macro_export] macro_rules! n_pair { ($key:expr, $value:expr) => { Node::Pair { key: Box::new($key), value: Box::new($value) }; } }
 
 impl Node {
     pub fn push_children(&mut self, node: Node) {
