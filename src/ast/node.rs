@@ -195,7 +195,7 @@ pub type Nodes = Vec<Node>;
         }
     };
 }
-#[macro_export] macro_rules! n_send { ($receiver:expr, $message:expr) => { Node::Send { receiver: $receiver, selector: String::from($message), args: vec![] } }; }
+#[macro_export] macro_rules! n_send { ($receiver:expr, $selector:expr, $args:expr) => { Node::Send { receiver: $receiver, selector: String::from($selector), args: $args } }; }
 #[macro_export] macro_rules! n_hash {
     ( $( $x:expr ),* ) => {
         {

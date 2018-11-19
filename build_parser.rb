@@ -119,7 +119,7 @@ content.gsub! 'self.values_stack.push(SV::_0(token));', 'self.values_stack.push(
 #
 # debug info in handlers
 #
-(1..99).each do |i|
+(1..999).each do |i|
   content.gsub! "fn _handler#{i}(&mut self) -> SV {\n", %Q[
 fn _handler#{i}(&mut self) -> SV {\n
     println!("   *** PARSER: _handler#{i}");

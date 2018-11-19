@@ -4041,8 +4041,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler100(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler100");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -4051,9 +4055,13 @@ self.values_stack.pop();
             wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler101(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler101");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -4063,8 +4071,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler102(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler102");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -4075,8 +4087,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler103(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler103");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -4086,8 +4102,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler104(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler104");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 // result = @builder.assignable(val[0])
@@ -4095,8 +4115,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler105(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler105");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   diagnostic :error, :module_name_const, nil, val[0]
@@ -4104,16 +4128,24 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler106(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler106");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler107(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler107");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -4122,8 +4154,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler108(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler108");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.const(val[0])
@@ -4131,8 +4167,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler109(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler109");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -4142,48 +4182,72 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler110(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler110");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler111(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler111");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler112(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler112");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler113(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler113");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler114(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler114");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler115(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler115");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.symbol(val[0])
@@ -4191,32 +4255,48 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler116(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler116");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler117(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler117");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler118(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler118");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler119(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler119");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = [ val[0] ]
@@ -4224,8 +4304,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler120(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler120");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -4236,8 +4320,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler121(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler121");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   @lexer.state = :expr_fname
@@ -4245,576 +4333,864 @@ fn _handler121(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler122(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler122");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler123(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler123");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler124(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler124");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler125(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler125");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler126(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler126");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler127(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler127");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler128(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler128");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler129(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler129");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler130(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler130");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler131(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler131");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler132(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler132");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler133(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler133");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler134(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler134");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler135(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler135");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler136(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler136");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler137(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler137");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler138(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler138");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler139(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler139");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler140(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler140");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler141(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler141");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler142(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler142");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler143(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler143");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler144(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler144");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler145(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler145");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler146(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler146");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler147(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler147");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler148(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler148");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler149(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler149");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler150(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler150");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler151(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler151");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler152(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler152");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler153(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler153");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler154(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler154");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler155(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler155");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler156(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler156");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler157(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler157");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler158(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler158");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler159(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler159");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler160(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler160");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler161(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler161");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler162(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler162");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler163(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler163");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler164(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler164");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler165(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler165");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler166(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler166");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler167(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler167");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler168(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler168");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler169(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler169");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler170(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler170");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler171(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler171");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler172(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler172");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler173(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler173");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler174(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler174");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler175(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler175");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler176(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler176");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler177(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler177");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler178(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler178");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler179(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler179");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler180(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler180");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler181(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler181");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler182(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler182");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler183(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler183");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler184(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler184");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler185(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler185");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler186(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler186");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler187(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler187");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler188(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler188");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler189(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler189");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler190(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler190");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler191(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler191");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler192(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler192");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler193(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler193");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = pop!(self.values_stack, _0);
 let mut _1 = pop!(self.values_stack, _2);
@@ -4823,8 +5199,12 @@ let __ = node::assign(_1, *_2.interior_token, _3);
 SV::_2(__)
 }
 
+
 fn _handler194(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler194");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -4834,8 +5214,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler195(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler195");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -4851,8 +5235,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler196(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler196");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -4866,9 +5254,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler197(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler197");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -4882,9 +5274,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler198(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler198");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -4899,8 +5295,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler199(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler199");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -4914,8 +5314,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler200(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler200");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -4928,8 +5332,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler201(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler201");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -4939,8 +5347,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler202(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler202");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -4950,8 +5362,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler203(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler203");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -4961,8 +5377,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler204(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler204");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -4971,9 +5391,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler205(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler205");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -4982,9 +5406,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler206(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler206");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -4993,9 +5421,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler207(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler207");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5004,9 +5436,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler208(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler208");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5015,9 +5451,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler209(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler209");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5027,8 +5467,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler210(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler210");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5041,8 +5485,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler211(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler211");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -5050,9 +5498,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler212(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler212");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -5061,8 +5513,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler213(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler213");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5071,9 +5527,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler214(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler214");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5082,9 +5542,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler215(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler215");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5093,9 +5557,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler216(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler216");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5105,16 +5573,24 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler217(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler217");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler218(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler218");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5123,9 +5599,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler219(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler219");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5134,9 +5614,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler220(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler220");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5146,8 +5630,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler221(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler221");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5157,8 +5645,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler222(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler222");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5168,8 +5660,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler223(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler223");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -5178,8 +5674,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler224(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler224");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -5188,8 +5688,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler225(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler225");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5198,9 +5702,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler226(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler226");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5210,8 +5718,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler227(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler227");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5221,8 +5733,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler228(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler228");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5232,8 +5748,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler229(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler229");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5243,8 +5763,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler230(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler230");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5258,48 +5782,72 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler231(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler231");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler232(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler232");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler233(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler233");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler234(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler234");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler235(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler235");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler236(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler236");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5308,9 +5856,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler237(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler237");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5320,24 +5872,36 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler238(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler238");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler239(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler239");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 let __ = vec![];
 SV::_1(__)
 }
 
+
 fn _handler240(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler240");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 let mut _1 = self.values_stack.pop().unwrap();
 
@@ -5345,8 +5909,12 @@ let __ = _1;
 __
 }
 
+
 fn _handler241(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler241");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5357,8 +5925,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler242(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler242");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -5367,16 +5939,24 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler243(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler243");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler244(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler244");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5390,8 +5970,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler245(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler245");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5401,8 +5985,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler246(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler246");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   result = [ nil, [], nil ]
@@ -5410,16 +5998,24 @@ fn _handler246(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler247(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler247");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler248(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler248");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   result = []
@@ -5427,16 +6023,24 @@ fn _handler248(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler249(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler249");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler250(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler250");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -5444,8 +6048,12 @@ let __ = SV::Undefined;
 __
 }
 
+
 fn _handler251(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler251");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5456,8 +6064,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler252(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler252");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -5466,8 +6078,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler253(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler253");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = [ val[0] ]
@@ -5475,8 +6091,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler254(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler254");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -5485,8 +6105,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler255(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler255");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -5496,8 +6120,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler256(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler256");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5510,8 +6138,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler257(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler257");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result =  [ val[0] ]
@@ -5519,8 +6151,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler258(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler258");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -5531,8 +6167,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler259(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler259");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   result = @lexer.cmdarg.dup
@@ -5541,8 +6181,12 @@ fn _handler259(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler260(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler260");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -5551,8 +6195,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler261(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler261");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -5561,8 +6209,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler262(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler262");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   result = []
@@ -5570,16 +6222,24 @@ fn _handler262(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler263(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler263");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
 SV::_1(__)
 }
 
+
 fn _handler264(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler264");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -5588,8 +6248,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler265(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler265");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = pop!(self.values_stack, _0);
 let mut _1 = pop!(self.values_stack, _1);
@@ -5598,8 +6262,12 @@ _1.push(_3); let __ = _1;
 SV::_1(__)
 }
 
+
 fn _handler266(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler266");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5610,8 +6278,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler267(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler267");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.array(nil, val[0], nil)
@@ -5619,16 +6291,24 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler268(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler268");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler269(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler269");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5638,8 +6318,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler270(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler270");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5650,8 +6334,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler271(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler271");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -5660,8 +6348,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler272(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler272");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 // result = @lexer.cmdarg.dup
@@ -5669,9 +6361,13 @@ fn _handler272(&mut self) -> SV {
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler273(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler273");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 // result = @lexer.cmdarg.dup
@@ -5680,17 +6376,25 @@ fn _handler273(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler274(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler274");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 // @lexer.state = :expr_endarg
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler275(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler275");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 // @lexer.state = :expr_endarg
@@ -5698,35 +6402,51 @@ fn _handler275(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler276(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler276");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   @lexer.cond.push(true)
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler277(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler277");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   @lexer.cond.pop
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler278(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler278");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   @lexer.cond.push(true)
     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler279(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler279");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   @lexer.cond.pop
@@ -5734,8 +6454,12 @@ fn _handler279(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler280(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler280");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   @lexer.cond.push(true)
@@ -5743,8 +6467,12 @@ fn _handler280(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler281(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler281");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   @lexer.cond.pop
@@ -5752,8 +6480,12 @@ fn _handler281(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler282(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler282");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   @static_env.extend_static
@@ -5762,8 +6494,12 @@ fn _handler282(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler283(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler283");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   result = @def_level
@@ -5775,8 +6511,12 @@ fn _handler283(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler284(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler284");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   @static_env.extend_static
@@ -5785,8 +6525,12 @@ fn _handler284(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler285(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler285");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   @def_level += 1
@@ -5796,8 +6540,12 @@ fn _handler285(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler286(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler286");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   @lexer.state = :expr_fname
@@ -5805,8 +6553,12 @@ fn _handler286(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler287(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler287");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   @def_level += 1
@@ -5816,88 +6568,132 @@ fn _handler287(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler288(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler288");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler289(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler289");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler290(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler290");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler291(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler291");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler292(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler292");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler293(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler293");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler294(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler294");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler295(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler295");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler296(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler296");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler297(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler297");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler298(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler298");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 // result = @builder.call_method(nil, nil, val[0])
@@ -5905,8 +6701,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler299(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler299");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5919,8 +6719,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler300(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler300");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5934,8 +6738,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler301(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler301");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5946,8 +6754,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler302(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler302");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -5957,8 +6769,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler303(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler303");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _0);
 let mut _2 = pop!(self.values_stack, _0);
 let mut _1 = pop!(self.values_stack, _2);
@@ -5967,8 +6783,12 @@ let __ = node::const_fetch(_1, *_2.interior_token, *_3.interior_token);
 SV::_2(__)
 }
 
+
 fn _handler304(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler304");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _0);
 let mut _1 = pop!(self.values_stack, _0);
 
@@ -5976,8 +6796,12 @@ let __ = node::const_global(*_1.interior_token, *_2.interior_token);
 SV::_2(__)
 }
 
+
 fn _handler305(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler305");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _0);
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _0);
@@ -5986,8 +6810,12 @@ let __ = node::array(_2);
 SV::_2(__)
 }
 
+
 fn _handler306(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler306");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _0);
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _0);
@@ -5996,8 +6824,12 @@ let __ = node::associate(_2);
 SV::_2(__)
 }
 
+
 fn _handler307(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler307");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:return, val[0])
@@ -6005,8 +6837,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler308(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler308");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6017,8 +6853,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler309(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler309");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6028,8 +6868,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler310(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler310");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:yield, val[0])
@@ -6037,8 +6881,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler311(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler311");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6051,8 +6899,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler312(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler312");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6063,8 +6915,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler313(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler313");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6074,8 +6930,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler314(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler314");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -6088,16 +6948,24 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler315(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler315");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler316(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler316");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -6108,8 +6976,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler317(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler317");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -6122,8 +6994,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler318(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler318");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6139,8 +7015,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler319(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler319");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6156,8 +7036,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler320(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler320");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6172,8 +7056,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler321(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler321");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6188,8 +7076,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler322(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler322");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6205,8 +7097,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler323(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler323");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6221,8 +7117,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler324(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler324");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6240,8 +7140,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler325(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler325");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6264,8 +7168,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler326(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler326");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6285,8 +7193,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler327(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler327");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6306,8 +7218,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler328(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler328");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6325,8 +7241,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler329(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler329");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6347,8 +7267,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler330(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler330");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:break, val[0])
@@ -6356,8 +7280,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler331(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler331");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:next, val[0])
@@ -6365,8 +7293,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler332(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler332");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:redo, val[0])
@@ -6374,8 +7306,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler333(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler333");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:retry, val[0])
@@ -6383,32 +7319,48 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler334(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler334");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler335(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler335");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler336(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler336");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler337(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler337");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _0);
 self.values_stack.pop();
 
@@ -6417,32 +7369,48 @@ self.values_stack.pop();
 SV::_0(__)
 }
 
+
 fn _handler338(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler338");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler339(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler339");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler340(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler340");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler341(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler341");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6459,16 +7427,24 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler342(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler342");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler343(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler343");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -6477,24 +7453,36 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler344(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler344");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler345(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler345");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler346(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler346");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.arg(val[0])
@@ -6502,8 +7490,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler347(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler347");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6513,8 +7505,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler348(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler348");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = [ val[0] ]
@@ -6522,8 +7518,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler349(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler349");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6533,16 +7533,24 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler350(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler350");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler351(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler351");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6554,8 +7562,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler352(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler352");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6570,8 +7582,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler353(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler353");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6582,8 +7598,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler354(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler354");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6597,8 +7617,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler355(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler355");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -6607,8 +7631,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler356(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler356");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6620,8 +7648,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler357(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler357");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = [ @builder.restarg(val[0]) ]
@@ -6629,8 +7661,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler358(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler358");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6641,8 +7677,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler359(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler359");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6653,8 +7693,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler360(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler360");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -6662,9 +7706,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler361(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler361");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -6673,8 +7721,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler362(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler362");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = [ val[0] ]
@@ -6682,8 +7734,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler363(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler363");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -6692,8 +7748,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler364(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler364");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   result = []
@@ -6701,8 +7761,12 @@ fn _handler364(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler365(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler365");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6718,8 +7782,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler366(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler366");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6738,8 +7806,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler367(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler367");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6752,8 +7824,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler368(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler368");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6769,8 +7845,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler369(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler369");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6783,8 +7863,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler370(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler370");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -6792,8 +7876,12 @@ let __ = SV::Undefined;
 __
 }
 
+
 fn _handler371(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler371");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6809,8 +7897,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler372(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler372");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -6823,8 +7915,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler373(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler373");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6837,8 +7933,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler374(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler374");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6854,8 +7954,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler375(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler375");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -6864,9 +7968,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler376(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler376");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6879,8 +7987,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler377(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler377");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -6890,8 +8002,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler378(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler378");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6904,16 +8020,24 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler379(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler379");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler380(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler380");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   result = @builder.args(nil, [], nil)
@@ -6921,8 +8045,12 @@ fn _handler380(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler381(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler381");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   @lexer.state = :expr_value
@@ -6930,8 +8058,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler382(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler382");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6941,8 +8073,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler383(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler383");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.args(val[0], [], val[0])
@@ -6950,8 +8086,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler384(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler384");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6962,8 +8102,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler385(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler385");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = []
@@ -6971,8 +8115,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler386(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler386");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -6983,8 +8131,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler387(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler387");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = [ val[0] ]
@@ -6992,8 +8144,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler388(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler388");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7003,8 +8159,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler389(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler389");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   @static_env.declare val[0][0]
@@ -7013,16 +8173,24 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler390(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler390");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler391(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler391");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   @static_env.extend_dynamic
@@ -7030,8 +8198,12 @@ fn _handler391(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler392(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler392");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   result = @lexer.cmdarg.dup
@@ -7040,8 +8212,12 @@ fn _handler392(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler393(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler393");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7057,8 +8233,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler394(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler394");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7069,8 +8249,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler395(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler395");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.args(nil, val[0], nil)
@@ -7078,8 +8262,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler396(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler396");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7088,9 +8276,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler397(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler397");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7100,8 +8292,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler398(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler398");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7111,8 +8307,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler399(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler399");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -7123,8 +8323,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler400(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler400");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7137,8 +8341,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler401(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler401");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7156,8 +8364,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler402(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler402");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7174,8 +8386,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler403(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler403");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -7186,8 +8402,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler404(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler404");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7199,9 +8419,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler405(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler405");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7214,8 +8438,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler406(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler406");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7225,8 +8453,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler407(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler407");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7237,9 +8469,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler408(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler408");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7251,8 +8487,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler409(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler409");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -7263,8 +8503,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler410(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler410");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.keyword_cmd(:zsuper, val[0])
@@ -7272,8 +8516,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler411(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler411");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7284,8 +8532,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler412(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler412");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7294,9 +8546,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler413(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler413");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7306,8 +8562,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler414(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler414");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   @static_env.extend_dynamic
@@ -7315,8 +8575,12 @@ fn _handler414(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler415(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler415");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 // result = @lexer.cmdarg.dup
@@ -7325,8 +8589,12 @@ fn _handler415(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler416(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler416");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7341,8 +8609,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler417(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler417");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   @static_env.extend_dynamic
@@ -7350,8 +8622,12 @@ fn _handler417(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler418(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler418");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   result = @lexer.cmdarg.dup
@@ -7360,8 +8636,12 @@ fn _handler418(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler419(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler419");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7375,8 +8655,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler420(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler420");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7389,8 +8673,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler421(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler421");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = [ val[0] ]
@@ -7398,16 +8686,24 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler422(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler422");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler423(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler423");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7429,8 +8725,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler424(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler424");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   result = []
@@ -7438,8 +8738,12 @@ fn _handler424(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler425(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler425");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = [ val[0] ]
@@ -7447,24 +8751,36 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler426(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler426");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler427(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler427");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler428(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler428");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -7472,17 +8788,25 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler429(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler429");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler430(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler430");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -7491,40 +8815,60 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler431(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler431");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler432(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler432");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler433(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler433");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler434(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler434");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler435(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler435");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _1);
 
 // result = @builder.string_compose(nil, val[0], nil)
@@ -7533,16 +8877,24 @@ let mut _1 = pop!(self.values_stack, _1);
 SV::_2(__)
 }
 
+
 fn _handler436(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler436");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
 SV::_1(__)
 }
 
+
 fn _handler437(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler437");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -7551,8 +8903,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler438(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler438");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _0);
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _0);
@@ -7565,8 +8921,12 @@ let mut _1 = pop!(self.values_stack, _0);
 SV::_2(__)
 }
 
+
 fn _handler439(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler439");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _0);
 
 // string = @builder.string(val[0])
@@ -7580,8 +8940,12 @@ let mut _1 = pop!(self.values_stack, _0);
 SV::_2(__)
 }
 
+
 fn _handler440(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler440");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 // result = @builder.character(val[0])
@@ -7589,8 +8953,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler441(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler441");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7601,8 +8969,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler442(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler442");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7614,8 +8986,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler443(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler443");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 let mut _2 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -7626,16 +9002,24 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler444(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler444");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 let __ = vec![];
 SV::_1(__)
 }
 
+
 fn _handler445(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler445");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _0);
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = pop!(self.values_stack, _1);
@@ -7647,16 +9031,24 @@ let mut _1 = pop!(self.values_stack, _1);
 SV::_1(__)
 }
 
+
 fn _handler446(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler446");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
 SV::_1(__)
 }
 
+
 fn _handler447(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler447");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = pop!(self.values_stack, _1);
 
@@ -7664,8 +9056,12 @@ _1.push(_2); let __ = _1;
 SV::_1(__)
 }
 
+
 fn _handler448(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler448");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7675,8 +9071,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler449(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler449");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   result = []
@@ -7684,8 +9084,12 @@ fn _handler449(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler450(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler450");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7695,8 +9099,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler451(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler451");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 let mut _2 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -7705,8 +9113,12 @@ let __ = node::words_compose(_2);
 SV::_2(__)
 }
 
+
 fn _handler452(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler452");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7716,16 +9128,24 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler453(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler453");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 let __ = vec![];
 SV::_1(__)
 }
 
+
 fn _handler454(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler454");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _0);
 let mut _2 = pop!(self.values_stack, _0);
 let mut _1 = pop!(self.values_stack, _1);
@@ -7735,8 +9155,12 @@ _1.push(node::string_internal(*_2.interior_token));
 SV::_1(__)
 }
 
+
 fn _handler455(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler455");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   result = []
@@ -7744,8 +9168,12 @@ fn _handler455(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler456(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler456");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7755,16 +9183,24 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler457(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler457");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 let __ = vec![];
 SV::_1(__)
 }
+
 
 fn _handler458(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler458");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = pop!(self.values_stack, _1);
 
@@ -7773,16 +9209,24 @@ _1.push(_2);
 SV::_1(__)
 }
 
+
 fn _handler459(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler459");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 let __ = vec![];
 SV::_1(__)
 }
 
+
 fn _handler460(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler460");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = pop!(self.values_stack, _1);
 
@@ -7791,8 +9235,12 @@ _1.push(_2);
 SV::_1(__)
 }
 
+
 fn _handler461(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler461");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   result = []
@@ -7800,8 +9248,12 @@ fn _handler461(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler462(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler462");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -7810,8 +9262,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler463(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler463");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 // @lexer.cond.push(false)
@@ -7820,8 +9276,12 @@ fn _handler463(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler464(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler464");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _0);
 
 //                       result = @builder.string_internal(val[0])
@@ -7833,8 +9293,12 @@ let mut _1 = pop!(self.values_stack, _0);
 SV::_2(__)
 }
 
+
 fn _handler465(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler465");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -7843,8 +9307,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler466(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler466");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7858,8 +9326,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler467(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler467");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.gvar(val[0])
@@ -7867,8 +9339,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler468(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler468");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.ivar(val[0])
@@ -7876,8 +9352,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler469(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler469");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.cvar(val[0])
@@ -7885,16 +9365,24 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler470(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler470");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler471(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler471");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _0);
 
 //                       @lexer.state = :expr_endarg
@@ -7905,8 +9393,12 @@ let mut _1 = pop!(self.values_stack, _0);
 SV::_2(__)
 }
 
+
 fn _handler472(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler472");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _0);
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _0);
@@ -7919,16 +9411,24 @@ let mut _1 = pop!(self.values_stack, _0);
 SV::_2(__)
 }
 
+
 fn _handler473(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler473");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler474(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler474");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -7942,8 +9442,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler475(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler475");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 // TODO
@@ -7959,8 +9463,12 @@ let mut _1 = self.values_stack.pop().unwrap();
 SV::_2(__)
 }
 
+
 fn _handler476(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler476");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 // @lexer.state = :expr_endarg
@@ -7969,8 +9477,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler477(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler477");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 // @lexer.state = :expr_endarg
@@ -7979,8 +9491,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler478(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler478");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 // @lexer.state = :expr_endarg
@@ -7989,80 +9505,120 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler479(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler479");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _0);
 
 let __ = node::ident(*_1.interior_token);
 SV::_2(__)
 }
 
+
 fn _handler480(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler480");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _0);
 
 let __ = node::ivar(*_1.interior_token);
 SV::_2(__)
 }
 
+
 fn _handler481(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler481");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _0);
 
 let __ = node::gvar(*_1.interior_token);
 SV::_2(__)
 }
 
+
 fn _handler482(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler482");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _0);
 
 let __ = node::build_const(*_1.interior_token);
 SV::_2(__)
 }
 
+
 fn _handler483(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler483");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _0);
 
 let __ = node::cvar(*_1.interior_token);
 SV::_2(__)
 }
 
+
 fn _handler484(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler484");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 let __ = Node::Nil;
 SV::_2(__)
 }
 
+
 fn _handler485(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler485");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 let __ = Node::NSelf;
 SV::_2(__)
 }
 
+
 fn _handler486(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler486");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 let __ = Node::True;
 SV::_2(__)
 }
 
+
 fn _handler487(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler487");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 let __ = Node::False;
 SV::_2(__)
 }
 
+
 fn _handler488(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler488");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.__FILE__(val[0])
@@ -8070,8 +9626,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler489(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler489");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.__LINE__(val[0])
@@ -8079,8 +9639,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler490(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler490");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.__ENCODING__(val[0])
@@ -8088,33 +9652,49 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler491(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler491");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::accessible(_1);
 SV::_2(__)
 }
+
 
 fn _handler492(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler492");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::accessible(_1);
 SV::_2(__)
 }
 
+
 fn _handler493(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler493");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.assignable(val[0])
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler494(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler494");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.assignable(val[0])
@@ -8122,8 +9702,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler495(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler495");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.nth_ref(val[0])
@@ -8131,8 +9715,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler496(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler496");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.back_ref(val[0])
@@ -8140,8 +9728,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler497(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler497");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   @lexer.state = :expr_value
@@ -8149,8 +9741,12 @@ fn _handler497(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler498(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler498");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8160,8 +9756,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler499(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler499");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   result = nil
@@ -8169,8 +9769,12 @@ fn _handler499(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler500(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler500");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   result = @lexer.in_kwarg
@@ -8179,8 +9783,12 @@ fn _handler500(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler501(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler501");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8192,8 +9800,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler502(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler502");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8204,8 +9816,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler503(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler503");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8216,8 +9832,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler504(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler504");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -8225,9 +9845,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler505(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler505");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -8236,8 +9860,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler506(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler506");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = [ val[0] ]
@@ -8245,8 +9873,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler507(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler507");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -8255,8 +9887,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler508(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler508");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   result = []
@@ -8264,8 +9900,12 @@ fn _handler508(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler509(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler509");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8281,8 +9921,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler510(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler510");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8301,8 +9945,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler511(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler511");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8314,9 +9962,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler512(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler512");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8331,9 +9983,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler513(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler513");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8345,9 +10001,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler514(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler514");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8362,9 +10022,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler515(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler515");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -8374,8 +10038,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler516(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler516");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8388,8 +10056,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler517(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler517");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8405,8 +10077,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler518(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler518");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -8415,9 +10091,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler519(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler519");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8430,8 +10110,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler520(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler520");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -8441,8 +10125,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler521(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler521");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8455,8 +10143,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler522(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler522");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = val[0]
@@ -8464,8 +10156,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler523(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler523");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 //   result = []
@@ -8473,8 +10169,12 @@ fn _handler523(&mut self) -> SV {
 SV::_2(__)
 }
 
+
 fn _handler524(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler524");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   diagnostic :error, :argument_const, nil, val[0]
@@ -8482,8 +10182,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler525(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler525");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   diagnostic :error, :argument_ivar, nil, val[0]
@@ -8491,8 +10195,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler526(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler526");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   diagnostic :error, :argument_gvar, nil, val[0]
@@ -8500,8 +10208,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler527(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler527");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   diagnostic :error, :argument_cvar, nil, val[0]
@@ -8509,16 +10221,24 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler528(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler528");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler529(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler529");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   @static_env.declare val[0][0]
@@ -8528,8 +10248,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler530(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler530");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = val[0]
@@ -8537,8 +10261,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler531(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler531");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.arg(val[0])
@@ -8546,8 +10274,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler532(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler532");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8557,8 +10289,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler533(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler533");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = [ val[0] ]
@@ -8566,8 +10302,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler534(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler534");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8577,8 +10317,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler535(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler535");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   check_kwarg_name(val[0])
@@ -8590,8 +10334,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler536(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler536");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -8599,9 +10347,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler537(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler537");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.kwarg(val[0])
@@ -8609,8 +10361,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler538(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler538");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -8619,8 +10375,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler539(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler539");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.kwarg(val[0])
@@ -8628,17 +10388,25 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler540(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler540");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = [ val[0] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler541(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler541");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8648,8 +10416,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler542(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler542");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = [ val[0] ]
@@ -8657,8 +10429,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler543(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler543");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8668,24 +10444,36 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler544(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler544");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler545(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler545");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler546(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler546");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -8696,8 +10484,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler547(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler547");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = [ @builder.kwrestarg(val[0]) ]
@@ -8705,8 +10497,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler548(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler548");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8715,9 +10511,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler549(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler549");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8727,17 +10527,25 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler550(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler550");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = [ val[0] ]
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler551(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler551");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8747,8 +10555,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler552(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler552");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = [ val[0] ]
@@ -8756,8 +10568,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler553(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler553");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8767,24 +10583,36 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler554(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler554");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler555(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler555");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler556(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler556");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -8795,8 +10623,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler557(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler557");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = [ @builder.restarg(val[0]) ]
@@ -8804,24 +10636,36 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler558(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler558");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler559(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler559");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler560(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler560");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -8832,33 +10676,49 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler561(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler561");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 
 let __ = vec![_2];
 SV::_1(__)
 }
+
 
 fn _handler562(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler562");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 let __ = vec![];
 SV::_1(__)
 }
 
+
 fn _handler563(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler563");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler564(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler564");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 let mut _2 = pop!(self.values_stack, _2);
 self.values_stack.pop();
@@ -8867,16 +10727,24 @@ let __ = vec![_2];
 SV::_1(__)
 }
 
+
 fn _handler565(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler565");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 let __ = vec![];
 SV::_1(__)
 }
 
+
 fn _handler566(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler566");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 let mut _1 = self.values_stack.pop().unwrap();
 
@@ -8884,16 +10752,24 @@ let __ = _1;
 __
 }
 
+
 fn _handler567(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler567");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
 SV::_1(__)
 }
 
+
 fn _handler568(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler568");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = pop!(self.values_stack, _0);
 let mut _1 = pop!(self.values_stack, _1);
@@ -8903,8 +10779,12 @@ _1.push(_3);
 SV::_1(__)
 }
 
+
 fn _handler569(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler569");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = pop!(self.values_stack, _0);
 let mut _1 = pop!(self.values_stack, _2);
@@ -8914,8 +10794,12 @@ let mut _1 = pop!(self.values_stack, _2);
 SV::_2(__)
 }
 
+
 fn _handler570(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler570");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = pop!(self.values_stack, _0);
 
@@ -8924,8 +10808,12 @@ let mut _1 = pop!(self.values_stack, _0);
 SV::_2(__)
 }
 
+
 fn _handler571(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler571");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -8936,8 +10824,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler572(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler572");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -8946,104 +10838,156 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler573(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler573");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler574(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler574");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler575(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler575");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler576(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler576");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler577(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler577");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler578(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler578");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler579(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler579");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler580(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler580");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler581(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler581");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler582(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler582");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler583(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler583");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler584(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler584");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler585(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler585");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = [:dot, val[0][1]]
@@ -9051,8 +10995,12 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler586(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler586");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 
 //   result = [:anddot, val[0][1]]
@@ -9060,40 +11008,60 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler587(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler587");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 let __ = SV::Undefined;
 __
 }
+
 
 fn _handler588(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler588");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler589(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler589");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 let __ = SV::Undefined;
 __
 }
+
 
 fn _handler590(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler590");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler591(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler591");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -9101,9 +11069,13 @@ self.values_stack.pop();
                     wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 }
+
 
 fn _handler592(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler592");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -9112,32 +11084,48 @@ self.values_stack.pop();
 SV::_2(__)
 }
 
+
 fn _handler593(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler593");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 let __ = SV::Undefined;
 __
 }
 
+
 fn _handler594(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler594");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler595(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler595");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler596(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler596");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 // yyerrok
@@ -9146,24 +11134,36 @@ let mut _1 = self.values_stack.pop().unwrap();
 __
 }
 
+
 fn _handler597(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler597");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
+
 
 fn _handler598(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler598");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
 __
 }
 
+
 fn _handler599(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler599");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -9171,8 +11171,12 @@ let __ = SV::Undefined;
 __
 }
 
+
 fn _handler600(&mut self) -> SV {
-// Semantic values prologue.
+
+    println!("   *** PARSER: _handler600");
+    println!("   values_stack: {:?}", self.values_stack);
+  // Semantic values prologue.
 
 
 // result = nil

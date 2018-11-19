@@ -1203,30 +1203,34 @@ fn cvasgn() {
 //         })
 //   end
 
-//   def test_asgn_cmd
-//     assert_parses(
-//       s(:lvasgn, :foo, s(:send, nil, :m, s(:lvar, :foo))),
-//       %q{foo = m foo})
-// 
-//     assert_parses(
-//       s(:lvasgn, :foo,
-//         s(:lvasgn, :bar,
-//           s(:send, nil, :m, s(:lvar, :foo)))),
-//       %q{foo = bar = m foo},
-//       %q{},
-//       ALL_VERSIONS - %w(1.8 mac ios))
-//   end
 #[test]
 fn asgn_cmd() {
-    // TODO
+    // TODO WIP
+    //     assert_parses(
+    //       s(:lvasgn, :foo, s(:send, nil, :m, s(:lvar, :foo))),
+    //       %q{foo = m foo})
     assert_parses!(
         "foo = m foo",
         Node::LVasgn(
             String::from("var"),
             vec![
+                n_send!(
+                    None,
+                    "m",
+                    vec![n_lvar!("foo")]
+                )
             ]
         )
     );
+
+    // TODO
+    //     assert_parses(
+    //       s(:lvasgn, :foo,
+    //         s(:lvasgn, :bar,
+    //           s(:send, nil, :m, s(:lvar, :foo)))),
+    //       %q{foo = bar = m foo},
+    //       %q{},
+    //       ALL_VERSIONS - %w(1.8 mac ios))
 } 
 
 //   def test_asgn_keyword_invalid
@@ -3091,15 +3095,15 @@ fn asgn_cmd() {
 fn send_self() {
     // TODO WIP
     assert_parses!(
-        r"fun", n_send!(None, "fun")
+        r"fun", n_send!(None, "fun", vec![])
     );
 
     assert_parses!(
-        r"fun!", n_send!(None, "fun!")
+        r"fun!", n_send!(None, "fun!", vec![])
     );
 
     assert_parses!(
-        r"fun(1)", n_send!(None, "fun")
+        r"fun(1)", n_send!(None, "fun", vec![])
     );
 }
 //   def test_send_self_block
