@@ -160,9 +160,9 @@ stmts
         |$1:Node| -> Nodes; $$ = vec![$1];
     }
     | stmts terms stmt_or_begin {
-        // result = val[0] << val[2]
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Nodes, $3:Node| -> Nodes;
+        $1.push($3);
+        $$ = $1;
     }
     // | error stmt {
     //     // result = [ val[1] ]
@@ -527,10 +527,11 @@ fcall: operation;
       mlhs_basic: mlhs_head
                 | mlhs_head mlhs_item
                     {
-                    //   result = val[0].
-                    //               push(val[1])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
+                        //   result = val[0].
+                        //               push(val[1])
+                        |$1:Nodes, $2:Node|->Nodes;
+                        $1.push($2);
+                        $$ = $1;
                     }
                 | mlhs_head tSTAR mlhs_node
                     {
@@ -1694,9 +1695,9 @@ primary_value: primary;
                 | kTHEN
                 | term kTHEN
                     {
-                    //   result = val[1]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
+                        //   result = val[1]
+                        |$1:Node|->Node;
+                        $$ = $1;
                     }
 ;
 
