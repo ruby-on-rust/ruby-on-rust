@@ -13,6 +13,8 @@ use lexer::stack_state::StackState;
 %%{
     machine lexer;
 
+    variable cs self.cs;
+
     include "_character_classes.rs.rl";
     include "_token_definitions.rs.rl";
     include "_numeric.rs.rl";
@@ -45,7 +47,7 @@ pub struct Lexer {
     input: String,
 
     // ragel
-    cs: i32,
+    pub cs: i32,
     p: i32,
     pe: i32,
     ts: i32,
@@ -160,7 +162,6 @@ impl Lexer {
         let data = _input.as_bytes();
 
         // TODO macro
-        let mut cs = self.cs;
         let mut p = self.p;
         let mut pe = self.pe;
         let mut ts = self.ts;
@@ -180,11 +181,10 @@ impl Lexer {
 
         // @command_state = (@cs == klass.lex_en_expr_value ||
         //                   @cs == klass.lex_en_line_begin)
-        self.command_state = ( cs == lexer_en_expr_value || cs == lexer_en_line_begin );
+        self.command_state = ( self.cs == lexer_en_expr_value || self.cs == lexer_en_line_begin );
 
         %% write exec;
 
-        self.cs = cs;
         self.p = p;
         self.pe = pe;
         self.ts = ts;
@@ -221,5 +221,34 @@ impl Lexer {
     // TODO NOTE
     fn arg_or_cmdarg(&self) -> i32 {
         if self.command_state { lexer_en_expr_cmdarg } else { lexer_en_expr_arg }
+    }
+
+    pub fn set_state(&mut self, state_name: &str) {
+        match state_name {
+            "interp_words" => { self.cs = lexer_en_interp_words; },
+            "interp_string" => { self.cs = lexer_en_interp_string; },
+            "plain_words" => { self.cs = lexer_en_plain_words; },
+            "plain_string" => { self.cs = lexer_en_plain_string; },
+            "interp_backslash_delimited" => { self.cs = lexer_en_interp_backslash_delimited; },
+            "plain_backslash_delimited" => { self.cs = lexer_en_plain_backslash_delimited; },
+            "interp_backslash_delimited_words" => { self.cs = lexer_en_interp_backslash_delimited_words; },
+            "plain_backslash_delimited_words" => { self.cs = lexer_en_plain_backslash_delimited_words; },
+            "regexp_modifiers" => { self.cs = lexer_en_regexp_modifiers; },
+            "expr_variable" => { self.cs = lexer_en_expr_variable; },
+            "expr_fname" => { self.cs = lexer_en_expr_fname; },
+            "expr_endfn" => { self.cs = lexer_en_expr_endfn; },
+            "expr_dot" => { self.cs = lexer_en_expr_dot; },
+            "expr_arg" => { self.cs = lexer_en_expr_arg; },
+            "expr_cmdarg" => { self.cs = lexer_en_expr_cmdarg; },
+            "expr_endarg" => { self.cs = lexer_en_expr_endarg; },
+            "expr_mid" => { self.cs = lexer_en_expr_mid; },
+            "expr_beg" => { self.cs = lexer_en_expr_beg; },
+            "expr_labelarg" => { self.cs = lexer_en_expr_labelarg; },
+            "expr_value" => { self.cs = lexer_en_expr_value; },
+            "expr_end" => { self.cs = lexer_en_expr_end; },
+            "leading_dot" => { self.cs = lexer_en_leading_dot; },
+            "line_begin" => { self.cs = lexer_en_line_begin; },
+            _ => { panic!("unknown state name"); }
+        }
     }
 }

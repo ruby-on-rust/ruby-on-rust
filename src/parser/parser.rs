@@ -2792,8 +2792,8 @@ fn _handler15(&mut self) -> SV {
 
 
 let __ = Node::DUMMY;
-    // @lexer.state = :expr_fname
-    wip!();
+
+    self.tokenizer.interior_lexer.set_state("expr_fname");
 SV::_2(__)
 // raw production: fake_embedded_action__stmt__1 -> undefined
 

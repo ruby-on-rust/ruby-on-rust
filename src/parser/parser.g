@@ -46,9 +46,12 @@
 
 // TODO fake embedded actions
 // https://github.com/DmitrySoshnikov/syntax/issues/65
+// TODO many embedded actions actually dont need a return value
+// 
 
 // TODO `error` in yacc/bison/racc is `a terminal symbol reserved for error recovery`, see http://dinosaur.compilertools.net/bison/bison_9.html#SEC81
 // figure out what's the corresponsing word in syntax
+
 
 %right    tBANG tTILDE tUPLUS
 %right    tPOW
@@ -184,11 +187,10 @@ stmt_or_begin
     }
 ;
 
-// TODO actually dont need a return value
 fake_embedded_action__stmt__1: {
     || -> Node; $$ = Node::DUMMY;
-    // @lexer.state = :expr_fname
-    wip!();
+
+    self.tokenizer.interior_lexer.set_state("expr_fname");
 };
 
 stmt

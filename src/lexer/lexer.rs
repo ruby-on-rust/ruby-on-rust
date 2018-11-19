@@ -58,7 +58,7 @@ pub struct Lexer {
 	input: String,
 	
 	// ragel
-	cs: i32,
+	pub cs: i32,
 	p: i32,
 	pe: i32,
 	ts: i32,
@@ -173,7 +173,6 @@ impl Lexer {
 		let data = _input.as_bytes();
 		
 		// TODO macro
-		let mut cs = self.cs;
 		let mut p = self.p;
 		let mut pe = self.pe;
 		let mut ts = self.ts;
@@ -193,7 +192,7 @@ impl Lexer {
 		
 		// @command_state = (@cs == klass.lex_en_expr_value ||
 		//                   @cs == klass.lex_en_line_begin)
-		self.command_state = ( cs == lexer_en_expr_value || cs == lexer_en_line_begin );
+		self.command_state = ( self.cs == lexer_en_expr_value || self.cs == lexer_en_line_begin );
 		
 		
 		{
@@ -209,7 +208,7 @@ impl Lexer {
 			while ( _cont == 1  )
 			{
 			
-				if ( cs == 0  ) {
+				if ( (self.cs) == 0  ) {
 					_cont = 0;
 					
 				}
@@ -219,10 +218,10 @@ impl Lexer {
 						if ( p == eof  ) {
 							{
 								let mut _eofcont  = 0;
-								if ( _lexer_eof_cond_spaces[(cs) as usize]!= -1  ) {
+								if ( _lexer_eof_cond_spaces[((self.cs)) as usize]!= -1  ) {
 									{
-										_cekeys = ( _lexer_eof_cond_key_offs[(cs) as usize] ) as i32;
-										_klen = ( _lexer_eof_cond_key_lens[(cs) as usize] ) as i32;
+										_cekeys = ( _lexer_eof_cond_key_offs[((self.cs)) as usize] ) as i32;
+										_klen = ( _lexer_eof_cond_key_lens[((self.cs)) as usize] ) as i32;
 										_cpc = 0;
 										{
 											let mut _lower  :i32= _cekeys;
@@ -251,7 +250,7 @@ impl Lexer {
 											
 											if ( _eofcont == 0  ) {
 												{
-													cs = 0;
+													(self.cs) = 0;
 												}
 												
 											}
@@ -271,9 +270,9 @@ impl Lexer {
 								}
 								if ( _eofcont == 1  ) {
 									{
-										if ( _lexer_eof_trans[(cs) as usize]> 0  ) {
+										if ( _lexer_eof_trans[((self.cs)) as usize]> 0  ) {
 											{
-												_trans = ( _lexer_eof_trans[(cs) as usize] ) as u32- 1;
+												_trans = ( _lexer_eof_trans[((self.cs)) as usize] ) as u32- 1;
 												_have = 1;
 											}
 											
@@ -295,7 +294,7 @@ impl Lexer {
 					{
 						if ( _have == 0  ) {
 							{
-								_acts = ( _lexer_from_state_actions[(cs) as usize] ) as i32;
+								_acts = ( _lexer_from_state_actions[((self.cs)) as usize] ) as i32;
 								_nacts = ( _lexer_actions[(_acts ) as usize]
 								) as u32;
 								_acts += 1;
@@ -316,10 +315,10 @@ impl Lexer {
 								}
 								
 								
-								_keys = ( _lexer_key_offsets[(cs) as usize] ) as i32;
-								_trans = ( _lexer_index_offsets[(cs) as usize] ) as u32;
+								_keys = ( _lexer_key_offsets[((self.cs)) as usize] ) as i32;
+								_trans = ( _lexer_index_offsets[((self.cs)) as usize] ) as u32;
 								_have = 0;
-								_klen = ( _lexer_single_lengths[(cs) as usize] ) as i32;
+								_klen = ( _lexer_single_lengths[((self.cs)) as usize] ) as i32;
 								if ( _klen > 0  ) {
 									{
 										let mut _lower  :i32= _keys;
@@ -362,7 +361,7 @@ impl Lexer {
 								}
 								if ( _have == 0  ) {
 									{
-										_klen = ( _lexer_range_lengths[(cs) as usize] ) as i32;
+										_klen = ( _lexer_range_lengths[((self.cs)) as usize] ) as i32;
 										if ( _klen > 0  ) {
 											{
 												let mut _lower  :i32= _keys;
@@ -409,7 +408,7 @@ impl Lexer {
 						}
 						if ( _cont == 1  ) {
 							{
-								cs = ( _lexer_cond_targs[(_trans) as usize] ) as i32;
+								(self.cs) = ( _lexer_cond_targs[(_trans) as usize] ) as i32;
 								if ( _lexer_cond_actions[(_trans) as usize]!= 0  ) {
 									{
 										_acts = ( _lexer_cond_actions[(_trans) as usize] ) as i32;
@@ -568,7 +567,7 @@ impl Lexer {
 																
 																{p = p - 1;
 																}
-																{cs = (self.next_state_for_literal(&literal));
+																{(self.cs) = (self.next_state_for_literal(&literal));
 																}
 																{p+= 1;
 																	_cont = 0;
@@ -724,9 +723,9 @@ impl Lexer {
 																
 																p = ts;
 																{stack[(top) as usize]
-																	= cs;
+																	= (self.cs);
 																	top += 1;
-																	cs = 274;
+																	(self.cs) = 274;
 																}}
 														}}
 													
@@ -813,9 +812,9 @@ impl Lexer {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
-																			{cs = 633;
+																			{(self.cs) = 633;
 																			}} else {
-																			{cs = (self.pop_literal());
+																			{(self.cs) = (self.pop_literal());
 																			}
 																		}
 																		
@@ -852,9 +851,9 @@ impl Lexer {
 																
 																p = ts;
 																{stack[(top) as usize]
-																	= cs;
+																	= (self.cs);
 																	top += 1;
-																	cs = 274;
+																	(self.cs) = 274;
 																}}
 														}}
 													
@@ -943,9 +942,9 @@ impl Lexer {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
-																			{cs = 633;
+																			{(self.cs) = 633;
 																			}} else {
-																			{cs = (self.pop_literal());
+																			{(self.cs) = (self.pop_literal());
 																			}
 																		}
 																		
@@ -1036,9 +1035,9 @@ impl Lexer {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
-																			{cs = 633;
+																			{(self.cs) = 633;
 																			}} else {
-																			{cs = (self.pop_literal());
+																			{(self.cs) = (self.pop_literal());
 																			}
 																		}
 																		
@@ -1087,9 +1086,9 @@ impl Lexer {
 																
 																p = ts;
 																{stack[(top) as usize]
-																	= cs;
+																	= (self.cs);
 																	top += 1;
-																	cs = 274;
+																	(self.cs) = 274;
 																}}
 														}}
 													
@@ -1176,9 +1175,9 @@ impl Lexer {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
-																			{cs = 633;
+																			{(self.cs) = 633;
 																			}} else {
-																			{cs = (self.pop_literal());
+																			{(self.cs) = (self.pop_literal());
 																			}
 																		}
 																		
@@ -1215,9 +1214,9 @@ impl Lexer {
 																
 																p = ts;
 																{stack[(top) as usize]
-																	= cs;
+																	= (self.cs);
 																	top += 1;
-																	cs = 274;
+																	(self.cs) = 274;
 																}}
 														}}
 													
@@ -1298,9 +1297,9 @@ impl Lexer {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
-																			{cs = 633;
+																			{(self.cs) = 633;
 																			}} else {
-																			{cs = (self.pop_literal());
+																			{(self.cs) = (self.pop_literal());
 																			}
 																		}
 																		
@@ -1391,9 +1390,9 @@ impl Lexer {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
-																			{cs = 633;
+																			{(self.cs) = 633;
 																			}} else {
-																			{cs = (self.pop_literal());
+																			{(self.cs) = (self.pop_literal());
 																			}
 																		}
 																		
@@ -1550,9 +1549,9 @@ impl Lexer {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
-																			{cs = 633;
+																			{(self.cs) = 633;
 																			}} else {
-																			{cs = (self.pop_literal());
+																			{(self.cs) = (self.pop_literal());
 																			}
 																		}
 																		
@@ -1594,9 +1593,9 @@ impl Lexer {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
-																			{cs = 633;
+																			{(self.cs) = 633;
 																			}} else {
-																			{cs = (self.pop_literal());
+																			{(self.cs) = (self.pop_literal());
 																			}
 																		}
 																		
@@ -1819,9 +1818,9 @@ impl Lexer {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
-																			{cs = 633;
+																			{(self.cs) = 633;
 																			}} else {
-																			{cs = (self.pop_literal());
+																			{(self.cs) = (self.pop_literal());
 																			}
 																		}
 																		
@@ -1855,9 +1854,9 @@ impl Lexer {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
-																			{cs = 633;
+																			{(self.cs) = 633;
 																			}} else {
-																			{cs = (self.pop_literal());
+																			{(self.cs) = (self.pop_literal());
 																			}
 																		}
 																		
@@ -1906,9 +1905,9 @@ impl Lexer {
 																
 																p = ts;
 																{stack[(top) as usize]
-																	= cs;
+																	= (self.cs);
 																	top += 1;
-																	cs = 274;
+																	(self.cs) = 274;
 																}}
 														}}
 													
@@ -1995,9 +1994,9 @@ impl Lexer {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
-																			{cs = 633;
+																			{(self.cs) = 633;
 																			}} else {
-																			{cs = (self.pop_literal());
+																			{(self.cs) = (self.pop_literal());
 																			}
 																		}
 																		
@@ -2034,9 +2033,9 @@ impl Lexer {
 																
 																p = ts;
 																{stack[(top) as usize]
-																	= cs;
+																	= (self.cs);
 																	top += 1;
-																	cs = 274;
+																	(self.cs) = 274;
 																}}
 														}}
 													
@@ -2058,9 +2057,9 @@ impl Lexer {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
-																			{cs = 633;
+																			{(self.cs) = 633;
 																			}} else {
-																			{cs = (self.pop_literal());
+																			{(self.cs) = (self.pop_literal());
 																			}
 																		}
 																		
@@ -2093,9 +2092,9 @@ impl Lexer {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
-																			{cs = 633;
+																			{(self.cs) = 633;
 																			}} else {
-																			{cs = (self.pop_literal());
+																			{(self.cs) = (self.pop_literal());
 																			}
 																		}
 																		
@@ -2194,9 +2193,9 @@ impl Lexer {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
-																			{cs = 633;
+																			{(self.cs) = 633;
 																			}} else {
-																			{cs = (self.pop_literal());
+																			{(self.cs) = (self.pop_literal());
 																			}
 																		}
 																		
@@ -2245,9 +2244,9 @@ impl Lexer {
 																
 																p = ts;
 																{stack[(top) as usize]
-																	= cs;
+																	= (self.cs);
 																	top += 1;
-																	cs = 274;
+																	(self.cs) = 274;
 																}}
 														}}
 													
@@ -2334,9 +2333,9 @@ impl Lexer {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
-																			{cs = 633;
+																			{(self.cs) = 633;
 																			}} else {
-																			{cs = (self.pop_literal());
+																			{(self.cs) = (self.pop_literal());
 																			}
 																		}
 																		
@@ -2373,9 +2372,9 @@ impl Lexer {
 																
 																p = ts;
 																{stack[(top) as usize]
-																	= cs;
+																	= (self.cs);
 																	top += 1;
-																	cs = 274;
+																	(self.cs) = 274;
 																}}
 														}}
 													
@@ -2405,9 +2404,9 @@ impl Lexer {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
-																			{cs = 633;
+																			{(self.cs) = 633;
 																			}} else {
-																			{cs = (self.pop_literal());
+																			{(self.cs) = (self.pop_literal());
 																			}
 																		}
 																		
@@ -2440,9 +2439,9 @@ impl Lexer {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
-																			{cs = 633;
+																			{(self.cs) = 633;
 																			}} else {
-																			{cs = (self.pop_literal());
+																			{(self.cs) = (self.pop_literal());
 																			}
 																		}
 																		
@@ -2541,9 +2540,9 @@ impl Lexer {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
-																			{cs = 633;
+																			{(self.cs) = 633;
 																			}} else {
-																			{cs = (self.pop_literal());
+																			{(self.cs) = (self.pop_literal());
 																			}
 																		}
 																		
@@ -2608,7 +2607,7 @@ impl Lexer {
 																{
 																	top -= 1;
 																	let _poped_next_state = stack[top as usize];
-																	{cs = (_poped_next_state);
+																	{(self.cs) = (_poped_next_state);
 																	}
 																}
 																
@@ -2633,7 +2632,7 @@ impl Lexer {
 																{
 																	top -= 1;
 																	let _poped_next_state = stack[top as usize];
-																	{cs = (_poped_next_state);
+																	{(self.cs) = (_poped_next_state);
 																	}
 																}
 																
@@ -2658,7 +2657,7 @@ impl Lexer {
 																{
 																	top -= 1;
 																	let _poped_next_state = stack[top as usize];
-																	{cs = (_poped_next_state);
+																	{(self.cs) = (_poped_next_state);
 																	}
 																}
 																
@@ -2683,7 +2682,7 @@ impl Lexer {
 																{
 																	top -= 1;
 																	let _poped_next_state = stack[top as usize];
-																	{cs = (_poped_next_state);
+																	{(self.cs) = (_poped_next_state);
 																	}
 																}
 																
@@ -2717,7 +2716,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 392;
+																{(self.cs) = 392;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -2734,7 +2733,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 392;
+																{(self.cs) = 392;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -2745,11 +2744,11 @@ impl Lexer {
 												116  => {
 													{{te = p+1;
 															{p = ts - 1;
-																{cs = 648;
+																{(self.cs) = 648;
 																}{stack[(top) as usize]
-																	= cs;
+																	= (self.cs);
 																	top += 1;
-																	cs = 274;
+																	(self.cs) = 274;
 																}}
 														}}
 													
@@ -2762,7 +2761,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 392;
+																{(self.cs) = 392;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -2774,7 +2773,7 @@ impl Lexer {
 													{{te = p+1;
 															{{p = p - 1;
 																} {p = p - 1;
-																} {cs = 648;
+																} {(self.cs) = 648;
 																}}
 														}}
 													
@@ -2796,7 +2795,7 @@ impl Lexer {
 												120  => {
 													{{te = p+1;
 															{{p = p - 1;
-																} {cs = 648;
+																} {(self.cs) = 648;
 																}}
 														}}
 													
@@ -2816,7 +2815,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 392;
+																{(self.cs) = 392;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -2834,7 +2833,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 392;
+																{(self.cs) = 392;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -2852,7 +2851,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 392;
+																{(self.cs) = 392;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -2864,11 +2863,11 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{p = ts - 1;
-																{cs = 648;
+																{(self.cs) = 648;
 																}{stack[(top) as usize]
-																	= cs;
+																	= (self.cs);
 																	top += 1;
-																	cs = 274;
+																	(self.cs) = 274;
 																}}
 														}}
 													
@@ -2882,7 +2881,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 392;
+																{(self.cs) = 392;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -2894,7 +2893,7 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{{p = p - 1;
-																} {cs = 489;
+																} {(self.cs) = 489;
 																}}
 														}}
 													
@@ -2909,7 +2908,7 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{{p = p - 1;
-																} {cs = 648;
+																} {(self.cs) = 648;
 																}}
 														}}
 													
@@ -2922,7 +2921,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 392;
+																{(self.cs) = 392;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -2933,7 +2932,7 @@ impl Lexer {
 												131  => {
 													{{p = ((te))-1;
 															{{p = p - 1;
-																} {cs = 648;
+																} {(self.cs) = 648;
 																}}
 														}}
 													
@@ -2948,7 +2947,7 @@ impl Lexer {
 																			self.emit(token);
 																		}
 																		
-																		{cs = 392;
+																		{(self.cs) = 392;
 																		}{p+= 1;
 																			_cont = 0;
 																		}
@@ -2964,7 +2963,7 @@ impl Lexer {
 																			self.emit(token);
 																		}
 																		
-																		{cs = 392;
+																		{(self.cs) = 392;
 																		}{p+= 1;
 																			_cont = 0;
 																		}
@@ -2980,7 +2979,7 @@ impl Lexer {
 																			self.emit(token);
 																		}
 																		
-																		{cs = 392;
+																		{(self.cs) = 392;
 																		}{p+= 1;
 																			_cont = 0;
 																		}
@@ -3004,7 +3003,7 @@ impl Lexer {
 																}
 																
 																{p = p - 1;
-																} {cs = 633;
+																} {(self.cs) = 633;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -3015,7 +3014,7 @@ impl Lexer {
 												134  => {
 													{{te = p+1;
 															{{p = p - 1;
-																} {cs = 648;
+																} {(self.cs) = 648;
 																}}
 														}}
 													
@@ -3036,7 +3035,7 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{{p = p - 1;
-																} {cs = 648;
+																} {(self.cs) = 648;
 																}}
 														}}
 													
@@ -3044,7 +3043,7 @@ impl Lexer {
 												138  => {
 													{{p = ((te))-1;
 															{{p = p - 1;
-																} {cs = 648;
+																} {(self.cs) = 648;
 																}}
 														}}
 													
@@ -3057,7 +3056,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 420;
+																{(self.cs) = 420;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -3068,7 +3067,7 @@ impl Lexer {
 												140  => {
 													{{te = p+1;
 															{{p = p - 1;
-																} {cs = 648;
+																} {(self.cs) = 648;
 																}}
 														}}
 													
@@ -3089,7 +3088,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = (self.arg_or_cmdarg());
+																{(self.cs) = (self.arg_or_cmdarg());
 																} {p+= 1;
 																	_cont = 0;
 																}
@@ -3107,7 +3106,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = (self.arg_or_cmdarg());
+																{(self.cs) = (self.arg_or_cmdarg());
 																} {p+= 1;
 																	_cont = 0;
 																}
@@ -3125,7 +3124,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = (self.arg_or_cmdarg());
+																{(self.cs) = (self.arg_or_cmdarg());
 																} p = tm - 1; {p+= 1;
 																	_cont = 0;
 																}
@@ -3142,7 +3141,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 420;
+																{(self.cs) = 420;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -3160,7 +3159,7 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{{p = p - 1;
-																} {cs = 648;
+																} {(self.cs) = 648;
 																}}
 														}}
 													
@@ -3214,21 +3213,21 @@ impl Lexer {
 													{{te = p+1;
 															{{p = p - 1;
 																} {p = p - 1;
-																} {cs = 489;
+																} {(self.cs) = 489;
 																}}
 														}}
 													
 												}
 												155  => {
 													{{te = p+1;
-															{p = ts - 1; {cs = 489;
+															{p = ts - 1; {(self.cs) = 489;
 																}}
 														}}
 													
 												}
 												156  => {
 													{{te = p+1;
-															{p = tm - 1; {cs = 648;
+															{p = tm - 1; {(self.cs) = 648;
 																}}
 														}}
 													
@@ -3236,7 +3235,7 @@ impl Lexer {
 												157  => {
 													{{te = p+1;
 															{p = ts - 1;
-																{cs = 648;
+																{(self.cs) = 648;
 																}}
 														}}
 													
@@ -3244,7 +3243,7 @@ impl Lexer {
 												158  => {
 													{{te = p+1;
 															{{p = p - 1;
-																} {cs = 489;
+																} {(self.cs) = 489;
 																}}
 														}}
 													
@@ -3265,7 +3264,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 489;
+																{(self.cs) = 489;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -3283,7 +3282,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 489;
+																{(self.cs) = 489;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -3301,7 +3300,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 489;
+																{(self.cs) = 489;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -3328,7 +3327,7 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{{p = p - 1;
-																} {cs = 489;
+																} {(self.cs) = 489;
 																}}
 														}}
 													
@@ -3350,7 +3349,7 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{{p = p - 1;
-																} {cs = 489;
+																} {(self.cs) = 489;
 																}}
 														}}
 													
@@ -3359,7 +3358,7 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{p = ts - 1;
-																{cs = 648;
+																{(self.cs) = 648;
 																}}
 														}}
 													
@@ -3373,7 +3372,7 @@ impl Lexer {
 												169  => {
 													{{te = p;
 															p = p - 1;
-															{{cs = 648;
+															{{(self.cs) = 648;
 																}}
 														}}
 													
@@ -3382,7 +3381,7 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{{p = p - 1;
-																} {cs = 648;
+																} {(self.cs) = 648;
 																}}
 														}}
 													
@@ -3391,7 +3390,7 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{{p = p - 1;
-																} {cs = 489;
+																} {(self.cs) = 489;
 																}}
 														}}
 													
@@ -3404,7 +3403,7 @@ impl Lexer {
 												173  => {
 													{{p = ((te))-1;
 															{{p = p - 1;
-																} {cs = 489;
+																} {(self.cs) = 489;
 																}}
 														}}
 													
@@ -3439,7 +3438,7 @@ impl Lexer {
 																73  => {
 																	p = ((te))-1;
 																	{p = ts - 1;
-																		{cs = 648;
+																		{(self.cs) = 648;
 																		}}
 																	
 																}
@@ -3466,7 +3465,7 @@ impl Lexer {
 												177  => {
 													{{te = p+1;
 															{p = ts - 1;
-																{cs = 420;
+																{(self.cs) = 420;
 																}}
 														}}
 													
@@ -3493,7 +3492,7 @@ impl Lexer {
 																//     fnext expr_beg; fbreak;
 																//   end
 																// NOTE ignored ruby18
-																{cs = 489;
+																{(self.cs) = 489;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -3505,7 +3504,7 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{p = ts - 1;
-																{cs = 420;
+																{(self.cs) = 420;
 																}}
 														}}
 													
@@ -3513,7 +3512,7 @@ impl Lexer {
 												181  => {
 													{{p = ((te))-1;
 															{p = ts - 1;
-																{cs = 420;
+																{(self.cs) = 420;
 																}}
 														}}
 													
@@ -3541,7 +3540,7 @@ impl Lexer {
 																			}
 																			
 																		}
-																		{cs = 640;
+																		{(self.cs) = 640;
 																		}{p+= 1;
 																			_cont = 0;
 																		}
@@ -3551,7 +3550,7 @@ impl Lexer {
 																81  => {
 																	p = ((te))-1;
 																	{p = ts - 1;
-																		{cs = 420;
+																		{(self.cs) = 420;
 																		}}
 																	
 																}
@@ -3575,7 +3574,7 @@ impl Lexer {
 												184  => {
 													{{te = p+1;
 															{{p = p - 1;
-																} {cs = 648;
+																} {(self.cs) = 648;
 																}}
 														}}
 													
@@ -3611,7 +3610,7 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{{p = p - 1;
-																} {cs = 648;
+																} {(self.cs) = 648;
 																}}
 														}}
 													
@@ -3629,7 +3628,7 @@ impl Lexer {
 												191  => {
 													{{te = p+1;
 															{{p = p - 1;
-																} {cs = 489;
+																} {(self.cs) = 489;
 																}}
 														}}
 													
@@ -3643,7 +3642,7 @@ impl Lexer {
 												193  => {
 													{{te = p;
 															p = p - 1;
-															{p = ts - 1; {cs = 489;
+															{p = ts - 1; {(self.cs) = 489;
 																}}
 														}}
 													
@@ -3658,7 +3657,7 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{{p = p - 1;
-																} {cs = 648;
+																} {(self.cs) = 648;
 																}}
 														}}
 													
@@ -3667,7 +3666,7 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{{p = p - 1;
-																} {cs = 489;
+																} {(self.cs) = 489;
 																}}
 														}}
 													
@@ -3682,7 +3681,7 @@ impl Lexer {
 																			self.emit(token);
 																		}
 																		
-																		{cs = 489;
+																		{(self.cs) = 489;
 																		}{p+= 1;
 																			_cont = 0;
 																		}
@@ -3691,7 +3690,7 @@ impl Lexer {
 																}
 																89  => {
 																	p = ((te))-1;
-																	{p = ts - 1; {cs = 489;
+																	{p = ts - 1; {(self.cs) = 489;
 																		}}
 																	
 																}
@@ -3742,7 +3741,7 @@ impl Lexer {
 																}
 																
 																{p = p - 1;
-																} {cs = 648;
+																} {(self.cs) = 648;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -3773,7 +3772,7 @@ impl Lexer {
 															{let literal_type = self.current_slice(ts, te - 1);
 																let literal_delimiter = self.current_slice(te - 1, te);
 																let literal = Literal::new(literal_type, literal_delimiter, ts, None, false, false, false, Rc::clone(&self.tokens));
-																{cs = (self.push_literal(literal));
+																{(self.cs) = (self.push_literal(literal));
 																}
 															}
 														}}
@@ -3792,7 +3791,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 279;
+																{(self.cs) = 279;
 																}}
 														}}
 													
@@ -3802,7 +3801,7 @@ impl Lexer {
 															{let literal_type = self.current_slice(ts, te).clone();
 																let literal_delimiter = literal_type.chars().last().unwrap().to_string();
 																let literal = Literal::new(literal_type, literal_delimiter, ts, None, false, false, false, Rc::clone(&self.tokens));
-																{cs = (self.push_literal(literal));
+																{(self.cs) = (self.push_literal(literal));
 																}
 															}
 														}}
@@ -3817,7 +3816,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 648;
+																{(self.cs) = 648;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -3834,7 +3833,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 648;
+																{(self.cs) = 648;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -3895,7 +3894,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 633;
+																{(self.cs) = 633;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -3905,7 +3904,7 @@ impl Lexer {
 												}
 												215  => {
 													{{te = p+1;
-															{p = ts - 1; {cs = 648;
+															{p = ts - 1; {(self.cs) = 648;
 																}}
 														}}
 													
@@ -3927,7 +3926,7 @@ impl Lexer {
 																}
 																
 																{p = p - 1;
-																} {cs = 648;
+																} {(self.cs) = 648;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -3958,7 +3957,7 @@ impl Lexer {
 															{let literal_type = self.current_slice(ts, te - 1);
 																let literal_delimiter = self.current_slice(te - 1, te);
 																let literal = Literal::new(literal_type, literal_delimiter, ts, None, false, false, false, Rc::clone(&self.tokens));
-																{cs = (self.push_literal(literal));
+																{(self.cs) = (self.push_literal(literal));
 																}
 															}
 														}}
@@ -3983,7 +3982,7 @@ impl Lexer {
 																}
 																
 																p = tm - 1;
-																{cs = 648;
+																{(self.cs) = 648;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -4001,7 +4000,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 648;
+																{(self.cs) = 648;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -4021,7 +4020,7 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{p = ts - 1;
-																{cs = 648;
+																{(self.cs) = 648;
 																}}
 														}}
 													
@@ -4111,7 +4110,7 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{p = ts - 1;
-																{cs = 648;
+																{(self.cs) = 648;
 																}}
 														}}
 													
@@ -4133,7 +4132,7 @@ impl Lexer {
 																// else
 																//   fnext *arg_or_cmdarg; fbreak;
 																// end
-																{cs = (self.arg_or_cmdarg());
+																{(self.cs) = (self.arg_or_cmdarg());
 																} {p+= 1;
 																	_cont = 0;
 																}
@@ -4150,7 +4149,7 @@ impl Lexer {
 												232  => {
 													{{te = p;
 															p = p - 1;
-															{p = ts - 1; {cs = 648;
+															{p = ts - 1; {(self.cs) = 648;
 																}}
 														}}
 													
@@ -4171,7 +4170,7 @@ impl Lexer {
 												}
 												235  => {
 													{{p = ((te))-1;
-															{p = ts - 1; {cs = 648;
+															{p = ts - 1; {(self.cs) = 648;
 																}}
 														}}
 													
@@ -4188,7 +4187,7 @@ impl Lexer {
 																		}
 																		
 																		{p = p - 1;
-																		} {cs = 648;
+																		} {(self.cs) = 648;
 																		}{p+= 1;
 																			_cont = 0;
 																		}
@@ -4217,7 +4216,7 @@ impl Lexer {
 																			self.emit(token);
 																		}
 																		
-																		{cs = 640;
+																		{(self.cs) = 640;
 																		}{p+= 1;
 																			_cont = 0;
 																		}
@@ -4227,7 +4226,7 @@ impl Lexer {
 																113  => {
 																	p = ((te))-1;
 																	{p = ts - 1;
-																		{cs = 648;
+																		{(self.cs) = 648;
 																		}}
 																	
 																}
@@ -4247,7 +4246,7 @@ impl Lexer {
 																		// else
 																		//   fnext *arg_or_cmdarg; fbreak;
 																		// end
-																		{cs = (self.arg_or_cmdarg());
+																		{(self.cs) = (self.arg_or_cmdarg());
 																		} {p+= 1;
 																			_cont = 0;
 																		}
@@ -4256,7 +4255,7 @@ impl Lexer {
 																}
 																116  => {
 																	p = ((te))-1;
-																	{p = ts - 1; {cs = 648;
+																	{p = ts - 1; {(self.cs) = 648;
 																		}}
 																	
 																}
@@ -4270,7 +4269,7 @@ impl Lexer {
 												237  => {
 													{{te = p+1;
 															{{p = p - 1;
-																} {cs = 489;
+																} {(self.cs) = 489;
 																}}
 														}}
 													
@@ -4305,7 +4304,7 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{{p = p - 1;
-																} {cs = 489;
+																} {(self.cs) = 489;
 																}}
 														}}
 													
@@ -4313,7 +4312,7 @@ impl Lexer {
 												242  => {
 													{{te = p+1;
 															{p = ts - 1;
-																{cs = 648;
+																{(self.cs) = 648;
 																}}
 														}}
 													
@@ -4322,7 +4321,7 @@ impl Lexer {
 													{{te = p+1;
 															{let literal = Literal::new(self.current_slice(ts,te), self.current_slice(ts,te), ts, None, false, false, false, Rc::clone(&self.tokens));
 																
-																{cs = (self.push_literal(literal));
+																{(self.cs) = (self.push_literal(literal));
 																}
 															}
 														}}
@@ -4331,7 +4330,7 @@ impl Lexer {
 												244  => {
 													{{te = p+1;
 															{{p = p - 1;
-																} {cs = 489;
+																} {(self.cs) = 489;
 																}}
 														}}
 													
@@ -4351,7 +4350,7 @@ impl Lexer {
 												247  => {
 													{{te = p;
 															p = p - 1;
-															{{cs = 135;
+															{{(self.cs) = 135;
 																}}
 														}}
 													
@@ -4360,7 +4359,7 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{{p = p - 1;
-																} {cs = 489;
+																} {(self.cs) = 489;
 																}}
 														}}
 													
@@ -4368,7 +4367,7 @@ impl Lexer {
 												249  => {
 													{{p = ((te))-1;
 															{{p = p - 1;
-																} {cs = 489;
+																} {(self.cs) = 489;
 																}}
 														}}
 													
@@ -4438,7 +4437,7 @@ impl Lexer {
 																//     fnext expr_arg; fbreak;
 																//   end
 																// NOTE ignored ruby18
-																{cs = 420;
+																{(self.cs) = 420;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -4451,7 +4450,7 @@ impl Lexer {
 															{let literal_type = self.current_slice(ts, te);
 																let literal_delimiter = self.current_slice(te - 1, te);
 																let literal = Literal::new(literal_type, literal_delimiter, ts, None, false, false, false, Rc::clone(&self.tokens));
-																{cs = (self.push_literal(literal));
+																{(self.cs) = (self.push_literal(literal));
 																}
 															}
 														}}
@@ -4460,9 +4459,9 @@ impl Lexer {
 												262  => {
 													{{te = p+1;
 															{p = ts - 1; {stack[(top) as usize]
-																	= cs;
+																	= (self.cs);
 																	top += 1;
-																	cs = 274;
+																	(self.cs) = 274;
 																}}
 														}}
 													
@@ -4475,7 +4474,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 399;
+																{(self.cs) = 399;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -4491,7 +4490,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 640;
+																{(self.cs) = 640;
 																}}
 														}}
 													
@@ -4504,7 +4503,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 640;
+																{(self.cs) = 640;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -4542,7 +4541,7 @@ impl Lexer {
 																// else # )
 																//   # fnext expr_endfn; ?
 																// end
-																{cs = 648;
+																{(self.cs) = 648;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -4559,7 +4558,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 489;
+																{(self.cs) = 489;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -4576,7 +4575,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 640;
+																{(self.cs) = 640;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -4592,7 +4591,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 489;
+																{(self.cs) = 489;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -4609,7 +4608,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 640;
+																{(self.cs) = 640;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -4639,7 +4638,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 279;
+																{(self.cs) = 279;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -4694,7 +4693,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = (self.arg_or_cmdarg());
+																{(self.cs) = (self.arg_or_cmdarg());
 																} {p+= 1;
 																	_cont = 0;
 																}
@@ -4724,9 +4723,9 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{p = ts - 1; {stack[(top) as usize]
-																	= cs;
+																	= (self.cs);
 																	top += 1;
-																	cs = 274;
+																	(self.cs) = 274;
 																}}
 														}}
 													
@@ -4740,7 +4739,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 399;
+																{(self.cs) = 399;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -4765,7 +4764,7 @@ impl Lexer {
 																// else
 																//   fnext *arg_or_cmdarg; fbreak;
 																// end
-																{cs = (self.arg_or_cmdarg());
+																{(self.cs) = (self.arg_or_cmdarg());
 																} {p+= 1;
 																	_cont = 0;
 																}
@@ -4782,7 +4781,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 640;
+																{(self.cs) = 640;
 																}}
 														}}
 													
@@ -4796,7 +4795,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 640;
+																{(self.cs) = 640;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -4813,7 +4812,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 489;
+																{(self.cs) = 489;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -4852,7 +4851,7 @@ impl Lexer {
 																// else # )
 																//   # fnext expr_endfn; ?
 																// end
-																{cs = 648;
+																{(self.cs) = 648;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -4870,7 +4869,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 489;
+																{(self.cs) = 489;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -4887,7 +4886,7 @@ impl Lexer {
 																	self.emit(token);
 																}
 																
-																{cs = 489;
+																{(self.cs) = 489;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -4904,7 +4903,7 @@ impl Lexer {
 												287  => {
 													{{te = p;
 															p = p - 1;
-															{{cs = 807;
+															{{(self.cs) = 807;
 																}}
 														}}
 													
@@ -4970,7 +4969,7 @@ impl Lexer {
 																			self.emit(token);
 																		}
 																		
-																		{cs = 279;
+																		{(self.cs) = 279;
 																		}{p+= 1;
 																			_cont = 0;
 																		}
@@ -4985,7 +4984,7 @@ impl Lexer {
 																			self.emit(token);
 																		}
 																		
-																		{cs = 489;
+																		{(self.cs) = 489;
 																		}{p+= 1;
 																			_cont = 0;
 																		}
@@ -5000,7 +4999,7 @@ impl Lexer {
 																			self.emit(token);
 																		}
 																		
-																		{cs = 640;
+																		{(self.cs) = 640;
 																		}{p+= 1;
 																			_cont = 0;
 																		}
@@ -5015,7 +5014,7 @@ impl Lexer {
 																			self.emit(token);
 																		}
 																		
-																		{cs = 465;
+																		{(self.cs) = 465;
 																		}{p+= 1;
 																			_cont = 0;
 																		}
@@ -5037,7 +5036,7 @@ impl Lexer {
 																		//     fnext expr_arg; fbreak;
 																		//   end
 																		// NOTE ignored ruby18
-																		{cs = 420;
+																		{(self.cs) = 420;
 																		}{p+= 1;
 																			_cont = 0;
 																		}
@@ -5067,7 +5066,7 @@ impl Lexer {
 																			self.emit(token);
 																		}
 																		
-																		{cs = (self.arg_or_cmdarg());
+																		{(self.cs) = (self.arg_or_cmdarg());
 																		} {p+= 1;
 																			_cont = 0;
 																		}
@@ -5090,7 +5089,7 @@ impl Lexer {
 																		// else
 																		//   fnext *arg_or_cmdarg; fbreak;
 																		// end
-																		{cs = (self.arg_or_cmdarg());
+																		{(self.cs) = (self.arg_or_cmdarg());
 																		} {p+= 1;
 																			_cont = 0;
 																		}
@@ -5105,7 +5104,7 @@ impl Lexer {
 																			self.emit(token);
 																		}
 																		
-																		{cs = 640;
+																		{(self.cs) = 640;
 																		}{p+= 1;
 																			_cont = 0;
 																		}
@@ -5120,7 +5119,7 @@ impl Lexer {
 																			self.emit(token);
 																		}
 																		
-																		{cs = 489;
+																		{(self.cs) = 489;
 																		}{p+= 1;
 																			_cont = 0;
 																		}
@@ -5136,7 +5135,7 @@ impl Lexer {
 												}
 												292  => {
 													{{te = p+1;
-															{p = tm - 1; {cs = 648;
+															{p = tm - 1; {(self.cs) = 648;
 																}}
 														}}
 													
@@ -5151,7 +5150,7 @@ impl Lexer {
 																}
 																
 																{p = p - 1;
-																} {cs = 135;
+																} {(self.cs) = 135;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -5170,7 +5169,7 @@ impl Lexer {
 																}
 																
 																{p = p - 1;
-																} {cs = 135;
+																} {(self.cs) = 135;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -5188,7 +5187,7 @@ impl Lexer {
 																}
 																
 																{p = p - 1;
-																} {cs = 135;
+																} {(self.cs) = 135;
 																}{p+= 1;
 																	_cont = 0;
 																}
@@ -5214,7 +5213,7 @@ impl Lexer {
 												298  => {
 													{{te = p+1;
 															{{p = p - 1;
-																} {cs = 640;
+																} {(self.cs) = 640;
 																}}
 														}}
 													
@@ -5245,7 +5244,7 @@ impl Lexer {
 													{{te = p;
 															p = p - 1;
 															{{p = p - 1;
-																} {cs = 640;
+																} {(self.cs) = 640;
 																}}
 														}}
 													
@@ -5253,7 +5252,7 @@ impl Lexer {
 												303  => {
 													{{p = ((te))-1;
 															{{p = p - 1;
-																} {cs = 640;
+																} {(self.cs) = 640;
 																}}
 														}}
 													
@@ -5269,7 +5268,7 @@ impl Lexer {
 									}
 									
 								}
-								_acts = ( _lexer_to_state_actions[(cs) as usize] ) as i32;
+								_acts = ( _lexer_to_state_actions[((self.cs)) as usize] ) as i32;
 								_nacts = ( _lexer_actions[(_acts ) as usize]
 								) as u32;
 								_acts += 1;
@@ -5290,7 +5289,7 @@ impl Lexer {
 								}
 								
 								
-								if ( cs == 0  ) {
+								if ( (self.cs) == 0  ) {
 									_cont = 0;
 									
 								}
@@ -5307,7 +5306,6 @@ impl Lexer {
 			}
 			
 		}
-		self.cs = cs;
 		self.p = p;
 		self.pe = pe;
 		self.ts = ts;
@@ -5655,5 +5653,34 @@ impl Lexer {
 	// TODO NOTE
 	fn arg_or_cmdarg(&self) -> i32 {
 		if self.command_state { lexer_en_expr_cmdarg } else { lexer_en_expr_arg }
+	}
+	
+	pub fn set_state(&mut self, state_name: &str) {
+		match state_name {
+			"interp_words" => { self.cs = lexer_en_interp_words; },
+			"interp_string" => { self.cs = lexer_en_interp_string; },
+			"plain_words" => { self.cs = lexer_en_plain_words; },
+			"plain_string" => { self.cs = lexer_en_plain_string; },
+			"interp_backslash_delimited" => { self.cs = lexer_en_interp_backslash_delimited; },
+			"plain_backslash_delimited" => { self.cs = lexer_en_plain_backslash_delimited; },
+			"interp_backslash_delimited_words" => { self.cs = lexer_en_interp_backslash_delimited_words; },
+			"plain_backslash_delimited_words" => { self.cs = lexer_en_plain_backslash_delimited_words; },
+			"regexp_modifiers" => { self.cs = lexer_en_regexp_modifiers; },
+			"expr_variable" => { self.cs = lexer_en_expr_variable; },
+			"expr_fname" => { self.cs = lexer_en_expr_fname; },
+			"expr_endfn" => { self.cs = lexer_en_expr_endfn; },
+			"expr_dot" => { self.cs = lexer_en_expr_dot; },
+			"expr_arg" => { self.cs = lexer_en_expr_arg; },
+			"expr_cmdarg" => { self.cs = lexer_en_expr_cmdarg; },
+			"expr_endarg" => { self.cs = lexer_en_expr_endarg; },
+			"expr_mid" => { self.cs = lexer_en_expr_mid; },
+			"expr_beg" => { self.cs = lexer_en_expr_beg; },
+			"expr_labelarg" => { self.cs = lexer_en_expr_labelarg; },
+			"expr_value" => { self.cs = lexer_en_expr_value; },
+			"expr_end" => { self.cs = lexer_en_expr_end; },
+			"leading_dot" => { self.cs = lexer_en_leading_dot; },
+			"line_begin" => { self.cs = lexer_en_line_begin; },
+			_ => { panic!("unknown state name"); }
+		}
 	}
 }
