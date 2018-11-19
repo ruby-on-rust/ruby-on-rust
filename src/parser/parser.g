@@ -1696,8 +1696,8 @@ primary_value: primary;
                 | term kTHEN
                     {
                         //   result = val[1]
-                        |$1:Node|->Node;
-                        $$ = $1;
+                        |$2:Token|->Token;
+                        $$ = $2;
                     }
 ;
 
