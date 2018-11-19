@@ -403,7 +403,7 @@ pub fn symbol_compose(parts: Nodes) -> Node {
 //     collection_map(begin_t, elements, end_t))
 // end
 // TODO INCOMPLETE
-pub fn array(elements: Nodes) -> Node {
+pub fn array(begin_t: Option<Token>, elements: Nodes, end_t: Option<Token>) -> Node {
     Node::Array(elements)
 }
 
@@ -519,7 +519,8 @@ pub fn pair_keyword(key_t: Token, value: Node) -> Node {
 //   n(:hash, [ *pairs ],
 //     collection_map(begin_t, pairs, end_t))
 // end
-pub fn associate(pairs: Nodes) -> Node {
+pub fn associate(begin_t: Option<Token>, pairs: Nodes, end_t: Option<Token>) -> Node {
+    // TODO map
     return Node::Hash(pairs);
 }
 
@@ -1057,6 +1058,9 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //       send_map(receiver, dot_t, selector_t, lparen_t, args, rparen_t))
 //   end
 // end
+pub fn call_method(receiver: Option<Node>, dot_t: Option<Token>, selector_t: Token, lparen_t: Option<Token>, args: Nodes, rparen_t: Option<Token>) -> Node {
+    wip!();
+}
 
 // def call_lambda(lambda_t)
 //   if self.class.emit_lambda

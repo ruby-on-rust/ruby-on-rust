@@ -412,95 +412,93 @@ block_command
 
 fcall: operation;
 
-         command: fcall command_args %prec tLOWEST
-                    {
-                    //   result = @builder.call_method(nil, nil, val[0],
-                    //               nil, val[1], nil)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | fcall command_args cmd_brace_block
-                    {
-                    //   method_call = @builder.call_method(nil, nil, val[0],
-                    //                     nil, val[1], nil)
+command
+    : fcall command_args %prec tLOWEST {
+        |$1: Token, $2: Nodes| -> Node;
 
-                    //   begin_t, args, body, end_t = val[2]
-                    //   result      = @builder.block(method_call,
-                    //                   begin_t, args, body, end_t)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | primary_value call_op operation2 command_args %prec tLOWEST
-                    {
-                    //   result = @builder.call_method(val[0], val[1], val[2],
-                    //               nil, val[3], nil)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | primary_value call_op operation2 command_args cmd_brace_block
-                    {
-                    //   method_call = @builder.call_method(val[0], val[1], val[2],
-                    //                     nil, val[3], nil)
+        $$ = node::call_method(None, None, *$1.interior_token, None, $2, None);
+    }
+    | fcall command_args cmd_brace_block
+        {
+        //   method_call = @builder.call_method(nil, nil, val[0], nil, val[1], nil)
 
-                    //   begin_t, args, body, end_t = val[4]
-                    //   result      = @builder.block(method_call,
-                    //                   begin_t, args, body, end_t)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | primary_value tCOLON2 operation2 command_args %prec tLOWEST
-                    {
-                    //   result = @builder.call_method(val[0], val[1], val[2],
-                    //               nil, val[3], nil)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | primary_value tCOLON2 operation2 command_args cmd_brace_block
-                    {
-                    //   method_call = @builder.call_method(val[0], val[1], val[2],
-                    //                     nil, val[3], nil)
+        //   begin_t, args, body, end_t = val[2]
+        //   result      = @builder.block(method_call,
+        //                   begin_t, args, body, end_t)
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | primary_value call_op operation2 command_args %prec tLOWEST
+        {
+        //   result = @builder.call_method(val[0], val[1], val[2],
+        //               nil, val[3], nil)
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | primary_value call_op operation2 command_args cmd_brace_block
+        {
+        //   method_call = @builder.call_method(val[0], val[1], val[2],
+        //                     nil, val[3], nil)
 
-                    //   begin_t, args, body, end_t = val[4]
-                    //   result      = @builder.block(method_call,
-                    //                   begin_t, args, body, end_t)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kSUPER command_args
-                    {
-                    //   result = @builder.keyword_cmd(:super, val[0],
-                    //               nil, val[1], nil)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kYIELD command_args
-                    {
-                    //   result = @builder.keyword_cmd(:yield, val[0],
-                    //               nil, val[1], nil)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kRETURN call_args
-                    {
-                    //   result = @builder.keyword_cmd(:return, val[0],
-                    //               nil, val[1], nil)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kBREAK call_args
-                    {
-                    //   result = @builder.keyword_cmd(:break, val[0],
-                    //               nil, val[1], nil)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kNEXT call_args
-                    {
-                    //   result = @builder.keyword_cmd(:next, val[0],
-                    //               nil, val[1], nil)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+        //   begin_t, args, body, end_t = val[4]
+        //   result      = @builder.block(method_call,
+        //                   begin_t, args, body, end_t)
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | primary_value tCOLON2 operation2 command_args %prec tLOWEST
+        {
+        //   result = @builder.call_method(val[0], val[1], val[2],
+        //               nil, val[3], nil)
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | primary_value tCOLON2 operation2 command_args cmd_brace_block
+        {
+        //   method_call = @builder.call_method(val[0], val[1], val[2],
+        //                     nil, val[3], nil)
+
+        //   begin_t, args, body, end_t = val[4]
+        //   result      = @builder.block(method_call,
+        //                   begin_t, args, body, end_t)
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | kSUPER command_args
+        {
+        //   result = @builder.keyword_cmd(:super, val[0],
+        //               nil, val[1], nil)
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | kYIELD command_args
+        {
+        //   result = @builder.keyword_cmd(:yield, val[0],
+        //               nil, val[1], nil)
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | kRETURN call_args
+        {
+        //   result = @builder.keyword_cmd(:return, val[0],
+        //               nil, val[1], nil)
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | kBREAK call_args
+        {
+        //   result = @builder.keyword_cmd(:break, val[0],
+        //               nil, val[1], nil)
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | kNEXT call_args
+        {
+        //   result = @builder.keyword_cmd(:next, val[0],
+        //               nil, val[1], nil)
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
 ;
 
             mlhs: mlhs_basic
@@ -635,62 +633,50 @@ fcall: operation;
                     }
 ;
 
-       mlhs_node: user_variable
-                    {
-                    //   result = @builder.assignable(val[0])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | keyword_variable
-                    {
-                    //   result = @builder.assignable(val[0])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | primary_value tLBRACK2 opt_call_args rbracket
-                    {
-                    //   result = @builder.index_asgn(val[0], val[1], val[2], val[3])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | primary_value call_op tIDENTIFIER
-                    {
-                    //   result = @builder.attr_asgn(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | primary_value tCOLON2 tIDENTIFIER
-                    {
-                    //   result = @builder.attr_asgn(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | primary_value call_op tCONSTANT
-                    {
-                    //   result = @builder.attr_asgn(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | primary_value tCOLON2 tCONSTANT
-                    {
-                    //   result = @builder.assignable(
-                    //               @builder.const_fetch(val[0], val[1], val[2]))
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | tCOLON3 tCONSTANT
-                    {
-                    //   result = @builder.assignable(
-                    //               @builder.const_global(val[0], val[1]))
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | backref
-                    {
-                    //   result = @builder.assignable(val[0])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+mlhs_node
+    : user_variable {
+        |$1:Node| -> Node;
+        $$ = node::assignable($1); }
+    | keyword_variable {
+            |$1:Node| -> Node;
+            $$ = node::assignable($1);
+        }
+    | primary_value tLBRACK2 opt_call_args rbracket {
+        //   result = @builder.index_asgn(val[0], val[1], val[2], val[3])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | primary_value call_op tIDENTIFIER {
+        //   result = @builder.attr_asgn(val[0], val[1], val[2])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | primary_value tCOLON2 tIDENTIFIER {
+        //   result = @builder.attr_asgn(val[0], val[1], val[2])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | primary_value call_op tCONSTANT {
+        //   result = @builder.attr_asgn(val[0], val[1], val[2])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | primary_value tCOLON2 tCONSTANT {
+        //   result = @builder.assignable(
+        //               @builder.const_fetch(val[0], val[1], val[2]))
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | tCOLON3 tCONSTANT {
+        //   result = @builder.assignable(
+        //               @builder.const_global(val[0], val[1]))
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | backref {
+        |$1:Node| -> Node;
+        $$ = node::assignable($1);
+    }
 ;
 
 lhs
@@ -698,56 +684,46 @@ lhs
         |$1:Node| -> Node;
         $$ = node::assignable($1);
     }
-    | keyword_variable
-        {
-            // result = @builder.assignable(val[0])
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
-    | primary_value tLBRACK2 opt_call_args rbracket
-        {
-            // result = @builder.index_asgn(val[0], val[1], val[2], val[3])
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
-    | primary_value call_op tIDENTIFIER
-        {
-            // result = @builder.attr_asgn(val[0], val[1], val[2])
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
-    | primary_value tCOLON2 tIDENTIFIER
-        {
-            // result = @builder.attr_asgn(val[0], val[1], val[2])
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
-    | primary_value call_op tCONSTANT
-        {
-            // result = @builder.attr_asgn(val[0], val[1], val[2])
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
-    | primary_value tCOLON2 tCONSTANT
-        {
-            // result = @builder.assignable(
-            //             @builder.const_fetch(val[0], val[1], val[2]))
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
-    | tCOLON3 tCONSTANT
-        {
-            // result = @builder.assignable(
-            //             @builder.const_global(val[0], val[1]))
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
-    | backref
-        {
-            // result = @builder.assignable(val[0])
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
+    | keyword_variable {
+        |$1:Node| -> Node;
+        $$ = node::assignable($1);
+    }
+    | primary_value tLBRACK2 opt_call_args rbracket {
+        // result = @builder.index_asgn(val[0], val[1], val[2], val[3])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | primary_value call_op tIDENTIFIER {
+        // result = @builder.attr_asgn(val[0], val[1], val[2])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | primary_value tCOLON2 tIDENTIFIER {
+        // result = @builder.attr_asgn(val[0], val[1], val[2])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | primary_value call_op tCONSTANT {
+        // result = @builder.attr_asgn(val[0], val[1], val[2])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | primary_value tCOLON2 tCONSTANT {
+        // result = @builder.assignable(
+        //             @builder.const_fetch(val[0], val[1], val[2]))
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | tCOLON3 tCONSTANT {
+        // result = @builder.assignable(
+        //             @builder.const_global(val[0], val[1]))
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | backref {
+        |$1:Node| -> Node;
+        $$ = node::assignable($1);
+    }
 ;
 
            cname: tIDENTIFIER
@@ -811,10 +787,9 @@ lhs
                     }
 ;
 
-fake_embedded_action_undef_list :{
-    //   @lexer.state = :expr_fname
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+fake_embedded_action_undef_list: {
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.set_state("expr_fname");
 };
 
               op:   tPIPE    | tCARET  | tAMPER2  | tCMP  | tEQ     | tEQQ
@@ -835,10 +810,6 @@ fake_embedded_action_undef_list :{
                 | kUNTIL
 ;
 
-//              arg: lhs tEQL arg_rhs
-//                     {
-//                       result = @builder.assign(val[0], val[1], val[2])
-//                     }
 arg
     : lhs tEQL arg_rhs {
         |$1: Node; $2: Token, $3: Node| -> Node;
@@ -1084,21 +1055,19 @@ arg
     | primary
 ;
 
-           relop: tGT | tLT | tGEQ | tLEQ
-;
+relop: tGT | tLT | tGEQ | tLEQ;
 
-        rel_expr: arg relop arg %prec tGT
-                    {
-                    //   result = @builder.binary_op(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | rel_expr relop arg %prec tGT
-                    {
-                    //   result = @builder.binary_op(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+rel_expr
+    : arg relop arg %prec tGT {
+        //   result = @builder.binary_op(val[0], val[1], val[2])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | rel_expr relop arg %prec tGT {
+        //   result = @builder.binary_op(val[0], val[1], val[2])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
 ;
 
 arg_value: arg;
@@ -1108,18 +1077,15 @@ aref_args
         || -> Nodes; $$ = vec![];
     }
     | args trailer { $$ = $1; }
-    | args tCOMMA assocs trailer
-        {
-            // result = val[0] << @builder.associate(nil, val[2], nil)
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
-    | assocs trailer
-        {
-            // result = [ @builder.associate(nil, val[0], nil) ]
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
+    | args tCOMMA assocs trailer {
+        |$1: Nodes, $3: Nodes| -> Nodes;
+        $1.push(node::associate(None, $3, None));
+        $$ = $1;
+    }
+    | assocs trailer {
+        |$1: Nodes|->Nodes;
+        $1.push(node::associate(None, $1, None));
+    }
 ;
 
 arg_rhs
@@ -1136,91 +1102,74 @@ arg_rhs
         }
 ;
 
-      paren_args: tLPAREN2 opt_call_args rparen
-                    {
-                    //   result = val
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-                    }
+paren_args: tLPAREN2 opt_call_args rparen {
+    // WTF?
+    //   result = val
+    ||->Node;
+    wip!(); $$=Node::DUMMY;
+};
+
+opt_paren_args
+    : {
+        //   result = [ nil, [], nil ]
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | paren_args
 ;
 
-  opt_paren_args:
-                    {
-                    //   result = [ nil, [], nil ]
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-                    }
-                | paren_args
+opt_call_args
+    : {
+        || -> Nodes; $$ = vec![];
+    }
+    | call_args
+    | args tCOMMA
+    | args tCOMMA assocs tCOMMA {
+        |$1:Nodes, $3:Nodes| -> Nodes;
+
+        $1.push(node::associate(None, $3, None));
+        $$ = $1;
+    }
+    | assocs tCOMMA {
+        |$1:Nodes| -> Nodes;
+
+        $$ = vec![ node::associate(None, $1, None) ];
+    }
 ;
 
-   opt_call_args:
-                    {
-                    //   result = []
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | call_args
-                | args tCOMMA
-                | args tCOMMA assocs tCOMMA
-                    {
-                    //   result = val[0] << @builder.associate(nil, val[2], nil)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | assocs tCOMMA
-                    {
-                    //   result = [ @builder.associate(nil, val[0], nil) ]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-;
+call_args
+    : command {
+        |$1:Node|->Nodes; $$ = vec![$1];
+    }
+    | args opt_block_arg {
+        |$1:Nodes, $2:Nodes| -> Nodes;
 
-       call_args: command
-                    {
-                        |$1:Node|->Nodes;
+        $1.append(&mut $2);
+        $$ = $1;
+    }
+    | assocs opt_block_arg {
+        |$1:Nodes, $2:Nodes| -> Nodes;
 
-                        //   result = [ val[0] ]
-                        $$ = vec![$1];
-                    }
-                | args opt_block_arg
-                    {
-                        |$1:Nodes, $2:Nodes| -> Nodes;
+        let mut result = vec![node::associate($1)];
+        result.append(&mut $2);
+        $$ = result;
+    }
+    | args tCOMMA assocs opt_block_arg {
+        |$1:Nodes, $3:Nodes, $4:Nodes| -> Nodes;
 
-                        //   result = val[0].concat(val[1])
-                        $1.append(&mut $2);
-                        $$ = $1;
-                    }
-                | assocs opt_block_arg
-                    {
-                        |$1:Nodes, $2:Nodes| -> Nodes;
-                        //   result = [ @builder.associate(nil, val[0], nil) ]
-                        //   result.concat(val[1])
-                        let mut result = vec![node::associate($1)];
-                        result.append(&mut $2);
-                        $$ = result;
-                    }
-                | args tCOMMA assocs opt_block_arg
-                    {
-                        |$1:Nodes, $3:Nodes, $4:Nodes| -> Nodes;
-
-                        //   assocs = @builder.associate(nil, val[2], nil)
-                        //   result = val[0] << assocs
-                        //   result.concat(val[3])
-                        let mut assocs = node::associate($3);
-                        $1.push(assocs);
-                        $1.append(&mut $4);
-                        $$ = $1;
-                    }
-                | block_arg {
-                    |$1:Node|->Nodes; $$ = vec![$1];
-                }
+        let mut assocs = node::associate($3);
+        $1.push(assocs);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    | block_arg {
+        |$1:Node|->Nodes; $$ = vec![$1];
+    }
 ;
 
     command_args: fake_embedded_action__command_args call_args {
         |$1:StackState, $2:Nodes| -> Nodes;
 
-        // @lexer.cmdarg = val[0]
-        // result = val[1]
         self.tokenizer.interior_lexer.cmdarg = $1;
         $$ = $2;
     }
@@ -1229,19 +1178,16 @@ arg_rhs
 fake_embedded_action__command_args: {
     ||->StackState;
 
-    //   result = @lexer.cmdarg.dup
-    //   @lexer.cmdarg.push(true)
-
     $$ = self.tokenizer.interior_lexer.cmdarg.clone();
     self.tokenizer.interior_lexer.cmdarg.push(true);
 };
 
-       block_arg: tAMPER arg_value
-                    {
-                    //   result = @builder.block_pass(val[0], val[1])
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-                    }
+block_arg
+    : tAMPER arg_value {
+        //   result = @builder.block_pass(val[0], val[1])
+        || -> Node;
+        wip!(); $$=Node::DUMMY;
+    }
 ;
 
 opt_block_arg
@@ -1257,54 +1203,47 @@ args
     : arg_value {
         |$1:Node| -> Nodes; $$ = vec![$1];
     }
-                | tSTAR arg_value
-                    {
-                        //   result = [ @builder.splat(val[0], val[1]) ]
+    | tSTAR arg_value {
+        //   result = [ @builder.splat(val[0], val[1]) ]
 
-                        ||->Node;
-                        wip!(); $$=Node::DUMMY;
-                    }
-                | args tCOMMA arg_value
-                    {
-                        |$1:Nodes, $2:Token, $3:Node| -> Nodes;
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | args tCOMMA arg_value {
+        |$1:Nodes, $2:Token, $3:Node| -> Nodes;
 
-                        $1.push($3); $$ = $1;
-                    }
-                | args tCOMMA tSTAR arg_value
-                    {
-                    //   result = val[0] << @builder.splat(val[2], val[3])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+        $1.push($3); $$ = $1;
+    }
+    | args tCOMMA tSTAR arg_value {
+        //   result = val[0] << @builder.splat(val[2], val[3])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
 ;
 
-        mrhs_arg: mrhs
-                    {
-                    //   result = @builder.array(nil, val[0], nil)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | arg_value
+mrhs_arg
+    : mrhs {
+        |$1: Nodes| -> Node;
+        $$ = node::array(None, $1, None);
+    }
+    | arg_value
 ;
 
-            mrhs: args tCOMMA arg_value
-                    {
-                    //   result = val[0] << val[2]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | args tCOMMA tSTAR arg_value
-                    {
-                    //   result = val[0] << @builder.splat(val[2], val[3])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | tSTAR arg_value
-                    {
-                    //   result = [ @builder.splat(val[0], val[1]) ]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+mrhs
+    : args tCOMMA arg_value {
+        |$1:Nodes, $3:Node| -> Node;
+
+        $1.push($3); $$ = $1;
+    }
+    | args tCOMMA tSTAR arg_value {
+        |$1:Nodes, $3:Token, $4: Node| -> Node;
+        $1.push(node::splat($3, $4));
+        $$ = $1;
+    }
+    | tSTAR arg_value {
+        |$1:Token, $2:Node|->Node;
+        $$ = vec![ node::splat($1, $2) ];
+    }
 ;
 
 fake_embedded_action_primary_kBEGIN: {
@@ -1315,58 +1254,49 @@ fake_embedded_action_primary_kBEGIN: {
 };
 
 fake_embedded_action_primary_tLPAREN_ARG: {
-    // result = @lexer.cmdarg.dup
-    // @lexer.cmdarg.clear
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    ||->StackState;
+    $$=self.tokenizer.interior_lexer.cmdarg.clone();
+    self.tokenizer.interior_lexer.cmdarg.clear();
 };
 
 fake_embedded_action_primary_tLPAREN_ARG_stmt: {
-    // @lexer.state = :expr_endarg
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.set_state("expr_endarg");
 };
 
 fake_embedded_action_primary_tLPAREN_ARG_2: {
-    // @lexer.state = :expr_endarg
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.set_state("expr_endarg");
 };
 
 fake_embedded_action_primary_kWHILE_1: {
-    //   @lexer.cond.push(true)
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.cond.push(true);
 };
 
 fake_embedded_action_primary_kWHILE_2: {
-    //   @lexer.cond.pop
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.cond.pop();
 };
 
 fake_embedded_action_primary_kUNTIL_1: {
-    //   @lexer.cond.push(true)
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.cond.push(true);
 };
 
 fake_embedded_action_primary_kUNTIL_2: {
-    //   @lexer.cond.pop
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.cond.pop();
 };
 
 fake_embedded_action__primary__kFOR_1: {
-    //   @lexer.cond.push(true)
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.cond.push(true);
 };
 
 fake_embedded_action__primary__kFOR_2: {
-    //   @lexer.cond.pop
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.cond.pop();
 };
 
 fake_embedded_action__primary__kCLASS_1: {
@@ -1402,9 +1332,8 @@ fake_embedded_action__primary__kDEF_1: {
 };
 
 fake_embedded_action__primary__kDEF_2: {
-    //   @lexer.state = :expr_fname
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.set_state("expr_fname");
 };
 
 fake_embedded_action__primary__kDEF_3: {
@@ -1426,40 +1355,34 @@ primary
     | qsymbols
     | var_ref
     | backref
-    | tFID
-        {
-            // result = @builder.call_method(nil, nil, val[0])
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
-    | kBEGIN fake_embedded_action_primary_kBEGIN bodystmt kEND
-        {
-            // @lexer.cmdarg = val[1]
+    | tFID {
+        |$1: Token| -> Node;
+        $$ = node::call_method(None, None, *$1.interior_token);
+    }
+    | kBEGIN fake_embedded_action_primary_kBEGIN bodystmt kEND {
+        // @lexer.cmdarg = val[1]
 
-            // result = @builder.begin_keyword(val[0], val[2], val[3])
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
-    | tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG stmt fake_embedded_action_primary_tLPAREN_ARG_stmt rparen
-        {
-            // @lexer.cmdarg = val[1]
+        // result = @builder.begin_keyword(val[0], val[2], val[3])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG stmt fake_embedded_action_primary_tLPAREN_ARG_stmt rparen {
+        // @lexer.cmdarg = val[1]
 
-            // result = @builder.begin(val[0], val[2], val[4])
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
-    | tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG_2 opt_nl tRPAREN
-        {
-            // result = @builder.begin(val[0], nil, val[3])
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
-    | tLPAREN compstmt tRPAREN
-        {
-            // result = @builder.begin(val[0], val[1], val[2])
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
+        // result = @builder.begin(val[0], val[2], val[4])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG_2 opt_nl tRPAREN {
+        // result = @builder.begin(val[0], nil, val[3])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | tLPAREN compstmt tRPAREN {
+        // result = @builder.begin(val[0], val[1], val[2])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
     | primary_value tCOLON2 tCONSTANT {
         |$1:Node; $2:Token, $3:Token| -> Node;
 
@@ -1832,45 +1755,37 @@ primary_value: primary;
                     }
 ;
 
- block_args_tail: f_block_kwarg tCOMMA f_kwrest opt_f_block_arg
-                    {
-                    //   result = val[0].concat(val[2]).concat(val[3])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | f_block_kwarg opt_f_block_arg
-                    {
-                    //   result = val[0].concat(val[1])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | f_kwrest opt_f_block_arg
-                    {
-                    //   result = val[0].concat(val[1])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | f_block_arg
-                    {
-                    //   result = [ val[0] ]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+ block_args_tail
+    : f_block_kwarg tCOMMA f_kwrest opt_f_block_arg {
+        |$1: Nodes, $3: Nodes, $4: Nodes| -> Nodes;
+        $1.append(&mut $3);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    | f_block_kwarg opt_f_block_arg {
+        |$1: Nodes, $2: Nodes| -> Nodes;
+        $1.append(&mut $2);
+        $$ = $1;
+    }
+    | f_kwrest opt_f_block_arg {
+        |$1: Nodes, $2: Nodes| -> Nodes;
+        $1.append(&mut $2);
+        $$ = $1;
+    }
+    | f_block_arg {
+        |$1:Node| -> Nodes;
+        $$ = vec![ $1 ];
+    }
 ;
 
-opt_block_args_tail:
-                  tCOMMA block_args_tail
-                    {
-                    //   result = val[1]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                |
-                    {
-                    //   result = []
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+opt_block_args_tail
+    : tCOMMA block_args_tail {
+        |$2: Nodes| -> Nodes;
+        $$ = $2;
+    }
+    | {
+        ||->Nodes; $$ = vec![];
+    }
 ;
 
      block_param: f_arg tCOMMA f_block_optarg tCOMMA f_rest_arg              opt_block_args_tail
@@ -2085,18 +2000,18 @@ fake_embedded_action_lambda_2: {
                     }
 ;
 
-     f_larglist: tLPAREN2 f_args opt_bv_decl tRPAREN
-                    {
-                    //   result = @builder.args(val[0], val[1].concat(val[2]), val[3])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | f_args
-                    {
-                    //   result = @builder.args(nil, val[0], nil)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+f_larglist
+    : tLPAREN2 f_args opt_bv_decl tRPAREN {
+        //   result = @builder.args(val[0], val[1].concat(val[2]), val[3])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | f_args
+        {
+        //   result = @builder.args(nil, val[0], nil)
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
 ;
 
      lambda_body: tLAMBEG compstmt tRCURLY
@@ -2256,28 +2171,27 @@ fake_embedded_action_brace_body_2: {
     wip!(); $$=Node::DUMMY;
 };
 
-      brace_body: fake_embedded_action_brace_body_1 fake_embedded_action_brace_body_2 opt_block_param compstmt
-                    {
-                    //   result = [ val[2], val[3] ]
+brace_body: fake_embedded_action_brace_body_1 fake_embedded_action_brace_body_2 opt_block_param compstmt {
+    //   result = [ val[2], val[3] ]
 
-                    //   @static_env.unextend
-                    //   @lexer.cmdarg = val[1]
-                    //   @lexer.cmdarg.pop
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-;
-
-fake_embedded_action_do_body_1: {
-    //   @static_env.extend_dynamic
+    //   @static_env.unextend
+    //   @lexer.cmdarg = val[1]
+    //   @lexer.cmdarg.pop
     ||->Node;
     wip!(); $$=Node::DUMMY;
 };
+
+fake_embedded_action_do_body_1: {
+    ||->Node; $$=Node::DUMMY;
+
+    //   @static_env.extend_dynamic
+    wip!();
+};
+
 fake_embedded_action_do_body_2: {
-    //   result = @lexer.cmdarg.dup
-    //   @lexer.cmdarg.clear
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    ||->StackState;
+    $$ = self.tokenizer.interior_lexer.cmdarg.clone();
+    self.tokenizer.interior_lexer.cmdarg.clear();
 };
 
          do_body: fake_embedded_action_do_body_1 fake_embedded_action_do_body_2 opt_block_param bodystmt
@@ -2300,13 +2214,12 @@ fake_embedded_action_do_body_2: {
                     }
 ;
 
-           cases: opt_else
-                    {
-                    //   result = [ val[0] ]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | case_body
+cases
+    : opt_else {
+        |$1:Node| -> Nodes;
+        $$ = vec![$1];
+    }
+    | case_body
 ;
 
       opt_rescue: kRESCUE exc_list exc_var then compstmt opt_rescue
@@ -2332,32 +2245,31 @@ fake_embedded_action_do_body_2: {
                     }
 ;
 
-        exc_list: arg_value
-                    {
-                    //   result = [ val[0] ]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | mrhs
-                | none
+exc_list
+    : arg_value {
+        |$1: Node| -> Nodes;
+        $$ = vec![ $1 ];
+    }
+    | mrhs
+    | none
 ;
 
-         exc_var: tASSOC lhs
-                    {
-                    //   result = [ val[0], val[1] ]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | none
+exc_var
+    : tASSOC lhs {
+        //   result = [ val[0], val[1] ]
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | none
 ;
 
-      opt_ensure: kENSURE compstmt
-                    {
-                    //   result = [ val[0], val[1] ]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | none
+opt_ensure
+    : kENSURE compstmt {
+        //   result = [ val[0], val[1] ]
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | none
 ;
 
 literal
@@ -2380,9 +2292,9 @@ string
         |$1:Node| -> Nodes; $$ = vec![$1];
     }
     | string string1 {
-        // result = val[0] << val[1]
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Nodes, $2: Node| -> Nodes;
+        $1.push($2);
+        $$ = $1;
     }
 ;
 
@@ -2473,36 +2385,31 @@ word
                     }
 ;
 
-     symbol_list:
-                    {
-                    //   result = []
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | symbol_list word tSPACE
-                    {
-                    //   result = val[0] << @builder.word(val[1])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+symbol_list
+    : {
+        || -> Nodes; $$ = vec![];
+    }
+    | symbol_list word tSPACE {
+        |$1:Nodes, $2: Node| -> Nodes;
+
+        $1.push($2);
+        $$ = $1;
+    }
 ;
 
-//           qwords: tQWORDS_BEG qword_list tSTRING_END
-//                     {
-//                       result = @builder.words_compose(val[0], val[1], val[2])
-//                     }
 qwords: tQWORDS_BEG qword_list tSTRING_END {
     |$2: Nodes| -> Node;
 
+    // result = @builder.words_compose(val[0], val[1], val[2])
     $$ = node::words_compose($2);
 };
 
-        qsymbols: tQSYMBOLS_BEG qsym_list tSTRING_END
-                    {
-                    //   result = @builder.symbols_compose(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+qsymbols
+    : tQSYMBOLS_BEG qsym_list tSTRING_END {
+        //   result = @builder.symbols_compose(val[0], val[1], val[2])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
 ;
 
 qword_list
@@ -2517,18 +2424,15 @@ qword_list
     }
 ;
 
-       qsym_list:
-                    {
-                    //   result = []
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | qsym_list tSTRING_CONTENT tSPACE
-                    {
-                    //   result = val[0] << @builder.symbol_internal(val[1])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+qsym_list
+    : {
+        ||->Nodes; $$ = vec![];
+    }
+    | qsym_list tSTRING_CONTENT tSPACE {
+        //   result = val[0] << @builder.symbol_internal(val[1])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
 ;
 
 string_contents
@@ -2554,25 +2458,21 @@ xstring_contents
     }
 ;
 
-regexp_contents:
-                    {
-                    //   result = []
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | regexp_contents string_content
-                    {
-                    //   result = val[0] << val[1]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+regexp_contents
+    : {
+        || -> Nodes; $$ = vec![];
+    }
+    | regexp_contents string_content {
+        |$1: Nodes, $2: Node| -> Nodes;
+        $1.push($2); $$ = $1;
+    }
 ;
 
 fake_embedded_action__string_content__tSTRING_DBEG: {
-    // @lexer.cond.push(false)
-    // @lexer.cmdarg.push(false)
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    ||->Node; $$=Node::DUMMY;
+
+    self.tokenizer.interior_lexer.cond.push(false);
+    self.tokenizer.interior_lexer.cmdarg.push(false);
 };
 
 string_content
@@ -2585,42 +2485,30 @@ string_content
             <REMOVE THIS LET>$$ = Node::Str(string_value);
         } else { unreachable!(); } 
     }
-    | tSTRING_DVAR string_dvar
-        {
-            // result = val[1]
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
-    | tSTRING_DBEG fake_embedded_action__string_content__tSTRING_DBEG compstmt tSTRING_DEND
-        {
-            // @lexer.cond.lexpop
-            // @lexer.cmdarg.lexpop
+    | tSTRING_DVAR string_dvar {
+        |$2: Node| -> Node; $$ = $2;
+    }
+    | tSTRING_DBEG fake_embedded_action__string_content__tSTRING_DBEG compstmt tSTRING_DEND {
+        // @lexer.cond.lexpop
+        // @lexer.cmdarg.lexpop
 
-            // result = @builder.begin(val[0], val[2], val[3])
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
+        // result = @builder.begin(val[0], val[2], val[3])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
 ;
 
-     string_dvar: tGVAR
-                    {
-                    //   result = @builder.gvar(val[0])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | tIVAR
-                    {
-                    //   result = @builder.ivar(val[0])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | tCVAR
-                    {
-                    //   result = @builder.cvar(val[0])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | backref
+string_dvar
+    : tGVAR {
+        |$1: Token| -> Node; $$ = node::gvar($1);
+    }
+    | tIVAR {
+        |$1: Token| -> Node; $$ = node::ivar($1);
+    }
+    | tCVAR {
+        |$1: Token| -> Node; $$ = node::cvar($1);
+    }
+    | backref
 ;
 
 symbol
