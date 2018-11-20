@@ -29,6 +29,13 @@ extern crate lazy_static;
 content.gsub! /(^\/\*\*$\n^ \* Generic tokenizer used by the parser in the Syntax tool)(.*)(^\/\/ Parser\.)/m, ''
 
 #
+# unwrap interior token::Token from parser::Token
+# 
+# NOTE assume _0 being Token, this may change
+#
+content.gsub! 'pop!(self.values_stack, _0)', 'interior_token!(pop!(self.values_stack, _0))'
+
+#
 # `let $$ =` -> `$$ =`
 #
 content.gsub! '<REMOVE THIS LET>let ', ''

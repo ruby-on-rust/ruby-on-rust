@@ -173,6 +173,8 @@ pub enum Node {
     // NOTE
     //     receiver being None means sending to self
     // send_map(receiver_e, dot_t, selector_t, begin_t=nil, args=[], end_t=nil)
+
+    Arg(String),
 }
 
 pub type Nodes = Vec<Node>;
@@ -509,11 +511,17 @@ pub fn pair_keyword(key_t: Token, value: Node) -> Node {
 // 
 //   n(:pair, [ key, value ], pair_map)
 // end
+pub fn pair_quoted(begin_t: Token, parts: Nodes, end_t: Token, value: Node) -> Node {
+    wip!();
+}
 
 // def kwsplat(dstar_t, arg)
 //   n(:kwsplat, [ arg ],
 //     unary_op_map(dstar_t, arg))
 // end
+pub fn kwsplat(dstar_t: Token, arg: Node) -> Node {
+    wip!();
+}
 
 // def associate(begin_t, pairs, end_t)
 //   n(:hash, [ *pairs ],
@@ -689,7 +697,7 @@ pub fn const_global(t_colon3: Token, name: Token) -> Node {
             name: const_name
         }
     }
-    panic!("you came too far");
+    unreachable!();
 }
 
 // def const_fetch(scope, t_colon2, name_t)
@@ -829,11 +837,17 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //     diagnostic :error, :backref_assignment, nil, lhs.loc.expression
 //   end
 // end
+pub fn op_assign(lhs: Node, op_t: Token, rhs: Node) -> Node {
+    wip!();
+}
 
 // def multi_lhs(begin_t, items, end_t)
 //   n(:mlhs, [ *items ],
 //     collection_map(begin_t, items, end_t))
 // end
+pub fn multi_lhs(begin_t: Option<Token>, items: Nodes, end_t: Option<Token>) -> Node {
+    wip!();
+}
 
 // def multi_assign(lhs, eql_t, rhs)
 //   n(:masgn, [ lhs, rhs ],
@@ -897,6 +911,9 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //   n(:alias, [ to, from ],
 //     keyword_map(alias_t, nil, [to, from], nil))
 // end
+pub fn alias(alias_t: Token, to: Node, from: Node) -> Node {
+    wip!();
+}
 
 // #
 // # Formal arguments
@@ -912,6 +929,10 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //   n(:arg, [ value(name_t).to_sym ],
 //     variable_map(name_t))
 // end
+pub fn arg(name_t: Token) -> Node {
+    // Node::Arg()
+    wip!();
+}
 
 // def optarg(name_t, eql_t, value)
 //   n(:optarg, [ value(name_t).to_sym, value ],
@@ -919,6 +940,9 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //       with_operator(loc(eql_t)).
 //       with_expression(loc(name_t).join(value.loc.expression)))
 // end
+pub fn optarg(name_t: Token, eql_t: Token, value: Node) -> Node {
+    wip!();
+}
 
 // def restarg(star_t, name_t=nil)
 //   if name_t
@@ -929,16 +953,25 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //       arg_prefix_map(star_t))
 //   end
 // end
+pub fn restarg(star_t: Token, name_t: Option<Token>) -> Node {
+    wip!();
+}
 
 // def kwarg(name_t)
 //   n(:kwarg, [ value(name_t).to_sym ],
 //     kwarg_map(name_t))
 // end
+pub fn kwarg(name_t: Token) -> Node {
+    wip!();
+}
 
 // def kwoptarg(name_t, value)
 //   n(:kwoptarg, [ value(name_t).to_sym, value ],
 //     kwarg_map(name_t, value))
 // end
+pub fn kwoptarg(name_t: Token, value: Node) -> Node {
+    wip!();
+}
 
 // def kwrestarg(dstar_t, name_t=nil)
 //   if name_t
@@ -1275,7 +1308,7 @@ pub fn call_method(receiver: Option<Node>, dot_t: Option<Token>, selector_t: Tok
 //       diagnostic :error, :block_given_to_yield, nil, loc(keyword_t), [last_arg.loc.expression]
 //     end
 //   end
-
+// 
 //   n(type, args,
 //     keyword_map(keyword_t, lparen_t, args, rparen_t))
 // end
@@ -1287,7 +1320,7 @@ pub fn call_method(receiver: Option<Node>, dot_t: Option<Token>, selector_t: Tok
 //     keyword_map(preexe_t, lbrace_t, [], rbrace_t))
 // end
 // TODO NOTE
-pub fn preexe(compstmt: Node) -> Node {
+pub fn preexe(preexe_t: Token, lbrace_t: Token, compstmt: Node, rbrace_t: Token) -> Node {
     wip!();
 }
 
@@ -1394,6 +1427,9 @@ pub fn compstmt(nodes: Nodes) -> Node {
 //       collection_map(begin_t, [ body ], end_t))
 //   end
 // end
+pub fn begin(begin_t: Token, body: Option<Node>, end_t: Token) -> Node {
+    wip!();
+}
 
 // def begin_keyword(begin_t, body, end_t)
 //   if body.nil?
