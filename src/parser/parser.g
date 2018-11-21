@@ -205,11 +205,11 @@ stmt
                 node::gvar($3));
     }
     | kALIAS tGVAR tBACK_REF {
-        // result = @builder.alias(val[0],
-        //             @builder.gvar(val[1]),
-        //             @builder.back_ref(val[2]))
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1: Token, $2: Token, $3: Token| -> Node;
+        $$ = node::alias(
+                $1,
+                node::gvar($2),
+                node::back_ref($3));
     }
     | kALIAS tGVAR tNTH_REF {
         ||->Node; $$=Node::DUMMY;
@@ -217,9 +217,8 @@ stmt
         panic!("diagnostic error");
     }
     | kUNDEF undef_list {
-        // result = @builder.undef_method(val[0], val[1])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1: Token, $2: Nodes| -> Node;
+        $$ = node::undef_method($1, $2);
     }
     | stmt kIF_MOD expr_value {
         // result = @builder.condition_mod(val[0], nil,
@@ -1924,16 +1923,13 @@ fake_embedded_action_lambda_2: {
 
 f_larglist
     : tLPAREN2 f_args opt_bv_decl tRPAREN {
-        //   result = @builder.args(val[0], val[1].concat(val[2]), val[3])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
-    | f_args
-        {
-        //   result = @builder.args(nil, val[0], nil)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
+        |$1: Token, $2: Nodes, $3: Nodes, $4: Token| -> Node;
+        $2.append(&mut $3);
+        $$ = node::args(Some($1), $2, Some($4));
+    }
+    | f_args {
+        |$1: Nodes| -> Node; $$ = node::args(None, $1, None);
+    }
 ;
 
      lambda_body: tLAMBEG compstmt tRCURLY
@@ -2267,24 +2263,19 @@ string1
                     }
 ;
 
-words
-    : tWORDS_BEG word_list tSTRING_END {
-        // result = @builder.words_compose(val[0], val[1], val[2])
-        |$2:Nodes| -> Node;
-
-        $$ = node::words_compose($2);
-    }
-;
+words: tWORDS_BEG word_list tSTRING_END {
+    |$1:Token, $2:Nodes, $3:Token| -> Node;
+    $$ = node::words_compose($1, $2, $3);
+};
 
 word_list
     : {
         || -> Nodes; $$ = vec![];
     }
     | word_list word tSPACE {
-        // result = val[0] << @builder.word(val[1])
-        |$1:Nodes, $2:Node, $3:Token| -> Nodes;
+        |$1:Nodes, $2:Nodes| -> Nodes;
 
-        $1.push($2);
+        $1.push( node::word($2) );
         $$ = $1;
     }
 ;
@@ -2299,13 +2290,10 @@ word
     }
 ;
 
-         symbols: tSYMBOLS_BEG symbol_list tSTRING_END
-                    {
-                    //   result = @builder.symbols_compose(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-;
+symbols: tSYMBOLS_BEG symbol_list tSTRING_END {
+    |$1:Token, $2:Nodes, $3:Token| -> Node;
+    $$ = node::symbols_compose($1, $2, $3);
+};
 
 symbol_list
     : {
@@ -2320,17 +2308,15 @@ symbol_list
 ;
 
 qwords: tQWORDS_BEG qword_list tSTRING_END {
-    |$2: Nodes| -> Node;
+    |$1: Token, $2: Nodes, $3: Token| -> Node;
 
-    // result = @builder.words_compose(val[0], val[1], val[2])
-    $$ = node::words_compose($2);
+    $$ = node::words_compose($1, $2, $3);
 };
 
 qsymbols
     : tQSYMBOLS_BEG qsym_list tSTRING_END {
-        //   result = @builder.symbols_compose(val[0], val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:Nodes, $3:Token| -> Node;
+        $$ = node::symbols_compose($1, $2, $3);
     }
 ;
 
@@ -2351,9 +2337,9 @@ qsym_list
         ||->Nodes; $$ = vec![];
     }
     | qsym_list tSTRING_CONTENT tSPACE {
-        //   result = val[0] << @builder.symbol_internal(val[1])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Nodes, $2:Token| -> Nodes;
+        $1.push(node::symbol_internal($2));
+        $$ = $1;
     }
 ;
 
@@ -2399,24 +2385,18 @@ fake_embedded_action__string_content__tSTRING_DBEG: {
 
 string_content
     : tSTRING_CONTENT {
-        //                       result = @builder.string_internal(val[0])
-        |$1:Token| -> Node;
-
-        let $$;
-        if let InteriorToken::T_STRING_CONTENT(string_value) = $1 {
-            <REMOVE THIS LET>$$ = Node::Str(string_value);
-        } else { unreachable!(); } 
+        |$1:Token| -> Node; $$ = node::string_internal($1);
     }
     | tSTRING_DVAR string_dvar {
         |$2: Node| -> Node; $$ = $2;
     }
     | tSTRING_DBEG fake_embedded_action__string_content__tSTRING_DBEG compstmt tSTRING_DEND {
-        // @lexer.cond.lexpop
-        // @lexer.cmdarg.lexpop
+        |$1: Token, $3: Node, $4: Token| -> Node;
 
-        // result = @builder.begin(val[0], val[2], val[3])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        self.tokenizer.interior_lexer.cond.lexpop();
+        self.tokenizer.interior_lexer.cmdarg.lexpop();
+
+        $$ = node::begin($1, Some($3), $4);
     }
 ;
 
@@ -2444,8 +2424,7 @@ dsym: tSYMBEG xstring_contents tSTRING_END {
     |$1:Token, $2:Nodes, $3:Token| -> Node;
 
     self.tokenizer.interior_lexer.set_state("expr_endarg");
-    // result = @builder.symbol_compose(val[0], val[1], val[2])
-    $$ = node::symbol_compose($2);
+    $$ = node::symbol_compose($1, $2, $3);
 };
 
 numeric
@@ -2466,7 +2445,6 @@ simple_numeric
     : tINTEGER {
         |$1: Token| -> Node;
         self.tokenizer.interior_lexer.set_state("expr_endarg");
-        wip!(); $$ = 
         // result = @builder.integer(val[0])
         // $$ = node::integer($1);
         wip!(); $$=Node::DUMMY;
@@ -2586,40 +2564,37 @@ fake_embedded_action__superclass__tLT: {
     self.tokenizer.interior_lexer.set_state("expr_value");
 };
 
-      superclass: tLT expr_value term
-                    {
-                    //   result = [ val[0], val[2] ]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                |
-                    {
-                    //   result = nil
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+superclass
+    : tLT expr_value term {
+        //   result = [ val[0], val[2] ]
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | {
+        //   result = nil
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
 ;
 
 fake_embedded_action__f_arglist__episolon: {
-    //   result = @lexer.in_kwarg
-    //   @lexer.in_kwarg = true
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    || -> bool;
+
+    $$ = self.tokenizer.interior_lexer.in_kwarg;
+    self.tokenizer.interior_lexer.in_kwarg = true;
 };
 
 f_arglist
     : tLPAREN2 f_args rparen {
-        //   result = @builder.args(val[0], val[1], val[2])
-
-        //   @lexer.state = :expr_value
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:Nodes, $3:Token| -> Node;
+        $$ = node::args(Some($1), $2, Some($3));
+        self.tokenizer.interior_lexer.set_state("expr_value");
     }
     | fake_embedded_action__f_arglist__episolon f_args term {
-        //   @lexer.in_kwarg = val[0]
-        //   result = @builder.args(nil, val[1], nil)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1: bool, $2: Nodes| -> Node;
+
+        self.tokenizer.interior_lexer.in_kwarg = $1;
+        $$ = node::args(None, $2, None);
     }
 ;
 
@@ -2869,9 +2844,7 @@ f_kwrest
         wip!(); $$=Node::DUMMY;
     }
     | kwrest_mark {
-        //   result = [ @builder.kwrestarg(val[0]) ]
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1: Token| -> Nodes; $$ = vec![ node::kwrestarg($1, None) ];
     }
 ;
 
@@ -2935,7 +2908,7 @@ f_block_arg: blkarg_mark tIDENTIFIER {
  opt_f_block_arg
     : tCOMMA f_block_arg {
         |$2:Node| -> Nodes; $$ = vec![$2];
-        }
+    }
     | {
         || -> Nodes; $$ = vec![];
     }

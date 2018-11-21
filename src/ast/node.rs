@@ -312,6 +312,9 @@ pub fn symbol(symbol_t: Token) -> Node {
 //   n(:sym, [ string_value(symbol_t).to_sym ],
 //     unquoted_map(symbol_t))
 // end
+pub fn symbol_internal(symbol_t: Token) -> Node {
+    wip!();
+}
 
 // def symbol_compose(begin_t, parts, end_t)
 //   if collapse_string_parts?(parts)
@@ -327,7 +330,7 @@ pub fn symbol(symbol_t: Token) -> Node {
 //   end
 // end
 // TODO note
-pub fn symbol_compose(parts: Nodes) -> Node {
+pub fn symbol_compose(begin_t: Token, parts: Nodes, end_t: Token) -> Node {
     // parts: Nodes(Vec<Node::Str>)
 
     if is_collapse_string_parts(&parts) {
@@ -434,12 +437,15 @@ pub fn splat(star_t: Token, arg: Option<Node>) -> Node {
 //       collection_map(nil, parts, nil))
 //   end
 // end
+pub fn word(parts: Nodes) -> Node {
+    wip!();
+}
 
 // def words_compose(begin_t, parts, end_t)
 //   n(:array, [ *parts ],
 //     collection_map(begin_t, parts, end_t))
 // end
-pub fn words_compose(parts: Nodes) -> Node {
+pub fn words_compose(begin_t: Token, parts: Nodes, end_t: Token) -> Node {
     return Node::Array(parts);
 }
 
@@ -459,6 +465,9 @@ pub fn words_compose(parts: Nodes) -> Node {
 //   n(:array, [ *parts ],
 //     collection_map(begin_t, parts, end_t))
 // end
+pub fn symbols_compose(begin_t: Token, parts: Nodes, end_t: Token) -> Node {
+    wip!();
+}
 
 // # Hashes
 
@@ -552,6 +561,9 @@ pub fn associate(begin_t: Option<Token>, pairs: Nodes, end_t: Option<Token>) -> 
 //   n0(:self,
 //     token_map(token))
 // end
+pub fn build_self(token: Token) -> Node {
+    Node::NSelf
+}
 
 // def ident(token)
 //   n(:ident, [ value(token).to_sym ],
@@ -613,6 +625,9 @@ pub fn cvar(token: Token) -> Node {
 //   n(:back_ref, [ value(token).to_sym ],
 //     token_map(token))
 // end
+pub fn back_ref(token: Token) -> Node {
+    wip!();
+}
 
 // def nth_ref(token)
 //   n(:nth_ref, [ value(token) ],
@@ -893,9 +908,9 @@ pub fn multi_lhs(begin_t: Option<Token>, items: Nodes, end_t: Option<Token>) -> 
 //   case definee.type
 //   when :int, :str, :dstr, :sym, :dsym,
 //        :regexp, :array, :hash
-
+// 
 //     diagnostic :error, :singleton_literal, nil, definee.loc.expression
-
+// 
 //   else
 //     n(:defs, [ definee, value(name_t).to_sym, args, body ],
 //       definition_map(def_t, dot_t, name_t, end_t))
@@ -906,6 +921,9 @@ pub fn multi_lhs(begin_t: Option<Token>, items: Nodes, end_t: Option<Token>) -> 
 //   n(:undef, [ *names ],
 //     keyword_map(undef_t, nil, names, nil))
 // end
+pub fn undef_method(undef_t: Token, names: Nodes) -> Node {
+    wip!();
+}
 
 // def alias(alias_t, to, from)
 //   n(:alias, [ to, from ],
@@ -924,6 +942,9 @@ pub fn alias(alias_t: Token, to: Node, from: Node) -> Node {
 //   n(:args, args,
 //     collection_map(begin_t, args, end_t))
 // end
+pub fn args(begin_t: Option<Token>, args: Nodes, name_t: Option<Token>) -> Node {
+    wip!();
+}
 
 // def arg(name_t)
 //   n(:arg, [ value(name_t).to_sym ],
@@ -982,6 +1003,9 @@ pub fn kwoptarg(name_t: Token, value: Node) -> Node {
 //       arg_prefix_map(dstar_t))
 //   end
 // end
+pub fn kwrestarg(dstar_t: Token, name_t: Option<Token>) -> Node {
+    wip!();
+}
 
 // def shadowarg(name_t)
 //   n(:shadowarg, [ value(name_t).to_sym ],

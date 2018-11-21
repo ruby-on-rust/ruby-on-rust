@@ -16,7 +16,8 @@ enum SV {
     _0(Token),
     _1(Nodes),
     _2(Node),
-    _3(StackState)
+    _3(StackState),
+    _4(bool)
 }
 
 /**
@@ -2841,14 +2842,14 @@ fn _handler18(&mut self) -> SV {
     println!("   *** PARSER: _handler18");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _3 = interior_token!(pop!(self.values_stack, _0));
+let mut _2 = interior_token!(pop!(self.values_stack, _0));
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-// result = @builder.alias(val[0],
-        //             @builder.gvar(val[1]),
-        //             @builder.back_ref(val[2]))
-        wip!(); let __ =Node::DUMMY;
+let __ = node::alias(
+                _1,
+                node::gvar(_2),
+                node::back_ref(_3));
 SV::_2(__)
 // raw production: stmt -> kALIAS tGVAR tBACK_REF
 
@@ -2878,11 +2879,10 @@ fn _handler20(&mut self) -> SV {
     println!("   *** PARSER: _handler20");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _2 = pop!(self.values_stack, _1);
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-// result = @builder.undef_method(val[0], val[1])
-        wip!(); let __ =Node::DUMMY;
+let __ = node::undef_method(_1, _2);
 SV::_2(__)
 // raw production: stmt -> kUNDEF undef_list
 
@@ -8988,13 +8988,13 @@ fn _handler394(&mut self) -> SV {
     println!("   *** PARSER: _handler394");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _4 = interior_token!(pop!(self.values_stack, _0));
+let mut _3 = pop!(self.values_stack, _1);
+let mut _2 = pop!(self.values_stack, _1);
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-//   result = @builder.args(val[0], val[1].concat(val[2]), val[3])
-        wip!(); let __ =Node::DUMMY;
+_2.append(&mut _3);
+        let __ = node::args(Some(_1), _2, Some(_4));
 SV::_2(__)
 // raw production: f_larglist -> tLPAREN2 f_args opt_bv_decl tRPAREN
 
@@ -9006,10 +9006,9 @@ fn _handler395(&mut self) -> SV {
     println!("   *** PARSER: _handler395");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
+let mut _1 = pop!(self.values_stack, _1);
 
-//   result = @builder.args(nil, val[0], nil)
-        wip!(); let __ =Node::DUMMY;
+let __ = node::args(None, _1, None);
 SV::_2(__)
 // raw production: f_larglist -> f_args
 
@@ -9838,13 +9837,11 @@ fn _handler443(&mut self) -> SV {
     println!("   *** PARSER: _handler443");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
+let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
-self.values_stack.pop();
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-// result = @builder.words_compose(val[0], val[1], val[2])
-
-        let __ = node::words_compose(_2);
+let __ = node::words_compose(_1, _2, _3);
 SV::_2(__)
 // raw production: words -> tWORDS_BEG word_list tSTRING_END
 
@@ -9870,13 +9867,11 @@ fn _handler445(&mut self) -> SV {
     println!("   *** PARSER: _handler445");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-let mut _3 = interior_token!(pop!(self.values_stack, _0));
-let mut _2 = pop!(self.values_stack, _2);
+self.values_stack.pop();
+let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _1);
 
-// result = val[0] << @builder.word(val[1])
-
-        _1.push(_2);
+_1.push( node::word(_2) );
         let __ = _1;
 SV::_1(__)
 // raw production: word_list -> word_list word tSPACE
@@ -9918,12 +9913,11 @@ fn _handler448(&mut self) -> SV {
     println!("   *** PARSER: _handler448");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _3 = interior_token!(pop!(self.values_stack, _0));
+let mut _2 = pop!(self.values_stack, _1);
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-//   result = @builder.symbols_compose(val[0], val[1], val[2])
-                    wip!(); let __ =Node::DUMMY;
+let __ = node::symbols_compose(_1, _2, _3);
 SV::_2(__)
 // raw production: symbols -> tSYMBOLS_BEG symbol_list tSTRING_END
 
@@ -9966,12 +9960,11 @@ fn _handler451(&mut self) -> SV {
     println!("   *** PARSER: _handler451");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
+let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
-self.values_stack.pop();
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-// result = @builder.words_compose(val[0], val[1], val[2])
-    let __ = node::words_compose(_2);
+let __ = node::words_compose(_1, _2, _3);
 SV::_2(__)
 // raw production: qwords -> tQWORDS_BEG qword_list tSTRING_END
 
@@ -9983,12 +9976,11 @@ fn _handler452(&mut self) -> SV {
     println!("   *** PARSER: _handler452");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _3 = interior_token!(pop!(self.values_stack, _0));
+let mut _2 = pop!(self.values_stack, _1);
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-//   result = @builder.symbols_compose(val[0], val[1], val[2])
-        wip!(); let __ =Node::DUMMY;
+let __ = node::symbols_compose(_1, _2, _3);
 SV::_2(__)
 // raw production: qsymbols -> tQSYMBOLS_BEG qsym_list tSTRING_END
 
@@ -10046,12 +10038,12 @@ fn _handler456(&mut self) -> SV {
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _2 = interior_token!(pop!(self.values_stack, _0));
+let mut _1 = pop!(self.values_stack, _1);
 
-//   result = val[0] << @builder.symbol_internal(val[1])
-        wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+_1.push(node::symbol_internal(_2));
+        let __ = _1;
+SV::_1(__)
 // raw production: qsym_list -> qsym_list tSTRING_CONTENT tSPACE
 
 }
@@ -10170,12 +10162,7 @@ fn _handler464(&mut self) -> SV {
   // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-//                       result = @builder.string_internal(val[0])
-
-        let __;
-        if let InteriorToken::T_STRING_CONTENT(string_value) = _1 {
-            __ = Node::Str(string_value);
-        } else { unreachable!(); };
+let __ = node::string_internal(_1);
 SV::_2(__)
 // raw production: string_content -> tSTRING_CONTENT
 
@@ -10202,16 +10189,15 @@ fn _handler466(&mut self) -> SV {
     println!("   *** PARSER: _handler466");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
+let mut _4 = interior_token!(pop!(self.values_stack, _0));
+let mut _3 = pop!(self.values_stack, _2);
 self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-// @lexer.cond.lexpop
-        // @lexer.cmdarg.lexpop
+self.tokenizer.interior_lexer.cond.lexpop();
+        self.tokenizer.interior_lexer.cmdarg.lexpop();
 
-        // result = @builder.begin(val[0], val[2], val[3])
-        wip!(); let __ =Node::DUMMY;
+        let __ = node::begin(_1, Some(_3), _4);
 SV::_2(__)
 // raw production: string_content -> tSTRING_DBEG fake_embedded_action__string_content__tSTRING_DBEG compstmt tSTRING_DEND
 
@@ -10299,8 +10285,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_endarg");
-    // result = @builder.symbol_compose(val[0], val[1], val[2])
-    let __ = node::symbol_compose(_2);
+    let __ = node::symbol_compose(_1, _2, _3);
 SV::_2(__)
 // raw production: dsym -> tSYMBEG xstring_contents tSTRING_END
 
@@ -10350,7 +10335,6 @@ fn _handler475(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_endarg");
-        wip!(); let __ = 
         // result = @builder.integer(val[0])
         // let __ = node::integer(_1);
         wip!(); let __ =Node::DUMMY;
@@ -10696,7 +10680,7 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 //   result = [ val[0], val[2] ]
-                    wip!(); let __ =Node::DUMMY;
+        wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 // raw production: superclass -> tLT expr_value term
 
@@ -10711,7 +10695,7 @@ fn _handler499(&mut self) -> SV {
 
 
 //   result = nil
-                    wip!(); let __ =Node::DUMMY;
+        wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 // raw production: superclass -> undefined
 
@@ -10725,10 +10709,9 @@ fn _handler500(&mut self) -> SV {
   // Semantic values prologue.
 
 
-//   result = @lexer.in_kwarg
-    //   @lexer.in_kwarg = true
-    wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+let __ = self.tokenizer.interior_lexer.in_kwarg;
+    self.tokenizer.interior_lexer.in_kwarg = true;
+SV::_4(__)
 // raw production: fake_embedded_action__f_arglist__episolon -> undefined
 
 }
@@ -10739,14 +10722,12 @@ fn _handler501(&mut self) -> SV {
     println!("   *** PARSER: _handler501");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _3 = interior_token!(pop!(self.values_stack, _0));
+let mut _2 = pop!(self.values_stack, _1);
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-//   result = @builder.args(val[0], val[1], val[2])
-
-        //   @lexer.state = :expr_value
-        wip!(); let __ =Node::DUMMY;
+let __ = node::args(Some(_1), _2, Some(_3));
+        self.tokenizer.interior_lexer.set_state("expr_value");
 SV::_2(__)
 // raw production: f_arglist -> tLPAREN2 f_args rparen
 
@@ -10759,12 +10740,11 @@ fn _handler502(&mut self) -> SV {
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
 self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _2 = pop!(self.values_stack, _1);
+let mut _1 = pop!(self.values_stack, _4);
 
-//   @lexer.in_kwarg = val[0]
-        //   result = @builder.args(nil, val[1], nil)
-        wip!(); let __ =Node::DUMMY;
+self.tokenizer.interior_lexer.in_kwarg = _1;
+        let __ = node::args(None, _2, None);
 SV::_2(__)
 // raw production: f_arglist -> fake_embedded_action__f_arglist__episolon f_args term
 
@@ -11501,11 +11481,10 @@ fn _handler547(&mut self) -> SV {
     println!("   *** PARSER: _handler547");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-//   result = [ @builder.kwrestarg(val[0]) ]
-        wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+let __ = vec![ node::kwrestarg(_1, None) ];
+SV::_1(__)
 // raw production: f_kwrest -> kwrest_mark
 
 }

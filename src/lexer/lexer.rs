@@ -119,6 +119,13 @@ pub struct Lexer {
 	// # instead of expr_arg at certain points.
 	// @command_state = false
 	command_state: bool,
+	
+	// # True at the end of "def foo a:"
+	// @in_kwarg      = false
+	pub in_kwarg: bool,
+	
+	// # State before =begin / =end block comment
+	// @cs_before_block_comment = self.class.lex_en_line_begin
 }
 
 impl Lexer {
@@ -157,6 +164,8 @@ impl Lexer {
 			lambda_stack: vec![],
 			
 			command_state: false,
+			
+			in_kwarg: false
 		}
 	}
 	
