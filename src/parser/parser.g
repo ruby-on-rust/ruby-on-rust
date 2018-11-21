@@ -82,6 +82,7 @@ use lexer::stack_state::StackState;
 use token::token::Token as InteriorToken;
 use parser::token::Token;
 use parser::tokenizer::Tokenizer;
+use parser::static_env::StaticEnv;
 use ast::node;
 use ast::node::{ Node, Nodes };
 
@@ -1240,10 +1241,10 @@ fake_embedded_action__primary__kFOR_2: {
 };
 
 fake_embedded_action__primary__kCLASS_1: {
-    //   @static_env.extend_static
-    //   @lexer.push_cmdarg
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    ||->Node; $$=Node::DUMMY;
+
+    self.static_env.extend_static();
+    self.tokenizer.interior_lexer.push_cmdarg();
 };
 
 fake_embedded_action__primary__kCLASS_2: {
@@ -1257,10 +1258,10 @@ fake_embedded_action__primary__kCLASS_2: {
 };
 
 fake_embedded_action__primary__kMODULE_1: {
-    //   @static_env.extend_static
-    //   @lexer.push_cmdarg
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    ||->Node; $$=Node::DUMMY;
+
+    self.static_env.extend_static();
+    self.tokenizer.interior_lexer.push_cmdarg();
 };
 
 fake_embedded_action__primary__kDEF_1: {
@@ -1300,13 +1301,15 @@ primary
         $$ = node::call_method(None, None, $1, None, vec![], None);
     }
     | kBEGIN fake_embedded_action_primary_kBEGIN bodystmt kEND {
-        // @lexer.cmdarg = val[1]
+        |$1: Token, $2: StackState, $3: Node, $4: Token| -> Node;
 
-        // result = @builder.begin_keyword(val[0], val[2], val[3])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        self.tokenizer.interior_lexer.cmdarg = $2;
+
+        $$ = node::begin_keyword($1, $3, $4);
     }
     | tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG stmt fake_embedded_action_primary_tLPAREN_ARG_stmt rparen {
+        |$1: Token, $2: StackState, $3: Node| -> Node;
+        WIP
         // @lexer.cmdarg = val[1]
 
         // result = @builder.begin(val[0], val[2], val[4])

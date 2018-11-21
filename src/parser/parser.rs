@@ -1758,6 +1758,7 @@ use lexer::stack_state::StackState;
 use token::token::Token as InteriorToken;
 use parser::token::Token;
 use parser::tokenizer::Tokenizer;
+use parser::static_env::StaticEnv;
 use ast::node;
 use ast::node::{ Node, Nodes };
 
@@ -1793,6 +1794,10 @@ pub struct Parser {
      * Semantic action handlers.
      */
     handlers: [fn(&mut Parser) -> SV; 601],
+
+    // private fields for RoR
+    static_env: StaticEnv,
+
 }
 
 impl Parser {
@@ -2410,6 +2415,8 @@ impl Parser {
     Parser::_handler599,
     Parser::_handler600
 ],
+
+            static_env: StaticEnv::new(),
         }
     }
 

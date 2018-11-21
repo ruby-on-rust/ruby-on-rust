@@ -1470,6 +1470,9 @@ pub fn begin(begin_t: Token, body: Option<Node>, end_t: Token) -> Node {
 //       collection_map(begin_t, [ body ], end_t))
 //   end
 // end
+pub fn begin_keyword(begin_t: Token, body: Node, end_t: Token) -> Node {
+    wip!();
+}
 
 //     #
 //     # HELPERS
