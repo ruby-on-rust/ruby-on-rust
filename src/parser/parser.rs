@@ -2993,13 +2993,12 @@ fn _handler26(&mut self) -> SV {
     println!("   *** PARSER: _handler26");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _4 = interior_token!(pop!(self.values_stack, _0));
+let mut _3 = pop!(self.values_stack, _2);
+let mut _2 = interior_token!(pop!(self.values_stack, _0));
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-// result = @builder.postexe(val[0], val[1], val[2], val[3])
-        wip!(); let __ =Node::DUMMY;
+let __ = node::postexe(_1, _2, _3, _4);
 SV::_2(__)
 // raw production: stmt -> klEND tLCURLY compstmt tRCURLY
 
@@ -3045,7 +3044,7 @@ let mut _3 = pop!(self.values_stack, _1);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
-let __ = node::assign(_1, _2,  node::array(None, _3, None) );
+let __ = node::assign(_1, _2, node::array(None, _3, None) );
 SV::_2(__)
 // raw production: stmt -> lhs tEQL mrhs
 
@@ -3791,14 +3790,13 @@ fn _handler73(&mut self) -> SV {
     println!("   *** PARSER: _handler73");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _3 = pop!(self.values_stack, _2);
+let mut _2 = interior_token!(pop!(self.values_stack, _0));
+let mut _1 = pop!(self.values_stack, _1);
 
-//   result = val[0].
-        //               push(@builder.splat(val[1], val[2]))
-        wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+_1.push( node::splat(_2, Some(_3)) );
+        let __ = _1;
+SV::_1(__)
 // raw production: mlhs_basic -> mlhs_head tSTAR mlhs_node
 
 }
@@ -3809,17 +3807,16 @@ fn _handler74(&mut self) -> SV {
     println!("   *** PARSER: _handler74");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
+let mut _5 = pop!(self.values_stack, _1);
 self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _3 = pop!(self.values_stack, _2);
+let mut _2 = interior_token!(pop!(self.values_stack, _0));
+let mut _1 = pop!(self.values_stack, _1);
 
-//   result = val[0].
-        //               push(@builder.splat(val[1], val[2])).
-        //               concat(val[4])
-        wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+_1.push( node::splat(_2, Some(_3)) );
+        _1.append(&mut _5);
+        let __ = _1;
+SV::_1(__)
 // raw production: mlhs_basic -> mlhs_head tSTAR mlhs_node tCOMMA mlhs_post
 
 }
@@ -3830,13 +3827,12 @@ fn _handler75(&mut self) -> SV {
     println!("   *** PARSER: _handler75");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _2 = interior_token!(pop!(self.values_stack, _0));
+let mut _1 = pop!(self.values_stack, _1);
 
-//   result = val[0].
-        //               push(@builder.splat(val[1]))
-        wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+_1.push( node::splat(_2, None) );
+        let __ = _1;
+SV::_1(__)
 // raw production: mlhs_basic -> mlhs_head tSTAR
 
 }
@@ -3847,16 +3843,15 @@ fn _handler76(&mut self) -> SV {
     println!("   *** PARSER: _handler76");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
+let mut _4 = pop!(self.values_stack, _1);
 self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _2 = interior_token!(pop!(self.values_stack, _0));
+let mut _1 = pop!(self.values_stack, _1);
 
-//   result = val[0].
-        //               push(@builder.splat(val[1])).
-        //               concat(val[3])
-        wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+_1.push( node::splat(_2, None) );
+        _1.append(&mut _4);
+        let __ = _1;
+SV::_1(__)
 // raw production: mlhs_basic -> mlhs_head tSTAR tCOMMA mlhs_post
 
 }
@@ -3867,12 +3862,11 @@ fn _handler77(&mut self) -> SV {
     println!("   *** PARSER: _handler77");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _2 = pop!(self.values_stack, _1);
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-//   result = [ @builder.splat(val[0], val[1]) ]
-        wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+let __ = vec![ node::splat(_1, Some(_2)) ];
+SV::_1(__)
 // raw production: mlhs_basic -> tSTAR mlhs_node
 
 }
@@ -3883,15 +3877,15 @@ fn _handler78(&mut self) -> SV {
     println!("   *** PARSER: _handler78");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
+let mut _4 = pop!(self.values_stack, _1);
 self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _2 = self.values_stack.pop().unwrap();
+let mut _1 = pop!(self.values_stack, _1);
 
-//   result = [ @builder.splat(val[0], val[1]),
-        //              *val[3] ]
-        wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+let r = vec![ node::splat(_1, Some(_2)) ];
+        r.append(&mut _4);
+        let __ = r;
+SV::_1(__)
 // raw production: mlhs_basic -> tSTAR mlhs_node tCOMMA mlhs_post
 
 }
@@ -3902,11 +3896,10 @@ fn _handler79(&mut self) -> SV {
     println!("   *** PARSER: _handler79");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-//   result = [ @builder.splat(val[0]) ]
-        wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+let __ = vec![ node::splat(_1, None) ];
+SV::_1(__)
 // raw production: mlhs_basic -> tSTAR
 
 }
@@ -3917,14 +3910,14 @@ fn _handler80(&mut self) -> SV {
     println!("   *** PARSER: _handler80");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _3 = pop!(self.values_stack, _1);
+let mut _2 = self.values_stack.pop().unwrap();
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-//   result = [ @builder.splat(val[0]),
-        //              *val[2] ]
-        wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+let r = vec![ node::splat(_1, Some(_2)) ];
+        r.append(&mut _3);
+        let __ = r;
+SV::_1(__)
 // raw production: mlhs_basic -> tSTAR tCOMMA mlhs_post
 
 }

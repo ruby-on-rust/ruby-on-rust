@@ -254,21 +254,20 @@ stmt
         wip!(); $$=Node::DUMMY;
     }
     | klEND tLCURLY compstmt tRCURLY {
-        // result = @builder.postexe(val[0], val[1], val[2], val[3])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:Token, $3:Node, $4:Token| -> Node;
+        $$ = node::postexe($1, $2, $3, $4);
     }
     | command_asgn
     | mlhs tEQL command_call {
-        |$1: Node, $2: Token, $3: Node| -> Node;
+        |$1:Node, $2:Token, $3:Node| -> Node;
         $$ = node::multi_assign($1, $2, $3);
     }
     | lhs tEQL mrhs {
-        |$1: Node, $2: Token, $3: Nodes| -> Node;
-        $$ = node::assign($1, $2,  node::array(None, $3, None) );
+        |$1:Node, $2:Token, $3:Nodes| -> Node;
+        $$ = node::assign($1, $2, node::array(None, $3, None) );
     }
     | mlhs tEQL mrhs_arg {
-        |$1: Node, $2: Token, $3: Node| -> Node;
+        |$1:Node, $2:Token, $3:Node| -> Node;
         $$ = node::multi_assign($1, $2, $3);
     }
     | expr
@@ -503,52 +502,50 @@ mlhs_basic
         $$ = $1;
     }
     | mlhs_head tSTAR mlhs_node {
-        //   result = val[0].
-        //               push(@builder.splat(val[1], val[2]))
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Nodes, $2:Token, $3:Node| -> Nodes;
+        $1.push( node::splat($2, Some($3)) );
+        $$ = $1;
     }
     | mlhs_head tSTAR mlhs_node tCOMMA mlhs_post {
-        //   result = val[0].
-        //               push(@builder.splat(val[1], val[2])).
-        //               concat(val[4])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Nodes, $2:Token, $3:Node, $5:Nodes| -> Nodes;
+
+        $1.push( node::splat($2, Some($3)) );
+        $1.append(&mut $5);
+        $$ = $1;
     }
     | mlhs_head tSTAR {
-        //   result = val[0].
-        //               push(@builder.splat(val[1]))
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Nodes, $2:Token| -> Nodes;
+        $1.push( node::splat($2, None) );
+        $$ = $1;
     }
     | mlhs_head tSTAR tCOMMA mlhs_post {
-        //   result = val[0].
-        //               push(@builder.splat(val[1])).
-        //               concat(val[3])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Nodes, $2:Token, $4:Nodes| -> Nodes;
+
+        $1.push( node::splat($2, None) );
+        $1.append(&mut $4);
+        $$ = $1;
     }
     | tSTAR mlhs_node {
-        //   result = [ @builder.splat(val[0], val[1]) ]
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:Nodes| -> Nodes;
+        $$ = vec![ node::splat($1, Some($2)) ];
     }
     | tSTAR mlhs_node tCOMMA mlhs_post {
-        //   result = [ @builder.splat(val[0], val[1]),
-        //              *val[3] ]
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $1: Nodes, $4:Nodes| -> Nodes;
+
+        let r = vec![ node::splat($1, Some($2)) ];
+        r.append(&mut $4);
+        $$ = r;
     }
     | tSTAR {
-        //   result = [ @builder.splat(val[0]) ]
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token| -> Nodes;
+        $$ = vec![ node::splat($1, None) ];
     }
     | tSTAR tCOMMA mlhs_post {
-        //   result = [ @builder.splat(val[0]),
-        //              *val[2] ]
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $3:Nodes| -> Nodes;
+
+        let r = vec![ node::splat($1, Some($2)) ];
+        r.append(&mut $3);
+        $$ = r;
     }
 ;
 
@@ -1138,10 +1135,8 @@ args
         |$1:Node| -> Nodes; $$ = vec![$1];
     }
     | tSTAR arg_value {
-        //   result = [ @builder.splat(val[0], val[1]) ]
-
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:Nodes| -> Nodes;
+        $$ = vec![ node::splat($1, Some($2)) ];
     }
     | args tCOMMA arg_value {
         |$1:Nodes, $2:Token, $3:Node| -> Nodes;
@@ -1149,9 +1144,10 @@ args
         $1.push($3); $$ = $1;
     }
     | args tCOMMA tSTAR arg_value {
-        //   result = val[0] << @builder.splat(val[2], val[3])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Nodes, $3:Token, $4:Nodes| -> Nodes;
+
+        $1.push(node::splat($3, Some($4)));
+        $$ = $1;
     }
 ;
 
