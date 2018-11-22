@@ -278,33 +278,31 @@ command_asgn
         |$1: Node, $2: Token, $3: Node| -> Node; $$ = node::assign($1, $2, $3);
     }
     | var_lhs tOP_ASGN command_rhs {
-        // result = @builder.op_assign(val[0], val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1: Node, $2: Token, $3: Node| -> Node; $$ = node::op_assign($1, $2, $3);
     }
     | primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN command_rhs {
-        // result = @builder.op_assign(
-        //             @builder.index(
-        //             val[0], val[1], val[2], val[3]),
-        //             val[4], val[5])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1: Node, $2: Token, $3: Nodes, $4:Token, $5:Token, $6:Node| -> Node;
+
+        $$ = node::op_assign(
+            node::index($1, $2, $3, $4),
+            $5, $6
+        );
     }
     | primary_value call_op tIDENTIFIER tOP_ASGN command_rhs {
-        // result = @builder.op_assign(
-        //             @builder.call_method(
-        //             val[0], val[1], val[2]),
-        //             val[3], val[4])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
+
+        $$ = node::op_assign(
+            node::call_method(Some($1), Some($2), $3, None, vec![], None),
+            $4, $5
+        );
     }
     | primary_value call_op tCONSTANT tOP_ASGN command_rhs {
-        // result = @builder.op_assign(
-        //             @builder.call_method(
-        //             val[0], val[1], val[2]),
-        //             val[3], val[4])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
+
+        $$ = node::op_assign(
+            node::call_method(Some($1), Some($2), $3, None, vec![], None),
+            $4, $5
+        );
     }
     | primary_value tCOLON2 tCONSTANT tOP_ASGN command_rhs {
         // const  = @builder.const_op_assignable(
@@ -314,31 +312,31 @@ command_asgn
         wip!(); $$=Node::DUMMY;
     }
     | primary_value tCOLON2 tIDENTIFIER tOP_ASGN command_rhs {
-        // result = @builder.op_assign(
-        //             @builder.call_method(
-        //             val[0], val[1], val[2]),
-        //             val[3], val[4])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
+
+        $$ = node::op_assign(
+            node::call_method(Some($1), Some($2), $3, None, vec![], None),
+            $4, $5
+        );
     }
     | backref tOP_ASGN command_rhs {
-        // @builder.op_assign(val[0], val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::op_assign($1, $2, $3);
     }
 ;
 
-     command_rhs: command_call %prec tOP_ASGN
-                | command_call kRESCUE_MOD stmt {
-                    //   rescue_body = @builder.rescue_body(val[1],
-                    //                     nil, nil, nil,
-                    //                     nil, val[2])
+command_rhs
+    : command_call %prec tOP_ASGN
+    | command_call kRESCUE_MOD stmt {
+        //   rescue_body = @builder.rescue_body(val[1],
+        //                     nil, nil, nil,
+        //                     nil, val[2])
 
-                    //   result = @builder.begin_body(val[0], [ rescue_body ])
-                        ||->Node;
-                        wip!(); $$=Node::DUMMY;
-                    }
-                | command_asgn
+        //   result = @builder.begin_body(val[0], [ rescue_body ])
+            ||->Node;
+            wip!(); $$=Node::DUMMY;
+        }
+    | command_asgn
 ;
 
 expr
@@ -526,13 +524,13 @@ mlhs_basic
         $$ = $1;
     }
     | tSTAR mlhs_node {
-        |$1:Token, $2:Nodes| -> Nodes;
+        |$1:Token, $2:Node| -> Nodes;
         $$ = vec![ node::splat($1, Some($2)) ];
     }
     | tSTAR mlhs_node tCOMMA mlhs_post {
-        |$1:Token, $1: Nodes, $4:Nodes| -> Nodes;
+        |$1:Token, $2:Node, $4:Nodes| -> Nodes;
 
-        let r = vec![ node::splat($1, Some($2)) ];
+        let mut r = vec![ node::splat($1, Some($2)) ];
         r.append(&mut $4);
         $$ = r;
     }
@@ -543,7 +541,7 @@ mlhs_basic
     | tSTAR tCOMMA mlhs_post {
         |$1:Token, $3:Nodes| -> Nodes;
 
-        let r = vec![ node::splat($1, Some($2)) ];
+        let mut r = vec![ node::splat($1, None) ];
         r.append(&mut $3);
         $$ = r;
     }
@@ -756,46 +754,44 @@ arg
         $$ = node::op_assign($1, $2, $3);
     }
     | primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN arg_rhs {
-        // result = @builder.op_assign(
-        //             @builder.index(
-        //             val[0], val[1], val[2], val[3]),
-        //             val[4], val[5])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1: Node, $2: Token, $3: Nodes, $4:Token, $5:Token, $6:Node| -> Node;
+
+        $$ = node::op_assign(
+            node::index($1, $2, $3, $4),
+            $5, $6
+        );
     }
     | primary_value call_op tIDENTIFIER tOP_ASGN arg_rhs {
-        // result = @builder.op_assign(
-        //             @builder.call_method(
-        //             val[0], val[1], val[2]),
-        //             val[3], val[4])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
+
+        $$ = node::op_assign(
+            node::call_method(Some($1), Some($2), $3, None, vec![], None),
+            $4, $5
+        );
     }
-    | primary_value call_op tCONSTANT tOP_ASGN arg_rhs
-        {
-            // result = @builder.op_assign(
-            //             @builder.call_method(
-            //             val[0], val[1], val[2]),
-            //             val[3], val[4])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
-    | primary_value tCOLON2 tIDENTIFIER tOP_ASGN arg_rhs
-        {
-            // result = @builder.op_assign(
-            //             @builder.call_method(
-            //             val[0], val[1], val[2]),
-            //             val[3], val[4])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
+    | primary_value call_op tCONSTANT tOP_ASGN arg_rhs {
+        |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
+
+        $$ = node::op_assign(
+            node::call_method(Some($1), Some($2), $3, None, vec![], None),
+            $4, $5
+        );
+    }
+    | primary_value tCOLON2 tIDENTIFIER tOP_ASGN arg_rhs {
+        |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
+
+        $$ = node::op_assign(
+            node::call_method(Some($1), Some($2), $3, None, vec![], None),
+            $4, $5
+        );
+    }
     | primary_value tCOLON2 tCONSTANT tOP_ASGN arg_rhs
         {
             // const  = @builder.const_op_assignable(
             //             @builder.const_fetch(val[0], val[1], val[2]))
             // result = @builder.op_assign(const, val[3], val[4])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
+            ||->Node;
+            wip!(); $$=Node::DUMMY;
         }
     | tCOLON3 tCONSTANT tOP_ASGN arg_rhs
         {
@@ -805,12 +801,10 @@ arg
                     ||->Node;
                     wip!(); $$=Node::DUMMY;
         }
-    | backref tOP_ASGN arg_rhs
-        {
-            // result = @builder.op_assign(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
+    | backref tOP_ASGN arg_rhs {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::op_assign($1, $2, $3);
+    }
     | arg tDOT2 arg
         {
             // result = @builder.range_inclusive(val[0], val[1], val[2])
@@ -1135,7 +1129,7 @@ args
         |$1:Node| -> Nodes; $$ = vec![$1];
     }
     | tSTAR arg_value {
-        |$1:Token, $2:Nodes| -> Nodes;
+        |$1:Token, $2:Node| -> Nodes;
         $$ = vec![ node::splat($1, Some($2)) ];
     }
     | args tCOMMA arg_value {
@@ -1144,7 +1138,7 @@ args
         $1.push($3); $$ = $1;
     }
     | args tCOMMA tSTAR arg_value {
-        |$1:Nodes, $3:Token, $4:Nodes| -> Nodes;
+        |$1:Nodes, $3:Token, $4:Node| -> Nodes;
 
         $1.push(node::splat($3, Some($4)));
         $$ = $1;
@@ -1847,32 +1841,25 @@ block_param
                     }
 ;
 
-     opt_bv_decl: opt_nl
-                    {
-                    //   result = []
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | opt_nl tSEMI bv_decls opt_nl
-                    {
-                    //   result = val[2]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+opt_bv_decl
+    : opt_nl {
+        |$1:Node| -> Nodes; $$ = vec![ $1 ];
+    }
+    | opt_nl tSEMI bv_decls opt_nl {
+        |$3:Nodes| -> Nodes; $$ = $3;
+    }
 ;
 
-        bv_decls: bvar
-                    {
-                    //   result = [ val[0] ]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | bv_decls tCOMMA bvar
-                    {
-                    //   result = val[0] << val[2]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+bv_decls
+    : bvar {
+        |$1:Node| -> Nodes; $$ = vec![ $1 ];
+    }
+    | bv_decls tCOMMA bvar {
+        |$1:Nodes, $3: Node| -> Nodes;
+        
+        $1.push($3);
+        $$ = $1;
+    }
 ;
 
 bvar
@@ -2515,14 +2502,10 @@ var_lhs
 
 backref
     : tNTH_REF {
-        //   result = @builder.nth_ref(val[0])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token| -> Node; $$ = node::nth_ref($1);
     }
     | tBACK_REF {
-        //   result = @builder.back_ref(val[0])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token| -> Node; $$ = node::back_ref($1);
     }
 ;
 
@@ -2941,14 +2924,16 @@ assoc
       operation3: tIDENTIFIER | tFID | op;
     dot_or_colon: call_op | tCOLON2;
          call_op: tDOT {
+                    || -> Token; $$ = InteriorToken::T_DOT.wrap_as_token();
+
                     //   result = [:dot, val[0][1]]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
+                    // TODO
                 }
                 | tANDDOT {
+                    || -> Token; $$ = InteriorToken::T_ANDDOT.wrap_as_token();
+
                     //   result = [:anddot, val[0][1]]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
+                    // TODO
                 }
 ;
 

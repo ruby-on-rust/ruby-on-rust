@@ -636,6 +636,9 @@ pub fn back_ref(token: Token) -> Node {
 //   n(:nth_ref, [ value(token) ],
 //     token_map(token))
 // end
+pub fn nth_ref(token: Token) -> Node {
+    wip!();
+}
 
 // def accessible(node)
 //   case node.type
@@ -722,8 +725,8 @@ pub fn const_global(t_colon3: Token, name: Token) -> Node {
 //   n(:const, [ scope, value(name_t).to_sym ],
 //     constant_map(scope, t_colon2, name_t))
 // end
-pub fn const_fetch(scope: Node, _colon2: Token, name: Token) -> Node {
-    if let Token::T_CONSTANT(name_str) = name {
+pub fn const_fetch(scope: Node, t_colon2: Token, name_t: Token) -> Node {
+    if let Token::T_CONSTANT(name_str) = name_t {
         return Node::Const {
             scope: Some(Box::new(scope)),
             name: name_str
@@ -1196,6 +1199,9 @@ pub fn call_method(receiver: Option<Node>, dot_t: Option<Token>, selector_t: Tok
 //   n(:send, [ receiver, :[], *indexes ],
 //     send_index_map(receiver, lbrack_t, rbrack_t))
 // end
+pub fn index(receiver: Node, lbrack_t: Token, indexes: Nodes, rbrack_t: Token) -> Node {
+    wip!();
+}
 
 // def index_asgn(receiver, lbrack_t, indexes, rbrack_t)
 //   # Incomplete method call.
@@ -1381,6 +1387,7 @@ pub fn postexe(postexe_t: Token, lbrace_t: Token, compstmt: Node, rbrace_t: Toke
 //     rescue_body_map(rescue_t, exc_list, assoc_t,
 //                     exc_var, then_t, compound_stmt))
 // end
+// pub fn rescue_body()
 
 // def begin_body(compound_stmt, rescue_bodies=[],
 //                else_t=nil,    else_=nil,
