@@ -151,6 +151,7 @@ bodystmt
 ;
 
 compstmt: stmts opt_terms {
+    // TODO well @builder.compstmt actually returns an Option<Node>
     // result = @builder.compstmt(val[0])
     |$1:Nodes| -> Node;
     $$ = node::compstmt($1);
@@ -259,20 +260,16 @@ stmt
     }
     | command_asgn
     | mlhs tEQL command_call {
-        // result = @builder.multi_assign(val[0], val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1: Node, $2: Token, $3: Node| -> Node;
+        $$ = node::multi_assign($1, $2, $3);
     }
     | lhs tEQL mrhs {
-        // result = @builder.assign(val[0], val[1],
-        //             @builder.array(nil, val[2], nil))
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1: Node, $2: Token, $3: Nodes| -> Node;
+        $$ = node::assign($1, $2,  node::array(None, $3, None) );
     }
     | mlhs tEQL mrhs_arg {
-        // result = @builder.multi_assign(val[0], val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1: Node, $2: Token, $3: Node| -> Node;
+        $$ = node::multi_assign($1, $2, $3);
     }
     | expr
 ;
@@ -380,10 +377,8 @@ command_call
 block_command
     : block_call
     | block_call dot_or_colon operation2 command_args {
-        // result = @builder.call_method(val[0], val[1], val[2],
-        //             nil, val[3], nil)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:Token, $4:Nodes| -> Node;
+        $$ = node::call_method(Some($1), Some($2), $3, None, $4, None);
     }
 ;
 
@@ -411,17 +406,15 @@ command
         ||->Node;
         wip!(); $$=Node::DUMMY;
     }
-    | primary_value call_op operation2 command_args %prec tLOWEST
-        {
-        //   result = @builder.call_method(val[0], val[1], val[2],
-        //               nil, val[3], nil)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
-    | primary_value call_op operation2 command_args cmd_brace_block
-        {
+    | primary_value call_op operation2 command_args %prec tLOWEST {
+        |$1:Node, $2:Token, $3:Token, $4:Nodes| -> Node;
+        $$ = node::call_method(Some($1), Some($2), $3, None, $4, None);
+    }
+    | primary_value call_op operation2 command_args cmd_brace_block {
         //   method_call = @builder.call_method(val[0], val[1], val[2],
         //                     nil, val[3], nil)
+        |$1:Node, $2:Token, $3:Token, $4:Nodes| -> Node;
+        let method_call = node::call_method(Some($1), Some($2), $3, None, $4, None);
 
         //   begin_t, args, body, end_t = val[4]
         //   result      = @builder.block(method_call,
@@ -1308,23 +1301,21 @@ primary
         $$ = node::begin_keyword($1, $3, $4);
     }
     | tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG stmt fake_embedded_action_primary_tLPAREN_ARG_stmt rparen {
-        |$1: Token, $2: StackState, $3: Node| -> Node;
-        WIP
-        // @lexer.cmdarg = val[1]
+        |$1: Token, $2: StackState, $3: Node, $5: Token| -> Node;
 
-        // result = @builder.begin(val[0], val[2], val[4])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        self.tokenizer.interior_lexer.cmdarg = $2;
+
+        $$ = node::begin($1, Some($3), $5);
     }
     | tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG_2 opt_nl tRPAREN {
-        // result = @builder.begin(val[0], nil, val[3])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1: Token, $4: Token| -> Node;
+
+        $$ = node::begin($1, None, $4);
     }
     | tLPAREN compstmt tRPAREN {
-        // result = @builder.begin(val[0], val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1: Token, $2: Node, $3: Token| -> Node;
+
+        $$ = node::begin($1, None, $3);
     }
     | primary_value tCOLON2 tCONSTANT {
         |$1:Node; $2:Token, $3:Token| -> Node;
@@ -1888,41 +1879,44 @@ block_param
                     }
 ;
 
-            bvar: tIDENTIFIER
-                    {
-                    //   @static_env.declare val[0][0]
-                    //   result = @builder.shadowarg(val[0])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | f_bad_arg
+bvar
+    : tIDENTIFIER {
+        |$1: Token| -> Node;
+
+        if let InteriorToken::T_IDENTIFIER(ref t_value) = $1 {
+            self.static_env.declare(t_value.clone());
+        } else { unreachable!(); }
+
+        $$ = node::shadowarg($1);
+    }
+    | f_bad_arg
 ;
 
 fake_embedded_action_lambda_1: {
-    //   @static_env.extend_dynamic
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    ||->Node; $$=Node::DUMMY;
+    self.static_env.extend_dynamic();
 };
 
 fake_embedded_action_lambda_2: {
-    //   result = @lexer.cmdarg.dup
-    //   @lexer.cmdarg.clear
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    || -> StackState;
+
+    $$ = self.tokenizer.interior_lexer.cmdarg.clone();
+    self.tokenizer.interior_lexer.cmdarg.clear();
 };
 
-          lambda: fake_embedded_action_lambda_1 f_larglist fake_embedded_action_lambda_2 lambda_body
-                    {
-                    //   @lexer.cmdarg = val[2]
-                    //   @lexer.cmdarg.lexpop
+lambda: fake_embedded_action_lambda_1 f_larglist fake_embedded_action_lambda_2 lambda_body {
+    // TODO WIP lambda_body return type
 
-                    //   result = [ val[1], val[3] ]
+    |$2: Node, $3: StackState| -> Node;
 
-                    //   @static_env.unextend
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-;
+    self.tokenizer.interior_lexer.cmdarg = $3;
+    self.tokenizer.interior_lexer.cmdarg.lexpop();
+
+    //   result = [ val[1], val[3] ]
+    wip!(); $$=Node::DUMMY;
+
+    self.static_env.unextend();
+};
 
 f_larglist
     : tLPAREN2 f_args opt_bv_decl tRPAREN {
@@ -1935,27 +1929,24 @@ f_larglist
     }
 ;
 
-     lambda_body: tLAMBEG compstmt tRCURLY
-                    {
-                    //   result = [ val[0], val[1], val[2] ]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kDO_LAMBDA compstmt kEND
-                    {
-                    //   result = [ val[0], val[1], val[2] ]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+lambda_body
+    : tLAMBEG compstmt tRCURLY {
+        //   result = [ val[0], val[1], val[2] ]
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kDO_LAMBDA compstmt kEND {
+        //   result = [ val[0], val[1], val[2] ]
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
 ;
 
-        do_block: kDO_BLOCK do_body kEND
-                    {
-                    //   result = [ val[0], *val[1], val[2] ]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-;
+do_block: kDO_BLOCK do_body kEND {
+    //   result = [ val[0], *val[1], val[2] ]
+    ||->Node;
+    wip!(); $$=Node::DUMMY;
+};
 
       block_call: command do_block
                     {
@@ -1998,98 +1989,89 @@ f_larglist
                     }
 ;
 
-     method_call: fcall paren_args
-                    {
-                    //   lparen_t, args, rparen_t = val[1]
-                    //   result = @builder.call_method(nil, nil, val[0],
-                    //               lparen_t, args, rparen_t)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | primary_value call_op operation2 opt_paren_args
-                    {
-                    //   lparen_t, args, rparen_t = val[3]
-                    //   result = @builder.call_method(val[0], val[1], val[2],
-                    //               lparen_t, args, rparen_t)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | primary_value tCOLON2 operation2 paren_args
-                    {
-                    //   lparen_t, args, rparen_t = val[3]
-                    //   result = @builder.call_method(val[0], val[1], val[2],
-                    //               lparen_t, args, rparen_t)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | primary_value tCOLON2 operation3
-                    {
-                    //   result = @builder.call_method(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | primary_value call_op paren_args
-                    {
-                    //   lparen_t, args, rparen_t = val[2]
-                    //   result = @builder.call_method(val[0], val[1], nil,
-                    //               lparen_t, args, rparen_t)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | primary_value tCOLON2 paren_args
-                    {
-                    //   lparen_t, args, rparen_t = val[2]
-                    //   result = @builder.call_method(val[0], val[1], nil,
-                    //               lparen_t, args, rparen_t)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kSUPER paren_args
-                    {
-                    //   lparen_t, args, rparen_t = val[1]
-                    //   result = @builder.keyword_cmd(:super, val[0],
-                    //               lparen_t, args, rparen_t)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kSUPER
-                    {
-                    //   result = @builder.keyword_cmd(:zsuper, val[0])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | primary_value tLBRACK2 opt_call_args rbracket
-                    {
-                    //   result = @builder.index(val[0], val[1], val[2], val[3])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+method_call
+    : fcall paren_args {
+        //   lparen_t, args, rparen_t = val[1]
+        //   result = @builder.call_method(nil, nil, val[0],
+        //               lparen_t, args, rparen_t)
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | primary_value call_op operation2 opt_paren_args {
+        //   lparen_t, args, rparen_t = val[3]
+        //   result = @builder.call_method(val[0], val[1], val[2],
+        //               lparen_t, args, rparen_t)
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | primary_value tCOLON2 operation2 paren_args {
+        //   lparen_t, args, rparen_t = val[3]
+        //   result = @builder.call_method(val[0], val[1], val[2],
+        //               lparen_t, args, rparen_t)
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | primary_value tCOLON2 operation3 {
+        //   result = @builder.call_method(val[0], val[1], val[2])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | primary_value call_op paren_args {
+        //   lparen_t, args, rparen_t = val[2]
+        //   result = @builder.call_method(val[0], val[1], nil,
+        //               lparen_t, args, rparen_t)
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | primary_value tCOLON2 paren_args {
+        //   lparen_t, args, rparen_t = val[2]
+        //   result = @builder.call_method(val[0], val[1], nil,
+        //               lparen_t, args, rparen_t)
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kSUPER paren_args {
+        //   lparen_t, args, rparen_t = val[1]
+        //   result = @builder.keyword_cmd(:super, val[0],
+        //               lparen_t, args, rparen_t)
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kSUPER {
+        //   result = @builder.keyword_cmd(:zsuper, val[0])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | primary_value tLBRACK2 opt_call_args rbracket {
+        //   result = @builder.index(val[0], val[1], val[2], val[3])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
 ;
 
-     brace_block: tLCURLY brace_body tRCURLY
-                    {
-                    //   result = [ val[0], *val[1], val[2] ]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kDO do_body kEND
-                    {
-                    //   result = [ val[0], *val[1], val[2] ]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+brace_block
+    : tLCURLY brace_body tRCURLY {
+        //   result = [ val[0], *val[1], val[2] ]
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kDO do_body kEND {
+        //   result = [ val[0], *val[1], val[2] ]
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
 ;
 
 fake_embedded_action_brace_body_1: {
-    //   @static_env.extend_dynamic
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    ||->Node;$$=Node::DUMMY;
+    self.static_env.extend_dynamic();
 };
+
 fake_embedded_action_brace_body_2: {
-    // result = @lexer.cmdarg.dup
-    // @lexer.cmdarg.clear
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    || -> StackState;
+
+    $$ = self.tokenizer.interior_lexer.cmdarg.clone();
+    self.tokenizer.interior_lexer.cmdarg.clear();
 };
 
 brace_body: fake_embedded_action_brace_body_1 fake_embedded_action_brace_body_2 opt_block_param compstmt {
@@ -2105,8 +2087,7 @@ brace_body: fake_embedded_action_brace_body_1 fake_embedded_action_brace_body_2 
 fake_embedded_action_do_body_1: {
     ||->Node; $$=Node::DUMMY;
 
-    //   @static_env.extend_dynamic
-    wip!();
+    self.static_env.extend_dynamic();
 };
 
 fake_embedded_action_do_body_2: {
@@ -2115,16 +2096,14 @@ fake_embedded_action_do_body_2: {
     self.tokenizer.interior_lexer.cmdarg.clear();
 };
 
-         do_body: fake_embedded_action_do_body_1 fake_embedded_action_do_body_2 opt_block_param bodystmt
-                    {
-                    //   result = [ val[2], val[3] ]
+do_body: fake_embedded_action_do_body_1 fake_embedded_action_do_body_2 opt_block_param bodystmt {
+    |$2: StackState, $3: Node, $4: Node| -> Nodes;
 
-                    //   @static_env.unextend
-                    //   @lexer.cmdarg = val[1]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-;
+    $$ = vec![ $3, $4 ];
+    self.static_env.unextend();
+
+    self.tokenizer.interior_lexer.cmdarg = $2;
+};
 
        case_body: kWHEN args then compstmt cases
                     {
@@ -2143,27 +2122,24 @@ cases
     | case_body
 ;
 
-      opt_rescue: kRESCUE exc_list exc_var then compstmt opt_rescue
-                    {
-                    //   assoc_t, exc_var = val[2]
+opt_rescue
+    : kRESCUE exc_list exc_var then compstmt opt_rescue {
+        //   assoc_t, exc_var = val[2]
 
-                    //   if val[1]
-                    //     exc_list = @builder.array(nil, val[1], nil)
-                    //   end
+        //   if val[1]
+        //     exc_list = @builder.array(nil, val[1], nil)
+        //   end
 
-                    //   result = [ @builder.rescue_body(val[0],
-                    //                   exc_list, assoc_t, exc_var,
-                    //                   val[3], val[4]),
-                    //              *val[5] ]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                |
-                    {
-                    //   result = []
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+        //   result = [ @builder.rescue_body(val[0],
+        //                   exc_list, assoc_t, exc_var,
+        //                   val[3], val[4]),
+        //              *val[5] ]
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | {
+        || -> Nodes; $$ = vec![];
+    }
 ;
 
 exc_list
@@ -2199,14 +2175,11 @@ literal
     | dsym
 ;
 
-strings
-    : string {
-        // result = @builder.string_compose(nil, val[0], nil)
-        |$1:Nodes| -> Node;
+strings: string {
+    |$1:Nodes| -> Node;
 
-        $$ = node::string_compose($1);
-    }
-;
+    $$ = node::string_compose(None, $1, None);
+};
 
 string
     :string1 {
@@ -2221,12 +2194,14 @@ string
 
 string1
     : tSTRING_BEG string_contents tSTRING_END {
-        // string = @builder.string_compose(val[0], val[1], val[2])
-        // result = @builder.dedent_string(string, @lexer.dedent_level)
         |$1:Token, $2:Nodes, $3:Token| -> Node;
 
-        $$ = node::string_compose($2);
-        // TODO dedent_string
+        wip!(); $$ = Node::DUMMY;
+
+        // string = @builder.string_compose(val[0], val[1], val[2])
+        // result = @builder.dedent_string(string, @lexer.dedent_level)
+        // let string = node::string_compose(Some($1), $2, Some($2));
+        // $$ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
     }
     | tSTRING {
         // string = @builder.string(val[0])
@@ -2240,31 +2215,24 @@ string1
         } else { unreachable!(); }
         // TODO builder.dedent_string
     }
-    | tCHARACTER
-        {
-            // result = @builder.character(val[0])
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
+    | tCHARACTER {
+        |$1:Token| -> Node; $$ = node::character($1);
+    }
 ;
 
-         xstring: tXSTRING_BEG xstring_contents tSTRING_END
-                    {
-                    //   string = @builder.xstring_compose(val[0], val[1], val[2])
-                    //   result = @builder.dedent_string(string, @lexer.dedent_level)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-;
+xstring: tXSTRING_BEG xstring_contents tSTRING_END {
+    //   string = @builder.xstring_compose(val[0], val[1], val[2])
+    //   result = @builder.dedent_string(string, @lexer.dedent_level)
+    ||->Node;
+    wip!(); $$=Node::DUMMY;
+};
 
-          regexp: tREGEXP_BEG regexp_contents tSTRING_END tREGEXP_OPT
-                    {
-                    //   opts   = @builder.regexp_options(val[3])
-                    //   result = @builder.regexp_compose(val[0], val[1], val[2], opts)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-;
+regexp: tREGEXP_BEG regexp_contents tSTRING_END tREGEXP_OPT {
+    //   opts   = @builder.regexp_options(val[3])
+    //   result = @builder.regexp_compose(val[0], val[1], val[2], opts)
+    ||->Node;
+    wip!(); $$=Node::DUMMY;
+};
 
 words: tWORDS_BEG word_list tSTRING_END {
     |$1:Token, $2:Nodes, $3:Token| -> Node;
@@ -2753,11 +2721,13 @@ f_bad_arg
 f_norm_arg
     : f_bad_arg
     | tIDENTIFIER {
-        //   @static_env.declare val[0][0]
+        |$1: Token| -> Token;
 
-        //   result = val[0]
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        if let InteriorToken::T_IDENTIFIER(ref t_value) = $1 {
+            self.static_env.declare(t_value.clone());
+        } else { unreachable!(); }
+
+        $$ = $1.wrap_as_token();
     }
 ;
 
@@ -2840,11 +2810,13 @@ kwrest_mark: tPOW | tDSTAR;
 
 f_kwrest
     : kwrest_mark tIDENTIFIER {
-        //   @static_env.declare val[1][0]
+        |$1:Token, $2:Token| -> Nodes;
 
-        //   result = [ @builder.kwrestarg(val[0], val[1]) ]
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        if let InteriorToken::T_IDENTIFIER(ref t_value) = $2 {
+            self.static_env.declare(t_value.clone());
+        } else { unreachable!(); }
+
+        $$ = vec![ node::kwrestarg($1, Some($2)) ];
     }
     | kwrest_mark {
         |$1: Token| -> Nodes; $$ = vec![ node::kwrestarg($1, None) ];
@@ -2887,11 +2859,13 @@ restarg_mark: tSTAR2 | tSTAR;
 
 f_rest_arg
     : restarg_mark tIDENTIFIER {
-        //   @static_env.declare val[1][0]
+        |$1:Token, $2:Token| -> Nodes;
 
-        //   result = [ @builder.restarg(val[0], val[1]) ]
-        || -> Node;
-        wip!(); $$=Node::DUMMY;
+        if let InteriorToken::T_IDENTIFIER(ref t_value) = $2 {
+            self.static_env.declare(t_value.clone());
+        } else { unreachable!(); }
+
+        $$ = vec![ node::restarg($1, Some($2)) ];
     }
     | restarg_mark {
         |$1: Token| -> Nodes; $$ = vec![node::restarg($1, None)];
@@ -2901,11 +2875,13 @@ f_rest_arg
 blkarg_mark: tAMPER2 | tAMPER;
 
 f_block_arg: blkarg_mark tIDENTIFIER {
-    //   @static_env.declare val[1][0]
-    // 
-    //   result = @builder.blockarg(val[0], val[1])
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    |$1:Token, $2:Token| -> Nodes;
+
+    if let InteriorToken::T_IDENTIFIER(ref t_value) = $2 {
+        self.static_env.declare(t_value.clone());
+    } else { unreachable!(); }
+
+    $$ = vec![ node::blockarg($1, $2) ];
 };
 
  opt_f_block_arg

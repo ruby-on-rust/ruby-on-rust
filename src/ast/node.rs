@@ -272,7 +272,7 @@ pub fn string_internal(string_t: Token) -> Node {
 // end
 // TODO note
 // TODO INCOMPLETE DUMMY
-pub fn string_compose(parts: Nodes) -> Node {
+pub fn string_compose(begin_t: Option<Token>, parts: Nodes, end_t: Option<Token>) -> Node {
     if is_collapse_string_parts(&parts) {
         // TODO DUMMY
         return parts.get(0).unwrap().clone()
@@ -285,6 +285,9 @@ pub fn string_compose(parts: Nodes) -> Node {
 //   n(:str, [ string_value(char_t) ],
 //     prefix_string_map(char_t))
 // end
+pub fn character(char_t: Token) -> Node {
+    wip!();
+}
 
 // def __FILE__(__FILE__t)
 //   n0(:__FILE__,
@@ -374,7 +377,7 @@ pub fn symbol_compose(begin_t: Token, parts: Nodes, end_t: Token) -> Node {
 //       end
 //     end
 //   end
-
+// 
 //   node
 // end
 
@@ -868,6 +871,9 @@ pub fn multi_lhs(begin_t: Option<Token>, items: Nodes, end_t: Option<Token>) -> 
 //   n(:masgn, [ lhs, rhs ],
 //     binary_op_map(lhs, eql_t, rhs))
 // end
+pub fn multi_assign(lhs: Node, eql_t: Token, rhs: Node) -> Node {
+    wip!();
+}
 
 // #
 // # Class and module definition
@@ -1011,11 +1017,17 @@ pub fn kwrestarg(dstar_t: Token, name_t: Option<Token>) -> Node {
 //   n(:shadowarg, [ value(name_t).to_sym ],
 //     variable_map(name_t))
 // end
+pub fn shadowarg(name_t: Token) -> Node {
+    wip!();
+}
 
 // def blockarg(amper_t, name_t)
 //   n(:blockarg, [ value(name_t).to_sym ],
 //     arg_prefix_map(amper_t, name_t))
 // end
+pub fn blockarg(amper_t: Token, name_t: Token) -> Node {
+    wip!();
+}
 
 // def procarg0(arg)
 //   if self.class.emit_procarg0
@@ -1282,6 +1294,9 @@ pub fn call_method(receiver: Option<Node>, dot_t: Option<Token>, selector_t: Tok
 //   n(:if, [ check_condition(cond), if_true, if_false ],
 //     keyword_mod_map(if_true || if_false, cond_t, cond))
 // end
+pub fn condition_mod() -> Node {
+    wip!();
+}
 
 // def ternary(cond, question_t, if_true, colon_t, if_false)
 //   n(:if, [ check_condition(cond), if_true, if_false ],

@@ -1,7 +1,5 @@
 use std::collections::HashSet;
 
-macro_rules! wip { () => { panic!("WIP"); }; }
-
 pub struct StaticEnv {
     variables: HashSet<String>,
     stack: Vec<HashSet<String>>,
@@ -27,8 +25,10 @@ impl StaticEnv {
     //     end
     // TODO NOTE
     pub fn extend_static(&mut self) {
-        wip!();
-        // self.stack.push();
+        // TODO PERFORMANCE i don't think this clone is necessary
+        let variables = self.variables.clone();
+        self.stack.push(variables);
+        self.variables = HashSet::new();
     }
 
     //     def extend_dynamic
@@ -37,12 +37,18 @@ impl StaticEnv {
     // 
     //       self
     //     end
+    pub fn extend_dynamic(&mut self) {
+        self.stack.push(self.variables.clone());
+    }
 
     //     def unextend
     //       @variables = @stack.pop
     // 
     //       self
     //     end
+    pub fn unextend(&mut self) {
+        self.variables = self.stack.pop().unwrap();
+    }
 
     //     def declare(name)
     //       @variables.add(name.to_sym)
@@ -50,7 +56,7 @@ impl StaticEnv {
     //       self
     //     end
     pub fn declare(&mut self, name: String) {
-        wip!();
+        self.variables.insert(name);
     }
 
     //     def declared?(name)
