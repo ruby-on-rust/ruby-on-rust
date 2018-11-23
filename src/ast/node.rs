@@ -824,6 +824,9 @@ pub fn assignable(node: Node) -> Node {
 // def const_op_assignable(node)
 //   node.updated(:casgn)
 // end
+pub fn const_op_assignable(node: Node) -> Node {
+    wip!();
+}
 
 // def assign(lhs, eql_t, rhs)
 //   (lhs << rhs).updated(nil, nil,
@@ -1136,7 +1139,7 @@ pub fn blockarg(amper_t: Token, name_t: Token) -> Node {
 //       send_map(receiver, dot_t, selector_t, lparen_t, args, rparen_t))
 //   end
 // end
-pub fn call_method(receiver: Option<Node>, dot_t: Option<Token>, selector_t: Token, lparen_t: Option<Token>, args: Nodes, rparen_t: Option<Token>) -> Node {
+pub fn call_method(receiver: Option<Node>, dot_t: Option<Token>, selector_t: Option<Token>, lparen_t: Option<Token>, args: Nodes, rparen_t: Option<Token>) -> Node {
     wip!();
 }
 
@@ -1148,6 +1151,9 @@ pub fn call_method(receiver: Option<Node>, dot_t: Option<Token>, selector_t: Tok
 //       send_map(nil, nil, lambda_t))
 //   end
 // end
+pub fn call_lambda(lambda_t: Token) -> Node {
+    wip!();
+}
 
 // def block(method_call, begin_t, args, body, end_t)
 //   _receiver, _selector, *call_args = *method_call
@@ -1176,6 +1182,9 @@ pub fn call_method(receiver: Option<Node>, dot_t: Option<Token>, selector_t: Tok
 //       method_call.loc.with_expression(join_exprs(method_call, block)))
 //   end
 // end
+pub fn block(method_call: Node, begin_t: Token, args: Node, body: Node, end_t: Token) -> Node {
+    wip!();
+}
 
 // def block_pass(amper_t, arg)
 //   n(:block_pass, [ arg ],
@@ -1324,6 +1333,9 @@ pub fn logical_op(node_type: &str, lhs: Node, op_t: Token, rhs: Node) -> Node {
 //   n(:if, [ check_condition(cond), if_true, if_false ],
 //     condition_map(cond_t, cond, then_t, if_true, else_t, if_false, end_t))
 // end
+pub fn condition(cond_t: Token, cond: Node, then_t: Token, if_true: Node, else_t: Token, if_false: Node, end_t: Option<Token>) -> Node {
+    wip!();
+}
 
 // def condition_mod(if_true, if_false, cond_t, cond)
 //   n(:if, [ check_condition(cond), if_true, if_false ],
@@ -1464,14 +1476,14 @@ pub fn postexe(postexe_t: Token, lbrace_t: Token, compstmt: Node, rbrace_t: Toke
 //       n(:begin, statements,
 //         collection_map(nil, statements, nil))
 //   end
-
+// 
 //   if ensure_t
 //     compound_stmt =
 //       n(:ensure,
 //         [ compound_stmt, ensure_ ],
 //         eh_keyword_map(compound_stmt, ensure_t, [ ensure_ ], nil, nil))
 //   end
-
+// 
 //   compound_stmt
 // end
 

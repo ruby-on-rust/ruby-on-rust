@@ -88,6 +88,15 @@ use ast::node::{ Node, Nodes };
 
 pub type TResult = Node;
 
+type TTokenNode = ( InteriorToken, Node );
+type TParenArgs = ( Option<InteriorToken>, Nodes, Option<InteriorToken> );
+type TLambdaBody = ( InteriorToken, Node, InteriorToken );
+type TLambda = ( Node, TLambdaBody );
+type TDoBody = ( Node, Node ); // args/opt_block_param body/bodystmt
+type TDoBlock = ( InteriorToken, TDoBody, InteriorToken );
+type TBraceBody = ( Node, Node ); // opt_block_param, compstmt
+type TBraceBlock = ( InteriorToken, TBraceBody, InteriorToken );
+
 macro_rules! wip { () => { panic!("WIP"); }; }
 macro_rules! interior_token { ($token:expr) => { *$token.interior_token }; }
 
@@ -133,7 +142,7 @@ top_stmt
 
 bodystmt
     : compstmt opt_rescue opt_else opt_ensure {
-        || -> Node;
+        // |$1:Node, $2:TTokenNode, $4:TTokenNode| -> Node;
         //                       rescue_bodies     = val[1]
         //                       else_t,   else_   = val[2]
         //                       ensure_t, ensure_ = val[3]
@@ -286,7 +295,7 @@ command_asgn
         |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
 
         $$ = node::op_assign(
-            node::call_method(Some($1), Some($2), $3, None, vec![], None),
+            node::call_method(Some($1), Some($2), Some($3), None, vec![], None),
             $4, $5
         );
     }
@@ -294,7 +303,7 @@ command_asgn
         |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
 
         $$ = node::op_assign(
-            node::call_method(Some($1), Some($2), $3, None, vec![], None),
+            node::call_method(Some($1), Some($2), Some($3), None, vec![], None),
             $4, $5
         );
     }
@@ -309,7 +318,7 @@ command_asgn
         |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
 
         $$ = node::op_assign(
-            node::call_method(Some($1), Some($2), $3, None, vec![], None),
+            node::call_method(Some($1), Some($2), Some($3), None, vec![], None),
             $4, $5
         );
     }
@@ -365,14 +374,14 @@ block_command
     : block_call
     | block_call dot_or_colon operation2 command_args {
         |$1:Node, $2:Token, $3:Token, $4:Nodes| -> Node;
-        $$ = node::call_method(Some($1), Some($2), $3, None, $4, None);
+        $$ = node::call_method(Some($1), Some($2), Some($3), None, $4, None);
     }
 ;
 
 cmd_brace_block: tLBRACE_ARG brace_body tRCURLY {
-    //   result = [ val[0], *val[1], val[2] ]
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    |$1:Token, $2:TBraceBody, $3:Token| -> TBraceBlock;
+
+    $$ = ($1, $2, $3);
 };
 
 fcall: operation;
@@ -381,49 +390,37 @@ command
     : fcall command_args %prec tLOWEST {
         |$1: Token, $2: Nodes| -> Node;
 
-        $$ = node::call_method(None, None, $1, None, $2, None);
+        $$ = node::call_method(None, None, Some($1), None, $2, None);
     }
-    | fcall command_args cmd_brace_block
-        {
-        //   method_call = @builder.call_method(nil, nil, val[0], nil, val[1], nil)
+    | fcall command_args cmd_brace_block {
+        |$1:Token, $2:Nodes, $3:TBraceBlock| -> Node;
 
-        //   begin_t, args, body, end_t = val[2]
-        //   result      = @builder.block(method_call,
-        //                   begin_t, args, body, end_t)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        let method_call = node::call_method(None, None, Some($1), None, $2, None);
+        let (begin_t, (args, body), end_t) = $3;
+        $$ = node::block(method_call, begin_t, args, body, end_t);
     }
     | primary_value call_op operation2 command_args %prec tLOWEST {
         |$1:Node, $2:Token, $3:Token, $4:Nodes| -> Node;
-        $$ = node::call_method(Some($1), Some($2), $3, None, $4, None);
+        $$ = node::call_method(Some($1), Some($2), Some($3), None, $4, None);
     }
     | primary_value call_op operation2 command_args cmd_brace_block {
-        //   method_call = @builder.call_method(val[0], val[1], val[2],
-        //                     nil, val[3], nil)
-        |$1:Node, $2:Token, $3:Token, $4:Nodes| -> Node;
-        let method_call = node::call_method(Some($1), Some($2), $3, None, $4, None);
+        |$1:Node, $2:Token, $3:Token, $4:Nodes, $5:TBraceBlock| -> Node;
 
-        //   begin_t, args, body, end_t = val[4]
-        //   result      = @builder.block(method_call,
-        //                   begin_t, args, body, end_t)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
+        let method_call = node::call_method(Some($1), Some($2), Some($3), None, $4, None);
+        let (begin_t, (args, body), end_t) = $5;
+        $$ = node::block(method_call, begin_t, args, body, end_t);
+    }
     | primary_value tCOLON2 operation2 command_args %prec tLOWEST {
         |$1:Node, $2:Token, $3:Token, $4:Nodes| -> Node;
-        $$ = node::call_method(Some($1), Some($2), $3, None, $4, None);
+        $$ = node::call_method(Some($1), Some($2), Some($3), None, $4, None);
     }
-    | primary_value tCOLON2 operation2 command_args cmd_brace_block
-        {
-        //   method_call = @builder.call_method(val[0], val[1], val[2],
-        //                     nil, val[3], nil)
+    | primary_value tCOLON2 operation2 command_args cmd_brace_block {
+        |$1:Node, $2:Token, $3:Token, $4:Nodes, $5:TBraceBlock| -> Node;
 
-        //   begin_t, args, body, end_t = val[4]
-        //   result      = @builder.block(method_call,
-        //                   begin_t, args, body, end_t)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
+        let method_call = node::call_method(Some($1), Some($2), Some($3), None, $4, None);
+        let (begin_t, (args, body), end_t) = $5;
+        $$ = node::block(method_call, begin_t, args, body, end_t);
+    }
     | kSUPER command_args {
         |$1:Token, $2:Nodes| -> Node;
         $$ = node::keyword_cmd("super", $1, None, $2, None);
@@ -723,7 +720,7 @@ arg
         |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
 
         $$ = node::op_assign(
-            node::call_method(Some($1), Some($2), $3, None, vec![], None),
+            node::call_method(Some($1), Some($2), Some($3), None, vec![], None),
             $4, $5
         );
     }
@@ -731,7 +728,7 @@ arg
         |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
 
         $$ = node::op_assign(
-            node::call_method(Some($1), Some($2), $3, None, vec![], None),
+            node::call_method(Some($1), Some($2), Some($3), None, vec![], None),
             $4, $5
         );
     }
@@ -739,23 +736,21 @@ arg
         |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
 
         $$ = node::op_assign(
-            node::call_method(Some($1), Some($2), $3, None, vec![], None),
+            node::call_method(Some($1), Some($2), Some($3), None, vec![], None),
             $4, $5
         );
     }
     | primary_value tCOLON2 tCONSTANT tOP_ASGN arg_rhs {
-        // const  = @builder.const_op_assignable(
-        //             @builder.const_fetch(val[0], val[1], val[2]))
-        // result = @builder.op_assign(const, val[3], val[4])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:Token, $4:Token, $5:Node| -> Node;
+
+        let const_node = node::const_op_assignable(node::const_fetch($1, $2, $3));
+        $$ = node::op_assign(const_node, $4, $5);
     }
     | tCOLON3 tCONSTANT tOP_ASGN arg_rhs {
-        // const  = @builder.const_op_assignable(
-        //             @builder.const_global(val[0], val[1]))
-        // result = @builder.op_assign(const, val[2], val[3])
-                ||->Node;
-                wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:Token, $3:Token, $4:Node| -> Node;
+
+        let const_node = node::const_op_assignable(node::const_global($1, $2));
+        $$ = node::op_assign(const_node, $3, $4);
     }
     | backref tOP_ASGN arg_rhs {
         |$1:Node, $2:Token, $3:Node| -> Node;
@@ -909,31 +904,24 @@ aref_args
 
 arg_rhs
     : arg %prec tOP_ASGN
-    | arg kRESCUE_MOD arg
-        {
-            // rescue_body = @builder.rescue_body(val[1],
-            //                 nil, nil, nil,
-            //                 nil, val[2])
+    | arg kRESCUE_MOD arg {
+        // rescue_body = @builder.rescue_body(val[1],
+        //                 nil, nil, nil,
+        //                 nil, val[2])
 
-            // result = @builder.begin_body(val[0], [ rescue_body ])
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
+        // result = @builder.begin_body(val[0], [ rescue_body ])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
 ;
 
 paren_args: tLPAREN2 opt_call_args rparen {
-    // WTF?
-    //   result = val
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    |$1:Token, $2:Nodes, $3:Token| -> TParenArgs; $$ = (Some($1), $2, Some($3));
 };
 
 opt_paren_args
     : {
-        // WTF?
-        //   result = [ nil, [], nil ]
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        || -> TParenArgs; $$ = (None, vec![], None);
     }
     | paren_args
 ;
@@ -959,7 +947,7 @@ opt_call_args
 
 call_args
     : command {
-        |$1:Node|->Nodes; $$ = vec![$1];
+        |$1:Node| -> Nodes; $$ = vec![$1];
     }
     | args opt_block_arg {
         |$1:Nodes, $2:Nodes| -> Nodes;
@@ -1175,7 +1163,7 @@ primary
     | backref
     | tFID {
         |$1: Token| -> Node;
-        $$ = node::call_method(None, None, $1, None, vec![], None);
+        $$ = node::call_method(None, None, Some($1), None, vec![], None);
     }
     | kBEGIN fake_embedded_action_primary_kBEGIN bodystmt kEND {
         |$1: Token, $2: StackState, $3: Node, $4: Token| -> Node;
@@ -1248,46 +1236,38 @@ primary
         $$ = node::not_op($1, Some($2), None, Some($3));
     }
     | fcall brace_block {
-        //   method_call = @builder.call_method(nil, nil, val[0])
-        // 
-        //   begin_t, args, body, end_t = val[1]
-        //   result      = @builder.block(method_call,
-        //                   begin_t, args, body, end_t)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:TBraceBlock| -> Node;
+
+        let method_call = node::call_method(None, None, Some($1), None, vec![], None);
+        let (begin_t, (args, body), end_t) = $2;
+        $$ = node::block(method_call, begin_t, args, body, end_t);
     }
     | method_call
     | method_call brace_block {
-        //   begin_t, args, body, end_t = val[1]
-        //   result      = @builder.block(val[0],
-        //                   begin_t, args, body, end_t)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:TBraceBlock| -> Node;
+
+        let (begin_t, (args, body), end_t) = $2;
+        $$ = node::block($1, begin_t, args, body, end_t);
     }
     | tLAMBDA lambda {
-        //   lambda_call = @builder.call_lambda(val[0])
+        |$1:Token, $2:TLambda| -> Node;
 
-        //   args, (begin_t, body, end_t) = val[1]
-        //   result      = @builder.block(lambda_call,
-        //                   begin_t, args, body, end_t)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        let lambda_call = node::call_lambda($1);
+        let (args, ( begin_t, body, end_t )) = $2;
+
+        $$ = node::block(lambda_call, begin_t, args, body, end_t);
     }
     | kIF expr_value then compstmt if_tail kEND {
-        //   else_t, else_ = val[4]
-        //   result = @builder.condition(val[0], val[1], val[2],
-        //                               val[3], else_t,
-        //                               else_,  val[5])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:Node, $3:Token, $4:Node, $5:TTokenNode, $6:Token| -> Node;
+
+        let (else_t, else_) = $5;
+        $$ = node::condition($1, $2, $3, $4, else_t, else_, Some($6));
     }
     | kUNLESS expr_value then compstmt opt_else kEND {
-        //   else_t, else_ = val[4]
-        //   result = @builder.condition(val[0], val[1], val[2],
-        //                               else_,  else_t,
-        //                               val[3], val[5])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:Node, $3:Token, $4:Node, $5:TTokenNode, $6:Token| -> Node;
+
+        let (else_t, else_) = $5;
+        $$ = node::condition($1, $2, $3, else_, else_t, $4, Some($6));
     }
     | kWHILE fake_embedded_action_primary_kWHILE_1 expr_value do fake_embedded_action_primary_kWHILE_2 compstmt kEND {
         |$1:Token, $3:Node, $4:Token, $6:Node, $7:Token| -> Node;
@@ -1413,23 +1393,22 @@ do
 if_tail
     : opt_else
     | kELSIF expr_value then compstmt if_tail {
-        ||->Node; wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:Node, $3:Token, $4:Node, $5:TTokenNode| -> TTokenNode;
 
-        //   else_t, else_ = val[4]
-        //   result = [ val[0],
-        //              @builder.condition(val[0], val[1], val[2],
-        //                                 val[3], else_t,
-        //                                 else_,  nil),
-        //            ]
+        let k_elseif_clone = $1.clone();
+        let (else_t, else_) = $5;
+        $$ = (
+            $1,
+            node::condition(k_elseif_clone, $2, $3, $4, else_t, else_, None)
+        );
     }
 ;
 
 opt_else
     : none
     | kELSE compstmt {
-        ||->Node; wip!(); $$=Node::DUMMY;
-
-        //   result = val
+        |$1:Token, $2:Node| -> TTokenNode;
+        $$ = ($1, $2);
     }
 ;
 
@@ -1717,15 +1696,12 @@ fake_embedded_action_lambda_2: {
 };
 
 lambda: fake_embedded_action_lambda_1 f_larglist fake_embedded_action_lambda_2 lambda_body {
-    // TODO WIP lambda_body return type
-
-    |$2: Node, $3: StackState| -> Node;
+    |$2: Node, $3: StackState, $4: TLambdaBody| -> TLambda;
 
     self.tokenizer.interior_lexer.cmdarg = $3;
     self.tokenizer.interior_lexer.cmdarg.lexpop();
 
-    //   result = [ val[1], val[3] ]
-    wip!(); $$=Node::DUMMY;
+    $$ = ($2, $4);
 
     self.static_env.unextend();
 };
@@ -1743,111 +1719,93 @@ f_larglist
 
 lambda_body
     : tLAMBEG compstmt tRCURLY {
-        //   result = [ val[0], val[1], val[2] ]
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:Node, $3:Token| -> TLambdaBody;
+        $$ = ($1, $2, $3);
     }
     | kDO_LAMBDA compstmt kEND {
-        //   result = [ val[0], val[1], val[2] ]
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:Node, $3:Token| -> TLambdaBody;
+        $$ = ($1, $2, $3);
     }
 ;
 
 do_block: kDO_BLOCK do_body kEND {
-    //   result = [ val[0], *val[1], val[2] ]
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    |$1:Token, $2:TDoBody, $3:Token| -> TDoBlock;
+    $$ = ( $1, $2, $3 );
 };
 
-      block_call: command do_block
-                    {
-                    //   begin_t, block_args, body, end_t = val[1]
-                    //   result      = @builder.block(val[0],
-                    //                   begin_t, block_args, body, end_t)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | block_call dot_or_colon operation2 opt_paren_args
-                    {
-                    //   lparen_t, args, rparen_t = val[3]
-                    //   result = @builder.call_method(val[0], val[1], val[2],
-                    //               lparen_t, args, rparen_t)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | block_call dot_or_colon operation2 opt_paren_args brace_block
-                    {
-                    //   lparen_t, args, rparen_t = val[3]
-                    //   method_call = @builder.call_method(val[0], val[1], val[2],
-                    //                   lparen_t, args, rparen_t)
+block_call
+    : command do_block {
+        |$1:Node, $2:TDoBlock| -> Node;
 
-                    //   begin_t, args, body, end_t = val[4]
-                    //   result      = @builder.block(method_call,
-                    //                   begin_t, args, body, end_t)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | block_call dot_or_colon operation2 command_args do_block
-                    {
-                    //   method_call = @builder.call_method(val[0], val[1], val[2],
-                    //                   nil, val[3], nil)
+        let (begin_t, ( block_args, body), end_t) = $2;
+        $$ = node::block($1, begin_t, block_args, body, end_t);
+    }
+    | block_call dot_or_colon operation2 opt_paren_args {
+        |$1:Node, $2:Token, $3:Token, $4:TParenArgs| -> Node;
 
-                    //   begin_t, args, body, end_t = val[4]
-                    //   result      = @builder.block(method_call,
-                    //                   begin_t, args, body, end_t)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+        let (lparen_t, args, rparen_t) = $4;
+        $$ = node::call_method(Some($1), Some($2), Some($3), lparen_t, args, rparen_t);
+    }
+    | block_call dot_or_colon operation2 opt_paren_args brace_block {
+        |$1:Node, $2:Token, $3:Token, $4:TParenArgs, $5:TBraceBlock| -> Node;
+
+        let (lparen_t, args, rparen_t) = $4;
+        let method_call = node::call_method(Some($1), Some($2), Some($3), lparen_t, args, rparen_t);
+
+        let (begin_t, (args, body), end_t) = $5;
+        $$ = node::block(method_call, begin_t, args, body, end_t);
+    }
+    | block_call dot_or_colon operation2 command_args do_block {
+        |$1:Node, $2:Token, $3:Token, $4:Nodes, $5:TDoBlock| -> Node;
+
+        let method_call = node::call_method(Some($1), Some($2), Some($3), None, $4, None);
+
+        let (begin_t, (args, body), end_t) = $5;
+        $$ = node::block(method_call, begin_t, args, body, end_t);
+    }
 ;
 
 method_call
     : fcall paren_args {
-        //   lparen_t, args, rparen_t = val[1]
-        //   result = @builder.call_method(nil, nil, val[0],
-        //               lparen_t, args, rparen_t)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:TParenArgs| -> Node;
+
+        let (lparen_t, args, rparen_t) = $2;
+        $$ = node::call_method(None, None, Some($1), lparen_t, args, rparen_t);
     }
     | primary_value call_op operation2 opt_paren_args {
-        //   lparen_t, args, rparen_t = val[3]
-        //   result = @builder.call_method(val[0], val[1], val[2],
-        //               lparen_t, args, rparen_t)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:Token, $4:TParenArgs| -> Node;
+
+        let (lparen_t, args, rparen_t) = $4;
+        $$ = node::call_method(Some($1), Some($2), Some($3), lparen_t, args, rparen_t);
     }
     | primary_value tCOLON2 operation2 paren_args {
-        //   lparen_t, args, rparen_t = val[3]
-        //   result = @builder.call_method(val[0], val[1], val[2],
-        //               lparen_t, args, rparen_t)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:Token, $4:TParenArgs| -> Node;
+
+        let (lparen_t, args, rparen_t) = $4;
+        $$ = node::call_method(Some($1), Some($2), Some($3), lparen_t, args, rparen_t);
     }
     | primary_value tCOLON2 operation3 {
-        //   result = @builder.call_method(val[0], val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:Token| -> Node;
+
+        $$ = node::call_method(Some($1), Some($2), Some($3), None, vec![], None);
     }
     | primary_value call_op paren_args {
-        //   lparen_t, args, rparen_t = val[2]
-        //   result = @builder.call_method(val[0], val[1], nil,
-        //               lparen_t, args, rparen_t)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:TParenArgs| -> Node;
+
+        let (lparen_t, args, rparen_t) = $3;
+        $$ = node::call_method(Some($1), Some($2), None, lparen_t, args, rparen_t);
     }
     | primary_value tCOLON2 paren_args {
-        //   lparen_t, args, rparen_t = val[2]
-        //   result = @builder.call_method(val[0], val[1], nil,
-        //               lparen_t, args, rparen_t)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:TParenArgs| -> Node;
+
+        let (lparen_t, args, rparen_t) = $3;
+        $$ = node::call_method(Some($1), Some($2), None, lparen_t, args, rparen_t);
     }
     | kSUPER paren_args {
-        //   lparen_t, args, rparen_t = val[1]
-        //   result = @builder.keyword_cmd(:super, val[0],
-        //               lparen_t, args, rparen_t)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:TParenArgs| -> Node;
+
+        let (lparen_t, args, rparen_t) = $2;
+        $$ = node::keyword_cmd("super", $1, lparen_t, args, rparen_t);
     }
     | kSUPER {
         |$1:Token| -> Node;
@@ -1862,14 +1820,12 @@ method_call
 
 brace_block
     : tLCURLY brace_body tRCURLY {
-        //   result = [ val[0], *val[1], val[2] ]
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:TBraceBody, $3:Token| -> TBraceBlock;
+        $$ = ($1, $2, $3);
     }
     | kDO do_body kEND {
-        //   result = [ val[0], *val[1], val[2] ]
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:TDoBody, $3:Token| -> TBraceBlock;
+        $$ = ($1, $2, $3);
     }
 ;
 
@@ -1886,13 +1842,12 @@ fake_embedded_action_brace_body_2: {
 };
 
 brace_body: fake_embedded_action_brace_body_1 fake_embedded_action_brace_body_2 opt_block_param compstmt {
-    //   result = [ val[2], val[3] ]
+    |$2:StackState, $3:Node, $4:Node| -> TBraceBody;
+    $$ = ($3, $4);
 
-    //   @static_env.unextend
-    //   @lexer.cmdarg = val[1]
-    //   @lexer.cmdarg.pop
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    self.static_env.unextend();
+    self.tokenizer.interior_lexer.cmdarg = $2;
+    self.tokenizer.interior_lexer.cmdarg.pop();
 };
 
 fake_embedded_action_do_body_1: {
@@ -1908,9 +1863,9 @@ fake_embedded_action_do_body_2: {
 };
 
 do_body: fake_embedded_action_do_body_1 fake_embedded_action_do_body_2 opt_block_param bodystmt {
-    |$2: StackState, $3: Node, $4: Node| -> Nodes;
+    |$2: StackState, $3: Node, $4: Node| -> TDoBody;
 
-    $$ = vec![ $3, $4 ];
+    $$ = ( $3, $4 );
     self.static_env.unextend();
 
     self.tokenizer.interior_lexer.cmdarg = $2;
@@ -1934,11 +1889,11 @@ cases
 opt_rescue
     : kRESCUE exc_list exc_var then compstmt opt_rescue {
         //   assoc_t, exc_var = val[2]
-
+        // 
         //   if val[1]
         //     exc_list = @builder.array(nil, val[1], nil)
         //   end
-
+        // 
         //   result = [ @builder.rescue_body(val[0],
         //                   exc_list, assoc_t, exc_var,
         //                   val[3], val[4]),
@@ -1962,18 +1917,16 @@ exc_list
 
 exc_var
     : tASSOC lhs {
-        //   result = [ val[0], val[1] ]
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:Node| -> TTokenNode;
+        $$ = ($1, $2);
     }
     | none
 ;
 
 opt_ensure
     : kENSURE compstmt {
-        //   result = [ val[0], val[1] ]
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:Node| -> TTokenNode;
+        $$ = ($1, $2);
     }
     | none
 ;
