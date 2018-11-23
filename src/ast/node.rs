@@ -550,11 +550,17 @@ pub fn associate(begin_t: Option<Token>, pairs: Nodes, end_t: Option<Token>) -> 
 //   n(:irange, [ lhs, rhs ],
 //     binary_op_map(lhs, dot2_t, rhs))
 // end
+pub fn range_inclusive(lhs: Node, dot2_t: Token, rhs: Node) -> Node {
+    wip!();
+}
 
 // def range_exclusive(lhs, dot3_t, rhs)
 //   n(:erange, [ lhs, rhs ],
 //     binary_op_map(lhs, dot3_t, rhs))
 // end
+pub fn range_exclusive(lhs: Node, dot3_t: Token, rhs: Node) -> Node {
+    wip!();
+}
 
 // #
 // # Access
@@ -1255,6 +1261,9 @@ pub fn binary_op(receiver: Node, operator_t: Token, arg: Node) -> Node {
 //       source_map)
 //   end
 // end
+pub fn match_op(receiver: Node, match_t: Token, arg: Node) -> Node {
+    wip!();
+}
 
 // def unary_op(op_t, receiver)
 //   case value(op_t)
@@ -1263,10 +1272,13 @@ pub fn binary_op(receiver: Node, operator_t: Token, arg: Node) -> Node {
 //   else
 //     method = value(op_t)
 //   end
-
+// 
 //   n(:send, [ receiver, method.to_sym ],
 //     send_unary_op_map(op_t, receiver))
 // end
+pub fn unary_op(op_t: Token, receiver: Node) -> Node {
+    wip!();
+}
 
 // def not_op(not_t, begin_t=nil, receiver=nil, end_t=nil)
 //   if @parser.version == 18
@@ -1285,6 +1297,9 @@ pub fn binary_op(receiver: Node, operator_t: Token, arg: Node) -> Node {
 //     end
 //   end
 // end
+pub fn not_op(not_t: Token, begin_t: Option<Token>, receiver: Option<Node>, end_t: Option<Token>) -> Node {
+    wip!();
+}
 
 // #
 // # Control flow
@@ -1312,7 +1327,7 @@ pub fn logical_op(node_type: &str, lhs: Node, op_t: Token, rhs: Node) -> Node {
 //   n(:if, [ check_condition(cond), if_true, if_false ],
 //     keyword_mod_map(if_true || if_false, cond_t, cond))
 // end
-pub fn condition_mod() -> Node {
+pub fn condition_mod(if_true: Option<Node>, if_false: Option<Node>, cond_t: Token, cond: Node) -> Node {
     wip!();
 }
 
@@ -1320,6 +1335,9 @@ pub fn condition_mod() -> Node {
 //   n(:if, [ check_condition(cond), if_true, if_false ],
 //     ternary_map(cond, question_t, if_true, colon_t, if_false))
 // end
+pub fn ternary(cond: Node, question_t: Token, if_true: Node, colon_t: Token, if_false: Node) -> Node {
+    wip!();
+}
 
 // # Case matching
 
@@ -1343,6 +1361,9 @@ pub fn when(when_t: Token, patterns: Nodes, then_t: Token, body: Node) -> Node {
 //   n(type, [ check_condition(cond), body ],
 //     keyword_map(keyword_t, do_t, nil, end_t))
 // end
+pub fn build_loop(node_type: &str, keyword_t: Token, cond: Node, do_t: Token, body: Node, end_t: Token) -> Node {
+    wip!();
+}
 
 // def loop_mod(type, body, keyword_t, cond)
 //   if body.type == :kwbegin
@@ -1352,6 +1373,9 @@ pub fn when(when_t: Token, patterns: Nodes, then_t: Token, body: Node) -> Node {
 //   n(type, [ check_condition(cond), body ],
 //     keyword_mod_map(body, keyword_t, cond))
 // end
+pub fn loop_mod(node_type: &str, body: Node, keyword_t: Token, cond: Node) -> Node {
+    wip!();
+}
 
 // def for(for_t, iterator, in_t, iteratee,
 //         do_t, body, end_t)
@@ -1372,6 +1396,9 @@ pub fn when(when_t: Token, patterns: Nodes, then_t: Token, body: Node) -> Node {
 //   n(type, args,
 //     keyword_map(keyword_t, lparen_t, args, rparen_t))
 // end
+pub fn keyword_cmd(node_type: &str, keyword_t: Token, lparen_t: Option<Token>, args: Nodes, rparen_t: Option<Token>) -> Node {
+    wip!();
+}
 
 // # BEGIN, END
 

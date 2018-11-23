@@ -219,30 +219,24 @@ stmt
         panic!("diagnostic error");
     }
     | kUNDEF undef_list {
-        |$1: Token, $2: Nodes| -> Node;
+        |$1:Token, $2:Nodes| -> Node;
         $$ = node::undef_method($1, $2);
     }
     | stmt kIF_MOD expr_value {
-        // result = @builder.condition_mod(val[0], nil,
-        //                                 val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::condition_mod(Some($1), None, $2, $3);
     }
     | stmt kUNLESS_MOD expr_value {
-        // result = @builder.condition_mod(nil, val[0],
-        //                                 val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::condition_mod(None, Some($1), $2, $3);
     }
     | stmt kWHILE_MOD expr_value {
-        // result = @builder.loop_mod(:while, val[0], val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::loop_mod("while", $1, $2, $3);
     }
     | stmt kUNTIL_MOD expr_value {
-        // result = @builder.loop_mod(:until, val[0], val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::loop_mod("until", $1, $2, $3);
     }
     | stmt kRESCUE_MOD stmt {
         // rescue_body = @builder.rescue_body(val[1],
@@ -350,14 +344,12 @@ expr
         $$ = node::logical_op("or", $1, $2, $3);
     }
     | kNOT opt_nl expr {
-        //   result = @builder.not_op(val[0], nil, val[2], nil)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $3:Node| -> Node;
+        $$ = node::not_op($1, None, Some($3), None);
     }
     | tBANG command_call {
-        //   result = @builder.not_op(val[0], nil, val[1], nil)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:Node| -> Node;
+        $$ = node::not_op($1, None, Some($2), None);
     }
     | arg
 ;
@@ -435,41 +427,26 @@ command
         ||->Node;
         wip!(); $$=Node::DUMMY;
         }
-    | kSUPER command_args
-        {
-        //   result = @builder.keyword_cmd(:super, val[0],
-        //               nil, val[1], nil)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
-    | kYIELD command_args
-        {
-        //   result = @builder.keyword_cmd(:yield, val[0],
-        //               nil, val[1], nil)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
-    | kRETURN call_args
-        {
-        //   result = @builder.keyword_cmd(:return, val[0],
-        //               nil, val[1], nil)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
-    | kBREAK call_args
-        {
-        //   result = @builder.keyword_cmd(:break, val[0],
-        //               nil, val[1], nil)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
-    | kNEXT call_args
-        {
-        //   result = @builder.keyword_cmd(:next, val[0],
-        //               nil, val[1], nil)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
+    | kSUPER command_args {
+        |$1:Token, $2:Nodes| -> Node;
+        $$ = node::keyword_cmd("super", $1, None, $2, None);
+    }
+    | kYIELD command_args {
+        |$1:Token, $2:Nodes| -> Node;
+        $$ = node::keyword_cmd("yield", $1, None, $2, None);
+    }
+    | kRETURN call_args {
+        |$1:Token, $2:Nodes| -> Node;
+        $$ = node::keyword_cmd("return", $1, None, $2, None);
+    }
+    | kBREAK call_args {
+        |$1:Token, $2:Nodes| -> Node;
+        $$ = node::keyword_cmd("break", $1, None, $2, None);
+    }
+    | kNEXT call_args {
+        |$1:Token, $2:Nodes| -> Node;
+        $$ = node::keyword_cmd("next", $1, None, $2, None);
+    }
 ;
 
 mlhs
@@ -797,18 +774,14 @@ arg
         |$1:Node, $2:Token, $3:Node| -> Node;
         $$ = node::op_assign($1, $2, $3);
     }
-    | arg tDOT2 arg
-        {
-            // result = @builder.range_inclusive(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
-    | arg tDOT3 arg
-        {
-            // result = @builder.range_exclusive(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
+    | arg tDOT2 arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::range_inclusive($1, $2, $3);
+    }
+    | arg tDOT3 arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::range_exclusive($1, $2, $3);
+    }
     | arg tPLUS arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
         $$ = node::binary_op($1, $2, $3);
@@ -834,24 +807,17 @@ arg
         $$ = node::binary_op($1, $2, $3);
     }
     | tUNARY_NUM simple_numeric tPOW arg {
-            // result = @builder.unary_op(val[0],
-            //             @builder.binary_op(
-            //             val[1], val[2], val[3]))
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:Node, $3:Token, $4:Node| -> Node;
+        $$ = node::unary_op($1, node::binary_op($2, $3, $4));
     }
-    | tUPLUS arg
-        {
-            // result = @builder.unary_op(val[0], val[1])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
-    | tUMINUS arg
-        {
-            // result = @builder.unary_op(val[0], val[1])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
+    | tUPLUS arg {
+        |$1:Token, $2:Node| -> Node;
+        $$ = node::unary_op($1, $2);
+    }
+    | tUMINUS arg {
+        |$1:Token, $2:Node| -> Node;
+        $$ = node::unary_op($1, $2);
+    }
     | arg tPIPE arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
         $$ = node::binary_op($1, $2, $3);
@@ -881,28 +847,22 @@ arg
         |$1:Node, $2:Token, $3:Node| -> Node;
         $$ = node::binary_op($1, $2, $3);
     }
-    | arg tMATCH arg
-        {
-            // result = @builder.match_op(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
+    | arg tMATCH arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::match_op($1, $2, $3);
+    }
     | arg tNMATCH arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
         $$ = node::binary_op($1, $2, $3);
     }
-    | tBANG arg
-        {
-            // result = @builder.not_op(val[0], nil, val[1], nil)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
-    | tTILDE arg
-        {
-            // result = @builder.unary_op(val[0], val[1])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
+    | tBANG arg {
+        |$1:Token, $2:Node| -> Node;
+        $$ = node::not_op($1, None, Some($2), None);
+    }
+    | tTILDE arg {
+        |$1:Token, $2:Node| -> Node;
+        $$ = node::unary_op($1, $2);
+    }
     | arg tLSHFT arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
         $$ = node::binary_op($1, $2, $3);
@@ -919,19 +879,14 @@ arg
         |$1:Node, $2:Token, $3:Node| -> Node;
         $$ = node::logical_op("or", $1, $2, $3);
     }
-    | kDEFINED opt_nl arg
-        {
-            // result = @builder.keyword_cmd(:defined?, val[0], nil, [ val[2] ], nil)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
-    | arg tEH arg opt_nl tCOLON arg
-        {
-            // result = @builder.ternary(val[0], val[1],
-            //                         val[2], val[4], val[5])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
+    | kDEFINED opt_nl arg {
+        |$1:Token, $3:Node| -> Node;
+        $$ = node::keyword_cmd("defined?", $1, None, vec![$3], None);
+    }
+    | arg tEH arg opt_nl tCOLON arg {
+        |$1:Node, $2:Token, $3:Node, $5:Token, $6:Node| -> Node;
+        $$ = node::ternary($1, $2, $3, $5, $6);
+    }
     | primary
 ;
 
@@ -1281,224 +1236,177 @@ primary
         $$ = node::associate( Some($1), $2, Some($3) );
     }
     | kRETURN {
-        //   result = @builder.keyword_cmd(:return, val[0])
+        |$1:Token| -> Node; $$ = node::keyword_cmd("return", $1, None, vec![], None);
+    }
+    | kYIELD tLPAREN2 call_args rparen {
+        |$1:Token, $2:Token, $3:Nodes, $4:Token| -> Node;
+        $$ = node::keyword_cmd("yield", $1, Some($2), $3, Some($4));
+    }
+    | kYIELD tLPAREN2 rparen {
+        |$1:Token, $2:Token, $3:Token| -> Node;
+        $$ = node::keyword_cmd("yield", $1, Some($2), vec![], Some($3));
+    }
+    | kYIELD {
+        |$1:Token| -> Node; $$ = node::keyword_cmd("yield", $1, None, vec![], None);
+    }
+    | kDEFINED opt_nl tLPAREN2 expr rparen {
+        |$1:Token, $3:Token, $4:Node, $5:Token| -> Node;
+        $$ = node::keyword_cmd("defined?", $1, Some($3), vec![$4], Some($5));
+    }
+    | kNOT tLPAREN2 expr rparen {
+        |$1:Token, $2:Token, $3:Node, $4:Token| -> Node;
+        $$ = node::not_op($1, Some($2), Some($3), Some($4));
+    }
+    | kNOT tLPAREN2 rparen {
+        |$1:Token, $2:Token, $3:Token| -> Node;
+        $$ = node::not_op($1, Some($2), None, Some($3));
+    }
+    | fcall brace_block {
+        //   method_call = @builder.call_method(nil, nil, val[0])
+
+        //   begin_t, args, body, end_t = val[1]
+        //   result      = @builder.block(method_call,
+        //                   begin_t, args, body, end_t)
         ||->Node;
         wip!(); $$=Node::DUMMY;
     }
-                | kYIELD tLPAREN2 call_args rparen
-                    {
-                    //   result = @builder.keyword_cmd(:yield, val[0], val[1], val[2], val[3])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kYIELD tLPAREN2 rparen
-                    {
-                    //   result = @builder.keyword_cmd(:yield, val[0], val[1], [], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kYIELD
-                    {
-                    //   result = @builder.keyword_cmd(:yield, val[0])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kDEFINED opt_nl tLPAREN2 expr rparen
-                    {
-                    //   result = @builder.keyword_cmd(:defined?, val[0],
-                    //                                 val[2], [ val[3] ], val[4])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kNOT tLPAREN2 expr rparen
-                    {
-                    //   result = @builder.not_op(val[0], val[1], val[2], val[3])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kNOT tLPAREN2 rparen
-                    {
-                    //   result = @builder.not_op(val[0], val[1], nil, val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | fcall brace_block
-                    {
-                    //   method_call = @builder.call_method(nil, nil, val[0])
+    | method_call
+    | method_call brace_block {
+        //   begin_t, args, body, end_t = val[1]
+        //   result      = @builder.block(val[0],
+        //                   begin_t, args, body, end_t)
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | tLAMBDA lambda {
+        //   lambda_call = @builder.call_lambda(val[0])
 
-                    //   begin_t, args, body, end_t = val[1]
-                    //   result      = @builder.block(method_call,
-                    //                   begin_t, args, body, end_t)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | method_call
-                | method_call brace_block
-                    {
-                    //   begin_t, args, body, end_t = val[1]
-                    //   result      = @builder.block(val[0],
-                    //                   begin_t, args, body, end_t)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | tLAMBDA lambda
-                    {
-                    //   lambda_call = @builder.call_lambda(val[0])
+        //   args, (begin_t, body, end_t) = val[1]
+        //   result      = @builder.block(lambda_call,
+        //                   begin_t, args, body, end_t)
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kIF expr_value then compstmt if_tail kEND {
+        //   else_t, else_ = val[4]
+        //   result = @builder.condition(val[0], val[1], val[2],
+        //                               val[3], else_t,
+        //                               else_,  val[5])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kUNLESS expr_value then compstmt opt_else kEND {
+        //   else_t, else_ = val[4]
+        //   result = @builder.condition(val[0], val[1], val[2],
+        //                               else_,  else_t,
+        //                               val[3], val[5])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kWHILE fake_embedded_action_primary_kWHILE_1 expr_value do fake_embedded_action_primary_kWHILE_2 compstmt kEND {
+        |$1:Token, $3:Node, $4:Token, $6:Node, $7:Token| -> Node;
+        $$ = node::build_loop("while", $1, $3, $4, $6, $7);
+    }
+    | kUNTIL fake_embedded_action_primary_kUNTIL_1 expr_value do fake_embedded_action_primary_kUNTIL_2 compstmt kEND {
+        |$1:Token, $3:Node, $4:Token, $6:Node, $7:Token| -> Node;
+        $$ = node::build_loop("until", $1, $3, $4, $6, $7);
+    }
+    | kCASE expr_value opt_terms case_body kEND {
+        //   *when_bodies, (else_t, else_body) = *val[3]
 
-                    //   args, (begin_t, body, end_t) = val[1]
-                    //   result      = @builder.block(lambda_call,
-                    //                   begin_t, args, body, end_t)
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kIF expr_value then compstmt if_tail kEND
-                    {
-                    //   else_t, else_ = val[4]
-                    //   result = @builder.condition(val[0], val[1], val[2],
-                    //                               val[3], else_t,
-                    //                               else_,  val[5])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kUNLESS expr_value then compstmt opt_else kEND
-                    {
-                    //   else_t, else_ = val[4]
-                    //   result = @builder.condition(val[0], val[1], val[2],
-                    //                               else_,  else_t,
-                    //                               val[3], val[5])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kWHILE fake_embedded_action_primary_kWHILE_1 expr_value do fake_embedded_action_primary_kWHILE_2 compstmt kEND
-                    {
-                        //   result = @builder.loop(:while, val[0], val[2], val[3],
-                        //                          val[5], val[6])
-                        ||->Node;
-                        wip!(); $$=Node::DUMMY;
-                    }
-                | kUNTIL fake_embedded_action_primary_kUNTIL_1 expr_value do fake_embedded_action_primary_kUNTIL_2 compstmt kEND
-                    {
-                    //   result = @builder.loop(:until, val[0], val[2], val[3],
-                    //                          val[5], val[6])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kCASE expr_value opt_terms case_body kEND
-                    {
-                    //   *when_bodies, (else_t, else_body) = *val[3]
+        //   result = @builder.case(val[0], val[1],
+        //                          when_bodies, else_t, else_body,
+        //                          val[4])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kCASE            opt_terms case_body kEND {
+        //   *when_bodies, (else_t, else_body) = *val[2]
 
-                    //   result = @builder.case(val[0], val[1],
-                    //                          when_bodies, else_t, else_body,
-                    //                          val[4])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kCASE            opt_terms case_body kEND
-                    {
-                    //   *when_bodies, (else_t, else_body) = *val[2]
+        //   result = @builder.case(val[0], nil,
+        //                          when_bodies, else_t, else_body,
+        //                          val[3])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kFOR for_var kIN fake_embedded_action__primary__kFOR_1 expr_value do fake_embedded_action__primary__kFOR_2 compstmt kEND {
+        //   result = @builder.for(val[0], val[1],
+        //                         val[2], val[4],
+        //                         val[5], val[7], val[8])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kCLASS cpath superclass fake_embedded_action__primary__kCLASS_1 bodystmt kEND {
+        //   if in_def?
+        //     diagnostic :error, :class_in_def, nil, val[0]
+        //   end
 
-                    //   result = @builder.case(val[0], nil,
-                    //                          when_bodies, else_t, else_body,
-                    //                          val[3])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kFOR for_var kIN fake_embedded_action__primary__kFOR_1 expr_value do fake_embedded_action__primary__kFOR_2 compstmt kEND
-                    {
-                    //   result = @builder.for(val[0], val[1],
-                    //                         val[2], val[4],
-                    //                         val[5], val[7], val[8])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kCLASS cpath superclass fake_embedded_action__primary__kCLASS_1 bodystmt kEND
-                    {
-                    //   if in_def?
-                    //     diagnostic :error, :class_in_def, nil, val[0]
-                    //   end
+        //   lt_t, superclass = val[2]
+        //   result = @builder.def_class(val[0], val[1],
+        //                               lt_t, superclass,
+        //                               val[4], val[5])
 
-                    //   lt_t, superclass = val[2]
-                    //   result = @builder.def_class(val[0], val[1],
-                    //                               lt_t, superclass,
-                    //                               val[4], val[5])
+        //   @lexer.pop_cmdarg
+        //   @static_env.unextend
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kCLASS tLSHFT expr term fake_embedded_action__primary__kCLASS_2 bodystmt kEND {
+        //   result = @builder.def_sclass(val[0], val[1], val[2],
+        //                                val[5], val[6])
 
-                    //   @lexer.pop_cmdarg
-                    //   @static_env.unextend
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kCLASS tLSHFT expr term fake_embedded_action__primary__kCLASS_2 bodystmt kEND
-                    {
-                    //   result = @builder.def_sclass(val[0], val[1], val[2],
-                    //                                val[5], val[6])
+        //   @lexer.pop_cmdarg
+        //   @static_env.unextend
 
-                    //   @lexer.pop_cmdarg
-                    //   @static_env.unextend
+        //   @def_level = val[4]
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kMODULE cpath fake_embedded_action__primary__kMODULE_1 bodystmt kEND {
+        //   if in_def?
+        //     diagnostic :error, :module_in_def, nil, val[0]
+        //   end
 
-                    //   @def_level = val[4]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kMODULE cpath fake_embedded_action__primary__kMODULE_1 bodystmt kEND
-                    {
-                    //   if in_def?
-                    //     diagnostic :error, :module_in_def, nil, val[0]
-                    //   end
+        //   result = @builder.def_module(val[0], val[1],
+        //                                val[3], val[4])
 
-                    //   result = @builder.def_module(val[0], val[1],
-                    //                                val[3], val[4])
+        //   @lexer.pop_cmdarg
+        //   @static_env.unextend
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kDEF fname fake_embedded_action__primary__kDEF_1 f_arglist bodystmt kEND {
+        //   result = @builder.def_method(val[0], val[1],
+        //               val[3], val[4], val[5])
 
-                    //   @lexer.pop_cmdarg
-                    //   @static_env.unextend
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kDEF fname fake_embedded_action__primary__kDEF_1 f_arglist bodystmt kEND
-                    {
-                    //   result = @builder.def_method(val[0], val[1],
-                    //               val[3], val[4], val[5])
+        //   @lexer.pop_cmdarg
+        //   @static_env.unextend
+        //   @def_level -= 1
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kDEF singleton dot_or_colon fake_embedded_action__primary__kDEF_2 fname fake_embedded_action__primary__kDEF_3 f_arglist bodystmt kEND {
+        //   result = @builder.def_singleton(val[0], val[1], val[2],
+        //               val[4], val[6], val[7], val[8])
 
-                    //   @lexer.pop_cmdarg
-                    //   @static_env.unextend
-                    //   @def_level -= 1
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kDEF singleton dot_or_colon fake_embedded_action__primary__kDEF_2 fname fake_embedded_action__primary__kDEF_3 f_arglist bodystmt kEND
-                    {
-                    //   result = @builder.def_singleton(val[0], val[1], val[2],
-                    //               val[4], val[6], val[7], val[8])
-
-                    //   @lexer.pop_cmdarg
-                    //   @static_env.unextend
-                    //   @def_level -= 1
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kBREAK
-                    {
-                    //   result = @builder.keyword_cmd(:break, val[0])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kNEXT
-                    {
-                    //   result = @builder.keyword_cmd(:next, val[0])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kREDO
-                    {
-                    //   result = @builder.keyword_cmd(:redo, val[0])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | kRETRY
-                    {
-                    //   result = @builder.keyword_cmd(:retry, val[0])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+        //   @lexer.pop_cmdarg
+        //   @static_env.unextend
+        //   @def_level -= 1
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kBREAK {
+        |$1:Token| -> Node; $$ = node::keyword_cmd("break", $1, None, vec![], None);
+    }
+    | kNEXT {
+        |$1:Token| -> Node; $$ = node::keyword_cmd("next", $1, None, vec![], None);
+    }
+    | kREDO {
+        |$1:Token| -> Node; $$ = node::keyword_cmd("redo", $1, None, vec![], None);
+    }
+    | kRETRY {
+        |$1:Token| -> Node; $$ = node::keyword_cmd("retry", $1, None, vec![], None);
+    }
 ;
 
 primary_value: primary;
@@ -1747,7 +1655,7 @@ block_param
     |                                                                block_args_tail
 ;
 
- opt_block_param
+opt_block_param
     :{
         || -> Node; $$ = node::args(None, vec![], None);
     }
@@ -1956,9 +1864,8 @@ method_call
         wip!(); $$=Node::DUMMY;
     }
     | kSUPER {
-        //   result = @builder.keyword_cmd(:zsuper, val[0])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token| -> Node;
+        $$ = node::keyword_cmd("zsuper", $1, None, vec![], None);
     }
     | primary_value tLBRACK2 opt_call_args rbracket {
         |$1: Node, $2: Token, $3: Nodes, $4:Token| -> Node;
@@ -2072,7 +1979,7 @@ exc_var
         //   result = [ val[0], val[1] ]
         ||->Node;
         wip!(); $$=Node::DUMMY;
-        }
+    }
     | none
 ;
 
