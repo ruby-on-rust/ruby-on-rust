@@ -409,13 +409,10 @@ command
         ||->Node;
         wip!(); $$=Node::DUMMY;
         }
-    | primary_value tCOLON2 operation2 command_args %prec tLOWEST
-        {
-        //   result = @builder.call_method(val[0], val[1], val[2],
-        //               nil, val[3], nil)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
+    | primary_value tCOLON2 operation2 command_args %prec tLOWEST {
+        |$1:Node, $2:Token, $3:Token, $4:Nodes| -> Node;
+        $$ = node::call_method(Some($1), Some($2), $3, None, $4, None);
+    }
     | primary_value tCOLON2 operation2 command_args cmd_brace_block
         {
         //   method_call = @builder.call_method(val[0], val[1], val[2],
@@ -578,17 +575,13 @@ mlhs_node
         $$ = node::attr_asgn($1, $2, $3)
     }
     | primary_value tCOLON2 tCONSTANT {
-        //   result = @builder.assignable(
-        //               @builder.const_fetch(val[0], val[1], val[2]))
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
+        |$1:Node, $2:Token, $3:Token| -> Node;
+        $$ = node::assignable(node::const_fetch($1, $2, $3));
+    }
     | tCOLON3 tCONSTANT {
-        //   result = @builder.assignable(
-        //               @builder.const_global(val[0], val[1]))
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
+        |$1:Token, $2:Token| -> Node;
+        $$ = node::assignable(node::const_global($1, $2));
+    }
     | backref {
         |$1:Node| -> Node;
         $$ = node::assignable($1);
@@ -622,16 +615,12 @@ lhs
         $$ = node::attr_asgn($1, $2, $3)
     }
     | primary_value tCOLON2 tCONSTANT {
-        // result = @builder.assignable(
-        //             @builder.const_fetch(val[0], val[1], val[2]))
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:Token| -> Node;
+        $$ = node::assignable(node::const_fetch($1, $2, $3));
     }
     | tCOLON3 tCONSTANT {
-        // result = @builder.assignable(
-        //             @builder.const_global(val[0], val[1]))
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:Token| -> Node;
+        $$ = node::assignable(node::const_global($1, $2));
     }
     | backref {
         |$1:Node| -> Node;
@@ -754,22 +743,20 @@ arg
             $4, $5
         );
     }
-    | primary_value tCOLON2 tCONSTANT tOP_ASGN arg_rhs
-        {
-            // const  = @builder.const_op_assignable(
-            //             @builder.const_fetch(val[0], val[1], val[2]))
-            // result = @builder.op_assign(const, val[3], val[4])
-            ||->Node;
-            wip!(); $$=Node::DUMMY;
-        }
-    | tCOLON3 tCONSTANT tOP_ASGN arg_rhs
-        {
-            // const  = @builder.const_op_assignable(
-            //             @builder.const_global(val[0], val[1]))
-            // result = @builder.op_assign(const, val[2], val[3])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
+    | primary_value tCOLON2 tCONSTANT tOP_ASGN arg_rhs {
+        // const  = @builder.const_op_assignable(
+        //             @builder.const_fetch(val[0], val[1], val[2]))
+        // result = @builder.op_assign(const, val[3], val[4])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | tCOLON3 tCONSTANT tOP_ASGN arg_rhs {
+        // const  = @builder.const_op_assignable(
+        //             @builder.const_global(val[0], val[1]))
+        // result = @builder.op_assign(const, val[2], val[3])
+                ||->Node;
+                wip!(); $$=Node::DUMMY;
+    }
     | backref tOP_ASGN arg_rhs {
         |$1:Node, $2:Token, $3:Node| -> Node;
         $$ = node::op_assign($1, $2, $3);
@@ -1017,9 +1004,8 @@ fake_embedded_action__command_args: {
 
 block_arg
     : tAMPER arg_value {
-        //   result = @builder.block_pass(val[0], val[1])
-        || -> Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:Node| -> Node;
+        $$ = node::block_pass($1, $2);
     }
 ;
 
@@ -1263,7 +1249,7 @@ primary
     }
     | fcall brace_block {
         //   method_call = @builder.call_method(nil, nil, val[0])
-
+        // 
         //   begin_t, args, body, end_t = val[1]
         //   result      = @builder.block(method_call,
         //                   begin_t, args, body, end_t)
@@ -1656,7 +1642,7 @@ block_param
 ;
 
 opt_block_param
-    :{
+    : {
         || -> Node; $$ = node::args(None, vec![], None);
     }
     | block_param_def {

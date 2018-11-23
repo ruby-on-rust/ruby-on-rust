@@ -3556,14 +3556,12 @@ fn _handler60(&mut self) -> SV {
     println!("   *** PARSER: _handler60");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _4 = pop!(self.values_stack, _1);
+let mut _3 = interior_token!(pop!(self.values_stack, _0));
+let mut _2 = interior_token!(pop!(self.values_stack, _0));
+let mut _1 = pop!(self.values_stack, _2);
 
-//   result = @builder.call_method(val[0], val[1], val[2],
-        //               nil, val[3], nil)
-        wip!(); let __ =Node::DUMMY;
+let __ = node::call_method(Some(_1), Some(_2), _3, None, _4, None);
 SV::_2(__)
 // raw production: command -> primary_value tCOLON2 operation2 command_args
 
@@ -4088,13 +4086,11 @@ fn _handler93(&mut self) -> SV {
     println!("   *** PARSER: _handler93");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _3 = interior_token!(pop!(self.values_stack, _0));
+let mut _2 = interior_token!(pop!(self.values_stack, _0));
+let mut _1 = pop!(self.values_stack, _2);
 
-//   result = @builder.assignable(
-        //               @builder.const_fetch(val[0], val[1], val[2]))
-        wip!(); let __ =Node::DUMMY;
+let __ = node::assignable(node::const_fetch(_1, _2, _3));
 SV::_2(__)
 // raw production: mlhs_node -> primary_value tCOLON2 tCONSTANT
 
@@ -4106,12 +4102,10 @@ fn _handler94(&mut self) -> SV {
     println!("   *** PARSER: _handler94");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _2 = interior_token!(pop!(self.values_stack, _0));
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-//   result = @builder.assignable(
-        //               @builder.const_global(val[0], val[1]))
-        wip!(); let __ =Node::DUMMY;
+let __ = node::assignable(node::const_global(_1, _2));
 SV::_2(__)
 // raw production: mlhs_node -> tCOLON3 tCONSTANT
 

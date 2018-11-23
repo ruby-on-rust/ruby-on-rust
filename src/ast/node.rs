@@ -700,8 +700,8 @@ pub fn accessible(node: Node) -> Node {
 //     constant_map(nil, nil, name_t))
 // end
 // NOTE unscoped (scope being None) const
-pub fn build_const(name: Token) -> Node {
-    if let Token::T_CONSTANT(const_name) = name {
+pub fn build_const(name_t: Token) -> Node {
+    if let Token::T_CONSTANT(const_name) = name_t {
         return Node::Const {
             scope: None,
             name: const_name
@@ -717,8 +717,8 @@ pub fn build_const(name: Token) -> Node {
 //     constant_map(cbase, t_colon3, name_t))
 // end
 // NOTE top level const like ::Foo
-pub fn const_global(t_colon3: Token, name: Token) -> Node {
-    if let Token::T_CONSTANT(const_name) = name {
+pub fn const_global(t_colon3: Token, name_t: Token) -> Node {
+    if let Token::T_CONSTANT(const_name) = name_t {
         return Node::Const {
             scope: Some(Box::new(Node::CBase)),
             name: const_name
@@ -1181,7 +1181,9 @@ pub fn call_method(receiver: Option<Node>, dot_t: Option<Token>, selector_t: Tok
 //   n(:block_pass, [ arg ],
 //     unary_op_map(amper_t, arg))
 // end
-// pub fn block_pass(amper_t: Token, arg: Node) -> Node
+pub fn block_pass(amper_t: Token, arg: Node) -> Node {
+    wip!();
+}
 
 // def objc_varargs(pair, rest_of_varargs)
 //   value, first_vararg = *pair
