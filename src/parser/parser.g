@@ -342,14 +342,12 @@ command_rhs
 expr
     : command_call
     | expr kAND expr {
-        //   result = @builder.logical_op(:and, val[0], val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::logical_op("and", $1, $2, $3);
     }
     | expr kOR expr {
-        //   result = @builder.logical_op(:or, val[0], val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::logical_op("or", $1, $2, $3);
     }
     | kNOT opt_nl expr {
         //   result = @builder.not_op(val[0], nil, val[2], nil)
@@ -586,25 +584,22 @@ mlhs_node
             $$ = node::assignable($1);
         }
     | primary_value tLBRACK2 opt_call_args rbracket {
-        //   result = @builder.index_asgn(val[0], val[1], val[2], val[3])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
+        |$1: Node, $2: Token, $3: Nodes, $4:Token| -> Node;
+
+        $$ = node::index_asgn($1, $2, $3, $4);
+    }
     | primary_value call_op tIDENTIFIER {
-        //   result = @builder.attr_asgn(val[0], val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
+        |$1:Node, $2:Token, $3:Token| -> Node;
+        $$ = node::attr_asgn($1, $2, $3)
+    }
     | primary_value tCOLON2 tIDENTIFIER {
-        //   result = @builder.attr_asgn(val[0], val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
+        |$1:Node, $2:Token, $3:Token| -> Node;
+        $$ = node::attr_asgn($1, $2, $3)
+    }
     | primary_value call_op tCONSTANT {
-        //   result = @builder.attr_asgn(val[0], val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
+        |$1:Node, $2:Token, $3:Token| -> Node;
+        $$ = node::attr_asgn($1, $2, $3)
+    }
     | primary_value tCOLON2 tCONSTANT {
         //   result = @builder.assignable(
         //               @builder.const_fetch(val[0], val[1], val[2]))
@@ -633,24 +628,21 @@ lhs
         $$ = node::assignable($1);
     }
     | primary_value tLBRACK2 opt_call_args rbracket {
-        // result = @builder.index_asgn(val[0], val[1], val[2], val[3])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1: Node, $2: Token, $3: Nodes, $4:Token| -> Node;
+
+        $$ = node::index_asgn($1, $2, $3, $4);
     }
     | primary_value call_op tIDENTIFIER {
-        // result = @builder.attr_asgn(val[0], val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:Token| -> Node;
+        $$ = node::attr_asgn($1, $2, $3)
     }
     | primary_value tCOLON2 tIDENTIFIER {
-        // result = @builder.attr_asgn(val[0], val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:Token| -> Node;
+        $$ = node::attr_asgn($1, $2, $3)
     }
     | primary_value call_op tCONSTANT {
-        // result = @builder.attr_asgn(val[0], val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:Token| -> Node;
+        $$ = node::attr_asgn($1, $2, $3)
     }
     | primary_value tCOLON2 tCONSTANT {
         // result = @builder.assignable(
@@ -817,50 +809,37 @@ arg
                     ||->Node;
                     wip!(); $$=Node::DUMMY;
         }
-    | arg tPLUS arg
-        {
-            // result = @builder.binary_op(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
-    | arg tMINUS arg
-        {
-            // result = @builder.binary_op(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
-    | arg tSTAR2 arg
-        {
-            // result = @builder.binary_op(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
-    | arg tDIVIDE arg
-        {
-            // result = @builder.binary_op(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
-    | arg tPERCENT arg
-        {
-            // result = @builder.binary_op(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
-    | arg tPOW arg
-        {
-            // result = @builder.binary_op(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
-    | tUNARY_NUM simple_numeric tPOW arg
-        {
+    | arg tPLUS arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tMINUS arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tSTAR2 arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tDIVIDE arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tPERCENT arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tPOW arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | tUNARY_NUM simple_numeric tPOW arg {
             // result = @builder.unary_op(val[0],
             //             @builder.binary_op(
             //             val[1], val[2], val[3]))
                     ||->Node;
                     wip!(); $$=Node::DUMMY;
-        }
+    }
     | tUPLUS arg
         {
             // result = @builder.unary_op(val[0], val[1])
@@ -873,61 +852,45 @@ arg
                     ||->Node;
                     wip!(); $$=Node::DUMMY;
         }
-    | arg tPIPE arg
-        {
-            // result = @builder.binary_op(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
-    | arg tCARET arg
-        {
-            // result = @builder.binary_op(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
-    | arg tAMPER2 arg
-        {
-            // result = @builder.binary_op(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
-    | arg tCMP arg
-        {
-            // result = @builder.binary_op(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
+    | arg tPIPE arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tCARET arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tAMPER2 arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tCMP arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
     | rel_expr %prec tCMP
-    | arg tEQ arg
-        {
-            // result = @builder.binary_op(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
-    | arg tEQQ arg
-        {
-            // result = @builder.binary_op(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
-    | arg tNEQ arg
-        {
-            // result = @builder.binary_op(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
+    | arg tEQ arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tEQQ arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tNEQ arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
     | arg tMATCH arg
         {
             // result = @builder.match_op(val[0], val[1], val[2])
                     ||->Node;
                     wip!(); $$=Node::DUMMY;
         }
-    | arg tNMATCH arg
-        {
-            // result = @builder.binary_op(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
+    | arg tNMATCH arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
     | tBANG arg
         {
             // result = @builder.not_op(val[0], nil, val[1], nil)
@@ -940,30 +903,22 @@ arg
                     ||->Node;
                     wip!(); $$=Node::DUMMY;
         }
-    | arg tLSHFT arg
-        {
-            // result = @builder.binary_op(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
-    | arg tRSHFT arg
-        {
-            // result = @builder.binary_op(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
-    | arg tANDOP arg
-        {
-            // result = @builder.logical_op(:and, val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
-    | arg tOROP arg
-        {
-            // result = @builder.logical_op(:or, val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-        }
+    | arg tLSHFT arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tRSHFT arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tANDOP arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::logical_op("and", $1, $2, $3);
+    }
+    | arg tOROP arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::logical_op("or", $1, $2, $3);
+    }
     | kDEFINED opt_nl arg
         {
             // result = @builder.keyword_cmd(:defined?, val[0], nil, [ val[2] ], nil)
@@ -984,14 +939,12 @@ relop: tGT | tLT | tGEQ | tLEQ;
 
 rel_expr
     : arg relop arg %prec tGT {
-        //   result = @builder.binary_op(val[0], val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
     }
     | rel_expr relop arg %prec tGT {
-        //   result = @builder.binary_op(val[0], val[1], val[2])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
     }
 ;
 
@@ -1694,151 +1647,133 @@ opt_block_args_tail
 
 block_param
     : f_arg tCOMMA f_block_optarg tCOMMA f_rest_arg              opt_block_args_tail {
-        |$1: Nodes, $3: Nodes, $5: Nodes, $6: Nodes| -> Nodes;
+        |$1:Nodes, $3:Nodes, $5:Nodes, $6:Nodes| -> Nodes;
 
-        let mut result = vec![];
-        result.append(&mut $3);
-        result.append(&mut $5);
-        result.append(&mut $6);
-        $$ = result;
+        $1.append(&mut $3);
+        $1.append(&mut $5);
+        $1.append(&mut $6);
+        $$ = $1;
     }
-    | f_arg tCOMMA f_block_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_block_args_tail
-                    {
-                    //   result = val[0].
-                    //               concat(val[2]).
-                    //               concat(val[4]).
-                    //               concat(val[6]).
-                    //               concat(val[7])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | f_arg tCOMMA f_block_optarg                                opt_block_args_tail
-                    {
-                    //   result = val[0].
-                    //               concat(val[2]).
-                    //               concat(val[3])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | f_arg tCOMMA f_block_optarg tCOMMA                   f_arg opt_block_args_tail
-                    {
-                    //   result = val[0].
-                    //               concat(val[2]).
-                    //               concat(val[4]).
-                    //               concat(val[5])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | f_arg tCOMMA                       f_rest_arg              opt_block_args_tail
-                    {
-                    //   result = val[0].
-                    //               concat(val[2]).
-                    //               concat(val[3])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | f_arg tCOMMA
-                | f_arg tCOMMA                       f_rest_arg tCOMMA f_arg opt_block_args_tail
-                    {
-                    //   result = val[0].
-                    //               concat(val[2]).
-                    //               concat(val[4]).
-                    //               concat(val[5])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | f_arg                                                      opt_block_args_tail
-                    {
-                    //   if val[1].empty? && val[0].size == 1
-                    //     result = [@builder.procarg0(val[0][0])]
-                    //   else
-                    //     result = val[0].concat(val[1])
-                    //   end
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | f_block_optarg tCOMMA              f_rest_arg              opt_block_args_tail
-                    {
-                    //   result = val[0].
-                    //               concat(val[2]).
-                    //               concat(val[3])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | f_block_optarg tCOMMA              f_rest_arg tCOMMA f_arg opt_block_args_tail
-                    {
-                    //   result = val[0].
-                    //               concat(val[2]).
-                    //               concat(val[4]).
-                    //               concat(val[5])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | f_block_optarg                                             opt_block_args_tail
-                    {
-                    //   result = val[0].
-                    //               concat(val[1])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | f_block_optarg tCOMMA                                f_arg opt_block_args_tail
-                    {
-                    //   result = val[0].
-                    //               concat(val[2]).
-                    //               concat(val[3])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                |                                    f_rest_arg              opt_block_args_tail
-                    {
-                    //   result = val[0].
-                    //               concat(val[1])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                |                                    f_rest_arg tCOMMA f_arg opt_block_args_tail
-                    {
-                    //   result = val[0].
-                    //               concat(val[2]).
-                    //               concat(val[3])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                |                                                                block_args_tail
+    | f_arg tCOMMA f_block_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_block_args_tail {
+        |$1:Nodes, $3:Nodes, $5:Nodes, $7:Nodes, $8:Nodes| -> Nodes;
+
+        $1.append(&mut $3);
+        $1.append(&mut $5);
+        $1.append(&mut $7);
+        $1.append(&mut $8);
+        $$ = $1;
+    }
+    | f_arg tCOMMA f_block_optarg                                opt_block_args_tail {
+        |$1:Nodes, $3:Nodes, $4:Nodes| -> Nodes;
+
+        $1.append(&mut $3);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    | f_arg tCOMMA f_block_optarg tCOMMA                   f_arg opt_block_args_tail {
+        |$1:Nodes, $3:Nodes, $5:Nodes, $6:Nodes| -> Nodes;
+
+        $1.append(&mut $3);
+        $1.append(&mut $5);
+        $1.append(&mut $6);
+        $$ = $1;
+    }
+    | f_arg tCOMMA                       f_rest_arg              opt_block_args_tail {
+        |$1:Nodes, $3:Nodes, $4:Nodes| -> Nodes;
+
+        $1.append(&mut $3);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    | f_arg tCOMMA
+    | f_arg tCOMMA                       f_rest_arg tCOMMA f_arg opt_block_args_tail {
+        |$1:Nodes, $3:Nodes, $5:Nodes, $6:Nodes| -> Nodes;
+
+        $1.append(&mut $3);
+        $1.append(&mut $5);
+        $1.append(&mut $6);
+        $$ = $1;
+    }
+    | f_arg                                                      opt_block_args_tail {
+        //   if val[1].empty? && val[0].size == 1
+        //     result = [@builder.procarg0(val[0][0])]
+        //   else
+        //     result = val[0].concat(val[1])
+        //   end
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | f_block_optarg tCOMMA              f_rest_arg              opt_block_args_tail {
+        |$1:Nodes, $3:Nodes, $4:Nodes| -> Nodes;
+
+        $1.append(&mut $3);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    | f_block_optarg tCOMMA              f_rest_arg tCOMMA f_arg opt_block_args_tail {
+        |$1:Nodes, $3:Nodes, $5:Nodes, $6:Nodes| -> Nodes;
+
+        $1.append(&mut $3);
+        $1.append(&mut $5);
+        $1.append(&mut $6);
+        $$ = $1;
+    }
+    | f_block_optarg                                             opt_block_args_tail {
+        |$1:Nodes, $2:Nodes| -> Nodes;
+
+        $1.append(&mut $2);
+        $$ = $1;
+    }
+    | f_block_optarg tCOMMA                                f_arg opt_block_args_tail {
+        |$1:Nodes, $3:Nodes, $4:Nodes| -> Nodes;
+
+        $1.append(&mut $3);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    |                                    f_rest_arg              opt_block_args_tail {
+        |$1:Nodes, $2:Nodes| -> Nodes;
+
+        $1.append(&mut $2);
+        $$ = $1;
+    }
+    |                                    f_rest_arg tCOMMA f_arg opt_block_args_tail {
+        |$1:Nodes, $3:Nodes, $4:Nodes| -> Nodes;
+
+        $1.append(&mut $3);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    |                                                                block_args_tail
 ;
 
  opt_block_param
-    : {
-        //   result = @builder.args(nil, [], nil)
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+    :{
+        || -> Node; $$ = node::args(None, vec![], None);
     }
     | block_param_def {
         self.tokenizer.interior_lexer.set_state("expr_value");
                     //   @lexer.state = :expr_value
                     ||->Node;
                     wip!(); $$=Node::DUMMY;
-                    }
+    }
 ;
 
- block_param_def: tPIPE opt_bv_decl tPIPE
-                    {
-                    //   result = @builder.args(val[0], val[1], val[2])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | tOROP
-                    {
-                    //   result = @builder.args(val[0], [], val[0])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-                | tPIPE block_param opt_bv_decl tPIPE
-                    {
-                    //   result = @builder.args(val[0], val[1].concat(val[2]), val[3])
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
+block_param_def
+    : tPIPE opt_bv_decl tPIPE {
+        |$1: Token, $2: Nodes, $3: Token| -> Node;
+        $$ = node::args(Some($1), $2, Some($3));
+    }
+    | tOROP {
+        |$1: Token| -> Node;
+        let _2 = $1.clone();
+        $$ = node::args(Some($1), vec![], Some(_2));
+    }
+    | tPIPE block_param opt_bv_decl tPIPE {
+        |$1: Token, $2: Nodes, $3: Nodes, $4: Token| -> Node;
+        $2.append(&mut $3);
+        $$ = node::args(Some($1), $2, Some($4));
+    }
 ;
 
 opt_bv_decl
@@ -2026,9 +1961,9 @@ method_call
         wip!(); $$=Node::DUMMY;
     }
     | primary_value tLBRACK2 opt_call_args rbracket {
-        //   result = @builder.index(val[0], val[1], val[2], val[3])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1: Node, $2: Token, $3: Nodes, $4:Token| -> Node;
+
+        $$ = node::index($1, $2, $3, $4);
     }
 ;
 
@@ -2088,14 +2023,12 @@ do_body: fake_embedded_action_do_body_1 fake_embedded_action_do_body_2 opt_block
     self.tokenizer.interior_lexer.cmdarg = $2;
 };
 
-       case_body: kWHEN args then compstmt cases
-                    {
-                    //   result = [ @builder.when(val[0], val[1], val[2], val[3]),
-                    //              *val[4] ]
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
-                    }
-;
+case_body: kWHEN args then compstmt cases {
+    |$1:Token, $2:Nodes, $3:Token, $4:Node, $5:Nodes| -> Nodes;
+    let mut r = vec![ node::when($1, $2, $3, $4) ];
+    r.append(&mut $5);
+    $$ = r;
+};
 
 cases
     : opt_else {

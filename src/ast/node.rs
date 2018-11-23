@@ -1194,6 +1194,9 @@ pub fn call_method(receiver: Option<Node>, dot_t: Option<Token>, selector_t: Tok
 //   n(type, [ receiver, method_name ],
 //     send_map(receiver, dot_t, selector_t))
 // end
+pub fn attr_asgn(receiver: Node, dot_t: Token, selector_t: Token) -> Node {
+    wip!();
+}
 
 // def index(receiver, lbrack_t, indexes, rbrack_t)
 //   n(:send, [ receiver, :[], *indexes ],
@@ -1208,37 +1211,43 @@ pub fn index(receiver: Node, lbrack_t: Token, indexes: Nodes, rbrack_t: Token) -
 //   n(:send, [ receiver, :[]=, *indexes ],
 //     send_index_map(receiver, lbrack_t, rbrack_t))
 // end
+pub fn index_asgn(receiver: Node, lbrack_t: Token, indexes: Nodes, rbrack_t: Token) -> Node {
+    wip!();
+}
 
 // def binary_op(receiver, operator_t, arg)
 //   source_map = send_binary_op_map(receiver, operator_t, arg)
-
+// 
 //   if @parser.version == 18
 //     operator = value(operator_t)
-
+// 
 //     if operator == '!='
 //       method_call = n(:send, [ receiver, :==, arg ], source_map)
 //     elsif operator == '!~'
 //       method_call = n(:send, [ receiver, :=~, arg ], source_map)
 //     end
-
+// 
 //     if %w(!= !~).include?(operator)
 //       return n(:not, [ method_call ],
 //                expr_map(source_map.expression))
 //     end
 //   end
-
+// 
 //   n(:send, [ receiver, value(operator_t).to_sym, arg ],
 //     source_map)
 // end
+pub fn binary_op(receiver: Node, operator_t: Token, arg: Node) -> Node {
+    wip!();
+}
 
 // def match_op(receiver, match_t, arg)
 //   source_map = send_binary_op_map(receiver, match_t, arg)
-
+// 
 //   if (regexp = static_regexp_node(receiver))
 //     regexp.names.each do |name|
 //       @parser.static_env.declare(name)
 //     end
-
+// 
 //     n(:match_with_lVasgn, [ receiver, arg ],
 //       source_map)
 //   else
@@ -1287,6 +1296,9 @@ pub fn index(receiver: Node, lbrack_t: Token, indexes: Nodes, rbrack_t: Token) -
 //   n(type, [ lhs, rhs ],
 //     binary_op_map(lhs, op_t, rhs))
 // end
+pub fn logical_op(node_type: &str, lhs: Node, op_t: Token, rhs: Node) -> Node {
+    wip!();
+}
 
 // # Conditionals
 
@@ -1316,6 +1328,9 @@ pub fn condition_mod() -> Node {
 //   n(:when, children,
 //     keyword_map(when_t, then_t, children, nil))
 // end
+pub fn when(when_t: Token, patterns: Nodes, then_t: Token, body: Node) -> Node {
+    wip!();
+}
 
 // def case(case_t, expr, when_bodies, else_t, else_body, end_t)
 //   n(:case, [ expr, *(when_bodies << else_body)],
