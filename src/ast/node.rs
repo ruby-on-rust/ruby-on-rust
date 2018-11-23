@@ -1336,7 +1336,7 @@ pub fn logical_op(node_type: &str, lhs: Node, op_t: Token, rhs: Node) -> Node {
 //   n(:if, [ check_condition(cond), if_true, if_false ],
 //     condition_map(cond_t, cond, then_t, if_true, else_t, if_false, end_t))
 // end
-pub fn condition(cond_t: Token, cond: Node, then_t: Token, if_true: Node, else_t: Token, if_false: Node, end_t: Option<Token>) -> Node {
+pub fn condition(cond_t: Token, cond: Node, then_t: Token, if_true: Option<Node>, else_t: Option<Token>, if_false: Option<Node>, end_t: Option<Token>) -> Node {
     wip!();
 }
 
@@ -1449,11 +1449,14 @@ pub fn postexe(postexe_t: Token, lbrace_t: Token, compstmt: Node, rbrace_t: Toke
 //     rescue_body_map(rescue_t, exc_list, assoc_t,
 //                     exc_var, then_t, compound_stmt))
 // end
-// pub fn rescue_body()
+pub fn rescue_body(rescue_t: Token, exc_list: Option<Nodes>, assoc_t: Option<Token>, exc_var: Option<Node>, then_t: Option<Token>, compound_stmt: Node) -> Node {
+    wip!();
+}
 
 // def begin_body(compound_stmt, rescue_bodies=[],
 //                else_t=nil,    else_=nil,
 //                ensure_t=nil,  ensure_=nil)
+// 
 //   if rescue_bodies.any?
 //     if else_t
 //       compound_stmt =
@@ -1492,6 +1495,11 @@ pub fn postexe(postexe_t: Token, lbrace_t: Token, compstmt: Node, rbrace_t: Toke
 // 
 //   compound_stmt
 // end
+pub fn begin_body(  compound_stmt: Node,     rescue_bodies: Nodes,
+                    else_t: Option<Token>,   else_: Option<Node>,
+                    ensure_t: Option<Token>, ensure_: Option<Node> ) -> Node {
+    wip!();
+}
 
 // #
 // # Expression grouping
