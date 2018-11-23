@@ -3194,16 +3194,14 @@ fn _handler37(&mut self) -> SV {
     println!("   *** PARSER: _handler37");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _5 = pop!(self.values_stack, _2);
+let mut _4 = interior_token!(pop!(self.values_stack, _0));
+let mut _3 = interior_token!(pop!(self.values_stack, _0));
+let mut _2 = interior_token!(pop!(self.values_stack, _0));
+let mut _1 = pop!(self.values_stack, _2);
 
-// const  = @builder.const_op_assignable(
-        //             @builder.const_fetch(val[0], val[1], val[2]))
-        // result = @builder.op_assign(const, val[3], val[4])
-        wip!(); let __ =Node::DUMMY;
+let const_node = node::const_op_assignable(node::const_fetch(_1, _2, _3));
+        let __ = node::op_assign(const_node, _4, _5);
 SV::_2(__)
 // raw production: command_asgn -> primary_value tCOLON2 tCONSTANT tOP_ASGN command_rhs
 
@@ -7621,20 +7619,17 @@ fn _handler324(&mut self) -> SV {
     println!("   *** PARSER: _handler324");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
+let mut _9 = self.values_stack.pop().unwrap();
+let mut _8 = interior_token!(pop!(self.values_stack, _0));
+let mut _7 = pop!(self.values_stack, _2);
+let mut _6 = self.values_stack.pop().unwrap();
+let mut _5 = pop!(self.values_stack, _2);
 self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _3 = interior_token!(pop!(self.values_stack, _0));
+let mut _2 = pop!(self.values_stack, _2);
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-//   result = @builder.for(val[0], val[1],
-        //                         val[2], val[4],
-        //                         val[5], val[7], val[8])
-        wip!(); let __ =Node::DUMMY;
+let __ = node::build_for(_1, _2, _3, _5, _6, _8, _9);
 SV::_2(__)
 // raw production: primary -> kFOR for_var kIN fake_embedded_action__primary__kFOR_1 expr_value do fake_embedded_action__primary__kFOR_2 compstmt kEND
 
@@ -8473,16 +8468,19 @@ fn _handler372(&mut self) -> SV {
     println!("   *** PARSER: _handler372");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _2 = pop!(self.values_stack, _1);
+let mut _1 = pop!(self.values_stack, _1);
 
-//   if val[1].empty? && val[0].size == 1
-        //     result = [@builder.procarg0(val[0][0])]
-        //   else
-        //     result = val[0].concat(val[1])
-        //   end
-        wip!(); let __ =Node::DUMMY;
-SV::_2(__)
+if ( _2.is_empty() && _1.len() == 1 ) {
+            let __ = vec![
+                // TODO
+                // @builder.procarg0(val[0][0])
+            ];
+        } else {
+            _1.append(&mut _2);
+            let __ = _1;
+        };
+SV::_1(__)
 // raw production: block_param -> f_arg opt_block_args_tail
 
 }
@@ -8635,8 +8633,8 @@ fn _handler381(&mut self) -> SV {
 self.values_stack.pop();
 
 self.tokenizer.interior_lexer.set_state("expr_value");
-                    //   @lexer.state = :expr_value
-                    wip!(); let __ =Node::DUMMY;
+        //   @lexer.state = :expr_value
+        wip!(); let __ =Node::DUMMY;
 SV::_2(__)
 // raw production: opt_block_param -> block_param_def
 

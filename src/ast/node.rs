@@ -242,6 +242,9 @@ pub fn unary_num(t_unary: Token, n_simple_numeric: Node) -> Node {
 //   n(:str, [ string_value(string_t) ],
 //     delimited_string_map(string_t))
 // end
+pub fn string(string_t: Token) -> Node {
+    wip!();
+}
 
 // def string_internal(string_t)
 //   n(:str, [ string_value(string_t) ],
@@ -1396,6 +1399,9 @@ pub fn loop_mod(node_type: &str, body: Node, keyword_t: Token, cond: Node) -> No
 //   n(:for, [ iterator, iteratee, body ],
 //     for_map(for_t, in_t, do_t, end_t))
 // end
+pub fn build_for(for_t: Token, iterator: Node, in_t: Token, iteratee: Node, do_t: Token, body: Node, end_t: Token) -> Node {
+    wip!();
+}
 
 // # Keywords
 

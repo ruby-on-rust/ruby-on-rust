@@ -308,11 +308,10 @@ command_asgn
         );
     }
     | primary_value tCOLON2 tCONSTANT tOP_ASGN command_rhs {
-        // const  = @builder.const_op_assignable(
-        //             @builder.const_fetch(val[0], val[1], val[2]))
-        // result = @builder.op_assign(const, val[3], val[4])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Node, $2:Token, $3:Token, $4:Token, $5:Node| -> Node;
+
+        let const_node = node::const_op_assignable(node::const_fetch($1, $2, $3));
+        $$ = node::op_assign(const_node, $4, $5);
     }
     | primary_value tCOLON2 tIDENTIFIER tOP_ASGN command_rhs {
         |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
@@ -1296,11 +1295,8 @@ primary
         wip!(); $$=Node::DUMMY;
     }
     | kFOR for_var kIN fake_embedded_action__primary__kFOR_1 expr_value do fake_embedded_action__primary__kFOR_2 compstmt kEND {
-        //   result = @builder.for(val[0], val[1],
-        //                         val[2], val[4],
-        //                         val[5], val[7], val[8])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Token, $2:Node, $3:Token, $5:Node, $7:Node, $8:Token| -> Node;
+        $$ = node::build_for($1, $2, $3, $5, $6, $8, $9);
     }
     | kCLASS cpath superclass fake_embedded_action__primary__kCLASS_1 bodystmt kEND {
         //   if in_def?
@@ -1568,13 +1564,17 @@ block_param
         $$ = $1;
     }
     | f_arg                                                      opt_block_args_tail {
-        //   if val[1].empty? && val[0].size == 1
-        //     result = [@builder.procarg0(val[0][0])]
-        //   else
-        //     result = val[0].concat(val[1])
-        //   end
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        |$1:Nodes, $2:Nodes| -> Nodes;
+
+        if ( $2.is_empty() && $1.len() == 1 ) {
+            $$ = vec![
+                // TODO
+                // @builder.procarg0(val[0][0])
+            ];
+        } else {
+            $1.append(&mut $2);
+            $$ = $1;
+        }
     }
     | f_block_optarg tCOMMA              f_rest_arg              opt_block_args_tail {
         |$1:Nodes, $3:Nodes, $4:Nodes| -> Nodes;
@@ -1626,9 +1626,9 @@ opt_block_param
     }
     | block_param_def {
         self.tokenizer.interior_lexer.set_state("expr_value");
-                    //   @lexer.state = :expr_value
-                    ||->Node;
-                    wip!(); $$=Node::DUMMY;
+        //   @lexer.state = :expr_value
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
     }
 ;
 
@@ -1966,10 +1966,12 @@ string1
         // $$ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
     }
     | tSTRING {
+        |$1:Token| -> Node;
+
+        let string = node::string($1);
+
         // string = @builder.string(val[0])
         // result = @builder.dedent_string(string, @lexer.dedent_level)
-
-        |$1:Token| -> Node;
 
         let $$;
         if let InteriorToken::T_STRING(string_value) = $1 {
