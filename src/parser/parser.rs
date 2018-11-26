@@ -1780,6 +1780,7 @@ type TDoBody = ( Node, Node ); // args/opt_block_param body/bodystmt
 type TDoBlock = ( InteriorToken, TDoBody, InteriorToken );
 type TBraceBody = ( Node, Node ); // opt_block_param, compstmt
 type TBraceBlock = ( InteriorToken, TBraceBody, InteriorToken );
+type TOptRescue = ( Node, TSomeTokenNode );
 
 macro_rules! wip { () => { panic!("WIP"); }; }
 macro_rules! interior_token { ($token:expr) => { *$token.interior_token }; }
@@ -9329,7 +9330,7 @@ fn _handler423(&mut self) -> SV {
     println!("   *** PARSER: _handler423");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-let mut _6 = pop!(self.values_stack, _9);
+let mut _6 = pop!(self.values_stack, _1);
 let mut _5 = pop!(self.values_stack, _2);
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = pop!(self.values_stack, _9);
@@ -9352,13 +9353,11 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
         //                   val[3], val[4]),
         //              *val[5] ]
         let mut r = vec![
-            node::rescue_body(_1, exc_list, assoc_t, exc_var, _4, _5)
+            node::rescue_body(_1, exc_list, assoc_t, exc_var, Some(_4), _5)
         ];
-        let (opt_rescue_token, opt_rescue_node) = unwrap_some_token_node!(_6);
-        r.push(opt_rescue_token);
-        r.push(opt_rescue_node);
+        r.append(&mut _6);
         let __ = r;
-SV::_2(__)
+SV::_1(__)
 // raw production: opt_rescue -> kRESCUE exc_list exc_var then compstmt opt_rescue
 
 }
@@ -9573,12 +9572,8 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-wip!(); let __ = Node::DUMMY;
-
-        // string = @builder.string_compose(val[0], val[1], val[2])
-        // result = @builder.dedent_string(string, @lexer.dedent_level)
-        // let string = node::string_compose(Some(_1), _2, Some(_2));
-        // let __ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
+let string = node::string_compose(Some(_1), _2, Some(_3));
+        let __ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
 SV::_2(__)
 // raw production: string1 -> tSTRING_BEG string_contents tSTRING_END
 
@@ -9593,15 +9588,7 @@ fn _handler439(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let string = node::string(_1);
-
-        // string = @builder.string(val[0])
-        // result = @builder.dedent_string(string, @lexer.dedent_level)
-
-        let __;
-        if let InteriorToken::T_STRING(string_value) = _1 {
-            __ = Node::Str(string_value);
-        } else { unreachable!(); }
-        // TODO builder.dedent_string;
+        let __ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
 SV::_2(__)
 // raw production: string1 -> tSTRING
 
@@ -9627,13 +9614,12 @@ fn _handler441(&mut self) -> SV {
     println!("   *** PARSER: _handler441");
     println!("   values_stack: {:?}", self.values_stack);
   // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _3 = interior_token!(pop!(self.values_stack, _0));
+let mut _2 = pop!(self.values_stack, _1);
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-//   string = @builder.xstring_compose(val[0], val[1], val[2])
-    //   result = @builder.dedent_string(string, @lexer.dedent_level)
-    wip!(); let __ =Node::DUMMY;
+let string = node::xstring_compose(_1, _2, _3);
+    let __ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
 SV::_2(__)
 // raw production: xstring -> tXSTRING_BEG xstring_contents tSTRING_END
 

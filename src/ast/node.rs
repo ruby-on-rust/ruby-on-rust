@@ -359,6 +359,9 @@ pub fn symbol_compose(begin_t: Token, parts: Nodes, end_t: Token) -> Node {
 //   n(:xstr, [ *parts ],
 //     string_map(begin_t, parts, end_t))
 // end
+pub fn xstring_compose(begin_t: Token, parts: Nodes, end_t: Token) -> Node {
+    wip!();
+}
 
 // # Indented (interpolated, noninterpolated, executable) strings
 
@@ -383,6 +386,9 @@ pub fn symbol_compose(begin_t: Token, parts: Nodes, end_t: Token) -> Node {
 // 
 //   node
 // end
+pub fn dedent_string(node: Node, dedent_level: isize) -> Node {
+    wip!();
+}
 
 // # Regular expressions
 
@@ -1449,7 +1455,10 @@ pub fn postexe(postexe_t: Token, lbrace_t: Token, compstmt: Node, rbrace_t: Toke
 //     rescue_body_map(rescue_t, exc_list, assoc_t,
 //                     exc_var, then_t, compound_stmt))
 // end
-pub fn rescue_body(rescue_t: Token, exc_list: Option<Nodes>, assoc_t: Option<Token>, exc_var: Option<Node>, then_t: Option<Token>, compound_stmt: Node) -> Node {
+// 
+// TODO NOTE
+//     exclist: Option<Node::Array>
+pub fn rescue_body(rescue_t: Token, exc_list: Option<Node>, assoc_t: Option<Token>, exc_var: Option<Node>, then_t: Option<Token>, compound_stmt: Node) -> Node {
     wip!();
 }
 

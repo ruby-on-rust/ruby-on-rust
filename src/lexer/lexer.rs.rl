@@ -102,6 +102,7 @@ pub struct Lexer {
     // # expanded inside the lexer, but count as non-whitespace for
     // # indentation purposes.
     // @dedent_level  = nil
+    pub dedent_level: isize,
 
     // # If the lexer is in `command state' (aka expr_value)
     // # at the entry to #advance, it will transition to expr_cmdarg
@@ -152,6 +153,7 @@ impl Lexer {
             paren_nest: 0,
             lambda_stack: vec![],
 
+            dedent_level: 0,
             command_state: false,
 
             in_kwarg: false

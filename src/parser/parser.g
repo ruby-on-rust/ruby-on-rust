@@ -1897,7 +1897,7 @@ cases
 opt_rescue
     // TODO CLEANUP
     : kRESCUE exc_list exc_var then compstmt opt_rescue {
-        |$1:Token, $2:TSomeNodes, $3:TSomeTokenNode, $4:Token, $5:Node, $6:TOptRescue| -> TOptRescue;
+        |$1:Token, $2:TSomeNodes, $3:TSomeTokenNode, $4:Token, $5:Node, $6:Nodes| -> Nodes;
 
         //   assoc_t, exc_var = val[2]
         let (assoc_t, exc_var) = unwrap_some_token_node!($3);
@@ -1915,11 +1915,9 @@ opt_rescue
         //                   val[3], val[4]),
         //              *val[5] ]
         let mut r = vec![
-            node::rescue_body($1, exc_list, assoc_t, exc_var, $4, $5)
+            node::rescue_body($1, exc_list, assoc_t, exc_var, Some($4), $5)
         ];
-        let (opt_rescue_token, opt_rescue_node) = unwrap_some_token_node!($6);
-        r.push(opt_rescue_token);
-        r.push(opt_rescue_node);
+        r.append(&mut $6);
         $$ = r;
     }
     | {
@@ -1985,26 +1983,14 @@ string1
     : tSTRING_BEG string_contents tSTRING_END {
         |$1:Token, $2:Nodes, $3:Token| -> Node;
 
-        wip!(); $$ = Node::DUMMY;
-
-        // string = @builder.string_compose(val[0], val[1], val[2])
-        // result = @builder.dedent_string(string, @lexer.dedent_level)
-        // let string = node::string_compose(Some($1), $2, Some($2));
-        // $$ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
+        let string = node::string_compose(Some($1), $2, Some($3));
+        $$ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
     }
     | tSTRING {
         |$1:Token| -> Node;
 
         let string = node::string($1);
-
-        // string = @builder.string(val[0])
-        // result = @builder.dedent_string(string, @lexer.dedent_level)
-
-        let $$;
-        if let InteriorToken::T_STRING(string_value) = $1 {
-            <REMOVE THIS LET>$$ = Node::Str(string_value);
-        } else { unreachable!(); }
-        // TODO builder.dedent_string
+        $$ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
     }
     | tCHARACTER {
         |$1:Token| -> Node; $$ = node::character($1);
@@ -2012,10 +1998,10 @@ string1
 ;
 
 xstring: tXSTRING_BEG xstring_contents tSTRING_END {
-    //   string = @builder.xstring_compose(val[0], val[1], val[2])
-    //   result = @builder.dedent_string(string, @lexer.dedent_level)
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    |$1:Token, $2:Nodes, $3:Token| -> Node;
+
+    let string = node::xstring_compose($1, $2, $3);
+    $$ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
 };
 
 regexp: tREGEXP_BEG regexp_contents tSTRING_END tREGEXP_OPT {
