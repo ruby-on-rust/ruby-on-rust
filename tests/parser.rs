@@ -1191,14 +1191,13 @@ fn cvasgn() {
 
 #[test]
 fn asgn_cmd() {
-    // TODO WIP
     //     assert_parses(
     //       s(:lvasgn, :foo, s(:send, nil, :m, s(:lvar, :foo))),
     //       %q{foo = m foo})
     assert_parses!(
         "foo = m foo",
         Node::LVasgn(
-            String::from("var"),
+            String::from("foo"),
             vec![
                 n_send!(
                     None,
