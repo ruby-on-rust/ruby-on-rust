@@ -1,4 +1,4 @@
-use ::token::token::Token as InteriorToken;
+use crate::token::token::Token as InteriorToken;
 
 use std::collections::HashMap;
 

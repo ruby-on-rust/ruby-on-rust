@@ -6,9 +6,9 @@
 
 use std::rc::Rc;
 use std::cell::RefCell;
-use token::token::Token;
-use lexer::literal::Literal;
-use lexer::stack_state::StackState;
+use crate::token::token::Token;
+use crate::lexer::literal::Literal;
+use crate::lexer::stack_state::StackState;
 
 %%{
     machine lexer;

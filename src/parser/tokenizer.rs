@@ -293,12 +293,8 @@
 //
 // }
 
-// use regex::Regex;
-
-// use token::token::Token as InteriorToken;
-use parser::token::{ Token, get_an_eof_token };
-
-use lexer::lexer::Lexer;
+use crate::parser::token::{ Token, get_an_eof_token };
+use crate::lexer::lexer::Lexer;
 
 pub struct Tokenizer {
     // string: &'static str,

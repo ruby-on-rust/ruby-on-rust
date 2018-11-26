@@ -1763,13 +1763,13 @@ lazy_static! {
 //   }
 //
 
-use lexer::stack_state::StackState;
-use token::token::Token as InteriorToken;
-use parser::token::Token;
-use parser::tokenizer::Tokenizer;
-use parser::static_env::StaticEnv;
-use ast::node;
-use ast::node::{ Node, Nodes };
+use crate::lexer::stack_state::StackState;
+use crate::token::token::Token as InteriorToken;
+use crate::parser::token::Token;
+use crate::parser::tokenizer::Tokenizer;
+use crate::parser::static_env::StaticEnv;
+use crate::ast::node;
+use crate::ast::node::{ Node, Nodes };
 
 pub type TResult = Node;
 

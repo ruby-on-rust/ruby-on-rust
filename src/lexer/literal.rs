@@ -5,8 +5,8 @@
 
 use std::rc::Rc;
 use std::cell::RefCell;
-use lexer::lexer::*;
-use token::token::Token;
+use crate::lexer::lexer::*;
+use crate::token::token::Token;
 
 // TODO impl Debug manually
 #[derive(Clone)]

@@ -1,4 +1,4 @@
-use lexer::lexer::*;
+use crate::lexer::lexer::*;
 
 // TODO NOTE
 // TODO optimize via bits

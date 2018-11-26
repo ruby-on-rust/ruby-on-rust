@@ -4,7 +4,7 @@
 extern crate ruby_on_rust;
 
 use ruby_on_rust::parser::parser::Parser;
-use ruby_on_rust::ast::node::Node;
+use ruby_on_rust::ast::node::*;
 
 // helpers
 // TODO NOTE
