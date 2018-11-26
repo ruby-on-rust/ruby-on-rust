@@ -18,6 +18,8 @@
 // 
 // `|| -> Node` means `$1` is unwrapped, so have to do the matching manually
 // 
+// TODO and why we don't want to unwrap it?
+// 
 // TODO <REMOVE THIS LET> is another issue here
 // 
 // 
@@ -37,7 +39,19 @@
 // 
 
 // TODO update
-// this file is based on 2a73841d6da04a5ab9bd270561165fd766722d43
+// this file is based on https://github.com/whitequark/parser/blob/2a73841d6da04a5ab9bd270561165fd766722d43/lib/parser/ruby25.y
+
+// TODO
+// check out this about transforming token names https://github.com/tenderlove/racc/blob/master/rdoc/en/grammar.en.rdoc#converting-token-symbols
+
+// TODO fake embedded actions
+// https://github.com/DmitrySoshnikov/syntax/issues/65
+// TODO many embedded actions actually dont need a return value
+// 
+
+// TODO `error` in yacc/bison/racc is `a terminal symbol reserved for error recovery`, see http://dinosaur.compilertools.net/bison/bison_9.html#SEC81
+// figure out what's the corresponsing word in syntax
+
 
 %right    tBANG tTILDE tUPLUS
 %right    tPOW
@@ -64,2237 +78,2202 @@
 
 %{
 
+use lexer::stack_state::StackState;
 use token::token::Token as InteriorToken;
 use parser::token::Token;
 use parser::tokenizer::Tokenizer;
+use parser::static_env::StaticEnv;
 use ast::node;
 use ast::node::{ Node, Nodes };
 
 pub type TResult = Node;
 
+type TTokenNode = ( InteriorToken, Node );
+type TSomeTokenNode = Option<(InteriorToken, Node)>;
+type TSomeNodes = Option<Nodes>;
+type TParenArgs = ( Option<InteriorToken>, Nodes, Option<InteriorToken> );
+type TLambdaBody = ( InteriorToken, Node, InteriorToken );
+type TLambda = ( Node, TLambdaBody );
+type TDoBody = ( Node, Node ); // args/opt_block_param body/bodystmt
+type TDoBlock = ( InteriorToken, TDoBody, InteriorToken );
+type TBraceBody = ( Node, Node ); // opt_block_param, compstmt
+type TBraceBlock = ( InteriorToken, TBraceBody, InteriorToken );
+type TOptRescue = ( Node, TSomeTokenNode );
+
+macro_rules! wip { () => { panic!("WIP"); }; }
+macro_rules! interior_token { ($token:expr) => { *$token.interior_token }; }
+macro_rules! unwrap_some_token_node {
+    ($some_token_node:expr) => {
+        match $some_token_node {
+            Some((token, node)) => (Some(token), Some(node)),
+            None => (None, None),
+        }
+    }
+}
+
 %}
 
 %%
 
-//          program: top_compstmt
 program: top_compstmt;
 
-//     top_compstmt: top_stmts opt_terms
-//                     {
-//                       result = @builder.compstmt(val[0])
-//                     }
 top_compstmt
     : top_stmts opt_terms {
         |$1: Nodes| -> Node;
-
         $$ = node::compstmt($1);
     }
 ;
 
-//        top_stmts: # nothing
-//                     {
-//                       result = []
-//                     }
-//                 | top_stmt
-//                     {
-//                       result = [ val[0] ]
-//                     }
-//                 | top_stmts terms top_stmt
-//                     {
-//                       result = val[0] << val[2]
-//                     }
-//                 | error top_stmt
-//                     {
-//                       result = [ val[1] ]
-//                     }
-// TODO
 top_stmts
+    // nothing
     : {
-        || -> Nodes;
-
-        $$ = vec![];
+        || -> Nodes; $$ = vec![];
     }
     | top_stmt {
-        |$1: Node| -> Nodes;
-
-        $$ = vec![$1];
+        |$1: Node| -> Nodes; $$ = vec![$1];
     }
     | top_stmts terms top_stmt {
         |$1: Nodes; $3: Node| -> Nodes;
 
-        let mut nodes = $1;
-        nodes.push($3);
-        $$ = nodes;
+        $1.push($3);
+        $$ = $1;
+    }
+    // | error top_stmt {
+    //     |$2:Node| -> Nodes; $$ = vec![$2];
+    // }
+;
+
+top_stmt
+    : stmt
+    | klBEGIN tLCURLY top_compstmt tRCURLY {
+        |$1:Token, $2:Token, $3:Node, $4:Token| -> Node;
+        $$ = node::preexe($1, $2, $3, $4);
     }
 ;
 
-//         top_stmt: stmt
-//                 | klBEGIN tLCURLY top_compstmt tRCURLY
-//                     {
-//                       result = @builder.preexe(val[0], val[1], val[2], val[3])
-//                     }
-top_stmt
+bodystmt
+    : compstmt opt_rescue opt_else opt_ensure {
+        |$1:Node, $2:Nodes, $3:TTokenNode, $4:TTokenNode| -> Node;
+
+        let rescue_bodies = $2;
+        let (else_t, else_) = $3;
+        let (ensure_t, ensure_) = $4;
+
+        if rescue_bodies.is_empty() {
+            panic!("diagnostic warning");
+        }
+        //                       if rescue_bodies.empty? && !else_.nil?
+        //                         diagnostic :warning, :useless_else, nil, else_t
+        //                       end
+        // 
+        //                       result = @builder.begin_body(val[0],
+        //                                   rescue_bodies,
+        //                                   else_t,   else_,
+        //                                   ensure_t, ensure_)
+        $$ = Node::DUMMY;
+    }
+;
+
+compstmt: stmts opt_terms {
+    // TODO well @builder.compstmt actually returns an Option<Node>
+    // result = @builder.compstmt(val[0])
+    |$1:Nodes| -> Node;
+    $$ = node::compstmt($1);
+};
+
+stmts
+    : {
+        || -> Nodes; $$ = vec![];
+    }
+    | stmt_or_begin {
+        |$1:Node| -> Nodes; $$ = vec![$1];
+    }
+    | stmts terms stmt_or_begin {
+        |$1:Nodes, $3:Node| -> Nodes;
+        $1.push($3);
+        $$ = $1;
+    }
+    // | error stmt {
+    //     // result = [ val[1] ]
+    //     ||->Node;
+    // wip!(); $$=Node::DUMMY;
+    // }
+;
+
+stmt_or_begin
     : stmt
-    // | TODO
+    | klBEGIN tLCURLY top_compstmt tRCURLY {
+        ||->Node;
+
+        // diagnostic :error, :begin_in_method, nil, val[0]
+        panic!("diagnostic error");
+
+        $$=Node::DUMMY;
+    }
 ;
 
-//         bodystmt: compstmt opt_rescue opt_else opt_ensure
-//                     {
-//                       rescue_bodies     = val[1]
-//                       else_t,   else_   = val[2]
-//                       ensure_t, ensure_ = val[3]
-// 
-//                       if rescue_bodies.empty? && !else_.nil?
-//                         diagnostic :warning, :useless_else, nil, else_t
-//                       end
-// 
-//                       result = @builder.begin_body(val[0],
-//                                   rescue_bodies,
-//                                   else_t,   else_,
-//                                   ensure_t, ensure_)
-//                     }
+fake_embedded_action__stmt__1: {
+    || -> Node; $$ = Node::DUMMY;
 
-//         compstmt: stmts opt_terms
-//                     {
-//                       result = @builder.compstmt(val[0])
-//                     }
+    self.tokenizer.interior_lexer.set_state("expr_fname");
+};
 
-//            stmts: # nothing
-//                     {
-//                       result = []
-//                     }
-//                 | stmt_or_begin
-//                     {
-//                       result = [ val[0] ]
-//                     }
-//                 | stmts terms stmt_or_begin
-//                     {
-//                       result = val[0] << val[2]
-//                     }
-//                 | error stmt
-//                     {
-//                       result = [ val[1] ]
-//                     }
-
-//    stmt_or_begin: stmt
-//                 | klBEGIN tLCURLY top_compstmt tRCURLY
-//                     {
-//                       diagnostic :error, :begin_in_method, nil, val[0]
-//                     }
-
-//             stmt: kALIAS fitem
-//                     {
-//                       @lexer.state = :expr_fname
-//                     }
-//                     fitem
-//                     {
-//                       result = @builder.alias(val[0], val[1], val[3])
-//                     }
-//                 | kALIAS tGVAR tGVAR
-//                     {
-//                       result = @builder.alias(val[0],
-//                                   @builder.gvar(val[1]),
-//                                   @builder.gvar(val[2]))
-//                     }
-//                 | kALIAS tGVAR tBACK_REF
-//                     {
-//                       result = @builder.alias(val[0],
-//                                   @builder.gvar(val[1]),
-//                                   @builder.back_ref(val[2]))
-//                     }
-//                 | kALIAS tGVAR tNTH_REF
-//                     {
-//                       diagnostic :error, :nth_ref_alias, nil, val[2]
-//                     }
-//                 | kUNDEF undef_list
-//                     {
-//                       result = @builder.undef_method(val[0], val[1])
-//                     }
-//                 | stmt kIF_MOD expr_value
-//                     {
-//                       result = @builder.condition_mod(val[0], nil,
-//                                                       val[1], val[2])
-//                     }
-//                 | stmt kUNLESS_MOD expr_value
-//                     {
-//                       result = @builder.condition_mod(nil, val[0],
-//                                                       val[1], val[2])
-//                     }
-//                 | stmt kWHILE_MOD expr_value
-//                     {
-//                       result = @builder.loop_mod(:while, val[0], val[1], val[2])
-//                     }
-//                 | stmt kUNTIL_MOD expr_value
-//                     {
-//                       result = @builder.loop_mod(:until, val[0], val[1], val[2])
-//                     }
-//                 | stmt kRESCUE_MOD stmt
-//                     {
-//                       rescue_body = @builder.rescue_body(val[1],
-//                                         nil, nil, nil,
-//                                         nil, val[2])
-// 
-//                       result = @builder.begin_body(val[0], [ rescue_body ])
-//                     }
-//                 | klEND tLCURLY compstmt tRCURLY
-//                     {
-//                       result = @builder.postexe(val[0], val[1], val[2], val[3])
-//                     }
-//                 | command_asgn
-//                 | mlhs tEQL command_call
-//                     {
-//                       result = @builder.multi_assign(val[0], val[1], val[2])
-//                     }
-//                 | lhs tEQL mrhs
-//                     {
-//                       result = @builder.assign(val[0], val[1],
-//                                   @builder.array(nil, val[2], nil))
-//                     }
-//                 | mlhs tEQL mrhs_arg
-//                     {
-//                       result = @builder.multi_assign(val[0], val[1], val[2])
-//                     }
-//                 | expr
-// TODO
 stmt
-    : expr
+    : kALIAS fitem fake_embedded_action__stmt__1 fitem {
+        |$1: Token, $2: Node, $4: Node| -> Node;
+        $$ = node::alias($1, $2, $4);
+    }
+    | kALIAS tGVAR tGVAR {
+        |$1: Token, $2: Token, $3: Token| -> Node;
+        $$ = node::alias(
+                $1,
+                node::gvar($2),
+                node::gvar($3));
+    }
+    | kALIAS tGVAR tBACK_REF {
+        |$1: Token, $2: Token, $3: Token| -> Node;
+        $$ = node::alias(
+                $1,
+                node::gvar($2),
+                node::back_ref($3));
+    }
+    | kALIAS tGVAR tNTH_REF {
+        ||->Node; $$=Node::DUMMY;
+        // diagnostic :error, :nth_ref_alias, nil, val[2]
+        panic!("diagnostic error");
+    }
+    | kUNDEF undef_list {
+        |$1:Token, $2:Nodes| -> Node;
+        $$ = node::undef_method($1, $2);
+    }
+    | stmt kIF_MOD expr_value {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::condition_mod(Some($1), None, $2, $3);
+    }
+    | stmt kUNLESS_MOD expr_value {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::condition_mod(None, Some($1), $2, $3);
+    }
+    | stmt kWHILE_MOD expr_value {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::loop_mod("while", $1, $2, $3);
+    }
+    | stmt kUNTIL_MOD expr_value {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::loop_mod("until", $1, $2, $3);
+    }
+    | stmt kRESCUE_MOD stmt {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        let rescue_body = node::rescue_body($2, None, None, None, None, $3);
+
+        $$ = node::begin_body($1, vec![ rescue_body ], None, None, None, None);
+    }
+    | klEND tLCURLY compstmt tRCURLY {
+        |$1:Token, $2:Token, $3:Node, $4:Token| -> Node;
+        $$ = node::postexe($1, $2, $3, $4);
+    }
+    | command_asgn
+    | mlhs tEQL command_call {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::multi_assign($1, $2, $3);
+    }
+    | lhs tEQL mrhs {
+        |$1:Node, $2:Token, $3:Nodes| -> Node;
+        $$ = node::assign($1, $2, node::array(None, $3, None) );
+    }
+    | mlhs tEQL mrhs_arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::multi_assign($1, $2, $3);
+    }
+    | expr
 ;
 
-//     command_asgn: lhs tEQL command_rhs
-//                     {
-//                       result = @builder.assign(val[0], val[1], val[2])
-//                     }
-//                 | var_lhs tOP_ASGN command_rhs
-//                     {
-//                       result = @builder.op_assign(val[0], val[1], val[2])
-//                     }
-//                 | primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN command_rhs
-//                     {
-//                       result = @builder.op_assign(
-//                                   @builder.index(
-//                                     val[0], val[1], val[2], val[3]),
-//                                   val[4], val[5])
-//                     }
-//                 | primary_value call_op tIDENTIFIER tOP_ASGN command_rhs
-//                     {
-//                       result = @builder.op_assign(
-//                                   @builder.call_method(
-//                                     val[0], val[1], val[2]),
-//                                   val[3], val[4])
-//                     }
-//                 | primary_value call_op tCONSTANT tOP_ASGN command_rhs
-//                     {
-//                       result = @builder.op_assign(
-//                                   @builder.call_method(
-//                                     val[0], val[1], val[2]),
-//                                   val[3], val[4])
-//                     }
-//                 | primary_value tCOLON2 tCONSTANT tOP_ASGN command_rhs
-//                     {
-//                       const  = @builder.const_op_assignable(
-//                                   @builder.const_fetch(val[0], val[1], val[2]))
-//                       result = @builder.op_assign(const, val[3], val[4])
-//                     }
-//                 | primary_value tCOLON2 tIDENTIFIER tOP_ASGN command_rhs
-//                     {
-//                       result = @builder.op_assign(
-//                                   @builder.call_method(
-//                                     val[0], val[1], val[2]),
-//                                   val[3], val[4])
-//                     }
-//                 | backref tOP_ASGN command_rhs
-//                     {
-//                       @builder.op_assign(val[0], val[1], val[2])
-//                     }
+command_asgn
+    : lhs tEQL command_rhs {
+        |$1: Node, $2: Token, $3: Node| -> Node; $$ = node::assign($1, $2, $3);
+    }
+    | var_lhs tOP_ASGN command_rhs {
+        |$1: Node, $2: Token, $3: Node| -> Node; $$ = node::op_assign($1, $2, $3);
+    }
+    | primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN command_rhs {
+        |$1: Node, $2: Token, $3: Nodes, $4:Token, $5:Token, $6:Node| -> Node;
 
-//      command_rhs: command_call =tOP_ASGN
-//                 | command_call kRESCUE_MOD stmt
-//                     {
-//                       rescue_body = @builder.rescue_body(val[1],
-//                                         nil, nil, nil,
-//                                         nil, val[2])
-// 
-//                       result = @builder.begin_body(val[0], [ rescue_body ])
-//                     }
-//                 | command_asgn
+        $$ = node::op_assign(
+            node::index($1, $2, $3, $4),
+            $5, $6
+        );
+    }
+    | primary_value call_op tIDENTIFIER tOP_ASGN command_rhs {
+        |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
 
-//             expr: command_call
-//                 | expr kAND expr
-//                     {
-//                       result = @builder.logical_op(:and, val[0], val[1], val[2])
-//                     }
-//                 | expr kOR expr
-//                     {
-//                       result = @builder.logical_op(:or, val[0], val[1], val[2])
-//                     }
-//                 | kNOT opt_nl expr
-//                     {
-//                       result = @builder.not_op(val[0], nil, val[2], nil)
-//                     }
-//                 | tBANG command_call
-//                     {
-//                       result = @builder.not_op(val[0], nil, val[1], nil)
-//                     }
-//                 | arg
-// TODO
+        $$ = node::op_assign(
+            node::call_method(Some($1), Some($2), Some($3), None, vec![], None),
+            $4, $5
+        );
+    }
+    | primary_value call_op tCONSTANT tOP_ASGN command_rhs {
+        |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
+
+        $$ = node::op_assign(
+            node::call_method(Some($1), Some($2), Some($3), None, vec![], None),
+            $4, $5
+        );
+    }
+    | primary_value tCOLON2 tCONSTANT tOP_ASGN command_rhs {
+        |$1:Node, $2:Token, $3:Token, $4:Token, $5:Node| -> Node;
+
+        let const_node = node::const_op_assignable(node::const_fetch($1, $2, $3));
+        $$ = node::op_assign(const_node, $4, $5);
+    }
+    | primary_value tCOLON2 tIDENTIFIER tOP_ASGN command_rhs {
+        |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
+
+        $$ = node::op_assign(
+            node::call_method(Some($1), Some($2), Some($3), None, vec![], None),
+            $4, $5
+        );
+    }
+    | backref tOP_ASGN command_rhs {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::op_assign($1, $2, $3);
+    }
+;
+
+command_rhs
+    : command_call %prec tOP_ASGN
+    | command_call kRESCUE_MOD stmt {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        let rescue_body = node::rescue_body($2, None, None, None, None, $3);
+
+        $$ = node::begin_body($1, vec![ rescue_body ], None, None, None, None);
+    }
+    | command_asgn
+;
+
 expr
-    : arg
+    : command_call
+    | expr kAND expr {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::logical_op("and", $1, $2, $3);
+    }
+    | expr kOR expr {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::logical_op("or", $1, $2, $3);
+    }
+    | kNOT opt_nl expr {
+        |$1:Token, $3:Node| -> Node;
+        $$ = node::not_op($1, None, Some($3), None);
+    }
+    | tBANG command_call {
+        |$1:Token, $2:Node| -> Node;
+        $$ = node::not_op($1, None, Some($2), None);
+    }
+    | arg
 ;
 
-//       expr_value: expr
+expr_value: expr;
 
-//     command_call: command
-//                 | block_command
+command_call
+    : command
+    | block_command
+;
 
-//    block_command: block_call
-//                 | block_call dot_or_colon operation2 command_args
-//                     {
-//                       result = @builder.call_method(val[0], val[1], val[2],
-//                                   nil, val[3], nil)
-//                     }
+block_command
+    : block_call
+    | block_call dot_or_colon operation2 command_args {
+        |$1:Node, $2:Token, $3:Token, $4:Nodes| -> Node;
+        $$ = node::call_method(Some($1), Some($2), Some($3), None, $4, None);
+    }
+;
 
-//  cmd_brace_block: tLBRACE_ARG brace_body tRCURLY
-//                     {
-//                       result = [ val[0], *val[1], val[2] ]
-//                     }
+cmd_brace_block: tLBRACE_ARG brace_body tRCURLY {
+    |$1:Token, $2:TBraceBody, $3:Token| -> TBraceBlock;
 
-//            fcall: operation
+    $$ = ($1, $2, $3);
+};
 
-//          command: fcall command_args =tLOWEST
-//                     {
-//                       result = @builder.call_method(nil, nil, val[0],
-//                                   nil, val[1], nil)
-//                     }
-//                 | fcall command_args cmd_brace_block
-//                     {
-//                       method_call = @builder.call_method(nil, nil, val[0],
-//                                         nil, val[1], nil)
+fcall: operation;
 
-//                       begin_t, args, body, end_t = val[2]
-//                       result      = @builder.block(method_call,
-//                                       begin_t, args, body, end_t)
-//                     }
-//                 | primary_value call_op operation2 command_args =tLOWEST
-//                     {
-//                       result = @builder.call_method(val[0], val[1], val[2],
-//                                   nil, val[3], nil)
-//                     }
-//                 | primary_value call_op operation2 command_args cmd_brace_block
-//                     {
-//                       method_call = @builder.call_method(val[0], val[1], val[2],
-//                                         nil, val[3], nil)
+command
+    : fcall command_args %prec tLOWEST {
+        |$1: Token, $2: Nodes| -> Node;
 
-//                       begin_t, args, body, end_t = val[4]
-//                       result      = @builder.block(method_call,
-//                                       begin_t, args, body, end_t)
-//                     }
-//                 | primary_value tCOLON2 operation2 command_args =tLOWEST
-//                     {
-//                       result = @builder.call_method(val[0], val[1], val[2],
-//                                   nil, val[3], nil)
-//                     }
-//                 | primary_value tCOLON2 operation2 command_args cmd_brace_block
-//                     {
-//                       method_call = @builder.call_method(val[0], val[1], val[2],
-//                                         nil, val[3], nil)
+        $$ = node::call_method(None, None, Some($1), None, $2, None);
+    }
+    | fcall command_args cmd_brace_block {
+        |$1:Token, $2:Nodes, $3:TBraceBlock| -> Node;
 
-//                       begin_t, args, body, end_t = val[4]
-//                       result      = @builder.block(method_call,
-//                                       begin_t, args, body, end_t)
-//                     }
-//                 | kSUPER command_args
-//                     {
-//                       result = @builder.keyword_cmd(:super, val[0],
-//                                   nil, val[1], nil)
-//                     }
-//                 | kYIELD command_args
-//                     {
-//                       result = @builder.keyword_cmd(:yield, val[0],
-//                                   nil, val[1], nil)
-//                     }
-//                 | kRETURN call_args
-//                     {
-//                       result = @builder.keyword_cmd(:return, val[0],
-//                                   nil, val[1], nil)
-//                     }
-//                 | kBREAK call_args
-//                     {
-//                       result = @builder.keyword_cmd(:break, val[0],
-//                                   nil, val[1], nil)
-//                     }
-//                 | kNEXT call_args
-//                     {
-//                       result = @builder.keyword_cmd(:next, val[0],
-//                                   nil, val[1], nil)
-//                     }
+        let method_call = node::call_method(None, None, Some($1), None, $2, None);
+        let (begin_t, (args, body), end_t) = $3;
+        $$ = node::block(method_call, begin_t, args, body, end_t);
+    }
+    | primary_value call_op operation2 command_args %prec tLOWEST {
+        |$1:Node, $2:Token, $3:Token, $4:Nodes| -> Node;
+        $$ = node::call_method(Some($1), Some($2), Some($3), None, $4, None);
+    }
+    | primary_value call_op operation2 command_args cmd_brace_block {
+        |$1:Node, $2:Token, $3:Token, $4:Nodes, $5:TBraceBlock| -> Node;
 
-//             mlhs: mlhs_basic
-//                     {
-//                       result = @builder.multi_lhs(nil, val[0], nil)
-//                     }
-//                 | tLPAREN mlhs_inner rparen
-//                     {
-//                       result = @builder.begin(val[0], val[1], val[2])
-//                     }
+        let method_call = node::call_method(Some($1), Some($2), Some($3), None, $4, None);
+        let (begin_t, (args, body), end_t) = $5;
+        $$ = node::block(method_call, begin_t, args, body, end_t);
+    }
+    | primary_value tCOLON2 operation2 command_args %prec tLOWEST {
+        |$1:Node, $2:Token, $3:Token, $4:Nodes| -> Node;
+        $$ = node::call_method(Some($1), Some($2), Some($3), None, $4, None);
+    }
+    | primary_value tCOLON2 operation2 command_args cmd_brace_block {
+        |$1:Node, $2:Token, $3:Token, $4:Nodes, $5:TBraceBlock| -> Node;
 
-//       mlhs_inner: mlhs_basic
-//                     {
-//                       result = @builder.multi_lhs(nil, val[0], nil)
-//                     }
-//                 | tLPAREN mlhs_inner rparen
-//                     {
-//                       result = @builder.multi_lhs(val[0], val[1], val[2])
-//                     }
+        let method_call = node::call_method(Some($1), Some($2), Some($3), None, $4, None);
+        let (begin_t, (args, body), end_t) = $5;
+        $$ = node::block(method_call, begin_t, args, body, end_t);
+    }
+    | kSUPER command_args {
+        |$1:Token, $2:Nodes| -> Node;
+        $$ = node::keyword_cmd("super", $1, None, $2, None);
+    }
+    | kYIELD command_args {
+        |$1:Token, $2:Nodes| -> Node;
+        $$ = node::keyword_cmd("yield", $1, None, $2, None);
+    }
+    | kRETURN call_args {
+        |$1:Token, $2:Nodes| -> Node;
+        $$ = node::keyword_cmd("return", $1, None, $2, None);
+    }
+    | kBREAK call_args {
+        |$1:Token, $2:Nodes| -> Node;
+        $$ = node::keyword_cmd("break", $1, None, $2, None);
+    }
+    | kNEXT call_args {
+        |$1:Token, $2:Nodes| -> Node;
+        $$ = node::keyword_cmd("next", $1, None, $2, None);
+    }
+;
 
-//       mlhs_basic: mlhs_head
-//                 | mlhs_head mlhs_item
-//                     {
-//                       result = val[0].
-//                                   push(val[1])
-//                     }
-//                 | mlhs_head tSTAR mlhs_node
-//                     {
-//                       result = val[0].
-//                                   push(@builder.splat(val[1], val[2]))
-//                     }
-//                 | mlhs_head tSTAR mlhs_node tCOMMA mlhs_post
-//                     {
-//                       result = val[0].
-//                                   push(@builder.splat(val[1], val[2])).
-//                                   concat(val[4])
-//                     }
-//                 | mlhs_head tSTAR
-//                     {
-//                       result = val[0].
-//                                   push(@builder.splat(val[1]))
-//                     }
-//                 | mlhs_head tSTAR tCOMMA mlhs_post
-//                     {
-//                       result = val[0].
-//                                   push(@builder.splat(val[1])).
-//                                   concat(val[3])
-//                     }
-//                 | tSTAR mlhs_node
-//                     {
-//                       result = [ @builder.splat(val[0], val[1]) ]
-//                     }
-//                 | tSTAR mlhs_node tCOMMA mlhs_post
-//                     {
-//                       result = [ @builder.splat(val[0], val[1]),
-//                                  *val[3] ]
-//                     }
-//                 | tSTAR
-//                     {
-//                       result = [ @builder.splat(val[0]) ]
-//                     }
-//                 | tSTAR tCOMMA mlhs_post
-//                     {
-//                       result = [ @builder.splat(val[0]),
-//                                  *val[2] ]
-//                     }
+mlhs
+    : mlhs_basic {
+        |$1: Nodes| -> Node; $$ = node::multi_lhs(None, $1, None);
+    }
+    | tLPAREN mlhs_inner rparen {
+        |$1: Token, $2: Node, $3: Token| -> Node; $$ = node::begin($1, Some($2), $3);
+    }
+;
 
-//        mlhs_item: mlhs_node
-//                 | tLPAREN mlhs_inner rparen
-//                     {
-//                       result = @builder.begin(val[0], val[1], val[2])
-//                     }
+mlhs_inner
+    : mlhs_basic {
+        |$1: Nodes| -> Node; $$ = node::multi_lhs(None, $1, None);
+    }
+    | tLPAREN mlhs_inner rparen {
+        |$1: Token, $2: Nodes, $3: Token| -> Node; $$ = node::multi_lhs(Some($1), $2, Some($3));
+    }
+;
 
-//        mlhs_head: mlhs_item tCOMMA
-//                     {
-//                       result = [ val[0] ]
-//                     }
-//                 | mlhs_head mlhs_item tCOMMA
-//                     {
-//                       result = val[0] << val[1]
-//                     }
+mlhs_basic
+    : mlhs_head
+    | mlhs_head mlhs_item {
+        |$1:Nodes, $2:Node| -> Nodes;
+        $1.push($2);
+        $$ = $1;
+    }
+    | mlhs_head tSTAR mlhs_node {
+        |$1:Nodes, $2:Token, $3:Node| -> Nodes;
+        $1.push( node::splat($2, Some($3)) );
+        $$ = $1;
+    }
+    | mlhs_head tSTAR mlhs_node tCOMMA mlhs_post {
+        |$1:Nodes, $2:Token, $3:Node, $5:Nodes| -> Nodes;
 
-//        mlhs_post: mlhs_item
-//                     {
-//                       result = [ val[0] ]
-//                     }
-//                 | mlhs_post tCOMMA mlhs_item
-//                     {
-//                       result = val[0] << val[2]
-//                     }
+        $1.push( node::splat($2, Some($3)) );
+        $1.append(&mut $5);
+        $$ = $1;
+    }
+    | mlhs_head tSTAR {
+        |$1:Nodes, $2:Token| -> Nodes;
+        $1.push( node::splat($2, None) );
+        $$ = $1;
+    }
+    | mlhs_head tSTAR tCOMMA mlhs_post {
+        |$1:Nodes, $2:Token, $4:Nodes| -> Nodes;
 
-//        mlhs_node: user_variable
-//                     {
-//                       result = @builder.assignable(val[0])
-//                     }
-//                 | keyword_variable
-//                     {
-//                       result = @builder.assignable(val[0])
-//                     }
-//                 | primary_value tLBRACK2 opt_call_args rbracket
-//                     {
-//                       result = @builder.index_asgn(val[0], val[1], val[2], val[3])
-//                     }
-//                 | primary_value call_op tIDENTIFIER
-//                     {
-//                       result = @builder.attr_asgn(val[0], val[1], val[2])
-//                     }
-//                 | primary_value tCOLON2 tIDENTIFIER
-//                     {
-//                       result = @builder.attr_asgn(val[0], val[1], val[2])
-//                     }
-//                 | primary_value call_op tCONSTANT
-//                     {
-//                       result = @builder.attr_asgn(val[0], val[1], val[2])
-//                     }
-//                 | primary_value tCOLON2 tCONSTANT
-//                     {
-//                       result = @builder.assignable(
-//                                   @builder.const_fetch(val[0], val[1], val[2]))
-//                     }
-//                 | tCOLON3 tCONSTANT
-//                     {
-//                       result = @builder.assignable(
-//                                   @builder.const_global(val[0], val[1]))
-//                     }
-//                 | backref
-//                     {
-//                       result = @builder.assignable(val[0])
-//                     }
+        $1.push( node::splat($2, None) );
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    | tSTAR mlhs_node {
+        |$1:Token, $2:Node| -> Nodes;
+        $$ = vec![ node::splat($1, Some($2)) ];
+    }
+    | tSTAR mlhs_node tCOMMA mlhs_post {
+        |$1:Token, $2:Node, $4:Nodes| -> Nodes;
 
-//              lhs: user_variable
-//                     {
-//                       result = @builder.assignable(val[0])
-//                     }
+        let mut r = vec![ node::splat($1, Some($2)) ];
+        r.append(&mut $4);
+        $$ = r;
+    }
+    | tSTAR {
+        |$1:Token| -> Nodes;
+        $$ = vec![ node::splat($1, None) ];
+    }
+    | tSTAR tCOMMA mlhs_post {
+        |$1:Token, $3:Nodes| -> Nodes;
+
+        let mut r = vec![ node::splat($1, None) ];
+        r.append(&mut $3);
+        $$ = r;
+    }
+;
+
+mlhs_item
+    : mlhs_node
+    | tLPAREN mlhs_inner rparen {
+        |$1: Token, $2: Node, $3: Token| -> Node;
+        $$ = node::begin($1, Some($2), $3);
+    }
+;
+
+mlhs_head
+    : mlhs_item tCOMMA {
+        |$1: Node| -> Nodes; $$ = vec![ $1 ];
+    }
+    | mlhs_head mlhs_item tCOMMA {
+        |$1: Nodes, $2: Node| -> Nodes;
+        $1.push($2);
+        $$ = $1;
+    }
+;
+
+mlhs_post
+    : mlhs_item {
+        |$1: Node| -> Nodes; $$ = vec![$1];
+    }
+    | mlhs_post tCOMMA mlhs_item {
+        |$1: Nodes, $3: Node| -> Nodes;
+        $1.push($3);
+        $$ = $1;
+    }
+;
+
+mlhs_node
+    : user_variable {
+        |$1:Node| -> Node;
+        $$ = node::assignable($1); }
+    | keyword_variable {
+            |$1:Node| -> Node;
+            $$ = node::assignable($1);
+        }
+    | primary_value tLBRACK2 opt_call_args rbracket {
+        |$1: Node, $2: Token, $3: Nodes, $4:Token| -> Node;
+
+        $$ = node::index_asgn($1, $2, $3, $4);
+    }
+    | primary_value call_op tIDENTIFIER {
+        |$1:Node, $2:Token, $3:Token| -> Node;
+        $$ = node::attr_asgn($1, $2, $3)
+    }
+    | primary_value tCOLON2 tIDENTIFIER {
+        |$1:Node, $2:Token, $3:Token| -> Node;
+        $$ = node::attr_asgn($1, $2, $3)
+    }
+    | primary_value call_op tCONSTANT {
+        |$1:Node, $2:Token, $3:Token| -> Node;
+        $$ = node::attr_asgn($1, $2, $3)
+    }
+    | primary_value tCOLON2 tCONSTANT {
+        |$1:Node, $2:Token, $3:Token| -> Node;
+        $$ = node::assignable(node::const_fetch($1, $2, $3));
+    }
+    | tCOLON3 tCONSTANT {
+        |$1:Token, $2:Token| -> Node;
+        $$ = node::assignable(node::const_global($1, $2));
+    }
+    | backref {
+        |$1:Node| -> Node;
+        $$ = node::assignable($1);
+    }
+;
+
 lhs
     : user_variable {
         |$1:Node| -> Node;
         $$ = node::assignable($1);
     }
+    | keyword_variable {
+        |$1:Node| -> Node;
+        $$ = node::assignable($1);
+    }
+    | primary_value tLBRACK2 opt_call_args rbracket {
+        |$1: Node, $2: Token, $3: Nodes, $4:Token| -> Node;
+
+        $$ = node::index_asgn($1, $2, $3, $4);
+    }
+    | primary_value call_op tIDENTIFIER {
+        |$1:Node, $2:Token, $3:Token| -> Node;
+        $$ = node::attr_asgn($1, $2, $3)
+    }
+    | primary_value tCOLON2 tIDENTIFIER {
+        |$1:Node, $2:Token, $3:Token| -> Node;
+        $$ = node::attr_asgn($1, $2, $3)
+    }
+    | primary_value call_op tCONSTANT {
+        |$1:Node, $2:Token, $3:Token| -> Node;
+        $$ = node::attr_asgn($1, $2, $3)
+    }
+    | primary_value tCOLON2 tCONSTANT {
+        |$1:Node, $2:Token, $3:Token| -> Node;
+        $$ = node::assignable(node::const_fetch($1, $2, $3));
+    }
+    | tCOLON3 tCONSTANT {
+        |$1:Token, $2:Token| -> Node;
+        $$ = node::assignable(node::const_global($1, $2));
+    }
+    | backref {
+        |$1:Node| -> Node;
+        $$ = node::assignable($1);
+    }
 ;
-//                 | keyword_variable
-//                     {
-//                       result = @builder.assignable(val[0])
-//                     }
-//                 | primary_value tLBRACK2 opt_call_args rbracket
-//                     {
-//                       result = @builder.index_asgn(val[0], val[1], val[2], val[3])
-//                     }
-//                 | primary_value call_op tIDENTIFIER
-//                     {
-//                       result = @builder.attr_asgn(val[0], val[1], val[2])
-//                     }
-//                 | primary_value tCOLON2 tIDENTIFIER
-//                     {
-//                       result = @builder.attr_asgn(val[0], val[1], val[2])
-//                     }
-//                 | primary_value call_op tCONSTANT
-//                     {
-//                       result = @builder.attr_asgn(val[0], val[1], val[2])
-//                     }
-//                 | primary_value tCOLON2 tCONSTANT
-//                     {
-//                       result = @builder.assignable(
-//                                   @builder.const_fetch(val[0], val[1], val[2]))
-//                     }
-//                 | tCOLON3 tCONSTANT
-//                     {
-//                       result = @builder.assignable(
-//                                   @builder.const_global(val[0], val[1]))
-//                     }
-//                 | backref
-//                     {
-//                       result = @builder.assignable(val[0])
-//                     }
 
-//            cname: tIDENTIFIER
-//                     {
-//                       diagnostic :error, :module_name_const, nil, val[0]
-//                     }
-//                 | tCONSTANT
+cname
+    : tIDENTIFIER {
+        ||->Node; $$=Node::DUMMY;
 
-//            cpath: tCOLON3 cname
-//                     {
-//                       result = @builder.const_global(val[0], val[1])
-//                     }
-//                 | cname
-//                     {
-//                       result = @builder.const(val[0])
-//                     }
-//                 | primary_value tCOLON2 cname
-//                     {
-//                       result = @builder.const_fetch(val[0], val[1], val[2])
-//                     }
+        //   diagnostic :error, :module_name_const, nil, val[0]
+        panic!("diagnostic error");
+    }
+    | tCONSTANT
+;
 
-//            fname: tIDENTIFIER | tCONSTANT | tFID
-//                 | op
-//                 | reswords
+cpath
+    : tCOLON3 cname {
+        |$1:Token, $2:Token| -> Node; $$ = node::const_global($1, $2);
+    }
+    | cname {
+        |$1:Token| -> Node; $$ = node::build_const($1);
+    }
+    | primary_value tCOLON2 cname {
+        |$1:Node, $2:Token, $3:Token| -> Node; $$ = node::const_fetch($1, $2, $3);
+    }
+;
 
-//             fsym: fname
-//                     {
-//                       result = @builder.symbol(val[0])
-//                     }
-//                 | symbol
+fname
+    : tIDENTIFIER | tCONSTANT | tFID
+    | op
+    | reswords
+;
 
-//            fitem: fsym
-//                 | dsym
+fsym
+    : fname {
+        |$1:Token| -> Node; $$ = node::symbol($1);
+    }
+    | symbol
+;
 
-//       undef_list: fitem
-//                     {
-//                       result = [ val[0] ]
-//                     }
-//                 | undef_list tCOMMA
-//                     {
-//                       @lexer.state = :expr_fname
-//                     }
-//                     fitem
-//                     {
-//                       result = val[0] << val[3]
-//                     }
+fitem
+    : fsym
+    | dsym
+;
 
-//               op:   tPIPE    | tCARET  | tAMPER2  | tCMP  | tEQ     | tEQQ
-//                 |   tMATCH   | tNMATCH | tGT      | tGEQ  | tLT     | tLEQ
-//                 |   tNEQ     | tLSHFT  | tRSHFT   | tPLUS | tMINUS  | tSTAR2
-//                 |   tSTAR    | tDIVIDE | tPERCENT | tPOW  | tBANG   | tTILDE
-//                 |   tUPLUS   | tUMINUS | tAREF    | tASET | tDSTAR  | tBACK_REF2
+undef_list
+    : fitem {
+        |$1:Node| -> Nodes; $$ = vec![$1];
+    }
+    | undef_list tCOMMA fake_embedded_action_undef_list fitem {
+        |$1:Nodes, $4: Node| -> Nodes;
+        $1.push($4);
+        $$ = $1;
+    }
+;
 
-//         reswords: k__LINE__ | k__FILE__ | k__ENCODING__ | klBEGIN | klEND
-//                 | kALIAS    | kAND      | kBEGIN        | kBREAK  | kCASE
-//                 | kCLASS    | kDEF      | kDEFINED      | kDO     | kELSE
-//                 | kELSIF    | kEND      | kENSURE       | kFALSE  | kFOR
-//                 | kIN       | kMODULE   | kNEXT         | kNIL    | kNOT
-//                 | kOR       | kREDO     | kRESCUE       | kRETRY  | kRETURN
-//                 | kSELF     | kSUPER    | kTHEN         | kTRUE   | kUNDEF
-//                 | kWHEN     | kYIELD    | kIF           | kUNLESS | kWHILE
-//                 | kUNTIL
+fake_embedded_action_undef_list: {
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.set_state("expr_fname");
+};
 
-//              arg: lhs tEQL arg_rhs
-//                     {
-//                       result = @builder.assign(val[0], val[1], val[2])
-//                     }
+              op:   tPIPE    | tCARET  | tAMPER2  | tCMP  | tEQ     | tEQQ
+                |   tMATCH   | tNMATCH | tGT      | tGEQ  | tLT     | tLEQ
+                |   tNEQ     | tLSHFT  | tRSHFT   | tPLUS | tMINUS  | tSTAR2
+                |   tSTAR    | tDIVIDE | tPERCENT | tPOW  | tBANG   | tTILDE
+                |   tUPLUS   | tUMINUS | tAREF    | tASET | tDSTAR  | tBACK_REF2
+;
+
+        reswords: k__LINE__ | k__FILE__ | k__ENCODING__ | klBEGIN | klEND
+                | kALIAS    | kAND      | kBEGIN        | kBREAK  | kCASE
+                | kCLASS    | kDEF      | kDEFINED      | kDO     | kELSE
+                | kELSIF    | kEND      | kENSURE       | kFALSE  | kFOR
+                | kIN       | kMODULE   | kNEXT         | kNIL    | kNOT
+                | kOR       | kREDO     | kRESCUE       | kRETRY  | kRETURN
+                | kSELF     | kSUPER    | kTHEN         | kTRUE   | kUNDEF
+                | kWHEN     | kYIELD    | kIF           | kUNLESS | kWHILE
+                | kUNTIL
+;
+
 arg
     : lhs tEQL arg_rhs {
         |$1: Node; $2: Token, $3: Node| -> Node;
-
-        $$ = node::assign($1, *$2.interior_token, $3)
+        $$ = node::assign($1, $2, $3)
     }
-//                 | var_lhs tOP_ASGN arg_rhs
-//                     {
-//                       result = @builder.op_assign(val[0], val[1], val[2])
-//                     }
-//                 | primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN arg_rhs
-//                     {
-//                       result = @builder.op_assign(
-//                                   @builder.index(
-//                                     val[0], val[1], val[2], val[3]),
-//                                   val[4], val[5])
-//                     }
-//                 | primary_value call_op tIDENTIFIER tOP_ASGN arg_rhs
-//                     {
-//                       result = @builder.op_assign(
-//                                   @builder.call_method(
-//                                     val[0], val[1], val[2]),
-//                                   val[3], val[4])
-//                     }
-//                 | primary_value call_op tCONSTANT tOP_ASGN arg_rhs
-//                     {
-//                       result = @builder.op_assign(
-//                                   @builder.call_method(
-//                                     val[0], val[1], val[2]),
-//                                   val[3], val[4])
-//                     }
-//                 | primary_value tCOLON2 tIDENTIFIER tOP_ASGN arg_rhs
-//                     {
-//                       result = @builder.op_assign(
-//                                   @builder.call_method(
-//                                     val[0], val[1], val[2]),
-//                                   val[3], val[4])
-//                     }
-//                 | primary_value tCOLON2 tCONSTANT tOP_ASGN arg_rhs
-//                     {
-//                       const  = @builder.const_op_assignable(
-//                                   @builder.const_fetch(val[0], val[1], val[2]))
-//                       result = @builder.op_assign(const, val[3], val[4])
-//                     }
-//                 | tCOLON3 tCONSTANT tOP_ASGN arg_rhs
-//                     {
-//                       const  = @builder.const_op_assignable(
-//                                   @builder.const_global(val[0], val[1]))
-//                       result = @builder.op_assign(const, val[2], val[3])
-//                     }
-//                 | backref tOP_ASGN arg_rhs
-//                     {
-//                       result = @builder.op_assign(val[0], val[1], val[2])
-//                     }
-//                 | arg tDOT2 arg
-//                     {
-//                       result = @builder.range_inclusive(val[0], val[1], val[2])
-//                     }
-//                 | arg tDOT3 arg
-//                     {
-//                       result = @builder.range_exclusive(val[0], val[1], val[2])
-//                     }
-//                 | arg tPLUS arg
-//                     {
-//                       result = @builder.binary_op(val[0], val[1], val[2])
-//                     }
-//                 | arg tMINUS arg
-//                     {
-//                       result = @builder.binary_op(val[0], val[1], val[2])
-//                     }
-//                 | arg tSTAR2 arg
-//                     {
-//                       result = @builder.binary_op(val[0], val[1], val[2])
-//                     }
-//                 | arg tDIVIDE arg
-//                     {
-//                       result = @builder.binary_op(val[0], val[1], val[2])
-//                     }
-//                 | arg tPERCENT arg
-//                     {
-//                       result = @builder.binary_op(val[0], val[1], val[2])
-//                     }
-//                 | arg tPOW arg
-//                     {
-//                       result = @builder.binary_op(val[0], val[1], val[2])
-//                     }
-//                 | tUNARY_NUM simple_numeric tPOW arg
-//                     {
-//                       result = @builder.unary_op(val[0],
-//                                   @builder.binary_op(
-//                                     val[1], val[2], val[3]))
-//                     }
-//                 | tUPLUS arg
-//                     {
-//                       result = @builder.unary_op(val[0], val[1])
-//                     }
-//                 | tUMINUS arg
-//                     {
-//                       result = @builder.unary_op(val[0], val[1])
-//                     }
-//                 | arg tPIPE arg
-//                     {
-//                       result = @builder.binary_op(val[0], val[1], val[2])
-//                     }
-//                 | arg tCARET arg
-//                     {
-//                       result = @builder.binary_op(val[0], val[1], val[2])
-//                     }
-//                 | arg tAMPER2 arg
-//                     {
-//                       result = @builder.binary_op(val[0], val[1], val[2])
-//                     }
-//                 | arg tCMP arg
-//                     {
-//                       result = @builder.binary_op(val[0], val[1], val[2])
-//                     }
-//                 | rel_expr =tCMP
-//                 | arg tEQ arg
-//                     {
-//                       result = @builder.binary_op(val[0], val[1], val[2])
-//                     }
-//                 | arg tEQQ arg
-//                     {
-//                       result = @builder.binary_op(val[0], val[1], val[2])
-//                     }
-//                 | arg tNEQ arg
-//                     {
-//                       result = @builder.binary_op(val[0], val[1], val[2])
-//                     }
-//                 | arg tMATCH arg
-//                     {
-//                       result = @builder.match_op(val[0], val[1], val[2])
-//                     }
-//                 | arg tNMATCH arg
-//                     {
-//                       result = @builder.binary_op(val[0], val[1], val[2])
-//                     }
-//                 | tBANG arg
-//                     {
-//                       result = @builder.not_op(val[0], nil, val[1], nil)
-//                     }
-//                 | tTILDE arg
-//                     {
-//                       result = @builder.unary_op(val[0], val[1])
-//                     }
-//                 | arg tLSHFT arg
-//                     {
-//                       result = @builder.binary_op(val[0], val[1], val[2])
-//                     }
-//                 | arg tRSHFT arg
-//                     {
-//                       result = @builder.binary_op(val[0], val[1], val[2])
-//                     }
-//                 | arg tANDOP arg
-//                     {
-//                       result = @builder.logical_op(:and, val[0], val[1], val[2])
-//                     }
-//                 | arg tOROP arg
-//                     {
-//                       result = @builder.logical_op(:or, val[0], val[1], val[2])
-//                     }
-//                 | kDEFINED opt_nl arg
-//                     {
-//                       result = @builder.keyword_cmd(:defined?, val[0], nil, [ val[2] ], nil)
-//                     }
-//                 | arg tEH arg opt_nl tCOLON arg
-//                     {
-//                       result = @builder.ternary(val[0], val[1],
-//                                                 val[2], val[4], val[5])
-//                     }
-//                 | primary
+    | var_lhs tOP_ASGN arg_rhs {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::op_assign($1, $2, $3);
+    }
+    | primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN arg_rhs {
+        |$1: Node, $2: Token, $3: Nodes, $4:Token, $5:Token, $6:Node| -> Node;
+
+        $$ = node::op_assign(
+            node::index($1, $2, $3, $4),
+            $5, $6
+        );
+    }
+    | primary_value call_op tIDENTIFIER tOP_ASGN arg_rhs {
+        |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
+
+        $$ = node::op_assign(
+            node::call_method(Some($1), Some($2), Some($3), None, vec![], None),
+            $4, $5
+        );
+    }
+    | primary_value call_op tCONSTANT tOP_ASGN arg_rhs {
+        |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
+
+        $$ = node::op_assign(
+            node::call_method(Some($1), Some($2), Some($3), None, vec![], None),
+            $4, $5
+        );
+    }
+    | primary_value tCOLON2 tIDENTIFIER tOP_ASGN arg_rhs {
+        |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
+
+        $$ = node::op_assign(
+            node::call_method(Some($1), Some($2), Some($3), None, vec![], None),
+            $4, $5
+        );
+    }
+    | primary_value tCOLON2 tCONSTANT tOP_ASGN arg_rhs {
+        |$1:Node, $2:Token, $3:Token, $4:Token, $5:Node| -> Node;
+
+        let const_node = node::const_op_assignable(node::const_fetch($1, $2, $3));
+        $$ = node::op_assign(const_node, $4, $5);
+    }
+    | tCOLON3 tCONSTANT tOP_ASGN arg_rhs {
+        |$1:Token, $2:Token, $3:Token, $4:Node| -> Node;
+
+        let const_node = node::const_op_assignable(node::const_global($1, $2));
+        $$ = node::op_assign(const_node, $3, $4);
+    }
+    | backref tOP_ASGN arg_rhs {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::op_assign($1, $2, $3);
+    }
+    | arg tDOT2 arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::range_inclusive($1, $2, $3);
+    }
+    | arg tDOT3 arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::range_exclusive($1, $2, $3);
+    }
+    | arg tPLUS arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tMINUS arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tSTAR2 arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tDIVIDE arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tPERCENT arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tPOW arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | tUNARY_NUM simple_numeric tPOW arg {
+        |$1:Token, $2:Node, $3:Token, $4:Node| -> Node;
+        $$ = node::unary_op($1, node::binary_op($2, $3, $4));
+    }
+    | tUPLUS arg {
+        |$1:Token, $2:Node| -> Node;
+        $$ = node::unary_op($1, $2);
+    }
+    | tUMINUS arg {
+        |$1:Token, $2:Node| -> Node;
+        $$ = node::unary_op($1, $2);
+    }
+    | arg tPIPE arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tCARET arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tAMPER2 arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tCMP arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | rel_expr %prec tCMP
+    | arg tEQ arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tEQQ arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tNEQ arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tMATCH arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::match_op($1, $2, $3);
+    }
+    | arg tNMATCH arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | tBANG arg {
+        |$1:Token, $2:Node| -> Node;
+        $$ = node::not_op($1, None, Some($2), None);
+    }
+    | tTILDE arg {
+        |$1:Token, $2:Node| -> Node;
+        $$ = node::unary_op($1, $2);
+    }
+    | arg tLSHFT arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tRSHFT arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | arg tANDOP arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::logical_op("and", $1, $2, $3);
+    }
+    | arg tOROP arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::logical_op("or", $1, $2, $3);
+    }
+    | kDEFINED opt_nl arg {
+        |$1:Token, $3:Node| -> Node;
+        $$ = node::keyword_cmd("defined?", $1, None, vec![$3], None);
+    }
+    | arg tEH arg opt_nl tCOLON arg {
+        |$1:Node, $2:Token, $3:Node, $5:Token, $6:Node| -> Node;
+        $$ = node::ternary($1, $2, $3, $5, $6);
+    }
     | primary
 ;
 
-//            relop: tGT | tLT | tGEQ | tLEQ
+relop: tGT | tLT | tGEQ | tLEQ;
 
-//         rel_expr: arg relop arg =tGT
-//                     {
-//                       result = @builder.binary_op(val[0], val[1], val[2])
-//                     }
-//                 | rel_expr relop arg =tGT
-//                     {
-//                       result = @builder.binary_op(val[0], val[1], val[2])
-//                     }
+rel_expr
+    : arg relop arg %prec tGT {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+    | rel_expr relop arg %prec tGT {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        $$ = node::binary_op($1, $2, $3);
+    }
+;
 
-//        arg_value: arg
 arg_value: arg;
 
-//        aref_args: none
-//                 | args trailer
-//                 | args tCOMMA assocs trailer
-//                     {
-//                       result = val[0] << @builder.associate(nil, val[2], nil)
-//                     }
-//                 | assocs trailer
-//                     {
-//                       result = [ @builder.associate(nil, val[0], nil) ]
-//                     }
-// TODO
 aref_args
     : {
-        || -> Node;
-
-        // TODO shared macro
-        $$ = Node::Nodes(vec![]);
+        || -> Nodes; $$ = vec![];
     }
     | args trailer { $$ = $1; }
+    | args tCOMMA assocs trailer {
+        |$1: Nodes, $3: Nodes| -> Nodes;
+        $1.push(node::associate(None, $3, None));
+        $$ = $1;
+    }
+    | assocs trailer {
+        |$1: Nodes|->Nodes; $$ = vec![ node::associate(None, $1, None) ];
+    }
 ;
 
-//          arg_rhs: arg =tOP_ASGN
-//                 | arg kRESCUE_MOD arg
-//                     {
-//                       rescue_body = @builder.rescue_body(val[1],
-//                                         nil, nil, nil,
-//                                         nil, val[2])
-// 
-//                       result = @builder.begin_body(val[0], [ rescue_body ])
-//                     }
-// TODO
 arg_rhs
     : arg %prec tOP_ASGN
+    | arg kRESCUE_MOD arg {
+        |$1:Node, $2:Token, $3:Node| -> Node;
+        let rescue_body = node::rescue_body($2, None, None, None, None, $3);
+
+        $$ = node::begin_body($1, vec![ rescue_body ], None, None, None, None);
+    }
 ;
 
-//       paren_args: tLPAREN2 opt_call_args rparen
-//                     {
-//                       result = val
-//                     }
+paren_args: tLPAREN2 opt_call_args rparen {
+    |$1:Token, $2:Nodes, $3:Token| -> TParenArgs; $$ = (Some($1), $2, Some($3));
+};
 
-//   opt_paren_args: # nothing
-//                     {
-//                       result = [ nil, [], nil ]
-//                     }
-//                 | paren_args
+opt_paren_args
+    : {
+        || -> TParenArgs; $$ = (None, vec![], None);
+    }
+    | paren_args
+;
 
-//    opt_call_args: # nothing
-//                     {
-//                       result = []
-//                     }
-//                 | call_args
-//                 | args tCOMMA
-//                 | args tCOMMA assocs tCOMMA
-//                     {
-//                       result = val[0] << @builder.associate(nil, val[2], nil)
-//                     }
-//                 | assocs tCOMMA
-//                     {
-//                       result = [ @builder.associate(nil, val[0], nil) ]
-//                     }
+opt_call_args
+    : {
+        || -> Nodes; $$ = vec![];
+    }
+    | call_args
+    | args tCOMMA
+    | args tCOMMA assocs tCOMMA {
+        |$1:Nodes, $3:Nodes| -> Nodes;
 
-//        call_args: command
-//                     {
-//                       result = [ val[0] ]
-//                     }
-//                 | args opt_block_arg
-//                     {
-//                       result = val[0].concat(val[1])
-//                     }
-//                 | assocs opt_block_arg
-//                     {
-//                       result = [ @builder.associate(nil, val[0], nil) ]
-//                       result.concat(val[1])
-//                     }
-//                 | args tCOMMA assocs opt_block_arg
-//                     {
-//                       assocs = @builder.associate(nil, val[2], nil)
-//                       result = val[0] << assocs
-//                       result.concat(val[3])
-//                     }
-//                 | block_arg
-//                     {
-//                       result =  [ val[0] ]
-//                     }
+        $1.push(node::associate(None, $3, None));
+        $$ = $1;
+    }
+    | assocs tCOMMA {
+        |$1:Nodes| -> Nodes;
 
-//     command_args:   {
-//                       result = @lexer.cmdarg.dup
-//                       @lexer.cmdarg.push(true)
-//                     }
-//                   call_args
-//                     {
-//                       @lexer.cmdarg = val[0]
+        $$ = vec![ node::associate(None, $1, None) ];
+    }
+;
 
-//                       result = val[1]
-//                     }
+call_args
+    : command {
+        |$1:Node| -> Nodes; $$ = vec![$1];
+    }
+    | args opt_block_arg {
+        |$1:Nodes, $2:Nodes| -> Nodes;
 
-//        block_arg: tAMPER arg_value
-//                     {
-//                       result = @builder.block_pass(val[0], val[1])
-//                     }
+        $1.append(&mut $2);
+        $$ = $1;
+    }
+    | assocs opt_block_arg {
+        |$1:Nodes, $2:Nodes| -> Nodes;
 
-//    opt_block_arg: tCOMMA block_arg
-//                     {
-//                       result = [ val[1] ]
-//                     }
-//                 | # nothing
-//                     {
-//                       result = []
-//                     }
+        let mut result = vec![node::associate(None, $1, None)];
+        result.append(&mut $2);
+        $$ = result;
+    }
+    | args tCOMMA assocs opt_block_arg {
+        |$1:Nodes, $3:Nodes, $4:Nodes| -> Nodes;
 
-//             args: arg_value
-//                     {
-//                       result = [ val[0] ]
-//                     }
-//                 | tSTAR arg_value
-//                     {
-//                       result = [ @builder.splat(val[0], val[1]) ]
-//                     }
-//                 | args tCOMMA arg_value
-//                     {
-//                       result = val[0] << val[2]
-//                     }
-//                 | args tCOMMA tSTAR arg_value
-//                     {
-//                       result = val[0] << @builder.splat(val[2], val[3])
-//                     }
-// TODO INCOMPLETE
+        let mut assocs = node::associate(None, $3, None);
+        $1.push(assocs);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    | block_arg {
+        |$1:Node|->Nodes; $$ = vec![$1];
+    }
+;
+
+    command_args: fake_embedded_action__command_args call_args {
+        |$1:StackState, $2:Nodes| -> Nodes;
+
+        self.tokenizer.interior_lexer.cmdarg = $1;
+        $$ = $2;
+    }
+;
+
+fake_embedded_action__command_args: {
+    ||->StackState;
+
+    $$ = self.tokenizer.interior_lexer.cmdarg.clone();
+    self.tokenizer.interior_lexer.cmdarg.push(true);
+};
+
+block_arg
+    : tAMPER arg_value {
+        |$1:Token, $2:Node| -> Node;
+        $$ = node::block_pass($1, $2);
+    }
+;
+
+opt_block_arg
+    : tCOMMA block_arg {
+        |$2:Node|->Nodes; $$ = vec![$2];
+    }
+    | {
+        ||->Nodes; $$ = vec![];
+    }
+;
+
 args
     : arg_value {
-        |$1:Node| -> Node;
-        $$ = Node::Nodes(vec![$1]);
+        |$1:Node| -> Nodes; $$ = vec![$1];
+    }
+    | tSTAR arg_value {
+        |$1:Token, $2:Node| -> Nodes;
+        $$ = vec![ node::splat($1, Some($2)) ];
     }
     | args tCOMMA arg_value {
-        |$1:Node, $2:Token, $3:Node| -> Node;
-        // Node::Nodes, , Node
+        |$1:Nodes, $2:Token, $3:Node| -> Nodes;
 
-        let $$;
-        if let Node::Nodes(mut nodes) = $1 {
-            nodes.push($3);
-            <REMOVE THIS LET>$$ = Node::Nodes(nodes);
-        } else {unreachable!();}
+        $1.push($3); $$ = $1;
+    }
+    | args tCOMMA tSTAR arg_value {
+        |$1:Nodes, $3:Token, $4:Node| -> Nodes;
+
+        $1.push(node::splat($3, Some($4)));
+        $$ = $1;
     }
 ;
 
-//         mrhs_arg: mrhs
-//                     {
-//                       result = @builder.array(nil, val[0], nil)
-//                     }
-//                 | arg_value
+mrhs_arg
+    : mrhs {
+        |$1: Nodes| -> Node;
+        $$ = node::array(None, $1, None);
+    }
+    | arg_value
+;
 
-//             mrhs: args tCOMMA arg_value
-//                     {
-//                       result = val[0] << val[2]
-//                     }
-//                 | args tCOMMA tSTAR arg_value
-//                     {
-//                       result = val[0] << @builder.splat(val[2], val[3])
-//                     }
-//                 | tSTAR arg_value
-//                     {
-//                       result = [ @builder.splat(val[0], val[1]) ]
-//                     }
+mrhs
+    : args tCOMMA arg_value {
+        |$1:Nodes, $3:Node| -> Nodes;
 
-//          primary: literal
-// TODO
+        $1.push($3); $$ = $1;
+    }
+    | args tCOMMA tSTAR arg_value {
+        |$1:Nodes, $3:Token, $4: Node| -> Nodes;
+        $1.push(node::splat($3, Some($4)));
+        $$ = $1;
+    }
+    | tSTAR arg_value {
+        |$1:Token, $2:Node|->Nodes;
+        $$ = vec![ node::splat($1, Some($2)) ];
+    }
+;
+
+fake_embedded_action_primary_kBEGIN: {
+    || -> StackState;
+
+    $$ = self.tokenizer.interior_lexer.cmdarg.clone();
+    self.tokenizer.interior_lexer.cmdarg.clear();
+};
+
+fake_embedded_action_primary_tLPAREN_ARG: {
+    ||->StackState;
+    $$=self.tokenizer.interior_lexer.cmdarg.clone();
+    self.tokenizer.interior_lexer.cmdarg.clear();
+};
+
+fake_embedded_action_primary_tLPAREN_ARG_stmt: {
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.set_state("expr_endarg");
+};
+
+fake_embedded_action_primary_tLPAREN_ARG_2: {
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.set_state("expr_endarg");
+};
+
+fake_embedded_action_primary_kWHILE_1: {
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.cond.push(true);
+};
+
+fake_embedded_action_primary_kWHILE_2: {
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.cond.pop();
+};
+
+fake_embedded_action_primary_kUNTIL_1: {
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.cond.push(true);
+};
+
+fake_embedded_action_primary_kUNTIL_2: {
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.cond.pop();
+};
+
+fake_embedded_action__primary__kFOR_1: {
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.cond.push(true);
+};
+
+fake_embedded_action__primary__kFOR_2: {
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.cond.pop();
+};
+
+fake_embedded_action__primary__kCLASS_1: {
+    ||->Node; $$=Node::DUMMY;
+
+    self.static_env.extend_static();
+    self.tokenizer.interior_lexer.push_cmdarg();
+};
+
+fake_embedded_action__primary__kCLASS_2: {
+    //   result = @def_level
+    //   @def_level = 0
+
+    //   @static_env.extend_static
+    //   @lexer.push_cmdarg
+    ||->Node;
+    wip!(); $$=Node::DUMMY;
+};
+
+fake_embedded_action__primary__kMODULE_1: {
+    ||->Node; $$=Node::DUMMY;
+
+    self.static_env.extend_static();
+    self.tokenizer.interior_lexer.push_cmdarg();
+};
+
+fake_embedded_action__primary__kDEF_1: {
+    //   @def_level += 1
+    //   @static_env.extend_static
+    //   @lexer.push_cmdarg
+    ||->Node;
+    wip!(); $$=Node::DUMMY;
+};
+
+fake_embedded_action__primary__kDEF_2: {
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.set_state("expr_fname");
+};
+
+fake_embedded_action__primary__kDEF_3: {
+    //   @def_level += 1
+    //   @static_env.extend_static
+    //   @lexer.push_cmdarg
+    ||->Node;
+    wip!(); $$=Node::DUMMY;
+};
+
 primary
     : literal
-//                 | strings
     | strings
-//                 | xstring
-//                 | regexp
-//                 | words
+    | xstring
+    | regexp
     | words
-//                 | qwords
     | qwords
-//                 | symbols
-//                 | qsymbols
-//                 | var_ref
+    | symbols
+    | qsymbols
     | var_ref
-//                 | backref
-//                 | tFID
-//                     {
-//                       result = @builder.call_method(nil, nil, val[0])
-//                     }
-//                 | kBEGIN
-//                     {
-//                       result = @lexer.cmdarg.dup
-//                       @lexer.cmdarg.clear
-//                     }
-//                     bodystmt kEND
-//                     {
-//                       @lexer.cmdarg = val[1]
-// 
-//                       result = @builder.begin_keyword(val[0], val[2], val[3])
-//                     }
-//                 | tLPAREN_ARG
-//                     {
-//                       result = @lexer.cmdarg.dup
-//                       @lexer.cmdarg.clear
-//                     }
-//                     stmt
-//                     {
-//                       @lexer.state = :expr_endarg
-//                     }
-//                     rparen
-//                     {
-//                       @lexer.cmdarg = val[1]
-// 
-//                       result = @builder.begin(val[0], val[2], val[4])
-//                     }
-//                 | tLPAREN_ARG
-//                     {
-//                       @lexer.state = :expr_endarg
-//                     }
-//                     opt_nl tRPAREN
-//                     {
-//                       result = @builder.begin(val[0], nil, val[3])
-//                     }
-//                 | tLPAREN compstmt tRPAREN
-//                     {
-//                       result = @builder.begin(val[0], val[1], val[2])
-//                     }
-//                 | primary_value tCOLON2 tCONSTANT
-//                     {
-//                       result = @builder.const_fetch(val[0], val[1], val[2])
-//                     }
+    | backref
+    | tFID {
+        |$1: Token| -> Node;
+        $$ = node::call_method(None, None, Some($1), None, vec![], None);
+    }
+    | kBEGIN fake_embedded_action_primary_kBEGIN bodystmt kEND {
+        |$1: Token, $2: StackState, $3: Node, $4: Token| -> Node;
+
+        self.tokenizer.interior_lexer.cmdarg = $2;
+
+        $$ = node::begin_keyword($1, $3, $4);
+    }
+    | tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG stmt fake_embedded_action_primary_tLPAREN_ARG_stmt rparen {
+        |$1: Token, $2: StackState, $3: Node, $5: Token| -> Node;
+
+        self.tokenizer.interior_lexer.cmdarg = $2;
+
+        $$ = node::begin($1, Some($3), $5);
+    }
+    | tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG_2 opt_nl tRPAREN {
+        |$1: Token, $4: Token| -> Node;
+
+        $$ = node::begin($1, None, $4);
+    }
+    | tLPAREN compstmt tRPAREN {
+        |$1: Token, $2: Node, $3: Token| -> Node;
+
+        $$ = node::begin($1, None, $3);
+    }
     | primary_value tCOLON2 tCONSTANT {
         |$1:Node; $2:Token, $3:Token| -> Node;
 
-        $$ = node::const_fetch($1, *$2.interior_token, *$3.interior_token);
+        $$ = node::const_fetch($1, $2, $3);
     }
-//                 | tCOLON3 tCONSTANT
-//                     {
-//                       result = @builder.const_global(val[0], val[1])
-//                     }
     | tCOLON3 tCONSTANT {
         |$1:Token, $2:Token| -> Node;
 
-        $$ = node::const_global(*$1.interior_token, *$2.interior_token);
+        $$ = node::const_global($1, $2);
     }
-//                 | tLBRACK aref_args tRBRACK
-//                     {
-//                       result = @builder.array(val[0], val[1], val[2])
-//                     }
     | tLBRACK aref_args tRBRACK {
-        |$1:Token; $2:Node; $3:Token| -> Node;
+        |$1:Token; $2:Nodes; $3:Token| -> Node;
 
-        $$ = node::array($2);
+        $$ = node::array( Some($1), $2, Some($3) );
     }
-//                 | tLBRACE assoc_list tRCURLY
-//                     {
-//                       result = @builder.associate(val[0], val[1], val[2])
-//                     }
     | tLBRACE assoc_list tRCURLY {
         |$1:Token; $2:Nodes; $3:Token| -> Node;
 
-        $$ = node::associate($2);
+        $$ = node::associate( Some($1), $2, Some($3) );
+    }
+    | kRETURN {
+        |$1:Token| -> Node; $$ = node::keyword_cmd("return", $1, None, vec![], None);
+    }
+    | kYIELD tLPAREN2 call_args rparen {
+        |$1:Token, $2:Token, $3:Nodes, $4:Token| -> Node;
+        $$ = node::keyword_cmd("yield", $1, Some($2), $3, Some($4));
+    }
+    | kYIELD tLPAREN2 rparen {
+        |$1:Token, $2:Token, $3:Token| -> Node;
+        $$ = node::keyword_cmd("yield", $1, Some($2), vec![], Some($3));
+    }
+    | kYIELD {
+        |$1:Token| -> Node; $$ = node::keyword_cmd("yield", $1, None, vec![], None);
+    }
+    | kDEFINED opt_nl tLPAREN2 expr rparen {
+        |$1:Token, $3:Token, $4:Node, $5:Token| -> Node;
+        $$ = node::keyword_cmd("defined?", $1, Some($3), vec![$4], Some($5));
+    }
+    | kNOT tLPAREN2 expr rparen {
+        |$1:Token, $2:Token, $3:Node, $4:Token| -> Node;
+        $$ = node::not_op($1, Some($2), Some($3), Some($4));
+    }
+    | kNOT tLPAREN2 rparen {
+        |$1:Token, $2:Token, $3:Token| -> Node;
+        $$ = node::not_op($1, Some($2), None, Some($3));
+    }
+    | fcall brace_block {
+        |$1:Token, $2:TBraceBlock| -> Node;
+
+        let method_call = node::call_method(None, None, Some($1), None, vec![], None);
+        let (begin_t, (args, body), end_t) = $2;
+        $$ = node::block(method_call, begin_t, args, body, end_t);
+    }
+    | method_call
+    | method_call brace_block {
+        |$1:Node, $2:TBraceBlock| -> Node;
+
+        let (begin_t, (args, body), end_t) = $2;
+        $$ = node::block($1, begin_t, args, body, end_t);
+    }
+    | tLAMBDA lambda {
+        |$1:Token, $2:TLambda| -> Node;
+
+        let lambda_call = node::call_lambda($1);
+        let (args, ( begin_t, body, end_t )) = $2;
+
+        $$ = node::block(lambda_call, begin_t, args, body, end_t);
+    }
+    | kIF expr_value then compstmt if_tail kEND {
+        |$1:Token, $2:Node, $3:Token, $4:Node, $5:TSomeTokenNode, $6:Token| -> Node;
+
+        let (else_t, else_) = unwrap_some_token_node!($5);
+        $$ = node::condition($1, $2, $3, Some($4), else_t, else_, Some($6));
+    }
+    | kUNLESS expr_value then compstmt opt_else kEND {
+        |$1:Token, $2:Node, $3:Token, $4:Node, $5:TSomeTokenNode, $6:Token| -> Node;
+
+        let (else_t, else_) = unwrap_some_token_node!($5);
+        $$ = node::condition($1, $2, $3, else_, else_t, Some($4), Some($6));
+    }
+    | kWHILE fake_embedded_action_primary_kWHILE_1 expr_value do fake_embedded_action_primary_kWHILE_2 compstmt kEND {
+        |$1:Token, $3:Node, $4:Token, $6:Node, $7:Token| -> Node;
+        $$ = node::build_loop("while", $1, $3, $4, $6, $7);
+    }
+    | kUNTIL fake_embedded_action_primary_kUNTIL_1 expr_value do fake_embedded_action_primary_kUNTIL_2 compstmt kEND {
+        |$1:Token, $3:Node, $4:Token, $6:Node, $7:Token| -> Node;
+        $$ = node::build_loop("until", $1, $3, $4, $6, $7);
+    }
+    | kCASE expr_value opt_terms case_body kEND {
+        //   *when_bodies, (else_t, else_body) = *val[3]
+
+        //   result = @builder.case(val[0], val[1],
+        //                          when_bodies, else_t, else_body,
+        //                          val[4])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kCASE            opt_terms case_body kEND {
+        //   *when_bodies, (else_t, else_body) = *val[2]
+
+        //   result = @builder.case(val[0], nil,
+        //                          when_bodies, else_t, else_body,
+        //                          val[3])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kFOR for_var kIN fake_embedded_action__primary__kFOR_1 expr_value do fake_embedded_action__primary__kFOR_2 compstmt kEND {
+        |$1:Token, $2:Node, $3:Token, $5:Node, $6:Token, $8:Node, $9:Token| -> Node;
+        $$ = node::build_for($1, $2, $3, $5, $6, $8, $9);
+    }
+    | kCLASS cpath superclass fake_embedded_action__primary__kCLASS_1 bodystmt kEND {
+        //   if in_def?
+        //     diagnostic :error, :class_in_def, nil, val[0]
+        //   end
+
+        //   lt_t, superclass = val[2]
+        //   result = @builder.def_class(val[0], val[1],
+        //                               lt_t, superclass,
+        //                               val[4], val[5])
+
+        //   @lexer.pop_cmdarg
+        //   @static_env.unextend
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kCLASS tLSHFT expr term fake_embedded_action__primary__kCLASS_2 bodystmt kEND {
+        //   result = @builder.def_sclass(val[0], val[1], val[2],
+        //                                val[5], val[6])
+
+        //   @lexer.pop_cmdarg
+        //   @static_env.unextend
+
+        //   @def_level = val[4]
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kMODULE cpath fake_embedded_action__primary__kMODULE_1 bodystmt kEND {
+        //   if in_def?
+        //     diagnostic :error, :module_in_def, nil, val[0]
+        //   end
+
+        //   result = @builder.def_module(val[0], val[1],
+        //                                val[3], val[4])
+
+        //   @lexer.pop_cmdarg
+        //   @static_env.unextend
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kDEF fname fake_embedded_action__primary__kDEF_1 f_arglist bodystmt kEND {
+        //   result = @builder.def_method(val[0], val[1],
+        //               val[3], val[4], val[5])
+
+        //   @lexer.pop_cmdarg
+        //   @static_env.unextend
+        //   @def_level -= 1
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kDEF singleton dot_or_colon fake_embedded_action__primary__kDEF_2 fname fake_embedded_action__primary__kDEF_3 f_arglist bodystmt kEND {
+        //   result = @builder.def_singleton(val[0], val[1], val[2],
+        //               val[4], val[6], val[7], val[8])
+
+        //   @lexer.pop_cmdarg
+        //   @static_env.unextend
+        //   @def_level -= 1
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+    | kBREAK {
+        |$1:Token| -> Node; $$ = node::keyword_cmd("break", $1, None, vec![], None);
+    }
+    | kNEXT {
+        |$1:Token| -> Node; $$ = node::keyword_cmd("next", $1, None, vec![], None);
+    }
+    | kREDO {
+        |$1:Token| -> Node; $$ = node::keyword_cmd("redo", $1, None, vec![], None);
+    }
+    | kRETRY {
+        |$1:Token| -> Node; $$ = node::keyword_cmd("retry", $1, None, vec![], None);
     }
 ;
-//                 | kRETURN
-//                     {
-//                       result = @builder.keyword_cmd(:return, val[0])
-//                     }
-//                 | kYIELD tLPAREN2 call_args rparen
-//                     {
-//                       result = @builder.keyword_cmd(:yield, val[0], val[1], val[2], val[3])
-//                     }
-//                 | kYIELD tLPAREN2 rparen
-//                     {
-//                       result = @builder.keyword_cmd(:yield, val[0], val[1], [], val[2])
-//                     }
-//                 | kYIELD
-//                     {
-//                       result = @builder.keyword_cmd(:yield, val[0])
-//                     }
-//                 | kDEFINED opt_nl tLPAREN2 expr rparen
-//                     {
-//                       result = @builder.keyword_cmd(:defined?, val[0],
-//                                                     val[2], [ val[3] ], val[4])
-//                     }
-//                 | kNOT tLPAREN2 expr rparen
-//                     {
-//                       result = @builder.not_op(val[0], val[1], val[2], val[3])
-//                     }
-//                 | kNOT tLPAREN2 rparen
-//                     {
-//                       result = @builder.not_op(val[0], val[1], nil, val[2])
-//                     }
-//                 | fcall brace_block
-//                     {
-//                       method_call = @builder.call_method(nil, nil, val[0])
-// 
-//                       begin_t, args, body, end_t = val[1]
-//                       result      = @builder.block(method_call,
-//                                       begin_t, args, body, end_t)
-//                     }
-//                 | method_call
-//                 | method_call brace_block
-//                     {
-//                       begin_t, args, body, end_t = val[1]
-//                       result      = @builder.block(val[0],
-//                                       begin_t, args, body, end_t)
-//                     }
-//                 | tLAMBDA lambda
-//                     {
-//                       lambda_call = @builder.call_lambda(val[0])
-// 
-//                       args, (begin_t, body, end_t) = val[1]
-//                       result      = @builder.block(lambda_call,
-//                                       begin_t, args, body, end_t)
-//                     }
-//                 | kIF expr_value then compstmt if_tail kEND
-//                     {
-//                       else_t, else_ = val[4]
-//                       result = @builder.condition(val[0], val[1], val[2],
-//                                                   val[3], else_t,
-//                                                   else_,  val[5])
-//                     }
-//                 | kUNLESS expr_value then compstmt opt_else kEND
-//                     {
-//                       else_t, else_ = val[4]
-//                       result = @builder.condition(val[0], val[1], val[2],
-//                                                   else_,  else_t,
-//                                                   val[3], val[5])
-//                     }
-//                 | kWHILE
-//                     {
-//                       @lexer.cond.push(true)
-//                     }
-//                     expr_value do
-//                     {
-//                       @lexer.cond.pop
-//                     }
-//                     compstmt kEND
-//                     {
-//                       result = @builder.loop(:while, val[0], val[2], val[3],
-//                                              val[5], val[6])
-//                     }
-//                 | kUNTIL
-//                     {
-//                       @lexer.cond.push(true)
-//                     }
-//                     expr_value do
-//                     {
-//                       @lexer.cond.pop
-//                     }
-//                     compstmt kEND
-//                     {
-//                       result = @builder.loop(:until, val[0], val[2], val[3],
-//                                              val[5], val[6])
-//                     }
-//                 | kCASE expr_value opt_terms case_body kEND
-//                     {
-//                       *when_bodies, (else_t, else_body) = *val[3]
-// 
-//                       result = @builder.case(val[0], val[1],
-//                                              when_bodies, else_t, else_body,
-//                                              val[4])
-//                     }
-//                 | kCASE            opt_terms case_body kEND
-//                     {
-//                       *when_bodies, (else_t, else_body) = *val[2]
-// 
-//                       result = @builder.case(val[0], nil,
-//                                              when_bodies, else_t, else_body,
-//                                              val[3])
-//                     }
-//                 | kFOR for_var kIN
-//                     {
-//                       @lexer.cond.push(true)
-//                     }
-//                     expr_value do
-//                     {
-//                       @lexer.cond.pop
-//                     }
-//                     compstmt kEND
-//                     {
-//                       result = @builder.for(val[0], val[1],
-//                                             val[2], val[4],
-//                                             val[5], val[7], val[8])
-//                     }
-//                 | kCLASS cpath superclass
-//                     {
-//                       @static_env.extend_static
-//                       @lexer.push_cmdarg
-//                     }
-//                     bodystmt kEND
-//                     {
-//                       if in_def?
-//                         diagnostic :error, :class_in_def, nil, val[0]
-//                       end
 
-//                       lt_t, superclass = val[2]
-//                       result = @builder.def_class(val[0], val[1],
-//                                                   lt_t, superclass,
-//                                                   val[4], val[5])
+primary_value: primary;
 
-//                       @lexer.pop_cmdarg
-//                       @static_env.unextend
-//                     }
-//                 | kCLASS tLSHFT expr term
-//                     {
-//                       result = @def_level
-//                       @def_level = 0
-// 
-//                       @static_env.extend_static
-//                       @lexer.push_cmdarg
-//                     }
-//                     bodystmt kEND
-//                     {
-//                       result = @builder.def_sclass(val[0], val[1], val[2],
-//                                                    val[5], val[6])
-// 
-//                       @lexer.pop_cmdarg
-//                       @static_env.unextend
-// 
-//                       @def_level = val[4]
-//                     }
-//                 | kMODULE cpath
-//                     {
-//                       @static_env.extend_static
-//                       @lexer.push_cmdarg
-//                     }
-//                     bodystmt kEND
-//                     {
-//                       if in_def?
-//                         diagnostic :error, :module_in_def, nil, val[0]
-//                       end
-// 
-//                       result = @builder.def_module(val[0], val[1],
-//                                                    val[3], val[4])
-// 
-//                       @lexer.pop_cmdarg
-//                       @static_env.unextend
-//                     }
-//                 | kDEF fname
-//                     {
-//                       @def_level += 1
-//                       @static_env.extend_static
-//                       @lexer.push_cmdarg
-//                     }
-//                     f_arglist bodystmt kEND
-//                     {
-//                       result = @builder.def_method(val[0], val[1],
-//                                   val[3], val[4], val[5])
-// 
-//                       @lexer.pop_cmdarg
-//                       @static_env.unextend
-//                       @def_level -= 1
-//                     }
-//                 | kDEF singleton dot_or_colon
-//                     {
-//                       @lexer.state = :expr_fname
-//                     }
-//                     fname
-//                     {
-//                       @def_level += 1
-//                       @static_env.extend_static
-//                       @lexer.push_cmdarg
-//                     }
-//                     f_arglist bodystmt kEND
-//                     {
-//                       result = @builder.def_singleton(val[0], val[1], val[2],
-//                                   val[4], val[6], val[7], val[8])
-// 
-//                       @lexer.pop_cmdarg
-//                       @static_env.unextend
-//                       @def_level -= 1
-//                     }
-//                 | kBREAK
-//                     {
-//                       result = @builder.keyword_cmd(:break, val[0])
-//                     }
-//                 | kNEXT
-//                     {
-//                       result = @builder.keyword_cmd(:next, val[0])
-//                     }
-//                 | kREDO
-//                     {
-//                       result = @builder.keyword_cmd(:redo, val[0])
-//                     }
-//                 | kRETRY
-//                     {
-//                       result = @builder.keyword_cmd(:retry, val[0])
-//                     }
-// TODO
+then
+    : term
+    | kTHEN
+    | term kTHEN {
+        |$2: Token| -> Token; $$ = $2.wrap_as_token();
+    }
+;
 
-//    primary_value: primary
-primary_value: primary ;
+do
+    : term
+    | kDO_COND
+;
 
-//             then: term
-//                 | kTHEN
-//                 | term kTHEN
-//                     {
-//                       result = val[1]
-//                     }
+if_tail
+    : opt_else
+    | kELSIF expr_value then compstmt if_tail {
+        |$1:Token, $2:Node, $3:Token, $4:Node, $5:TSomeTokenNode| -> TSomeTokenNode;
 
-//               do: term
-//                 | kDO_COND
+        let k_elseif_clone = $1.clone();
+        let (else_t, else_) = unwrap_some_token_node!($5);
+        $$ = Some((
+            $1,
+            node::condition(k_elseif_clone, $2, $3, Some($4), else_t, else_, None)
+        ));
+    }
+;
 
-//          if_tail: opt_else
-//                 | kELSIF expr_value then compstmt if_tail
-//                     {
-//                       else_t, else_ = val[4]
-//                       result = [ val[0],
-//                                  @builder.condition(val[0], val[1], val[2],
-//                                                     val[3], else_t,
-//                                                     else_,  nil),
-//                                ]
-//                     }
+opt_else
+    : {
+        || -> TSomeTokenNode; $$ = None;
+    }
+    | kELSE compstmt {
+        |$1:Token, $2:Node| -> TSomeTokenNode;
+        $$ = Some(($1, $2));
+    }
+;
 
-//         opt_else: none
-//                 | kELSE compstmt
-//                     {
-//                       result = val
-//                     }
+for_var
+    : lhs
+    | mlhs
+;
 
-//          for_var: lhs
-//                 | mlhs
+f_marg
+    : f_norm_arg {
+        |$1:Token| -> Node; $$ = node::arg($1);
+    }
+    | tLPAREN f_margs rparen {
+        |$1: Token, $2: Nodes, $3: Token| -> Node; $$ = node::multi_lhs(Some($1), $2, Some($3));
+    }
+;
 
-//           f_marg: f_norm_arg
-//                     {
-//                       result = @builder.arg(val[0])
-//                     }
-//                 | tLPAREN f_margs rparen
-//                     {
-//                       result = @builder.multi_lhs(val[0], val[1], val[2])
-//                     }
+f_marg_list
+    : f_marg {
+        |$1:Node|->Nodes; $$ = vec![$1];
+    }
+    | f_marg_list tCOMMA f_marg {
+        |$1:Nodes, $3: Node| -> Nodes;
+        $1.push($3);
+        $$ = $1;
+    }
+;
 
-//      f_marg_list: f_marg
-//                     {
-//                       result = [ val[0] ]
-//                     }
-//                 | f_marg_list tCOMMA f_marg
-//                     {
-//                       result = val[0] << val[2]
-//                     }
+f_margs
+    : f_marg_list
+    | f_marg_list tCOMMA tSTAR f_norm_arg {
+        |$1: Nodes, $3: Token, $4: Token| -> Nodes;
+        $1.push(node::restarg($3, Some($4) ));
+        $$ = $1;
+    }
+    | f_marg_list tCOMMA tSTAR f_norm_arg tCOMMA f_marg_list {
+        |$1: Nodes, $3: Token, $4: Token, $6: Nodes| -> Nodes;
+        $1.push(node::restarg($3, Some($4) ));
+        $1.append(&mut $6);
+        $$ = $1;
+    }
+    | f_marg_list tCOMMA tSTAR {
+        |$1: Nodes, $3: Token| -> Nodes;
 
-//          f_margs: f_marg_list
-//                 | f_marg_list tCOMMA tSTAR f_norm_arg
-//                     {
-//                       result = val[0].
-//                                   push(@builder.restarg(val[2], val[3]))
-//                     }
-//                 | f_marg_list tCOMMA tSTAR f_norm_arg tCOMMA f_marg_list
-//                     {
-//                       result = val[0].
-//                                   push(@builder.restarg(val[2], val[3])).
-//                                   concat(val[5])
-//                     }
-//                 | f_marg_list tCOMMA tSTAR
-//                     {
-//                       result = val[0].
-//                                   push(@builder.restarg(val[2]))
-//                     }
-//                 | f_marg_list tCOMMA tSTAR            tCOMMA f_marg_list
-//                     {
-//                       result = val[0].
-//                                   push(@builder.restarg(val[2])).
-//                                   concat(val[4])
-//                     }
-//                 |                    tSTAR f_norm_arg
-//                     {
-//                       result = [ @builder.restarg(val[0], val[1]) ]
-//                     }
-//                 |                    tSTAR f_norm_arg tCOMMA f_marg_list
-//                     {
-//                       result = [ @builder.restarg(val[0], val[1]),
-//                                  *val[3] ]
-//                     }
-//                 |                    tSTAR
-//                     {
-//                       result = [ @builder.restarg(val[0]) ]
-//                     }
-//                 |                    tSTAR tCOMMA f_marg_list
-//                     {
-//                       result = [ @builder.restarg(val[0]),
-//                                  *val[2] ]
-//                     }
+        $1.push(node::restarg($3, None ));
+        $$ = $1;
+    }
+    | f_marg_list tCOMMA tSTAR            tCOMMA f_marg_list {
+        |$1: Nodes, $3: Token, $5: Nodes| -> Nodes;
 
-//  block_args_tail: f_block_kwarg tCOMMA f_kwrest opt_f_block_arg
-//                     {
-//                       result = val[0].concat(val[2]).concat(val[3])
-//                     }
-//                 | f_block_kwarg opt_f_block_arg
-//                     {
-//                       result = val[0].concat(val[1])
-//                     }
-//                 | f_kwrest opt_f_block_arg
-//                     {
-//                       result = val[0].concat(val[1])
-//                     }
-//                 | f_block_arg
-//                     {
-//                       result = [ val[0] ]
-//                     }
+        $1.push(node::restarg($3, None ));
+        $1.append(&mut $5);
+        $$ = $1;
+    }
+    |                    tSTAR f_norm_arg {
+        |$1: Token, $2: Token| -> Nodes;
+        $$ = vec![ node::restarg($1, Some($2)) ];
+    }
+    |                    tSTAR f_norm_arg tCOMMA f_marg_list {
+        |$1: Token, $2: Token, $4: Nodes| -> Nodes;
+        let mut result = vec![ node::restarg( $1, Some($2) ) ];
+        result.append(&mut $4);
+        $$ = result;
+    }
+    |                    tSTAR {
+        |$1: Token| -> Nodes;
+        $$ = vec![ node::restarg($1, None) ];
+    }
+    |                    tSTAR tCOMMA f_marg_list {
+        |$1: Token, $3: Nodes| -> Nodes;
+        let mut result = vec![ node::restarg($1, None) ];
+        result.append(&mut $3);
+        $$ = result;
+    }
+;
 
-// opt_block_args_tail:
-//                   tCOMMA block_args_tail
-//                     {
-//                       result = val[1]
-//                     }
-//                 | # nothing
-//                     {
-//                       result = []
-//                     }
+ block_args_tail
+    : f_block_kwarg tCOMMA f_kwrest opt_f_block_arg {
+        |$1: Nodes, $3: Nodes, $4: Nodes| -> Nodes;
+        $1.append(&mut $3);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    | f_block_kwarg opt_f_block_arg {
+        |$1: Nodes, $2: Nodes| -> Nodes;
+        $1.append(&mut $2);
+        $$ = $1;
+    }
+    | f_kwrest opt_f_block_arg {
+        |$1: Nodes, $2: Nodes| -> Nodes;
+        $1.append(&mut $2);
+        $$ = $1;
+    }
+    | f_block_arg {
+        |$1:Node| -> Nodes;
+        $$ = vec![ $1 ];
+    }
+;
 
-//      block_param: f_arg tCOMMA f_block_optarg tCOMMA f_rest_arg              opt_block_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[4]).
-//                                   concat(val[5])
-//                     }
-//                 | f_arg tCOMMA f_block_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_block_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[4]).
-//                                   concat(val[6]).
-//                                   concat(val[7])
-//                     }
-//                 | f_arg tCOMMA f_block_optarg                                opt_block_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[3])
-//                     }
-//                 | f_arg tCOMMA f_block_optarg tCOMMA                   f_arg opt_block_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[4]).
-//                                   concat(val[5])
-//                     }
-//                 | f_arg tCOMMA                       f_rest_arg              opt_block_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[3])
-//                     }
-//                 | f_arg tCOMMA
-//                 | f_arg tCOMMA                       f_rest_arg tCOMMA f_arg opt_block_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[4]).
-//                                   concat(val[5])
-//                     }
-//                 | f_arg                                                      opt_block_args_tail
-//                     {
-//                       if val[1].empty? && val[0].size == 1
-//                         result = [@builder.procarg0(val[0][0])]
-//                       else
-//                         result = val[0].concat(val[1])
-//                       end
-//                     }
-//                 | f_block_optarg tCOMMA              f_rest_arg              opt_block_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[3])
-//                     }
-//                 | f_block_optarg tCOMMA              f_rest_arg tCOMMA f_arg opt_block_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[4]).
-//                                   concat(val[5])
-//                     }
-//                 | f_block_optarg                                             opt_block_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[1])
-//                     }
-//                 | f_block_optarg tCOMMA                                f_arg opt_block_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[3])
-//                     }
-//                 |                                    f_rest_arg              opt_block_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[1])
-//                     }
-//                 |                                    f_rest_arg tCOMMA f_arg opt_block_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[3])
-//                     }
-//                 |                                                                block_args_tail
+opt_block_args_tail
+    : tCOMMA block_args_tail {
+        |$2: Nodes| -> Nodes;
+        $$ = $2;
+    }
+    | {
+        ||->Nodes; $$ = vec![];
+    }
+;
 
-//  opt_block_param: # nothing
-//                     {
-//                       result = @builder.args(nil, [], nil)
-//                     }
-//                 | block_param_def
-//                     {
-//                       @lexer.state = :expr_value
-//                     }
+block_param
+    : f_arg tCOMMA f_block_optarg tCOMMA f_rest_arg              opt_block_args_tail {
+        |$1:Nodes, $3:Nodes, $5:Nodes, $6:Nodes| -> Nodes;
 
-//  block_param_def: tPIPE opt_bv_decl tPIPE
-//                     {
-//                       result = @builder.args(val[0], val[1], val[2])
-//                     }
-//                 | tOROP
-//                     {
-//                       result = @builder.args(val[0], [], val[0])
-//                     }
-//                 | tPIPE block_param opt_bv_decl tPIPE
-//                     {
-//                       result = @builder.args(val[0], val[1].concat(val[2]), val[3])
-//                     }
+        $1.append(&mut $3);
+        $1.append(&mut $5);
+        $1.append(&mut $6);
+        $$ = $1;
+    }
+    | f_arg tCOMMA f_block_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_block_args_tail {
+        |$1:Nodes, $3:Nodes, $5:Nodes, $7:Nodes, $8:Nodes| -> Nodes;
 
-//      opt_bv_decl: opt_nl
-//                     {
-//                       result = []
-//                     }
-//                 | opt_nl tSEMI bv_decls opt_nl
-//                     {
-//                       result = val[2]
-//                     }
+        $1.append(&mut $3);
+        $1.append(&mut $5);
+        $1.append(&mut $7);
+        $1.append(&mut $8);
+        $$ = $1;
+    }
+    | f_arg tCOMMA f_block_optarg                                opt_block_args_tail {
+        |$1:Nodes, $3:Nodes, $4:Nodes| -> Nodes;
 
-//         bv_decls: bvar
-//                     {
-//                       result = [ val[0] ]
-//                     }
-//                 | bv_decls tCOMMA bvar
-//                     {
-//                       result = val[0] << val[2]
-//                     }
+        $1.append(&mut $3);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    | f_arg tCOMMA f_block_optarg tCOMMA                   f_arg opt_block_args_tail {
+        |$1:Nodes, $3:Nodes, $5:Nodes, $6:Nodes| -> Nodes;
 
-//             bvar: tIDENTIFIER
-//                     {
-//                       @static_env.declare val[0][0]
-//                       result = @builder.shadowarg(val[0])
-//                     }
-//                 | f_bad_arg
+        $1.append(&mut $3);
+        $1.append(&mut $5);
+        $1.append(&mut $6);
+        $$ = $1;
+    }
+    | f_arg tCOMMA                       f_rest_arg              opt_block_args_tail {
+        |$1:Nodes, $3:Nodes, $4:Nodes| -> Nodes;
 
-//           lambda:   {
-//                       @static_env.extend_dynamic
-//                     }
-//                   f_larglist
-//                     {
-//                       result = @lexer.cmdarg.dup
-//                       @lexer.cmdarg.clear
-//                     }
-//                   lambda_body
-//                     {
-//                       @lexer.cmdarg = val[2]
-//                       @lexer.cmdarg.lexpop
+        $1.append(&mut $3);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    | f_arg tCOMMA
+    | f_arg tCOMMA                       f_rest_arg tCOMMA f_arg opt_block_args_tail {
+        |$1:Nodes, $3:Nodes, $5:Nodes, $6:Nodes| -> Nodes;
 
-//                       result = [ val[1], val[3] ]
+        $1.append(&mut $3);
+        $1.append(&mut $5);
+        $1.append(&mut $6);
+        $$ = $1;
+    }
+    | f_arg                                                      opt_block_args_tail {
+        |$1:Nodes, $2:Nodes| -> Nodes;
 
-//                       @static_env.unextend
-//                     }
+        $$ = if ( $2.is_empty() && $1.len() == 1 ) {
+            vec![
+                // TODO
+                // @builder.procarg0(val[0][0])
+            ]
+        } else {
+            $1.append(&mut $2);
+            $1
+        }
+    }
+    | f_block_optarg tCOMMA              f_rest_arg              opt_block_args_tail {
+        |$1:Nodes, $3:Nodes, $4:Nodes| -> Nodes;
 
-//      f_larglist: tLPAREN2 f_args opt_bv_decl tRPAREN
-//                     {
-//                       result = @builder.args(val[0], val[1].concat(val[2]), val[3])
-//                     }
-//                 | f_args
-//                     {
-//                       result = @builder.args(nil, val[0], nil)
-//                     }
+        $1.append(&mut $3);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    | f_block_optarg tCOMMA              f_rest_arg tCOMMA f_arg opt_block_args_tail {
+        |$1:Nodes, $3:Nodes, $5:Nodes, $6:Nodes| -> Nodes;
 
-//      lambda_body: tLAMBEG compstmt tRCURLY
-//                     {
-//                       result = [ val[0], val[1], val[2] ]
-//                     }
-//                 | kDO_LAMBDA compstmt kEND
-//                     {
-//                       result = [ val[0], val[1], val[2] ]
-//                     }
+        $1.append(&mut $3);
+        $1.append(&mut $5);
+        $1.append(&mut $6);
+        $$ = $1;
+    }
+    | f_block_optarg                                             opt_block_args_tail {
+        |$1:Nodes, $2:Nodes| -> Nodes;
 
-//         do_block: kDO_BLOCK do_body kEND
-//                     {
-//                       result = [ val[0], *val[1], val[2] ]
-//                     }
+        $1.append(&mut $2);
+        $$ = $1;
+    }
+    | f_block_optarg tCOMMA                                f_arg opt_block_args_tail {
+        |$1:Nodes, $3:Nodes, $4:Nodes| -> Nodes;
 
-//       block_call: command do_block
-//                     {
-//                       begin_t, block_args, body, end_t = val[1]
-//                       result      = @builder.block(val[0],
-//                                       begin_t, block_args, body, end_t)
-//                     }
-//                 | block_call dot_or_colon operation2 opt_paren_args
-//                     {
-//                       lparen_t, args, rparen_t = val[3]
-//                       result = @builder.call_method(val[0], val[1], val[2],
-//                                   lparen_t, args, rparen_t)
-//                     }
-//                 | block_call dot_or_colon operation2 opt_paren_args brace_block
-//                     {
-//                       lparen_t, args, rparen_t = val[3]
-//                       method_call = @builder.call_method(val[0], val[1], val[2],
-//                                       lparen_t, args, rparen_t)
+        $1.append(&mut $3);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    |                                    f_rest_arg              opt_block_args_tail {
+        |$1:Nodes, $2:Nodes| -> Nodes;
 
-//                       begin_t, args, body, end_t = val[4]
-//                       result      = @builder.block(method_call,
-//                                       begin_t, args, body, end_t)
-//                     }
-//                 | block_call dot_or_colon operation2 command_args do_block
-//                     {
-//                       method_call = @builder.call_method(val[0], val[1], val[2],
-//                                       nil, val[3], nil)
+        $1.append(&mut $2);
+        $$ = $1;
+    }
+    |                                    f_rest_arg tCOMMA f_arg opt_block_args_tail {
+        |$1:Nodes, $3:Nodes, $4:Nodes| -> Nodes;
 
-//                       begin_t, args, body, end_t = val[4]
-//                       result      = @builder.block(method_call,
-//                                       begin_t, args, body, end_t)
-//                     }
+        $1.append(&mut $3);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    |                                                                block_args_tail
+;
 
-//      method_call: fcall paren_args
-//                     {
-//                       lparen_t, args, rparen_t = val[1]
-//                       result = @builder.call_method(nil, nil, val[0],
-//                                   lparen_t, args, rparen_t)
-//                     }
-//                 | primary_value call_op operation2 opt_paren_args
-//                     {
-//                       lparen_t, args, rparen_t = val[3]
-//                       result = @builder.call_method(val[0], val[1], val[2],
-//                                   lparen_t, args, rparen_t)
-//                     }
-//                 | primary_value tCOLON2 operation2 paren_args
-//                     {
-//                       lparen_t, args, rparen_t = val[3]
-//                       result = @builder.call_method(val[0], val[1], val[2],
-//                                   lparen_t, args, rparen_t)
-//                     }
-//                 | primary_value tCOLON2 operation3
-//                     {
-//                       result = @builder.call_method(val[0], val[1], val[2])
-//                     }
-//                 | primary_value call_op paren_args
-//                     {
-//                       lparen_t, args, rparen_t = val[2]
-//                       result = @builder.call_method(val[0], val[1], nil,
-//                                   lparen_t, args, rparen_t)
-//                     }
-//                 | primary_value tCOLON2 paren_args
-//                     {
-//                       lparen_t, args, rparen_t = val[2]
-//                       result = @builder.call_method(val[0], val[1], nil,
-//                                   lparen_t, args, rparen_t)
-//                     }
-//                 | kSUPER paren_args
-//                     {
-//                       lparen_t, args, rparen_t = val[1]
-//                       result = @builder.keyword_cmd(:super, val[0],
-//                                   lparen_t, args, rparen_t)
-//                     }
-//                 | kSUPER
-//                     {
-//                       result = @builder.keyword_cmd(:zsuper, val[0])
-//                     }
-//                 | primary_value tLBRACK2 opt_call_args rbracket
-//                     {
-//                       result = @builder.index(val[0], val[1], val[2], val[3])
-//                     }
+opt_block_param
+    : {
+        || -> Node; $$ = node::args(None, vec![], None);
+    }
+    | block_param_def {
+        self.tokenizer.interior_lexer.set_state("expr_value");
+        //   @lexer.state = :expr_value
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+    }
+;
 
-//      brace_block: tLCURLY brace_body tRCURLY
-//                     {
-//                       result = [ val[0], *val[1], val[2] ]
-//                     }
-//                 | kDO do_body kEND
-//                     {
-//                       result = [ val[0], *val[1], val[2] ]
-//                     }
+block_param_def
+    : tPIPE opt_bv_decl tPIPE {
+        |$1: Token, $2: Nodes, $3: Token| -> Node;
+        $$ = node::args(Some($1), $2, Some($3));
+    }
+    | tOROP {
+        |$1: Token| -> Node;
+        let _2 = $1.clone();
+        $$ = node::args(Some($1), vec![], Some(_2));
+    }
+    | tPIPE block_param opt_bv_decl tPIPE {
+        |$1: Token, $2: Nodes, $3: Nodes, $4: Token| -> Node;
+        $2.append(&mut $3);
+        $$ = node::args(Some($1), $2, Some($4));
+    }
+;
 
-//       brace_body:   {
-//                       @static_env.extend_dynamic
-//                     }
-//                     {
-//                       result = @lexer.cmdarg.dup
-//                       @lexer.cmdarg.clear
-//                     }
-//                     opt_block_param compstmt
-//                     {
-//                       result = [ val[2], val[3] ]
+opt_bv_decl
+    : opt_nl {
+        |$1:Node| -> Nodes; $$ = vec![ $1 ];
+    }
+    | opt_nl tSEMI bv_decls opt_nl {
+        |$3:Nodes| -> Nodes; $$ = $3;
+    }
+;
 
-//                       @static_env.unextend
-//                       @lexer.cmdarg = val[1]
-//                       @lexer.cmdarg.pop
-//                     }
+bv_decls
+    : bvar {
+        |$1:Node| -> Nodes; $$ = vec![ $1 ];
+    }
+    | bv_decls tCOMMA bvar {
+        |$1:Nodes, $3: Node| -> Nodes;
+        
+        $1.push($3);
+        $$ = $1;
+    }
+;
 
-//          do_body:   {
-//                       @static_env.extend_dynamic
-//                     }
-//                     {
-//                       result = @lexer.cmdarg.dup
-//                       @lexer.cmdarg.clear
-//                     }
-//                     opt_block_param bodystmt
-//                     {
-//                       result = [ val[2], val[3] ]
+bvar
+    : tIDENTIFIER {
+        |$1: Token| -> Node;
 
-//                       @static_env.unextend
-//                       @lexer.cmdarg = val[1]
-//                     }
+        if let InteriorToken::T_IDENTIFIER(ref t_value) = $1 {
+            self.static_env.declare(t_value.clone());
+        } else { unreachable!(); }
 
-//        case_body: kWHEN args then compstmt cases
-//                     {
-//                       result = [ @builder.when(val[0], val[1], val[2], val[3]),
-//                                  *val[4] ]
-//                     }
+        $$ = node::shadowarg($1);
+    }
+    | f_bad_arg
+;
 
-//            cases: opt_else
-//                     {
-//                       result = [ val[0] ]
-//                     }
-//                 | case_body
+fake_embedded_action_lambda_1: {
+    ||->Node; $$=Node::DUMMY;
+    self.static_env.extend_dynamic();
+};
 
-//       opt_rescue: kRESCUE exc_list exc_var then compstmt opt_rescue
-//                     {
-//                       assoc_t, exc_var = val[2]
+fake_embedded_action_lambda_2: {
+    || -> StackState;
 
-//                       if val[1]
-//                         exc_list = @builder.array(nil, val[1], nil)
-//                       end
+    $$ = self.tokenizer.interior_lexer.cmdarg.clone();
+    self.tokenizer.interior_lexer.cmdarg.clear();
+};
 
-//                       result = [ @builder.rescue_body(val[0],
-//                                       exc_list, assoc_t, exc_var,
-//                                       val[3], val[4]),
-//                                  *val[5] ]
-//                     }
-//                 |
-//                     {
-//                       result = []
-//                     }
+lambda: fake_embedded_action_lambda_1 f_larglist fake_embedded_action_lambda_2 lambda_body {
+    |$2: Node, $3: StackState, $4: TLambdaBody| -> TLambda;
 
-//         exc_list: arg_value
-//                     {
-//                       result = [ val[0] ]
-//                     }
-//                 | mrhs
-//                 | none
+    self.tokenizer.interior_lexer.cmdarg = $3;
+    self.tokenizer.interior_lexer.cmdarg.lexpop();
 
-//          exc_var: tASSOC lhs
-//                     {
-//                       result = [ val[0], val[1] ]
-//                     }
-//                 | none
+    $$ = ($2, $4);
 
-//       opt_ensure: kENSURE compstmt
-//                     {
-//                       result = [ val[0], val[1] ]
-//                     }
-//                 | none
+    self.static_env.unextend();
+};
 
-//          literal: numeric
-//                 | symbol
-//                 | dsym
+f_larglist
+    : tLPAREN2 f_args opt_bv_decl tRPAREN {
+        |$1: Token, $2: Nodes, $3: Nodes, $4: Token| -> Node;
+        $2.append(&mut $3);
+        $$ = node::args(Some($1), $2, Some($4));
+    }
+    | f_args {
+        |$1: Nodes| -> Node; $$ = node::args(None, $1, None);
+    }
+;
+
+lambda_body
+    : tLAMBEG compstmt tRCURLY {
+        |$1:Token, $2:Node, $3:Token| -> TLambdaBody;
+        $$ = ($1, $2, $3);
+    }
+    | kDO_LAMBDA compstmt kEND {
+        |$1:Token, $2:Node, $3:Token| -> TLambdaBody;
+        $$ = ($1, $2, $3);
+    }
+;
+
+do_block: kDO_BLOCK do_body kEND {
+    |$1:Token, $2:TDoBody, $3:Token| -> TDoBlock;
+    $$ = ( $1, $2, $3 );
+};
+
+block_call
+    : command do_block {
+        |$1:Node, $2:TDoBlock| -> Node;
+
+        let (begin_t, ( block_args, body), end_t) = $2;
+        $$ = node::block($1, begin_t, block_args, body, end_t);
+    }
+    | block_call dot_or_colon operation2 opt_paren_args {
+        |$1:Node, $2:Token, $3:Token, $4:TParenArgs| -> Node;
+
+        let (lparen_t, args, rparen_t) = $4;
+        $$ = node::call_method(Some($1), Some($2), Some($3), lparen_t, args, rparen_t);
+    }
+    | block_call dot_or_colon operation2 opt_paren_args brace_block {
+        |$1:Node, $2:Token, $3:Token, $4:TParenArgs, $5:TBraceBlock| -> Node;
+
+        let (lparen_t, args, rparen_t) = $4;
+        let method_call = node::call_method(Some($1), Some($2), Some($3), lparen_t, args, rparen_t);
+
+        let (begin_t, (args, body), end_t) = $5;
+        $$ = node::block(method_call, begin_t, args, body, end_t);
+    }
+    | block_call dot_or_colon operation2 command_args do_block {
+        |$1:Node, $2:Token, $3:Token, $4:Nodes, $5:TDoBlock| -> Node;
+
+        let method_call = node::call_method(Some($1), Some($2), Some($3), None, $4, None);
+
+        let (begin_t, (args, body), end_t) = $5;
+        $$ = node::block(method_call, begin_t, args, body, end_t);
+    }
+;
+
+method_call
+    : fcall paren_args {
+        |$1:Token, $2:TParenArgs| -> Node;
+
+        let (lparen_t, args, rparen_t) = $2;
+        $$ = node::call_method(None, None, Some($1), lparen_t, args, rparen_t);
+    }
+    | primary_value call_op operation2 opt_paren_args {
+        |$1:Node, $2:Token, $3:Token, $4:TParenArgs| -> Node;
+
+        let (lparen_t, args, rparen_t) = $4;
+        $$ = node::call_method(Some($1), Some($2), Some($3), lparen_t, args, rparen_t);
+    }
+    | primary_value tCOLON2 operation2 paren_args {
+        |$1:Node, $2:Token, $3:Token, $4:TParenArgs| -> Node;
+
+        let (lparen_t, args, rparen_t) = $4;
+        $$ = node::call_method(Some($1), Some($2), Some($3), lparen_t, args, rparen_t);
+    }
+    | primary_value tCOLON2 operation3 {
+        |$1:Node, $2:Token, $3:Token| -> Node;
+
+        $$ = node::call_method(Some($1), Some($2), Some($3), None, vec![], None);
+    }
+    | primary_value call_op paren_args {
+        |$1:Node, $2:Token, $3:TParenArgs| -> Node;
+
+        let (lparen_t, args, rparen_t) = $3;
+        $$ = node::call_method(Some($1), Some($2), None, lparen_t, args, rparen_t);
+    }
+    | primary_value tCOLON2 paren_args {
+        |$1:Node, $2:Token, $3:TParenArgs| -> Node;
+
+        let (lparen_t, args, rparen_t) = $3;
+        $$ = node::call_method(Some($1), Some($2), None, lparen_t, args, rparen_t);
+    }
+    | kSUPER paren_args {
+        |$1:Token, $2:TParenArgs| -> Node;
+
+        let (lparen_t, args, rparen_t) = $2;
+        $$ = node::keyword_cmd("super", $1, lparen_t, args, rparen_t);
+    }
+    | kSUPER {
+        |$1:Token| -> Node;
+        $$ = node::keyword_cmd("zsuper", $1, None, vec![], None);
+    }
+    | primary_value tLBRACK2 opt_call_args rbracket {
+        |$1: Node, $2: Token, $3: Nodes, $4:Token| -> Node;
+
+        $$ = node::index($1, $2, $3, $4);
+    }
+;
+
+brace_block
+    : tLCURLY brace_body tRCURLY {
+        |$1:Token, $2:TBraceBody, $3:Token| -> TBraceBlock;
+        $$ = ($1, $2, $3);
+    }
+    | kDO do_body kEND {
+        |$1:Token, $2:TDoBody, $3:Token| -> TBraceBlock;
+        $$ = ($1, $2, $3);
+    }
+;
+
+fake_embedded_action_brace_body_1: {
+    ||->Node;$$=Node::DUMMY;
+    self.static_env.extend_dynamic();
+};
+
+fake_embedded_action_brace_body_2: {
+    || -> StackState;
+
+    $$ = self.tokenizer.interior_lexer.cmdarg.clone();
+    self.tokenizer.interior_lexer.cmdarg.clear();
+};
+
+brace_body: fake_embedded_action_brace_body_1 fake_embedded_action_brace_body_2 opt_block_param compstmt {
+    |$2:StackState, $3:Node, $4:Node| -> TBraceBody;
+    $$ = ($3, $4);
+
+    self.static_env.unextend();
+    self.tokenizer.interior_lexer.cmdarg = $2;
+    self.tokenizer.interior_lexer.cmdarg.pop();
+};
+
+fake_embedded_action_do_body_1: {
+    ||->Node; $$=Node::DUMMY;
+
+    self.static_env.extend_dynamic();
+};
+
+fake_embedded_action_do_body_2: {
+    ||->StackState;
+    $$ = self.tokenizer.interior_lexer.cmdarg.clone();
+    self.tokenizer.interior_lexer.cmdarg.clear();
+};
+
+do_body: fake_embedded_action_do_body_1 fake_embedded_action_do_body_2 opt_block_param bodystmt {
+    |$2: StackState, $3: Node, $4: Node| -> TDoBody;
+
+    $$ = ( $3, $4 );
+    self.static_env.unextend();
+
+    self.tokenizer.interior_lexer.cmdarg = $2;
+};
+
+case_body: kWHEN args then compstmt cases {
+    |$1:Token, $2:Nodes, $3:Token, $4:Node, $5:Nodes| -> Nodes;
+    let mut r = vec![ node::when($1, $2, $3, $4) ];
+    r.append(&mut $5);
+    $$ = r;
+};
+
+cases
+    : opt_else {
+        |$1:Node| -> Nodes;
+        $$ = vec![$1];
+    }
+    | case_body
+;
+
+opt_rescue
+    // TODO CLEANUP
+    : kRESCUE exc_list exc_var then compstmt opt_rescue {
+        |$1:Token, $2:TSomeNodes, $3:TSomeTokenNode, $4:Token, $5:Node, $6:Nodes| -> Nodes;
+
+        //   assoc_t, exc_var = val[2]
+        let (assoc_t, exc_var) = unwrap_some_token_node!($3);
+
+        //   if val[1]
+        //     exc_list = @builder.array(nil, val[1], nil)
+        //   end
+        let exc_list = match $2 {
+            Some(exc_list_nodes) => Some(node::array(None, exc_list_nodes, None)),
+            None => None
+        };
+
+        //   result = [ @builder.rescue_body(val[0],
+        //                   exc_list, assoc_t, exc_var,
+        //                   val[3], val[4]),
+        //              *val[5] ]
+        let mut r = vec![
+            node::rescue_body($1, exc_list, assoc_t, exc_var, Some($4), $5)
+        ];
+        r.append(&mut $6);
+        $$ = r;
+    }
+    | {
+        || -> Nodes; $$ = vec![];
+    }
+;
+
+exc_list
+    : arg_value {
+        |$1: Node| -> TSomeNodes;
+        $$ = Some( vec![ $1 ] );
+    }
+    | mrhs
+    | {
+        || -> TSomeNodes; $$ = None;
+    }
+;
+
+exc_var
+    : tASSOC lhs {
+        |$1:Token, $2:Node| -> TSomeTokenNode;
+        $$ = Some(($1, $2));
+    }
+    | {
+        || -> TSomeTokenNode; $$ = None;
+    }
+;
+
+opt_ensure
+    : kENSURE compstmt {
+        |$1:Token, $2:Node| -> TSomeTokenNode;
+        $$ = Some(($1, $2));
+    }
+    | {
+        || -> TSomeTokenNode; $$ = None;
+    }
+;
+
 literal
     : numeric
     | symbol
     | dsym
 ;
 
-//          strings: string
-//                     {
-//                       result = @builder.string_compose(nil, val[0], nil)
-//                     }
-// TODO
-strings
-    : string {
-        |$1:Node| -> Node;
+strings: string {
+    |$1:Nodes| -> Node;
 
-        $$ = node::string_compose($1);
-    }
-;
+    $$ = node::string_compose(None, $1, None);
+};
 
-//           string: string1
-//                     {
-//                       result = [ val[0] ]
-//                     }
-//                 | string string1
-//                     {
-//                       result = val[0] << val[1]
-//                     }
-// TODO
 string
     :string1 {
-        |$1:Node| -> Node;
-
-        $$ = Node::Nodes(vec![$1]);
+        |$1:Node| -> Nodes; $$ = vec![$1];
     }
-    // TODO
+    | string string1 {
+        |$1:Nodes, $2: Node| -> Nodes;
+        $1.push($2);
+        $$ = $1;
+    }
 ;
 
-//          string1: tSTRING_BEG string_contents tSTRING_END
-//                     {
-//                       string = @builder.string_compose(val[0], val[1], val[2])
-//                       result = @builder.dedent_string(string, @lexer.dedent_level)
-//                     }
-//                 | tSTRING
-//                     {
-//                       string = @builder.string(val[0])
-//                       result = @builder.dedent_string(string, @lexer.dedent_level)
-//                     }
-//                 | tCHARACTER
-//                     {
-//                       result = @builder.character(val[0])
-//                     }
-// TODO
 string1
     : tSTRING_BEG string_contents tSTRING_END {
-        |$1:Token, $2:Node, $3:Token| -> Node;
+        |$1:Token, $2:Nodes, $3:Token| -> Node;
 
-        $$ = node::string_compose($2);
-        // TODO dedent_string
+        let string = node::string_compose(Some($1), $2, Some($3));
+        $$ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
     }
     | tSTRING {
         |$1:Token| -> Node;
 
-        let $$;
-        if let InteriorToken::T_STRING(string_value) = *$1.interior_token {
-            <REMOVE THIS LET>$$ = Node::Str(string_value);
-        } else { unreachable!(); }
-        // TODO builder.dedent_string
+        let string = node::string($1);
+        $$ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
+    }
+    | tCHARACTER {
+        |$1:Token| -> Node; $$ = node::character($1);
     }
 ;
 
-//          xstring: tXSTRING_BEG xstring_contents tSTRING_END
-//                     {
-//                       string = @builder.xstring_compose(val[0], val[1], val[2])
-//                       result = @builder.dedent_string(string, @lexer.dedent_level)
-//                     }
+xstring: tXSTRING_BEG xstring_contents tSTRING_END {
+    |$1:Token, $2:Nodes, $3:Token| -> Node;
 
-//           regexp: tREGEXP_BEG regexp_contents tSTRING_END tREGEXP_OPT
-//                     {
-//                       opts   = @builder.regexp_options(val[3])
-//                       result = @builder.regexp_compose(val[0], val[1], val[2], opts)
-//                     }
-
-//            words: tWORDS_BEG word_list tSTRING_END
-//                     {
-//                       result = @builder.words_compose(val[0], val[1], val[2])
-//                     }
-words
-    : tWORDS_BEG word_list tSTRING_END {
-        |$2:Node| -> Node;
-
-        $$ = node::words_compose($2);
-    }
-;
-
-//        word_list: # nothing
-//                     {
-//                       result = []
-//                     }
-//                 | word_list word tSPACE
-//                     {
-//                       result = val[0] << @builder.word(val[1])
-//                     }
-word_list
-    : {
-        || -> Node;
-        $$ = Node::Nodes(vec![]);
-    }
-    | word_list word tSPACE {
-        |$1:Node, $2:Node, $3:Token| -> Node;
-        let $$;
-        if let Node::Nodes(mut nodes) = $1 {
-            nodes.push($2);
-            <REMOVE THIS LET>$$ = Node::Nodes(nodes);
-        } else {unreachable!();}
-    }
-;
-
-//             word: string_content
-//                     {
-//                       result = [ val[0] ]
-//                     }
-//                 | word string_content
-//                     {
-//                       result = val[0] << val[1]
-//                     }
-word
-    : string_content {
-        |$1:Node| -> Node;
-        $$ = Node::Nodes(vec![$1]);
-    }
-    | word string_content {
-        |$1:Node, $2:Node| -> Node;
-        let $$;
-        if let Node::Nodes(mut nodes) = $1 {
-            nodes.push($2);
-            <REMOVE THIS LET>$$ = Node::Nodes(nodes);
-        } else { unreachable!(); }
-    }
-;
-
-//          symbols: tSYMBOLS_BEG symbol_list tSTRING_END
-//                     {
-//                       result = @builder.symbols_compose(val[0], val[1], val[2])
-//                     }
-
-//      symbol_list: # nothing
-//                     {
-//                       result = []
-//                     }
-//                 | symbol_list word tSPACE
-//                     {
-//                       result = val[0] << @builder.word(val[1])
-//                     }
-
-//           qwords: tQWORDS_BEG qword_list tSTRING_END
-//                     {
-//                       result = @builder.words_compose(val[0], val[1], val[2])
-//                     }
-qwords: tQWORDS_BEG qword_list tSTRING_END {
-    |$2:Node| -> Node;
-
-    $$ = node::words_compose($2);
+    let string = node::xstring_compose($1, $2, $3);
+    $$ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
 };
 
-//         qsymbols: tQSYMBOLS_BEG qsym_list tSTRING_END
-//                     {
-//                       result = @builder.symbols_compose(val[0], val[1], val[2])
-//                     }
+regexp: tREGEXP_BEG regexp_contents tSTRING_END tREGEXP_OPT {
+    //   opts   = @builder.regexp_options(val[3])
+    //   result = @builder.regexp_compose(val[0], val[1], val[2], opts)
+    ||->Node;
+    wip!(); $$=Node::DUMMY;
+};
 
-//       qword_list: # nothing
-//                     {
-//                       result = []
-//                     }
-//                 | qword_list tSTRING_CONTENT tSPACE
-//                     {
-//                       result = val[0] << @builder.string_internal(val[1])
-//                     }
+words: tWORDS_BEG word_list tSTRING_END {
+    |$1:Token, $2:Nodes, $3:Token| -> Node;
+    $$ = node::words_compose($1, $2, $3);
+};
+
+word_list
+    : {
+        || -> Nodes; $$ = vec![];
+    }
+    | word_list word tSPACE {
+        |$1:Nodes, $2:Nodes| -> Nodes;
+
+        $1.push( node::word($2) );
+        $$ = $1;
+    }
+;
+
+word
+    : string_content {
+        |$1:Node| -> Nodes; $$ = vec![$1];
+    }
+    | word string_content {
+        |$1:Nodes, $2:Node| -> Nodes;
+        $1.push($2); $$ = $1;
+    }
+;
+
+symbols: tSYMBOLS_BEG symbol_list tSTRING_END {
+    |$1:Token, $2:Nodes, $3:Token| -> Node;
+    $$ = node::symbols_compose($1, $2, $3);
+};
+
+symbol_list
+    : {
+        || -> Nodes; $$ = vec![];
+    }
+    | symbol_list word tSPACE {
+        |$1:Nodes, $2: Node| -> Nodes;
+
+        $1.push($2);
+        $$ = $1;
+    }
+;
+
+qwords: tQWORDS_BEG qword_list tSTRING_END {
+    |$1: Token, $2: Nodes, $3: Token| -> Node;
+
+    $$ = node::words_compose($1, $2, $3);
+};
+
+qsymbols
+    : tQSYMBOLS_BEG qsym_list tSTRING_END {
+        |$1:Token, $2:Nodes, $3:Token| -> Node;
+        $$ = node::symbols_compose($1, $2, $3);
+    }
+;
+
 qword_list
     : {
-        || -> Node;
-        $$ = Node::Nodes(vec![]);
+        || -> Nodes; $$ = vec![];
     }
     | qword_list tSTRING_CONTENT tSPACE {
-        |$1:Node, $2:Token, $3:Token| -> Node;
-        let $$;
-        if let Node::Nodes(mut nodes) = $1 {
-            nodes.push(node::string_internal(*$2.interior_token));
-            <REMOVE THIS LET>$$ = Node::Nodes(nodes);
-        } else {unreachable!();}
+        |$1:Nodes, $2:Token, $3:Token| -> Nodes;
+
+        $1.push(node::string_internal($2));
+        $$ = $1;
     }
 ;
 
-//        qsym_list: # nothing
-//                     {
-//                       result = []
-//                     }
-//                 | qsym_list tSTRING_CONTENT tSPACE
-//                     {
-//                       result = val[0] << @builder.symbol_internal(val[1])
-//                     }
+qsym_list
+    : {
+        ||->Nodes; $$ = vec![];
+    }
+    | qsym_list tSTRING_CONTENT tSPACE {
+        |$1:Nodes, $2:Token| -> Nodes;
+        $1.push(node::symbol_internal($2));
+        $$ = $1;
+    }
+;
 
-//  string_contents: # nothing
-//                     {
-//                       result = []
-//                     }
-//                 | string_contents string_content
-//                     {
-//                       result = val[0] << val[1]
-//                     }
-// TODO
 string_contents
     : {
-        || -> Node;
-
-        $$ = Node::Nodes(vec![]);
+        || -> Nodes; $$ = vec![];
     }
     | string_contents string_content {
-        |$1:Node, $2:Node| -> Node;
+        |$1:Nodes, $2:Node| -> Nodes;
 
-        // string_contents: Node::Nodes
-        // string_content: Node::Str
-
-        let $$;
-        if let Node::Nodes(mut n_strs) = $1 {
-            n_strs.push($2);
-            <REMOVE THIS LET>$$ = Node::Nodes(n_strs);
-        } else { unreachable!(); }
+        $1.push($2);
+        $$ = $1;
     }
 ;
 
-// xstring_contents: # nothing
-//                     {
-//                       result = []
-//                     }
-//                 | xstring_contents string_content
-//                     {
-//                       result = val[0] << val[1]
-//                     }
 xstring_contents
     : {
-        || -> Node;
-        $$ = Node::Nodes(vec![]);
+        || -> Nodes; $$ = vec![];
     }
     | xstring_contents string_content {
-        |$1:Node, $2:Node| -> Node;
-        let $$;
-        if let Node::Nodes(mut nodes) = $1 {
-            nodes.push($2);
-            <REMOVE THIS LET>$$ = Node::Nodes(nodes);
-        } else { unreachable!(); }
+        |$1:Nodes, $2:Node| -> Nodes;
+        $1.push($2);
+        $$ = $1;
     }
 ;
 
-// regexp_contents: # nothing
-//                     {
-//                       result = []
-//                     }
-//                 | regexp_contents string_content
-//                     {
-//                       result = val[0] << val[1]
-//                     }
+regexp_contents
+    : {
+        || -> Nodes; $$ = vec![];
+    }
+    | regexp_contents string_content {
+        |$1: Nodes, $2: Node| -> Nodes;
+        $1.push($2); $$ = $1;
+    }
+;
 
-//   string_content: tSTRING_CONTENT
-//                     {
-//                       result = @builder.string_internal(val[0])
-//                     }
-//                 | tSTRING_DVAR string_dvar
-//                     {
-//                       result = val[1]
-//                     }
-//                 | tSTRING_DBEG
-//                     {
-//                       @lexer.cond.push(false)
-//                       @lexer.cmdarg.push(false)
-//                     }
-//                     compstmt tSTRING_DEND
-//                     {
-//                       @lexer.cond.lexpop
-//                       @lexer.cmdarg.lexpop
-// 
-//                       result = @builder.begin(val[0], val[2], val[3])
-//                     }
-// TODO
+fake_embedded_action__string_content__tSTRING_DBEG: {
+    ||->Node; $$=Node::DUMMY;
+
+    self.tokenizer.interior_lexer.cond.push(false);
+    self.tokenizer.interior_lexer.cmdarg.push(false);
+};
+
 string_content
     : tSTRING_CONTENT {
-        |$1:Token| -> Node;
+        |$1:Token| -> Node; $$ = node::string_internal($1);
+    }
+    | tSTRING_DVAR string_dvar {
+        |$2: Node| -> Node; $$ = $2;
+    }
+    | tSTRING_DBEG fake_embedded_action__string_content__tSTRING_DBEG compstmt tSTRING_DEND {
+        |$1: Token, $3: Node, $4: Token| -> Node;
 
-        let $$;
-        if let InteriorToken::T_STRING_CONTENT(string_value) = *$1.interior_token {
-            <REMOVE THIS LET>$$ = Node::Str(string_value);
-        } else { unreachable!(); } 
+        self.tokenizer.interior_lexer.cond.lexpop();
+        self.tokenizer.interior_lexer.cmdarg.lexpop();
+
+        $$ = node::begin($1, Some($3), $4);
     }
 ;
 
-//      string_dvar: tGVAR
-//                     {
-//                       result = @builder.gvar(val[0])
-//                     }
-//                 | tIVAR
-//                     {
-//                       result = @builder.ivar(val[0])
-//                     }
-//                 | tCVAR
-//                     {
-//                       result = @builder.cvar(val[0])
-//                     }
-//                 | backref
-
-
-//           symbol: tSYMBOL
-//                     {
-//                       @lexer.state = :expr_endarg
-//                       result = @builder.symbol(val[0])
-//                     }
-symbol
-    : tSYMBOL {
-        |$1:Token| -> Node;
-
-        // TODO lexer.state
-        $$ = node::symbol(*$1.interior_token);
-    }
-;
-
-//             dsym: tSYMBEG xstring_contents tSTRING_END
-//                     {
-//                       @lexer.state = :expr_endarg
-//                       result = @builder.symbol_compose(val[0], val[1], val[2])
-//                     }
-dsym
-    : tSYMBEG xstring_contents tSTRING_END {
-        |$1:Token, $2:Node, $3:Token| -> Node;
-
-        // TODO lexer.state
-        $$ = node::symbol_compose($2);
-    }
-;
-
-//          numeric: simple_numeric
-//                     {
-//                       result = val[0]
-//                     }
-//                 | tUNARY_NUM simple_numeric =tLOWEST
-//                     {
-//                       if @builder.respond_to? :negate
-//                         # AST builder interface compatibility
-//                         result = @builder.negate(val[0], val[1])
-//                       else
-//                         result = @builder.unary_num(val[0], val[1])
-//                       end
-//                     }
-// TODO
-numeric
-    : simple_numeric
-;
-
-//   simple_numeric: tINTEGER
-//                     {
-//                       @lexer.state = :expr_endarg
-//                       result = @builder.integer(val[0])
-//                     }
-simple_numeric
-    :
-    tINTEGER {
-        || -> Node;
-
-        let $$;
-        if let SV::_0(token) = $1 {
-            if let InteriorToken::T_INTEGER(value) = *token.interior_token {
-                <REMOVE THIS LET>$$ = Node::Int(value);
-            } else { unreachable!(); }
-        } else { unreachable!(); }
-    }
-;
-//                 | tFLOAT
-//                     {
-//                       @lexer.state = :expr_endarg
-//                       result = @builder.float(val[0])
-//                     }
-//                 | tRATIONAL
-//                     {
-//                       @lexer.state = :expr_endarg
-//                       result = @builder.rational(val[0])
-//                     }
-//                 | tIMAGINARY
-//                     {
-//                       @lexer.state = :expr_endarg
-//                       result = @builder.complex(val[0])
-//                     }
-
-//    user_variable: tIDENTIFIER
-//                     {
-//                       result = @builder.ident(val[0])
-//                     }
-//                 | tIVAR
-//                     {
-//                       result = @builder.ivar(val[0])
-//                     }
-//                 | tGVAR
-//                     {
-//                       result = @builder.gvar(val[0])
-//                     }
-//                 | tCONSTANT
-//                     {
-//                       result = @builder.const(val[0])
-//                     }
-//                 | tCVAR
-//                     {
-//                       result = @builder.cvar(val[0])
-//                     }
-// TODO
-user_variable
-    : tIDENTIFIER {
-        |$1:Token| -> Node;
-
-        $$ = node::ident(*$1.interior_token);
+string_dvar
+    : tGVAR {
+        |$1: Token| -> Node; $$ = node::gvar($1);
     }
     | tIVAR {
-        |$1:Token| -> Node;
-
-        $$ = node::ivar(*$1.interior_token);
-    }
-    | tGVAR {
-        |$1:Token| -> Node;
-
-        $$ = node::gvar(*$1.interior_token);
-    }
-    | tCONSTANT {
-        |$1:Token| -> Node;
-
-        $$ = node::build_const(*$1.interior_token);
+        |$1: Token| -> Node; $$ = node::ivar($1);
     }
     | tCVAR {
-        |$1:Token| -> Node;
+        |$1: Token| -> Node; $$ = node::cvar($1);
+    }
+    | backref
+;
 
-        $$ = node::cvar(*$1.interior_token);
+symbol: tSYMBOL {
+    |$1:Token| -> Node;
+
+    self.tokenizer.interior_lexer.set_state("expr_endarg");
+    $$ = node::symbol($1);
+};
+
+dsym: tSYMBEG xstring_contents tSTRING_END {
+    |$1:Token, $2:Nodes, $3:Token| -> Node;
+
+    self.tokenizer.interior_lexer.set_state("expr_endarg");
+    $$ = node::symbol_compose($1, $2, $3);
+};
+
+numeric
+    : simple_numeric
+    | tUNARY_NUM simple_numeric %prec tLOWEST {
+        //   if @builder.respond_to? :negate
+        //     # AST builder interface compatibility
+        //     result = @builder.negate(val[0], val[1])
+        //   else
+        //     result = @builder.unary_num(val[0], val[1])
+        //   end
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
     }
 ;
 
-// keyword_variable: kNIL
-//                     {
-//                       result = @builder.nil(val[0])
-//                     }
-// TODO
-keyword_variable
-    // TODO builder.nil
-    : kNIL { || -> Node; $$ = Node::Nil; }
-//                 | kSELF
-//                     {
-//                       result = @builder.self(val[0])
-//                     }
-    // TODO builder.self
-    | kSELF { || -> Node; $$ = Node::NSelf; }
-//                 | kTRUE
-//                     {
-//                       result = @builder.true(val[0])
-//                     }
-    // TODO builder.true
-    | kTRUE { || -> Node; $$ = Node::True; }
-//                 | kFALSE
-//                     {
-//                       result = @builder.false(val[0])
-//                     }
-    // TODO builder.false
-    | kFALSE { || -> Node; $$ = Node::False; }
+simple_numeric
+    : tINTEGER {
+        |$1: Token| -> Node;
+        self.tokenizer.interior_lexer.set_state("expr_endarg");
+        // result = @builder.integer(val[0])
+        // $$ = node::integer($1);
+        wip!(); $$=Node::DUMMY;
+    }
+    | tFLOAT {
+        |$1: Token| -> Node;
+        self.tokenizer.interior_lexer.set_state("expr_endarg");
+        // result = @builder.float(val[0])
+        // $$ = node::float($1);
+        wip!(); $$=Node::DUMMY;
+    }
+    | tRATIONAL {
+        |$1: Token| -> Node;
+        self.tokenizer.interior_lexer.set_state("expr_endarg");
+        // result = @builder.rational(val[0])
+        // $$ = node::rational($1);
+        wip!(); $$=Node::DUMMY;
+    }
+    | tIMAGINARY {
+        |$1: Token| -> Node;
+        self.tokenizer.interior_lexer.set_state("expr_endarg");
+        // result = @builder.complex(val[0])
+        wip!(); $$=Node::DUMMY;
+    }
 ;
-//                 | k__FILE__
-//                     {
-//                       result = @builder.__FILE__(val[0])
-//                     }
-//                 | k__LINE__
-//                     {
-//                       result = @builder.__LINE__(val[0])
-//                     }
-//                 | k__ENCODING__
-//                     {
-//                       result = @builder.__ENCODING__(val[0])
-//                     }
 
-//          var_ref: user_variable
-//                     {
-//                       result = @builder.accessible(val[0])
-//                     }
-//                 | keyword_variable
-//                     {
-//                       result = @builder.accessible(val[0])
-//                     }
+user_variable
+    : tIDENTIFIER {
+        |$1:Token| -> Node; $$ = node::ident($1);
+    }
+    | tIVAR {
+        |$1:Token| -> Node; $$ = node::ivar($1);
+    }
+    | tGVAR {
+        |$1:Token| -> Node; $$ = node::gvar($1);
+    }
+    | tCONSTANT {
+        |$1:Token| -> Node; $$ = node::build_const($1);
+    }
+    | tCVAR {
+        |$1:Token| -> Node; $$ = node::cvar($1);
+    }
+;
+
+keyword_variable
+    : kNIL {
+        |$1: Token| -> Node; $$ = Node::Nil;
+        // TODO @builder.nil
+    }
+    | kSELF {
+        |$1: Token| -> Node; $$ = Node::NSelf;
+        // TODO @builder.self
+    }
+    | kTRUE {
+        |$1: Token| -> Node; $$ = Node::True;
+        // TODO @builder.true
+    }
+    | kFALSE {
+        |$1: Token| -> Node; $$ = Node::False;
+        // TODO @builder.false
+    }
+    | k__FILE__
+        {
+        //   result = @builder.__FILE__(val[0])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | k__LINE__
+        {
+        //   result = @builder.__LINE__(val[0])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+    | k__ENCODING__
+        {
+        //   result = @builder.__ENCODING__(val[0])
+        ||->Node;
+        wip!(); $$=Node::DUMMY;
+        }
+;
+
 var_ref
     : user_variable {
         |$1:Node| -> Node;
@@ -2306,361 +2285,399 @@ var_ref
     }
 ;
 
-//          var_lhs: user_variable
-//                     {
-//                       result = @builder.assignable(val[0])
-//                     }
-//                 | keyword_variable
-//                     {
-//                       result = @builder.assignable(val[0])
-//                     }
-
-//          backref: tNTH_REF
-//                     {
-//                       result = @builder.nth_ref(val[0])
-//                     }
-//                 | tBACK_REF
-//                     {
-//                       result = @builder.back_ref(val[0])
-//                     }
-
-//       superclass: tLT
-//                     {
-//                       @lexer.state = :expr_value
-//                     }
-//                     expr_value term
-//                     {
-//                       result = [ val[0], val[2] ]
-//                     }
-//                 | # nothing
-//                     {
-//                       result = nil
-//                     }
-
-//        f_arglist: tLPAREN2 f_args rparen
-//                     {
-//                       result = @builder.args(val[0], val[1], val[2])
-// 
-//                       @lexer.state = :expr_value
-//                     }
-//                 |   {
-//                       result = @lexer.in_kwarg
-//                       @lexer.in_kwarg = true
-//                     }
-//                   f_args term
-//                     {
-//                       @lexer.in_kwarg = val[0]
-//                       result = @builder.args(nil, val[1], nil)
-//                     }
-
-//        args_tail: f_kwarg tCOMMA f_kwrest opt_f_block_arg
-//                     {
-//                       result = val[0].concat(val[2]).concat(val[3])
-//                     }
-//                 | f_kwarg opt_f_block_arg
-//                     {
-//                       result = val[0].concat(val[1])
-//                     }
-//                 | f_kwrest opt_f_block_arg
-//                     {
-//                       result = val[0].concat(val[1])
-//                     }
-//                 | f_block_arg
-//                     {
-//                       result = [ val[0] ]
-//                     }
-
-//    opt_args_tail: tCOMMA args_tail
-//                     {
-//                       result = val[1]
-//                     }
-//                 | # nothing
-//                     {
-//                       result = []
-//                     }
-
-//           f_args: f_arg tCOMMA f_optarg tCOMMA f_rest_arg              opt_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[4]).
-//                                   concat(val[5])
-//                     }
-//                 | f_arg tCOMMA f_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[4]).
-//                                   concat(val[6]).
-//                                   concat(val[7])
-//                     }
-//                 | f_arg tCOMMA f_optarg                                opt_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[3])
-//                     }
-//                 | f_arg tCOMMA f_optarg tCOMMA                   f_arg opt_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[4]).
-//                                   concat(val[5])
-//                     }
-//                 | f_arg tCOMMA                 f_rest_arg              opt_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[3])
-//                     }
-//                 | f_arg tCOMMA                 f_rest_arg tCOMMA f_arg opt_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[4]).
-//                                   concat(val[5])
-//                     }
-//                 | f_arg                                                opt_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[1])
-//                     }
-//                 |              f_optarg tCOMMA f_rest_arg              opt_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[3])
-//                     }
-//                 |              f_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[4]).
-//                                   concat(val[5])
-//                     }
-//                 |              f_optarg                                opt_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[1])
-//                     }
-//                 |              f_optarg tCOMMA                   f_arg opt_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[3])
-//                     }
-//                 |                              f_rest_arg              opt_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[1])
-//                     }
-//                 |                              f_rest_arg tCOMMA f_arg opt_args_tail
-//                     {
-//                       result = val[0].
-//                                   concat(val[2]).
-//                                   concat(val[3])
-//                     }
-//                 |                                                          args_tail
-//                     {
-//                       result = val[0]
-//                     }
-//                 | # nothing
-//                     {
-//                       result = []
-//                     }
-
-//        f_bad_arg: tCONSTANT
-//                     {
-//                       diagnostic :error, :argument_const, nil, val[0]
-//                     }
-//                 | tIVAR
-//                     {
-//                       diagnostic :error, :argument_ivar, nil, val[0]
-//                     }
-//                 | tGVAR
-//                     {
-//                       diagnostic :error, :argument_gvar, nil, val[0]
-//                     }
-//                 | tCVAR
-//                     {
-//                       diagnostic :error, :argument_cvar, nil, val[0]
-//                     }
-
-//       f_norm_arg: f_bad_arg
-//                 | tIDENTIFIER
-//                     {
-//                       @static_env.declare val[0][0]
-
-//                       result = val[0]
-//                     }
-
-//       f_arg_asgn: f_norm_arg
-//                     {
-//                       result = val[0]
-//                     }
-
-//       f_arg_item: f_arg_asgn
-//                     {
-//                       result = @builder.arg(val[0])
-//                     }
-//                 | tLPAREN f_margs rparen
-//                     {
-//                       result = @builder.multi_lhs(val[0], val[1], val[2])
-//                     }
-
-//            f_arg: f_arg_item
-//                     {
-//                       result = [ val[0] ]
-//                     }
-//                 | f_arg tCOMMA f_arg_item
-//                     {
-//                       result = val[0] << val[2]
-//                     }
-
-//          f_label: tLABEL
-//                     {
-//                       check_kwarg_name(val[0])
-// 
-//                       @static_env.declare val[0][0]
-// 
-//                       result = val[0]
-//                     }
-
-//             f_kw: f_label arg_value
-//                     {
-//                       result = @builder.kwoptarg(val[0], val[1])
-//                     }
-//                 | f_label
-//                     {
-//                       result = @builder.kwarg(val[0])
-//                     }
-
-//       f_block_kw: f_label primary_value
-//                     {
-//                       result = @builder.kwoptarg(val[0], val[1])
-//                     }
-//                 | f_label
-//                     {
-//                       result = @builder.kwarg(val[0])
-//                     }
-
-//    f_block_kwarg: f_block_kw
-//                     {
-//                       result = [ val[0] ]
-//                     }
-//                 | f_block_kwarg tCOMMA f_block_kw
-//                     {
-//                       result = val[0] << val[2]
-//                     }
-
-//          f_kwarg: f_kw
-//                     {
-//                       result = [ val[0] ]
-//                     }
-//                 | f_kwarg tCOMMA f_kw
-//                     {
-//                       result = val[0] << val[2]
-//                     }
-
-//      kwrest_mark: tPOW | tDSTAR
-
-//         f_kwrest: kwrest_mark tIDENTIFIER
-//                     {
-//                       @static_env.declare val[1][0]
-
-//                       result = [ @builder.kwrestarg(val[0], val[1]) ]
-//                     }
-//                 | kwrest_mark
-//                     {
-//                       result = [ @builder.kwrestarg(val[0]) ]
-//                     }
-
-//            f_opt: f_arg_asgn tEQL arg_value
-//                     {
-//                       result = @builder.optarg(val[0], val[1], val[2])
-//                     }
-
-//      f_block_opt: f_arg_asgn tEQL primary_value
-//                     {
-//                       result = @builder.optarg(val[0], val[1], val[2])
-//                     }
-
-//   f_block_optarg: f_block_opt
-//                     {
-//                       result = [ val[0] ]
-//                     }
-//                 | f_block_optarg tCOMMA f_block_opt
-//                     {
-//                       result = val[0] << val[2]
-//                     }
-
-//         f_optarg: f_opt
-//                     {
-//                       result = [ val[0] ]
-//                     }
-//                 | f_optarg tCOMMA f_opt
-//                     {
-//                       result = val[0] << val[2]
-//                     }
-
-//     restarg_mark: tSTAR2 | tSTAR
-
-//       f_rest_arg: restarg_mark tIDENTIFIER
-//                     {
-//                       @static_env.declare val[1][0]
-
-//                       result = [ @builder.restarg(val[0], val[1]) ]
-//                     }
-//                 | restarg_mark
-//                     {
-//                       result = [ @builder.restarg(val[0]) ]
-//                     }
-
-//      blkarg_mark: tAMPER2 | tAMPER
-
-//      f_block_arg: blkarg_mark tIDENTIFIER
-//                     {
-//                       @static_env.declare val[1][0]
-
-//                       result = @builder.blockarg(val[0], val[1])
-//                     }
-
-//  opt_f_block_arg: tCOMMA f_block_arg
-//                     {
-//                       result = [ val[1] ]
-//                     }
-//                 |
-//                     {
-//                       result = []
-//                     }
-
-//        singleton: var_ref
-//                 | tLPAREN2 expr rparen
-//                     {
-//                       result = val[1]
-//                     }
-
-//       assoc_list: # nothing
-//                     {
-//                       result = []
-//                     }
-//                 | assocs trailer
-assoc_list
-    : {
-        || -> Nodes;
-        $$ = vec![];
+var_lhs
+    : user_variable {
+        |$1:Node| -> Node; $$ = node::assignable($1);
     }
-    | assocs trailer { $$ = $1; } // TODO i thought `$$ = $1;` is the default one, yet the parser rails without this line
+    | keyword_variable {
+        |$1:Node| -> Node; $$ = node::assignable($1);
+    }
 ;
 
-//           assocs: assoc
-//                     {
-//                       result = [ val[0] ]
-//                     }
-//                 | assocs tCOMMA assoc
-//                     {
-//                       result = val[0] << val[2]
-//                     }
+backref
+    : tNTH_REF {
+        |$1:Token| -> Node; $$ = node::nth_ref($1);
+    }
+    | tBACK_REF {
+        |$1:Token| -> Node; $$ = node::back_ref($1);
+    }
+;
+
+fake_embedded_action__superclass__tLT: {
+    ||->Node; $$=Node::DUMMY;
+    self.tokenizer.interior_lexer.set_state("expr_value");
+};
+
+superclass
+    : tLT fake_embedded_action__superclass__tLT expr_value term {
+        |$1:Token, $3:Node| -> TSomeTokenNode;
+
+        $$ = Some(($1, $3));
+    }
+    | {
+        || -> TSomeTokenNode; $$ = None;
+    }
+;
+
+fake_embedded_action__f_arglist__episolon: {
+    || -> bool;
+
+    $$ = self.tokenizer.interior_lexer.in_kwarg;
+    self.tokenizer.interior_lexer.in_kwarg = true;
+};
+
+f_arglist
+    : tLPAREN2 f_args rparen {
+        |$1:Token, $2:Nodes, $3:Token| -> Node;
+        $$ = node::args(Some($1), $2, Some($3));
+        self.tokenizer.interior_lexer.set_state("expr_value");
+    }
+    | fake_embedded_action__f_arglist__episolon f_args term {
+        |$1: bool, $2: Nodes| -> Node;
+
+        self.tokenizer.interior_lexer.in_kwarg = $1;
+        $$ = node::args(None, $2, None);
+    }
+;
+
+args_tail
+    : f_kwarg tCOMMA f_kwrest opt_f_block_arg {
+        |$1: Nodes, $3: Nodes, $4: Nodes| -> Nodes;
+        $1.append(&mut $3);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    | f_kwarg opt_f_block_arg {
+        |$1: Nodes, $2: Nodes| -> Nodes;
+        $1.append(&mut $2);
+        $$ = $1;
+    }
+    | f_kwrest opt_f_block_arg {
+        |$1: Nodes, $2: Nodes| -> Nodes;
+        $1.append(&mut $2);
+        $$ = $1;
+    }
+    | f_block_arg {
+        |$1: Node| -> Nodes; $$ = vec![$1];
+    }
+;
+
+opt_args_tail
+    : tCOMMA args_tail {
+        |$2: Node| -> Nodes; $$ = vec![$2];
+    }
+    | {
+        || -> Nodes; $$ = vec![];
+    }
+;
+
+f_args
+    : f_arg tCOMMA f_optarg tCOMMA f_rest_arg              opt_args_tail {
+        |$1: Nodes, $3: Nodes, $5: Nodes, $6: Nodes| -> Nodes;
+
+        $1.append(&mut $3);
+        $1.append(&mut $5);
+        $1.append(&mut $6);
+        $$ = $1;
+    }
+    | f_arg tCOMMA f_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_args_tail {
+        |$1: Nodes, $3: Nodes, $5: Nodes, $7: Nodes, $8: Nodes| -> Nodes;
+
+        $1.append(&mut $3);
+        $1.append(&mut $5);
+        $1.append(&mut $7);
+        $1.append(&mut $8);
+        $$ = $1;
+    }
+    | f_arg tCOMMA f_optarg                                opt_args_tail {
+        |$1: Nodes, $3: Nodes, $4: Nodes| -> Nodes;
+
+        $1.append(&mut $3);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    | f_arg tCOMMA f_optarg tCOMMA                   f_arg opt_args_tail {
+        |$1: Nodes, $3: Nodes, $5: Nodes, $6: Nodes| -> Nodes;
+
+        $1.append(&mut $3);
+        $1.append(&mut $5);
+        $1.append(&mut $6);
+        $$ = $1;
+    }
+    | f_arg tCOMMA                 f_rest_arg              opt_args_tail {
+        |$1: Nodes, $3: Nodes, $4: Nodes| -> Nodes;
+
+        $1.append(&mut $3);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    | f_arg tCOMMA                 f_rest_arg tCOMMA f_arg opt_args_tail {
+        |$1: Nodes, $3: Nodes, $5: Nodes, $6: Nodes| -> Nodes;
+
+        $1.append(&mut $3);
+        $1.append(&mut $5);
+        $1.append(&mut $6);
+        $$ = $1;
+    }
+    | f_arg                                                opt_args_tail {
+        |$1: Nodes, $2: Nodes| -> Nodes;
+
+        $1.append(&mut $2);
+        $$ = $1;
+    }
+    |              f_optarg tCOMMA f_rest_arg              opt_args_tail {
+        |$1: Nodes, $3: Nodes, $4: Nodes| -> Nodes;
+
+        $1.append(&mut $3);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    |              f_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_args_tail {
+        |$1: Nodes, $3: Nodes, $5: Nodes, $6: Nodes| -> Nodes;
+
+        $1.append(&mut $3);
+        $1.append(&mut $5);
+        $1.append(&mut $6);
+        $$ = $1;
+    }
+    |              f_optarg                                opt_args_tail {
+        |$1: Nodes, $2: Nodes| -> Nodes;
+
+        $1.append(&mut $2);
+        $$ = $1;
+    }
+    |              f_optarg tCOMMA                   f_arg opt_args_tail {
+        |$1: Nodes, $3: Nodes, $4: Nodes| -> Nodes;
+
+        $1.append(&mut $3);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    |                              f_rest_arg              opt_args_tail {
+        |$1: Nodes, $2: Nodes| -> Nodes;
+
+        $1.append(&mut $2);
+        $$ = $1;
+    }
+    |                              f_rest_arg tCOMMA f_arg opt_args_tail {
+        |$1: Nodes, $3: Nodes, $4: Nodes| -> Nodes;
+
+        $1.append(&mut $3);
+        $1.append(&mut $4);
+        $$ = $1;
+    }
+    |                                                          args_tail {
+        |$1: Nodes| -> Nodes; $$ = $1;
+    }
+    | {
+        || -> Nodes; $$ = vec![];
+    }
+;
+
+f_bad_arg
+    : tCONSTANT {
+        ||->Node; $$ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_const, nil, val[0]
+    }
+    | tIVAR {
+        ||->Node; $$ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_ivar, nil, val[0]
+    }
+    | tGVAR {
+        ||->Node; $$ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_gvar, nil, val[0]
+    }
+    | tCVAR {
+        ||->Node; $$ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_cvar, nil, val[0]
+    }
+;
+
+f_norm_arg
+    : f_bad_arg
+    | tIDENTIFIER {
+        |$1: Token| -> Token;
+
+        if let InteriorToken::T_IDENTIFIER(ref t_value) = $1 {
+            self.static_env.declare(t_value.clone());
+        } else { unreachable!(); }
+
+        $$ = $1.wrap_as_token();
+    }
+;
+
+f_arg_asgn: f_norm_arg {
+    |$1: Node| -> Node; $$ = $1;
+};
+
+f_arg_item
+    : f_arg_asgn {
+        |$1: Token| -> Node;
+        $$ = node::arg($1);
+    }
+    | tLPAREN f_margs rparen {
+        |$1: Token, $2: Nodes, $3: Token| -> Node; $$ = node::multi_lhs(Some($1), $2, Some($3));
+    }
+;
+
+f_arg
+    : f_arg_item {
+        |$1: Node| -> Nodes; $$ = vec![$1];
+    }
+    | f_arg tCOMMA f_arg_item {
+        |$1: Nodes, $3: Node| -> Nodes;
+        $1.push($3);
+        $$ = $1;
+    }
+;
+
+f_label: tLABEL {
+    //   check_kwarg_name(val[0])
+
+    //   @static_env.declare val[0][0]
+
+    //   result = val[0]
+    ||->Node;
+    wip!(); $$=Node::DUMMY;
+};
+
+f_kw
+    : f_label arg_value {
+        |$1: Token, $2: Node| -> Node; $$ = node::kwoptarg($1, $2);
+    }
+    | f_label {
+        |$1: Token| -> Node; $$ = node::kwarg($1);
+    }
+;
+
+f_block_kw
+    : f_label primary_value {
+        |$1: Token, $2: Node| -> Node; $$ = node::kwoptarg($1, $2);
+    }
+    | f_label {
+        |$1: Token| -> Node; $$ = node::kwarg($1);
+    }
+;
+
+f_block_kwarg
+    : f_block_kw {
+        |$1:Node| -> Nodes; $$ = vec![$1];
+    }
+    | f_block_kwarg tCOMMA f_block_kw {
+        |$1:Nodes, $3: Node| -> Nodes;
+        $1.push($3);
+        $$ = $1;
+    }
+;
+
+f_kwarg
+    : f_kw {
+        |$1:Node| -> Nodes; $$ = vec![$1];
+    }
+    | f_kwarg tCOMMA f_kw {
+        |$1:Nodes, $3: Node| -> Nodes;
+        $1.push($3);
+        $$ = $1;
+    }
+;
+
+kwrest_mark: tPOW | tDSTAR;
+
+f_kwrest
+    : kwrest_mark tIDENTIFIER {
+        |$1:Token, $2:Token| -> Nodes;
+
+        if let InteriorToken::T_IDENTIFIER(ref t_value) = $2 {
+            self.static_env.declare(t_value.clone());
+        } else { unreachable!(); }
+
+        $$ = vec![ node::kwrestarg($1, Some($2)) ];
+    }
+    | kwrest_mark {
+        |$1: Token| -> Nodes; $$ = vec![ node::kwrestarg($1, None) ];
+    }
+;
+
+f_opt: f_arg_asgn tEQL arg_value {
+    |$1: Token, $2: Token, $3: Node| -> Node;
+    $$ = node::optarg($1, $2, $3);
+};
+
+f_block_opt: f_arg_asgn tEQL primary_value {
+    |$1: Token, $2: Token, $3: Node| -> Node;
+    $$ = node::optarg($1, $2, $3);
+};
+
+f_block_optarg
+    : f_block_opt {
+        |$1:Node| -> Nodes; $$ = vec![$1];
+    }
+    | f_block_optarg tCOMMA f_block_opt {
+        |$1:Nodes, $3: Node| -> Nodes;
+        $1.push($3);
+        $$ = $1;
+    }
+;
+
+f_optarg
+    : f_opt {
+        |$1:Node| -> Nodes; $$ = vec![$1];
+    }
+    | f_optarg tCOMMA f_opt {
+        |$1:Nodes, $3: Node| -> Nodes;
+        $1.push($3);
+        $$ = $1;
+    }
+;
+
+restarg_mark: tSTAR2 | tSTAR;
+
+f_rest_arg
+    : restarg_mark tIDENTIFIER {
+        |$1:Token, $2:Token| -> Nodes;
+
+        if let InteriorToken::T_IDENTIFIER(ref t_value) = $2 {
+            self.static_env.declare(t_value.clone());
+        } else { unreachable!(); }
+
+        $$ = vec![ node::restarg($1, Some($2)) ];
+    }
+    | restarg_mark {
+        |$1: Token| -> Nodes; $$ = vec![node::restarg($1, None)];
+    }
+;
+
+blkarg_mark: tAMPER2 | tAMPER;
+
+f_block_arg: blkarg_mark tIDENTIFIER {
+    |$1:Token, $2:Token| -> Nodes;
+
+    if let InteriorToken::T_IDENTIFIER(ref t_value) = $2 {
+        self.static_env.declare(t_value.clone());
+    } else { unreachable!(); }
+
+    $$ = vec![ node::blockarg($1, $2) ];
+};
+
+ opt_f_block_arg
+    : tCOMMA f_block_arg {
+        |$2:Node| -> Nodes; $$ = vec![$2];
+    }
+    | {
+        || -> Nodes; $$ = vec![];
+    }
+;
+
+singleton
+    : var_ref
+    | tLPAREN2 expr rparen {
+        |$2:Node| -> Nodes; $$ = vec![$2];
+    }
+;
+
+assoc_list
+    : {
+        || -> Nodes; $$ = vec![];
+    }
+    | assocs trailer { $$ = $1; }
+;
+
 assocs
     : assoc {
         |$1:Node| -> Nodes;
@@ -2675,83 +2692,70 @@ assocs
     }
 ;
 
-//            assoc: arg_value tASSOC arg_value
-//                     {
-//                       result = @builder.pair(val[0], val[1], val[2])
-//                     }
-//                 | tLABEL arg_value
-//                     {
-//                       result = @builder.pair_keyword(val[0], val[1])
-//                     }
-//                 | tSTRING_BEG string_contents tLABEL_END arg_value
-//                     {
-//                       result = @builder.pair_quoted(val[0], val[1], val[2], val[3])
-//                     }
-//                 | tDSTAR arg_value
-//                     {
-//                       result = @builder.kwsplat(val[0], val[1])
-//                     }
-// TODO
 assoc
     : arg_value tASSOC arg_value {
         |$1: Node; $2: Token; $3: Node| -> Node;
-        $$ = node::pair($1, *$2.interior_token, $3);
+        $$ = node::pair($1, $2, $3);
     }
     | tLABEL arg_value {
         |$1: Token; $2: Node| -> Node;
-        $$ = node::pair_keyword(*$1.interior_token, $2);
+        $$ = node::pair_keyword($1, $2);
+    }
+    | tSTRING_BEG string_contents tLABEL_END arg_value {
+        |$1: Token; $2: Nodes, $3: Token, $4: Node| -> Node;
+        $$ = node::pair_quoted($1, $2, $3, $4);
+    }
+    | tDSTAR arg_value {
+        |$1: Token, $2: Node| -> Node;
+        $$ = node::kwsplat($1, $2);
     }
 ;
 
-//        operation: tIDENTIFIER | tCONSTANT | tFID
-//       operation2: tIDENTIFIER | tCONSTANT | tFID | op
-//       operation3: tIDENTIFIER | tFID | op
-//     dot_or_colon: call_op | tCOLON2
-//          call_op: tDOT
-//                     {
-//                       result = [:dot, val[0][1]]
-//                     }
-//                 | tANDDOT
-//                     {
-//                       result = [:anddot, val[0][1]]
-//                     }
+       operation: tIDENTIFIER | tCONSTANT | tFID;
+      operation2: tIDENTIFIER | tCONSTANT | tFID | op;
+      operation3: tIDENTIFIER | tFID | op;
+    dot_or_colon: call_op | tCOLON2;
+         call_op: tDOT {
+                    || -> Token; $$ = InteriorToken::T_DOT.wrap_as_token();
 
-opt_terms:  | terms ;
+                    //   result = [:dot, val[0][1]]
+                    // TODO
+                }
+                | tANDDOT {
+                    || -> Token; $$ = InteriorToken::T_ANDDOT.wrap_as_token();
 
-//           opt_nl:  | tNL
+                    //   result = [:anddot, val[0][1]]
+                    // TODO
+                }
+;
 
-//           rparen: opt_nl tRPAREN
-//                     {
-//                       result = val[1]
-//                     }
+       opt_terms:  | terms ;
 
-//         rbracket: opt_nl tRBRACK
-//                     {
-//                       result = val[1]
-//                     }
+          opt_nl:  | tNL;
 
-//          trailer:  | tNL | tCOMMA
+          rparen: opt_nl tRPAREN
+                    {
+                        $$ = $2;
+                    };
+
+        rbracket: opt_nl tRBRACK
+                    {
+                        $$ = $2;
+                    }
+;
+
 trailer:  | tNL | tCOMMA ;
 
-//             term: tSEMI
-//                   {
-//                     yyerrok
-//                   }
-//                 | tNL
 term
-    // TODO yyerrok
-    : tSEMI
+    : tSEMI {
+        // yyerrok
+        // TODO
+        $$ = $1;
+    }
     | tNL
 ;
 
-//            terms: term
-//                 | terms tSEMI
 terms
     : term
     | terms tSEMI
 ;
-
-//             none: # nothing
-//                   {
-//                     result = nil
-//                   }

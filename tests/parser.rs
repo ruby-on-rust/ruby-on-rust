@@ -1,5 +1,6 @@
 // // BASED ON https://github.com/whitequark/parser/blob/2a73841d6da04a5ab9bd270561165fd766722d43/test/test_parser.rb
 
+#[macro_use]
 extern crate ruby_on_rust;
 
 use ruby_on_rust::parser::parser::Parser;
@@ -12,20 +13,6 @@ macro_rules! assert_parses {
         let mut parser = Parser::new();
         let node = parser.parse($content);
         assert_eq!(node, $node);
-    };
-}
-
-// TODO NOTE
-macro_rules! n_str {
-    ($string:expr) => {
-        Node::Str(String::from($string))
-    };
-}
-
-// TODO NOTE
-macro_rules! n_sym {
-    ($string:expr) => {
-        Node::Sym(String::from($string))
     };
 }
 
@@ -65,8 +52,10 @@ macro_rules! n_sym {
 //         |~~~~~~~~~ expression})
 //   end
 #[test] fn nil_expression() {
-    assert_parses!("()", Node::Begin(vec![]));
-    assert_parses!("begin end", Node::KW_Begin);
+    assert_parses!("()", n_begin![]);
+    // NOTE ignored kw_begin
+    // https://github.com/whitequark/parser/blob/fbe0e8cbec557c96b0e0f4a8c5201155ee478284/README.md#begin-and-kwbegin
+    assert_parses!("begin end", n_begin![]);
 }
 
 //   def test_true
@@ -103,6 +92,12 @@ macro_rules! n_sym {
 //       %q{^ operator
 //         |~~~ expression})
 //   end
+#[test]
+fn int() {
+    assert_parses!("42", Node::Int(42));
+    assert_parses!("+42", Node::Int(42));
+    assert_parses!("-42", Node::Int(-42));
+}
 
 //   def test_int___LINE__
 //     assert_parses(
@@ -130,7 +125,7 @@ macro_rules! n_sym {
 //       %q{42r},
 //       %q{~~~ expression},
 //       SINCE_2_1)
-
+// 
 //     assert_parses(
 //       s(:rational, Rational(421, 10)),
 //       %q{42.1r},
@@ -202,6 +197,19 @@ fn string_plain() {
 //         |    ~~~~~~ expression (begin)
 //         |~~~~~~~~~~~~~~ expression})
 //   end
+#[test]
+fn string_interp() {
+    assert_parses!(
+        r"foo#{bar}baz",
+        n_dstr![
+            n_str!("foo"),
+            n_begin![
+                n_lvar!("bar")
+            ],
+            n_str!("baz")
+        ]
+    );
+}
 
 //   def test_string_dvar
 //     assert_parses(
@@ -213,6 +221,19 @@ fn string_plain() {
 //         s(:gvar, :$a)),
 //       %q{"#@a #@@a #$a"})
 //   end
+#[test]
+fn string_dvar() {
+    assert_parses!(
+        r#"#@a #@@a #$a"#,
+        Node::DStr(vec![
+            Node::IVar(String::from("@a")),
+            n_str!(" "),
+            Node::CVar(String::from("@@a")),
+            n_str!(" "),
+            Node::GVar(String::from("$a")),
+        ])
+    );
+}
 
 //   def test_string_concat
 //     assert_parses(
@@ -228,6 +249,7 @@ fn string_plain() {
 //         |             ^ end (str)
 //         |~~~~~~~~~~~~~~ expression})
 //   end
+#[test] fn string_concat() { panic!("UNIMPL"); }
 
 //   def test_string___FILE__
 //     assert_parses(
@@ -243,7 +265,7 @@ fn string_plain() {
 //       %q{^ begin
 //         |~~ expression},
 //       SINCE_1_9)
-
+// 
 //     assert_parses(
 //       s(:int, 97),
 //       %q{?a},
@@ -463,6 +485,9 @@ fn symbol_plain() {
 //         |     ~~~~~~ expression (begin)
 //         |~~~~~~~~~~~~~~~ expression})
 //   end
+fn symbol_interp() {
+    panic!("UNIMPL");
+}
 
 //   def test_symbol_empty
 //     assert_diagnoses(
@@ -470,7 +495,7 @@ fn symbol_plain() {
 //       %q{:''},
 //       %q{^^^ location},
 //       %w(1.8))
-
+// 
 //     assert_diagnoses(
 //       [:error, :empty_symbol],
 //       %q{:""},
@@ -564,8 +589,8 @@ fn symbol_plain() {
 //   end
 #[test]
 fn array_plain() {
-    assert_parses!(r"[]", Node::Array(vec![]));
-    // TODO assert_parses!(r"[1, 2]", Node::Array(vec![ Node::Int(1), Node::Int(2) ]));
+    assert_parses!(r"[]", Node::Array(vec!()));
+    assert_parses!(r"[1, 2]", Node::Array(vec![ Node::Int(1), Node::Int(2) ]));
 }
 
 //   def test_array_splat
@@ -789,7 +814,7 @@ fn hash_hashrocket() {
         r#"{ 1 => 2, :foo => "bar" }"#,
         Node::Hash(vec![
             Node::Pair { key: Box::new(Node::Int(1)), value: Box::new(Node::Int(2)) },
-            Node::Pair { key: Box::new(Node::Sym(String::from("foo"))), value: Box::new(Node::Str(String::from("bar"))) }
+            Node::Pair { key: Box::new(n_sym!("foo")), value: Box::new(n_str!("bar")) }
         ])
     );
 
@@ -824,37 +849,45 @@ fn hash_label() {
     );
 }
 
-//   def test_hash_label_end
-//     assert_parses(
-//       s(:hash, s(:pair, s(:sym, :foo), s(:int, 2))),
-//       %q[{ 'foo': 2 }],
-//       %q{^ begin
-//         |           ^ end
-//         |       ^ operator (pair)
-//         |  ^ begin (pair.sym)
-//         |      ^ end (pair.sym)
-//         |  ~~~~~ expression (pair.sym)
-//         |  ~~~~~~~~ expression (pair)
-//         |~~~~~~~~~~~~ expression},
-//       SINCE_2_2)
-// 
-//     assert_parses(
-//       s(:hash,
-//         s(:pair, s(:sym, :foo), s(:int, 2)),
-//         s(:pair, s(:sym, :bar), s(:hash))),
-//       %q[{ 'foo': 2, 'bar': {}}],
-//       %q{},
-//       SINCE_2_2)
-// 
-//     assert_parses(
-//       s(:send, nil, :f,
-//         s(:if, s(:send, nil, :a),
-//           s(:str, "a"),
-//           s(:int, 1))),
-//       %q{f(a ? "a":1)},
-//       %q{},
-//       SINCE_2_2)
-//   end
+#[test]
+fn hash_label_end() {
+    //     assert_parses(
+    //       s(:hash, s(:pair, s(:sym, :foo), s(:int, 2))),
+    //       %q[{ 'foo': 2 }],
+    //       %q{^ begin
+    //         |           ^ end
+    //         |       ^ operator (pair)
+    //         |  ^ begin (pair.sym)
+    //         |      ^ end (pair.sym)
+    //         |  ~~~~~ expression (pair.sym)
+    //         |  ~~~~~~~~ expression (pair)
+    //         |~~~~~~~~~~~~ expression},
+    //       SINCE_2_2)
+    assert_parses!(
+        "{ 'foo': 2 }",
+        n_hash![
+            n_pair!( n_sym!("foo"), Node::Int(2) )
+        ]
+    );
+
+    // TODO
+    //     assert_parses(
+    //       s(:hash,
+    //         s(:pair, s(:sym, :foo), s(:int, 2)),
+    //         s(:pair, s(:sym, :bar), s(:hash))),
+    //       %q[{ 'foo': 2, 'bar': {}}],
+    //       %q{},
+    //       SINCE_2_2)
+    // 
+    //     assert_parses(
+    //       s(:send, nil, :f,
+    //         s(:if, s(:send, nil, :a),
+    //           s(:str, "a"),
+    //           s(:int, 1))),
+    //       %q{f(a ? "a":1)},
+    //       %q{},
+    //       SINCE_2_2)
+}
 
 //   def test_hash_kwsplat
 //     assert_parses(
@@ -1072,7 +1105,7 @@ fn const_unscoped() {
 //       %q{defined? foo},
 //       %q{~~~~~~~~ keyword
 //         |~~~~~~~~~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:defined?, s(:lvar, :foo)),
 //       %q{defined?(foo)},
@@ -1080,7 +1113,7 @@ fn const_unscoped() {
 //         |        ^ begin
 //         |            ^ end
 //         |~~~~~~~~~~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:defined?, s(:ivar, :@foo)),
 //       %q{defined? @foo})
@@ -1106,14 +1139,12 @@ fn const_unscoped() {
 #[test]
 fn lvasgn() {
     assert_parses!(
-        "var = :foo; var",
+        "var = 10; var",
         Node::Begin(vec![
-            Node::LVasgn(String::from("var"), vec![n_sym!("foo")] ),
+            Node::LVasgn(String::from("var"), vec![Node::Int(10)] ),
             Node::LVar(String::from("var")),
         ])
     );
-
-    // TODO the original case uses int
 }
 
 //   def test_ivasgn
@@ -1128,11 +1159,9 @@ fn lvasgn() {
 #[test]
 fn ivasgn() {
     assert_parses!(
-        "@var = :foo",
-        Node::IVasgn(String::from("@var"), vec![n_sym!("foo")] )
+        "@var = 10",
+        Node::IVasgn(String::from("@var"), vec![Node::Int(10)] )
     );
-
-    // TODO the original case uses int
 }
 
 //   def test_cvasgn
@@ -1144,6 +1173,13 @@ fn ivasgn() {
 //         |~~~~~~~~~~ expression
 //         })
 //   end
+#[test]
+fn cvasgn() {
+    assert_parses!(
+        "@@var = 10",
+        Node::CVasgn(String::from("@@var"), vec![Node::Int(10)] )
+    );
+}
 
 //   def test_gvasgn
 //     assert_parses(
@@ -1155,31 +1191,35 @@ fn ivasgn() {
 //         })
 //   end
 
-//   def test_asgn_cmd
-//     assert_parses(
-//       s(:lvasgn, :foo, s(:send, nil, :m, s(:lvar, :foo))),
-//       %q{foo = m foo})
-// 
-//     assert_parses(
-//       s(:lvasgn, :foo,
-//         s(:lvasgn, :bar,
-//           s(:send, nil, :m, s(:lvar, :foo)))),
-//       %q{foo = bar = m foo},
-//       %q{},
-//       ALL_VERSIONS - %w(1.8 mac ios))
-//   end
 #[test]
 fn asgn_cmd() {
-    panic!("WIP");
-    // assert_parses!(
-    //     "foo = m foo",
-    //     Node::LVasgn(
-    //         String::from("var"),
-    //         vec![
-    //         ]
-    //     )
-    // );
-}
+    // TODO WIP
+    //     assert_parses(
+    //       s(:lvasgn, :foo, s(:send, nil, :m, s(:lvar, :foo))),
+    //       %q{foo = m foo})
+    assert_parses!(
+        "foo = m foo",
+        Node::LVasgn(
+            String::from("var"),
+            vec![
+                n_send!(
+                    None,
+                    "m",
+                    vec![n_lvar!("foo")]
+                )
+            ]
+        )
+    );
+
+    // TODO
+    //     assert_parses(
+    //       s(:lvasgn, :foo,
+    //         s(:lvasgn, :bar,
+    //           s(:send, nil, :m, s(:lvar, :foo)))),
+    //       %q{foo = bar = m foo},
+    //       %q{},
+    //       ALL_VERSIONS - %w(1.8 mac ios))
+} 
 
 //   def test_asgn_keyword_invalid
 //     assert_diagnoses(
@@ -3024,13 +3064,13 @@ fn asgn_cmd() {
 //       %q{fun},
 //       %q{~~~ selector
 //         |~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:send, nil, :fun!),
 //       %q{fun!},
 //       %q{~~~~ selector
 //         |~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:send, nil, :fun, s(:int, 1)),
 //       %q{fun(1)},
@@ -3039,20 +3079,34 @@ fn asgn_cmd() {
 //         |     ^ end
 //         |~~~~~~ expression})
 //   end
+#[test]
+fn send_self() {
+    // TODO WIP
+    assert_parses!(
+        r"fun", n_send!(None, "fun", vec![])
+    );
 
+    assert_parses!(
+        r"fun!", n_send!(None, "fun!", vec![])
+    );
+
+    assert_parses!(
+        r"fun(1)", n_send!(None, "fun", vec![])
+    );
+}
 //   def test_send_self_block
 //     assert_parses(
 //       s(:block, s(:send, nil, :fun), s(:args), nil),
 //       %q{fun { }})
-
+// 
 //     assert_parses(
 //       s(:block, s(:send, nil, :fun), s(:args), nil),
 //       %q{fun() { }})
-
+// 
 //     assert_parses(
 //       s(:block, s(:send, nil, :fun, s(:int, 1)), s(:args), nil),
 //       %q{fun(1) { }})
-
+// 
 //     assert_parses(
 //       s(:block, s(:send, nil, :fun), s(:args), nil),
 //       %q{fun do end})
@@ -3086,14 +3140,14 @@ fn asgn_cmd() {
 //       %q{    ~~~ selector
 //         |   ^ dot
 //         |~~~~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:send, s(:lvar, :foo), :fun),
 //       %q{foo::fun},
 //       %q{     ~~~ selector
 //         |   ^^ dot
 //         |~~~~~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:send, s(:lvar, :foo), :Fun),
 //       %q{foo::Fun()},

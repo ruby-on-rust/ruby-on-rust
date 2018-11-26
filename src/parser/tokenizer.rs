@@ -358,6 +358,6 @@ impl Tokenizer {
     }
 
     pub fn panic_unexpected_token(&self, string: &'static str, line: i32, column: i32) {
-        panic!("unexpected_token");
+        panic!("unexpected_token, token: {:?}", string);
     }
 }

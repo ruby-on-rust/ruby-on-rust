@@ -9,7 +9,6 @@
 interp_var = '#' ( global_var | class_var_v | instance_var_v );
 
 action extend_interp_var {
-    // TODO
     // current_literal = literal
     // current_literal.flush_string
     // current_literal.extend_content
@@ -18,6 +17,17 @@ action extend_interp_var {
 
     // p = @ts
     // fcall expr_variable;
+
+    let mut literal = self.literal_stack.last().expect("unexpected empty literal stack").borrow_mut().clone();
+    literal.flush_string();
+    literal.extend_content();
+
+    !emit T_STRING_DVAR_;
+
+    self.literal_stack.last().expect("unexpected empty literal stack").replace(literal);
+
+    p = ts;
+    fncall expr_variable;
 }
 
 # Interpolations with code blocks must match nested curly braces, as
@@ -35,17 +45,16 @@ action extend_interp_var {
 interp_code = '#{';
 
 e_lbrace = '{' % {
-    // TODO
-    // @cond.push(false); @cmdarg.push(false)
+    self.cond.push(false); self.cmdarg.push(false);
 
-    // current_literal = literal
-    // if current_literal
-    //   current_literal.start_interp_brace
-    // end
+    if let Some(literal) = self.literal_stack.last() {
+        let mut literal = literal.borrow_mut();
+
+        literal.start_interp_brace()
+    }
 };
 
 e_rbrace = '}' % {
-    // TODO
     // current_literal = literal
     // if current_literal
     //   if current_literal.end_interp_brace_and_try_closing
@@ -61,17 +70,31 @@ e_rbrace = '}' % {
     //     else
     //       emit(:tSTRING_DEND, '}'.freeze, p - 1, p)
     //     end
-
+    // 
     //     if current_literal.saved_herebody_s
     //       @herebody_s = current_literal.saved_herebody_s
     //     end
-
-
+    // 
     //     fhold;
     //     fnext *next_state_for_literal(current_literal);
     //     fbreak;
     //   end
     // end
+
+    let literal_stack_is_empty = self.literal_stack.is_empty();
+    if !literal_stack_is_empty {
+        let mut literal = self.literal_stack.last().unwrap().borrow_mut().clone();
+        if !literal.end_interp_brace_and_try_closing() {
+            // IGNORED ruby1819
+            !emit T_STRING_DEND_;
+
+            // TODO herebody
+
+            fhold;
+            fnext *self.next_state_for_literal(&literal);
+            fnbreak;
+        }
+    }
 };
 
 action extend_interp_code {
@@ -89,6 +112,14 @@ action extend_interp_code {
     // current_literal.start_interp_brace
     // fnext expr_value;
     // fbreak;
+
+    let mut literal = self.literal_stack.last().expect("unexpected empty literal stack").borrow_mut();
+    literal.flush_string();
+    literal.extend_content();
+
+    // TODO heredoc
+
+    panic!("WIP");
 }
 
 # Actual string parsers are simply combined from the primitives defined
@@ -154,13 +185,13 @@ plain_backslash_delimited_words := |*
 regexp_modifiers := |*
     [A-Za-z]+
     => {
-        //   TODO
+        panic!("UNIMPL");
         //   unknown_options = tok.scan(/[^imxouesn]/)
         //   if unknown_options.any?
         //     diagnostic :error, :regexp_options,
         //                 { :options => unknown_options.join }
         //   end
-
+        // 
         //   emit(:tREGEXP_OPT)
         //   fnext expr_end;
         //   fbreak;
@@ -168,7 +199,7 @@ regexp_modifiers := |*
 
     any
     => {
-        //   TODO
+        panic!("UNIMPL");
         //   emit(:tREGEXP_OPT, tok(@ts, @te - 1), @ts, @te - 1)
         //   fhold;
         //   fgoto expr_end;

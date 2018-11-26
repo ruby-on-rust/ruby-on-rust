@@ -4,13 +4,15 @@
 
 puts "invoking generator..."
 
-puts "validating grammar..."
-puts `syntax-cli -g src/parser/parser.g -m LALR1 --validate`
+# puts "validating grammar..."
+# puts `syntax-cli -g src/parser/parser.g -m LALR1 --validate`
 
-puts table = `syntax-cli -g src/parser/parser.g -m lalr1 -t -s first`
-File.write './src/parser/table', table
+# puts table = `syntax-cli -g src/parser/parser.g -m lalr1 -t -s first`
+# File.write './src/parser/table', table
 
-puts `syntax-cli -g src/parser/parser.g -m LALR1 -o src/parser/parser.rs`
+syntax_cli_path = 'node ../syntax/dist/bin/syntax.js'
+
+puts `#{syntax_cli_path} -g src/parser/parser.g -m LALR1 -o src/parser/parser.rs`
 
 puts "cleaning..."
 
@@ -25,6 +27,13 @@ extern crate lazy_static;
 """, ''
 
 content.gsub! /(^\/\*\*$\n^ \* Generic tokenizer used by the parser in the Syntax tool)(.*)(^\/\/ Parser\.)/m, ''
+
+#
+# unwrap interior token::Token from parser::Token
+# 
+# NOTE assume _0 being Token, this may change
+#
+content.gsub! 'pop!(self.values_stack, _0)', 'interior_token!(pop!(self.values_stack, _0))'
 
 #
 # `let $$ =` -> `$$ =`
@@ -119,7 +128,7 @@ content.gsub! 'self.values_stack.push(SV::_0(token));', 'self.values_stack.push(
 #
 # debug info in handlers
 #
-(1..99).each do |i|
+(1..999).each do |i|
   content.gsub! "fn _handler#{i}(&mut self) -> SV {\n", %Q[
 fn _handler#{i}(&mut self) -> SV {\n
     println!("   *** PARSER: _handler#{i}");
@@ -131,7 +140,6 @@ end
 # parser: &'static str -> &str
 # 
 content.gsub! 'pub fn parse(&mut self, string: &\'static str) -> TResult {', 'pub fn parse(&mut self, string: &str) -> TResult {'
-
 
 File.open parser_file, "w" do |file| file.puts content end
 
@@ -157,7 +165,7 @@ tokens_map = original_map.transform_keys do |k|
   when k == '$'
     k
   else
-    raise 'unreachable!'
+    raise "unreachable! don't know how to transform key `#{k}`"
   end
 end
 

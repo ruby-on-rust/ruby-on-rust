@@ -41,7 +41,8 @@ expr_fname := |*
     operator_rest
     => {
         !emit_table PUNCTUATION;
-          fnext expr_endfn; fnbreak; };
+        fnext expr_endfn; fnbreak;
+    };
 
     '::'
     => { fhold; fhold; fgoto expr_end; };
@@ -49,17 +50,17 @@ expr_fname := |*
     ':'
     => { fhold; fgoto expr_beg; };
 
-    # TODO
-    # '%s' c_any
-    # => {
-    #   if version?(23)
-    #     type, delimiter = tok[0..-2], tok[-1].chr
-    #     fgoto *push_literal(type, delimiter, @ts);
-    #   else
-    #     p = @ts - 1
-    #     fgoto expr_end;
-    #   end
-    # };
+    '%s' c_any
+    => {
+        panic!("UNIMPL");
+        // if version?(23)
+        //   type, delimiter = tok[0..-2], tok[-1].chr
+        //   fgoto *push_literal(type, delimiter, @ts);
+        // else
+        //   p = @ts - 1
+        //   fgoto expr_end;
+        // end
+    };
 
     w_any;
 

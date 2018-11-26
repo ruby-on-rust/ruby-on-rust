@@ -2,6 +2,7 @@ use lexer::lexer::*;
 
 // TODO NOTE
 // TODO optimize via bits
+#[derive(Debug, Clone)]
 pub struct StackState {
     stack: Vec<bool>,
 }
@@ -16,6 +17,9 @@ impl StackState {
     // def clear
     //   @stack = 0
     // end
+    pub fn clear(&mut self) {
+        self.stack = vec![];
+    }
 
     // def push(bit)
     //   bit_value = bit ? 1 : 0
@@ -75,21 +79,33 @@ impl StackState {
 }
 
 impl Lexer {
-//   def push_cmdarg
-//     @cmdarg_stack.push(@cmdarg)
-//     @cmdarg = StackState.new("cmdarg.#{@cmdarg_stack.count}")
-//   end
+    //   def push_cmdarg
+    //     @cmdarg_stack.push(@cmdarg)
+    //     @cmdarg = StackState.new("cmdarg.#{@cmdarg_stack.count}")
+    //   end
+    pub fn push_cmdarg(&mut self) {
+        panic!("wip");
+    }
 
-//   def pop_cmdarg
-//     @cmdarg = @cmdarg_stack.pop
-//   end
+    //   def pop_cmdarg
+    //     @cmdarg = @cmdarg_stack.pop
+    //   end
+    pub fn pop_cmdarg(&mut self) {
+        panic!("wip");
+    }
 
-//   def push_cond
-//     @cond_stack.push(@cond)
-//     @cond = StackState.new("cond.#{@cond_stack.count}")
-//   end
+    //   def push_cond
+    //     @cond_stack.push(@cond)
+    //     @cond = StackState.new("cond.#{@cond_stack.count}")
+    //   end
+    pub fn push_cond(&mut self) {
+        panic!("wip");
+    }
 
-//   def pop_cond
-//     @cond = @cond_stack.pop
-//   end
+    //   def pop_cond
+    //     @cond = @cond_stack.pop
+    //   end
+    pub fn pop_cond(&mut self) {
+        panic!("wip");
+    }
 }

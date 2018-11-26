@@ -1,6 +1,9 @@
 // TODO
 // set starting cs as lexer_en_line_begin
 
+// NOTE this is not effective
+#[allow(non_upper_case_globals)]
+
 use std::rc::Rc;
 use std::cell::RefCell;
 use token::token::Token;
@@ -9,6 +12,8 @@ use lexer::stack_state::StackState;
 
 %%{
     machine lexer;
+
+    variable cs self.cs;
 
     include "_character_classes.rs.rl";
     include "_token_definitions.rs.rl";
@@ -42,7 +47,7 @@ pub struct Lexer {
     input: String,
 
     // ragel
-    cs: i32,
+    pub cs: i32,
     p: i32,
     pe: i32,
     ts: i32,
@@ -52,8 +57,8 @@ pub struct Lexer {
     stack: [i32; 16],
     top: i32,
 
-    cond: StackState,
-    cmdarg: StackState,
+    pub cond: StackState,
+    pub cmdarg: StackState,
     // TODO
     // @cond_stack   = []
     // @cmdarg_stack = []
@@ -97,12 +102,20 @@ pub struct Lexer {
     // # expanded inside the lexer, but count as non-whitespace for
     // # indentation purposes.
     // @dedent_level  = nil
+    pub dedent_level: isize,
 
     // # If the lexer is in `command state' (aka expr_value)
     // # at the entry to #advance, it will transition to expr_cmdarg
     // # instead of expr_arg at certain points.
     // @command_state = false
     command_state: bool,
+
+    // # True at the end of "def foo a:"
+    // @in_kwarg      = false
+    pub in_kwarg: bool,
+
+    // # State before =begin / =end block comment
+    // @cs_before_block_comment = self.class.lex_en_line_begin
 }
 
 impl Lexer {
@@ -140,12 +153,16 @@ impl Lexer {
             paren_nest: 0,
             lambda_stack: vec![],
 
+            dedent_level: 0,
             command_state: false,
+
+            in_kwarg: false
         }
     }
 
     // TODO DOC
     // return a Token
+    #[allow(unused_parens, unused_assignments, unused_variables)]
     pub fn advance(&mut self) -> Option<Token> {
         println!("---\nlexer.advance");
 
@@ -156,7 +173,6 @@ impl Lexer {
         let data = _input.as_bytes();
 
         // TODO macro
-        let mut cs = self.cs;
         let mut p = self.p;
         let mut pe = self.pe;
         let mut ts = self.ts;
@@ -176,11 +192,10 @@ impl Lexer {
 
         // @command_state = (@cs == klass.lex_en_expr_value ||
         //                   @cs == klass.lex_en_line_begin)
-        self.command_state = ( cs == lexer_en_expr_value || cs == lexer_en_line_begin );
+        self.command_state = ( self.cs == lexer_en_expr_value || self.cs == lexer_en_line_begin );
 
         %% write exec;
 
-        self.cs = cs;
         self.p = p;
         self.pe = pe;
         self.ts = ts;
@@ -217,5 +232,34 @@ impl Lexer {
     // TODO NOTE
     fn arg_or_cmdarg(&self) -> i32 {
         if self.command_state { lexer_en_expr_cmdarg } else { lexer_en_expr_arg }
+    }
+
+    pub fn set_state(&mut self, state_name: &str) {
+        match state_name {
+            "interp_words" => { self.cs = lexer_en_interp_words; },
+            "interp_string" => { self.cs = lexer_en_interp_string; },
+            "plain_words" => { self.cs = lexer_en_plain_words; },
+            "plain_string" => { self.cs = lexer_en_plain_string; },
+            "interp_backslash_delimited" => { self.cs = lexer_en_interp_backslash_delimited; },
+            "plain_backslash_delimited" => { self.cs = lexer_en_plain_backslash_delimited; },
+            "interp_backslash_delimited_words" => { self.cs = lexer_en_interp_backslash_delimited_words; },
+            "plain_backslash_delimited_words" => { self.cs = lexer_en_plain_backslash_delimited_words; },
+            "regexp_modifiers" => { self.cs = lexer_en_regexp_modifiers; },
+            "expr_variable" => { self.cs = lexer_en_expr_variable; },
+            "expr_fname" => { self.cs = lexer_en_expr_fname; },
+            "expr_endfn" => { self.cs = lexer_en_expr_endfn; },
+            "expr_dot" => { self.cs = lexer_en_expr_dot; },
+            "expr_arg" => { self.cs = lexer_en_expr_arg; },
+            "expr_cmdarg" => { self.cs = lexer_en_expr_cmdarg; },
+            "expr_endarg" => { self.cs = lexer_en_expr_endarg; },
+            "expr_mid" => { self.cs = lexer_en_expr_mid; },
+            "expr_beg" => { self.cs = lexer_en_expr_beg; },
+            "expr_labelarg" => { self.cs = lexer_en_expr_labelarg; },
+            "expr_value" => { self.cs = lexer_en_expr_value; },
+            "expr_end" => { self.cs = lexer_en_expr_end; },
+            "leading_dot" => { self.cs = lexer_en_leading_dot; },
+            "line_begin" => { self.cs = lexer_en_line_begin; },
+            _ => { panic!("unknown state name"); }
+        }
     }
 }

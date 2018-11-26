@@ -1,20 +1,126 @@
-// TODO
-// maybe, we could use a separate Nodes instead of Node::Nodes
-
 // https://raw.githubusercontent.com/whitequark/parser/2a73841d6da04a5ab9bd270561165fd766722d43/lib/parser/builders/default.rb
 
 use token::token::Token;
 
+macro_rules! wip { () => { panic!("WIP"); }; }
+
+// enum node_type {
+//     NODE_SCOPE,
+//     NODE_BLOCK,
+//     NODE_IF,
+//     NODE_UNLESS,
+//     NODE_CASE,
+//     NODE_CASE2,
+//     NODE_WHEN,
+//     NODE_WHILE,
+//     NODE_UNTIL,
+//     NODE_ITER,
+//     NODE_FOR,
+//     NODE_FOR_MASGN,
+//     NODE_BREAK,
+//     NODE_NEXT,
+//     NODE_REDO,
+//     NODE_RETRY,
+//     NODE_BEGIN,
+//     NODE_RESCUE,
+//     NODE_RESBODY,
+//     NODE_ENSURE,
+//     NODE_AND,
+//     NODE_OR,
+//     NODE_MASGN,
+//     NODE_LASGN,
+//     NODE_DASGN,
+//     NODE_DASGN_CURR,
+//     NODE_GASGN,
+//     NODE_IASGN,
+//     NODE_CDECL,
+//     NODE_CVASGN,
+//     NODE_OP_ASGN1,
+//     NODE_OP_ASGN2,
+//     NODE_OP_ASGN_AND,
+//     NODE_OP_ASGN_OR,
+//     NODE_OP_CDECL,
+//     NODE_CALL,
+//     NODE_OPCALL,
+//     NODE_FCALL,
+//     NODE_VCALL,
+//     NODE_QCALL,
+//     NODE_SUPER,
+//     NODE_ZSUPER,
+//     NODE_ARRAY,
+//     NODE_ZARRAY,
+//     NODE_VALUES,
+//     NODE_HASH,
+//     NODE_RETURN,
+//     NODE_YIELD,
+//     NODE_LVAR,
+//     NODE_DVAR,
+//     NODE_GVAR,
+//     NODE_IVAR,
+//     NODE_CONST,
+//     NODE_CVAR,
+//     NODE_NTH_REF,
+//     NODE_BACK_REF,
+//     NODE_MATCH,
+//     NODE_MATCH2,
+//     NODE_MATCH3,
+//     NODE_LIT,
+//     NODE_STR,
+//     NODE_DSTR,
+//     NODE_XSTR,
+//     NODE_DXSTR,
+//     NODE_EVSTR,
+//     NODE_DREGX,
+//     NODE_ONCE,
+//     NODE_ARGS,
+//     NODE_ARGS_AUX,
+//     NODE_OPT_ARG,
+//     NODE_KW_ARG,
+//     NODE_POSTARG,
+//     NODE_ARGSCAT,
+//     NODE_ARGSPUSH,
+//     NODE_SPLAT,
+//     NODE_BLOCK_PASS,
+//     NODE_DEFN,
+//     NODE_DEFS,
+//     NODE_ALIAS,
+//     NODE_VALIAS,
+//     NODE_UNDEF,
+//     NODE_CLASS,
+//     NODE_MODULE,
+//     NODE_SCLASS,
+//     NODE_COLON2,
+//     NODE_COLON3,
+//     NODE_DOT2,
+//     NODE_DOT3,
+//     NODE_FLIP2,
+//     NODE_FLIP3,
+//     NODE_SELF,
+//     NODE_NIL,
+//     NODE_TRUE,
+//     NODE_FALSE,
+//     NODE_ERRINFO,
+//     NODE_DEFINED,
+//     NODE_POSTEXE,
+//     NODE_DSYM,
+//     NODE_ATTRASGN,
+//     NODE_LAMBDA,
+//     NODE_LAST
+// };
+
 #[derive(Debug, PartialEq, Clone)]
 pub enum Node {
-    // for rules which returns a vec of nodes
-    // TODO migrate to Nodes
-    Nodes(Vec<Node>),
+    // TODO CLEANUP
+    // for migrating rules in grammar
+    DUMMY,
 
     // for rules which may returns a result being `nil`, and the rule is acutally applied so we cannot return a None, i guess.
     // TODO still not sure about this.
     Null,
 
+    // 
+    // primitive values
+    // 
     Nil,
 
     True,
@@ -28,7 +134,7 @@ pub enum Node {
     Sym(String),
     DSym(Vec<Node>),
 
-    Array(Vec<Node>),
+    Array(Nodes),
 
     Pair { key: Box<Node>, value: Box<Node> },
     Hash(Nodes), // NOTE Hash(Vec<Node::Pair>) 
@@ -54,15 +160,37 @@ pub enum Node {
     // TODO maybe rename to LVAsgn?
     LVasgn(String, Nodes),
     IVasgn(String, Nodes),
+    CVasgn(String, Nodes),
+    GVasgn(String, Nodes),
 
     Begin(Nodes),
 
-    Module(),
+    // TODO
+    // Module,
 
-    KW_Begin,
+    Send { receiver: Option<Box<Node>>, selector: String, args: Nodes },
+    // https://github.com/whitequark/parser/blob/master/doc/AST_FORMAT.md#send
+    // NOTE
+    //     receiver being None means sending to self
+    // send_map(receiver_e, dot_t, selector_t, begin_t=nil, args=[], end_t=nil)
+
+    Arg(String),
 }
 
 pub type Nodes = Vec<Node>;
+
+// TODO generate macros via procedure and macro, like in strum
+#[macro_export] macro_rules! n_str { ($string:expr) => { Node::Str(String::from($string)) }; }
+#[macro_export] macro_rules! n_sym { ($string:expr) => { Node::Sym(String::from($string)) }; }
+#[macro_export] macro_rules! n_lvar { ($string:expr) => { Node::LVar(String::from($string)) }; }
+#[macro_export] macro_rules! n_ivar { ($string:expr) => { Node::IVar(String::from($string)) }; }
+#[macro_export] macro_rules! n_cvar { ($string:expr) => { Node::CVar(String::from($string)) }; }
+#[macro_export] macro_rules! n_gvar { ($string:expr) => { Node::GVar(String::from($string)) }; }
+#[macro_export] macro_rules! n_begin { ( $( $x:expr ),* ) => { { Node::Begin(vec![ $($x),* ]) } }; }
+#[macro_export] macro_rules! n_dstr { ( $( $x:expr ),* ) => { { Node::DStr(vec![ $($x),* ]) } }; }
+#[macro_export] macro_rules! n_send { ($receiver:expr, $selector:expr, $args:expr) => { Node::Send { receiver: $receiver, selector: String::from($selector), args: $args } }; }
+#[macro_export] macro_rules! n_hash { ( $( $x:expr ),* ) => { { Node::Hash(vec![ $($x),* ]) } }; }
+#[macro_export] macro_rules! n_pair { ($key:expr, $value:expr) => { Node::Pair { key: Box::new($key), value: Box::new($value) }; } }
 
 impl Node {
     pub fn push_children(&mut self, node: Node) {
@@ -114,6 +242,9 @@ pub fn unary_num(t_unary: Token, n_simple_numeric: Node) -> Node {
 //   n(:str, [ string_value(string_t) ],
 //     delimited_string_map(string_t))
 // end
+pub fn string(string_t: Token) -> Node {
+    wip!();
+}
 
 // def string_internal(string_t)
 //   n(:str, [ string_value(string_t) ],
@@ -142,25 +273,24 @@ pub fn string_internal(string_t: Token) -> Node {
 //       string_map(begin_t, parts, end_t))
 //   end
 // end
-// TODO INCOMPLETE
-pub fn string_compose(parts: Node) -> Node {
-    if is_collapse_string_parts(&parts) {}
-
-    // TODO DUMMY
-    if let Node::Str(string_value) = parts { return Node::Str(string_value); }
-    if let Node::Nodes(str_nodes) = parts {
-        if let Node::Str(str_value) = (*str_nodes.get(0).unwrap()).clone() {
-            return Node::Str(str_value);
-        }
+// TODO note
+// TODO INCOMPLETE DUMMY
+pub fn string_compose(begin_t: Option<Token>, parts: Nodes, end_t: Option<Token>) -> Node {
+    if is_collapse_string_parts(&parts) {
+        // TODO DUMMY
+        return parts.get(0).unwrap().clone()
+    } else {
+        return Node::DStr(parts)
     }
-
-    panic!("string_compose UNIMPL");
 }
 
 // def character(char_t)
 //   n(:str, [ string_value(char_t) ],
 //     prefix_string_map(char_t))
 // end
+pub fn character(char_t: Token) -> Node {
+    wip!();
+}
 
 // def __FILE__(__FILE__t)
 //   n0(:__FILE__,
@@ -188,6 +318,9 @@ pub fn symbol(symbol_t: Token) -> Node {
 //   n(:sym, [ string_value(symbol_t).to_sym ],
 //     unquoted_map(symbol_t))
 // end
+pub fn symbol_internal(symbol_t: Token) -> Node {
+    wip!();
+}
 
 // def symbol_compose(begin_t, parts, end_t)
 //   if collapse_string_parts?(parts)
@@ -203,24 +336,21 @@ pub fn symbol(symbol_t: Token) -> Node {
 //   end
 // end
 // TODO note
-pub fn symbol_compose(parts: Node) -> Node {
-    // parts: Node::Nodes<Node::Str>
+pub fn symbol_compose(begin_t: Token, parts: Nodes, end_t: Token) -> Node {
+    // parts: Nodes(Vec<Node::Str>)
 
     if is_collapse_string_parts(&parts) {
-        if let Node::Nodes(nodes) = parts {
-            let n_str = nodes.get(0).unwrap();
-            if let Node::Str(str_value) = n_str {
-                return Node::Sym(str_value.to_string());
-            } else { unreachable!(); }
+        let n_str = parts.get(0).unwrap();
+
+        // TODO DUMMY collection_map
+        if let Node::Str(str_value) = n_str {
+            return Node::Sym(str_value.to_string());
         } else { unreachable!(); }
     } else {
         // NOTE ignored ruby18
-        if let Node::Nodes(nodes) = parts {
-            return Node::DSym(nodes);
-        }
+        // TODO DUMMY collection_map
+        return Node::DSym(parts);
     }
-
-    unreachable!();
 }
 
 // # Executable strings
@@ -229,6 +359,9 @@ pub fn symbol_compose(parts: Node) -> Node {
 //   n(:xstr, [ *parts ],
 //     string_map(begin_t, parts, end_t))
 // end
+pub fn xstring_compose(begin_t: Token, parts: Nodes, end_t: Token) -> Node {
+    wip!();
+}
 
 // # Indented (interpolated, noninterpolated, executable) strings
 
@@ -250,9 +383,12 @@ pub fn symbol_compose(parts: Node) -> Node {
 //       end
 //     end
 //   end
-
+// 
 //   node
 // end
+pub fn dedent_string(node: Node, dedent_level: isize) -> Node {
+    wip!();
+}
 
 // # Regular expressions
 
@@ -284,12 +420,8 @@ pub fn symbol_compose(parts: Node) -> Node {
 //     collection_map(begin_t, elements, end_t))
 // end
 // TODO INCOMPLETE
-// elements: Node::Nodes
-pub fn array(elements: Node) -> Node {
-    if let Node::Nodes(nodes) = elements {
-        return Node::Array(nodes);
-    }
-    unreachable!();
+pub fn array(begin_t: Option<Token>, elements: Nodes, end_t: Option<Token>) -> Node {
+    Node::Array(elements)
 }
 
 // def splat(star_t, arg=nil)
@@ -301,6 +433,13 @@ pub fn array(elements: Node) -> Node {
 //       unary_op_map(star_t, arg))
 //   end
 // end
+pub fn splat(star_t: Token, arg: Option<Node>) -> Node {
+    wip!();
+    // if let Some(n_arg) = arg {
+    // } else {
+    //     wip!();
+    // }
+}
 
 // def word(parts)
 //   if collapse_string_parts?(parts)
@@ -310,16 +449,16 @@ pub fn array(elements: Node) -> Node {
 //       collection_map(nil, parts, nil))
 //   end
 // end
+pub fn word(parts: Nodes) -> Node {
+    wip!();
+}
 
 // def words_compose(begin_t, parts, end_t)
 //   n(:array, [ *parts ],
 //     collection_map(begin_t, parts, end_t))
 // end
-pub fn words_compose(parts: Node) -> Node {
-    // part: Node::Nodes
-    // 
-    if let Node::Nodes(nodes) = parts { return Node::Array(nodes); }
-    unreachable!();
+pub fn words_compose(begin_t: Token, parts: Nodes, end_t: Token) -> Node {
+    return Node::Array(parts);
 }
 
 // def symbols_compose(begin_t, parts, end_t)
@@ -338,6 +477,9 @@ pub fn words_compose(parts: Node) -> Node {
 //   n(:array, [ *parts ],
 //     collection_map(begin_t, parts, end_t))
 // end
+pub fn symbols_compose(begin_t: Token, parts: Nodes, end_t: Token) -> Node {
+    wip!();
+}
 
 // # Hashes
 
@@ -390,18 +532,24 @@ pub fn pair_keyword(key_t: Token, value: Node) -> Node {
 // 
 //   n(:pair, [ key, value ], pair_map)
 // end
+pub fn pair_quoted(begin_t: Token, parts: Nodes, end_t: Token, value: Node) -> Node {
+    wip!();
+}
 
 // def kwsplat(dstar_t, arg)
 //   n(:kwsplat, [ arg ],
 //     unary_op_map(dstar_t, arg))
 // end
+pub fn kwsplat(dstar_t: Token, arg: Node) -> Node {
+    wip!();
+}
 
 // def associate(begin_t, pairs, end_t)
 //   n(:hash, [ *pairs ],
 //     collection_map(begin_t, pairs, end_t))
 // end
-pub fn associate(pairs: Nodes) -> Node {
-    // pairs: Nodes
+pub fn associate(begin_t: Option<Token>, pairs: Nodes, end_t: Option<Token>) -> Node {
+    // TODO map
     return Node::Hash(pairs);
 }
 
@@ -411,11 +559,17 @@ pub fn associate(pairs: Nodes) -> Node {
 //   n(:irange, [ lhs, rhs ],
 //     binary_op_map(lhs, dot2_t, rhs))
 // end
+pub fn range_inclusive(lhs: Node, dot2_t: Token, rhs: Node) -> Node {
+    wip!();
+}
 
 // def range_exclusive(lhs, dot3_t, rhs)
 //   n(:erange, [ lhs, rhs ],
 //     binary_op_map(lhs, dot3_t, rhs))
 // end
+pub fn range_exclusive(lhs: Node, dot3_t: Token, rhs: Node) -> Node {
+    wip!();
+}
 
 // #
 // # Access
@@ -425,6 +579,9 @@ pub fn associate(pairs: Nodes) -> Node {
 //   n0(:self,
 //     token_map(token))
 // end
+pub fn build_self(token: Token) -> Node {
+    Node::NSelf
+}
 
 // def ident(token)
 //   n(:ident, [ value(token).to_sym ],
@@ -486,11 +643,17 @@ pub fn cvar(token: Token) -> Node {
 //   n(:back_ref, [ value(token).to_sym ],
 //     token_map(token))
 // end
+pub fn back_ref(token: Token) -> Node {
+    wip!();
+}
 
 // def nth_ref(token)
 //   n(:nth_ref, [ value(token) ],
 //     token_map(token))
 // end
+pub fn nth_ref(token: Token) -> Node {
+    wip!();
+}
 
 // def accessible(node)
 //   case node.type
@@ -532,15 +695,13 @@ pub fn cvar(token: Token) -> Node {
 // TODO INCOMPLETE
 pub fn accessible(node: Node) -> Node {
     println!("building node:accessible, node: {:?}", node);
-    return match node {
+    match node {
         Node::Ident(n_ident_value) => {
-            // TODO DUMMY
-            // TODO handle static_env
-            let node = Node::LVar(n_ident_value);
-            return node;
+            // TODO DUMMY handle static_env
+            Node::LVar(n_ident_value)
         }
-        _ => node
-    };
+        _ => { node }
+    }
 }
 
 // def const(name_t)
@@ -548,8 +709,8 @@ pub fn accessible(node: Node) -> Node {
 //     constant_map(nil, nil, name_t))
 // end
 // NOTE unscoped (scope being None) const
-pub fn build_const(name: Token) -> Node {
-    if let Token::T_CONSTANT(const_name) = name {
+pub fn build_const(name_t: Token) -> Node {
+    if let Token::T_CONSTANT(const_name) = name_t {
         return Node::Const {
             scope: None,
             name: const_name
@@ -565,22 +726,22 @@ pub fn build_const(name: Token) -> Node {
 //     constant_map(cbase, t_colon3, name_t))
 // end
 // NOTE top level const like ::Foo
-pub fn const_global(t_colon3: Token, name: Token) -> Node {
-    if let Token::T_CONSTANT(const_name) = name {
+pub fn const_global(t_colon3: Token, name_t: Token) -> Node {
+    if let Token::T_CONSTANT(const_name) = name_t {
         return Node::Const {
             scope: Some(Box::new(Node::CBase)),
             name: const_name
         }
     }
-    panic!("you came too far");
+    unreachable!();
 }
 
 // def const_fetch(scope, t_colon2, name_t)
 //   n(:const, [ scope, value(name_t).to_sym ],
 //     constant_map(scope, t_colon2, name_t))
 // end
-pub fn const_fetch(scope: Node, _colon2: Token, name: Token) -> Node {
-    if let Token::T_CONSTANT(name_str) = name {
+pub fn const_fetch(scope: Node, t_colon2: Token, name_t: Token) -> Node {
+    if let Token::T_CONSTANT(name_str) = name_t {
         return Node::Const {
             scope: Some(Box::new(scope)),
             name: name_str
@@ -633,11 +794,14 @@ pub fn const_fetch(scope: Node, _colon2: Token, name: Token) -> Node {
 // TODO INCOMPLETE
 pub fn assignable(node: Node) -> Node {
     match node {
-
-        //   when :ivar
-        //     node.updated(:ivasgn)
+        Node::CVar(cvar_str) => {
+            return Node::CVasgn(cvar_str, vec![]);
+        },
         Node::IVar(ivar_str) => {
             return Node::IVasgn(ivar_str, vec![]);
+        },
+        Node::GVar(gvar_str) => {
+            return Node::GVasgn(gvar_str, vec![]);
         },
 
         //   when :const
@@ -669,6 +833,9 @@ pub fn assignable(node: Node) -> Node {
 // def const_op_assignable(node)
 //   node.updated(:casgn)
 // end
+pub fn const_op_assignable(node: Node) -> Node {
+    wip!();
+}
 
 // def assign(lhs, eql_t, rhs)
 //   (lhs << rhs).updated(nil, nil,
@@ -678,8 +845,9 @@ pub fn assignable(node: Node) -> Node {
 // end
 // TODO INCOMPLETE
 pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
+    // TODO WIP why can't match CVasgn?
     match lhs_node {
-        Node::LVasgn(_, _) | Node::IVasgn(_, _) => {
+        Node::LVasgn(_, _) | Node::IVasgn(_, _) | Node::CVasgn(_, _) => {
             lhs_node.push_children(rhs_node);
             return lhs_node;
         },
@@ -708,16 +876,25 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //     diagnostic :error, :backref_assignment, nil, lhs.loc.expression
 //   end
 // end
+pub fn op_assign(lhs: Node, op_t: Token, rhs: Node) -> Node {
+    wip!();
+}
 
 // def multi_lhs(begin_t, items, end_t)
 //   n(:mlhs, [ *items ],
 //     collection_map(begin_t, items, end_t))
 // end
+pub fn multi_lhs(begin_t: Option<Token>, items: Nodes, end_t: Option<Token>) -> Node {
+    wip!();
+}
 
 // def multi_assign(lhs, eql_t, rhs)
 //   n(:masgn, [ lhs, rhs ],
 //     binary_op_map(lhs, eql_t, rhs))
 // end
+pub fn multi_assign(lhs: Node, eql_t: Token, rhs: Node) -> Node {
+    wip!();
+}
 
 // #
 // # Class and module definition
@@ -758,9 +935,9 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //   case definee.type
 //   when :int, :str, :dstr, :sym, :dsym,
 //        :regexp, :array, :hash
-
+// 
 //     diagnostic :error, :singleton_literal, nil, definee.loc.expression
-
+// 
 //   else
 //     n(:defs, [ definee, value(name_t).to_sym, args, body ],
 //       definition_map(def_t, dot_t, name_t, end_t))
@@ -771,11 +948,17 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //   n(:undef, [ *names ],
 //     keyword_map(undef_t, nil, names, nil))
 // end
+pub fn undef_method(undef_t: Token, names: Nodes) -> Node {
+    wip!();
+}
 
 // def alias(alias_t, to, from)
 //   n(:alias, [ to, from ],
 //     keyword_map(alias_t, nil, [to, from], nil))
 // end
+pub fn alias(alias_t: Token, to: Node, from: Node) -> Node {
+    wip!();
+}
 
 // #
 // # Formal arguments
@@ -786,11 +969,18 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //   n(:args, args,
 //     collection_map(begin_t, args, end_t))
 // end
+pub fn args(begin_t: Option<Token>, args: Nodes, name_t: Option<Token>) -> Node {
+    wip!();
+}
 
 // def arg(name_t)
 //   n(:arg, [ value(name_t).to_sym ],
 //     variable_map(name_t))
 // end
+pub fn arg(name_t: Token) -> Node {
+    // Node::Arg()
+    wip!();
+}
 
 // def optarg(name_t, eql_t, value)
 //   n(:optarg, [ value(name_t).to_sym, value ],
@@ -798,6 +988,9 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //       with_operator(loc(eql_t)).
 //       with_expression(loc(name_t).join(value.loc.expression)))
 // end
+pub fn optarg(name_t: Token, eql_t: Token, value: Node) -> Node {
+    wip!();
+}
 
 // def restarg(star_t, name_t=nil)
 //   if name_t
@@ -808,16 +1001,25 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //       arg_prefix_map(star_t))
 //   end
 // end
+pub fn restarg(star_t: Token, name_t: Option<Token>) -> Node {
+    wip!();
+}
 
 // def kwarg(name_t)
 //   n(:kwarg, [ value(name_t).to_sym ],
 //     kwarg_map(name_t))
 // end
+pub fn kwarg(name_t: Token) -> Node {
+    wip!();
+}
 
 // def kwoptarg(name_t, value)
 //   n(:kwoptarg, [ value(name_t).to_sym, value ],
 //     kwarg_map(name_t, value))
 // end
+pub fn kwoptarg(name_t: Token, value: Node) -> Node {
+    wip!();
+}
 
 // def kwrestarg(dstar_t, name_t=nil)
 //   if name_t
@@ -828,16 +1030,25 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //       arg_prefix_map(dstar_t))
 //   end
 // end
+pub fn kwrestarg(dstar_t: Token, name_t: Option<Token>) -> Node {
+    wip!();
+}
 
 // def shadowarg(name_t)
 //   n(:shadowarg, [ value(name_t).to_sym ],
 //     variable_map(name_t))
 // end
+pub fn shadowarg(name_t: Token) -> Node {
+    wip!();
+}
 
 // def blockarg(amper_t, name_t)
 //   n(:blockarg, [ value(name_t).to_sym ],
 //     arg_prefix_map(amper_t, name_t))
 // end
+pub fn blockarg(amper_t: Token, name_t: Token) -> Node {
+    wip!();
+}
 
 // def procarg0(arg)
 //   if self.class.emit_procarg0
@@ -937,6 +1148,9 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //       send_map(receiver, dot_t, selector_t, lparen_t, args, rparen_t))
 //   end
 // end
+pub fn call_method(receiver: Option<Node>, dot_t: Option<Token>, selector_t: Option<Token>, lparen_t: Option<Token>, args: Nodes, rparen_t: Option<Token>) -> Node {
+    wip!();
+}
 
 // def call_lambda(lambda_t)
 //   if self.class.emit_lambda
@@ -946,19 +1160,22 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //       send_map(nil, nil, lambda_t))
 //   end
 // end
+pub fn call_lambda(lambda_t: Token) -> Node {
+    wip!();
+}
 
 // def block(method_call, begin_t, args, body, end_t)
 //   _receiver, _selector, *call_args = *method_call
-
+// 
 //   if method_call.type == :yield
 //     diagnostic :error, :block_given_to_yield, nil, method_call.loc.keyword, [loc(begin_t)]
 //   end
-
+// 
 //   last_arg = call_args.last
 //   if last_arg && last_arg.type == :block_pass
 //     diagnostic :error, :block_and_blockarg, nil, last_arg.loc.expression, [loc(begin_t)]
 //   end
-
+// 
 //   if [:send, :csend, :super, :zsuper, :lambda].include?(method_call.type)
 //     n(:block, [ method_call, args, body ],
 //       block_map(method_call.loc.expression, begin_t, end_t))
@@ -969,16 +1186,22 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //     block =
 //       n(:block, [ actual_send, args, body ],
 //         block_map(actual_send.loc.expression, begin_t, end_t))
-
+// 
 //     n(method_call.type, [ block ],
 //       method_call.loc.with_expression(join_exprs(method_call, block)))
 //   end
 // end
+pub fn block(method_call: Node, begin_t: Token, args: Node, body: Node, end_t: Token) -> Node {
+    wip!();
+}
 
 // def block_pass(amper_t, arg)
 //   n(:block_pass, [ arg ],
 //     unary_op_map(amper_t, arg))
 // end
+pub fn block_pass(amper_t: Token, arg: Node) -> Node {
+    wip!();
+}
 
 // def objc_varargs(pair, rest_of_varargs)
 //   value, first_vararg = *pair
@@ -992,53 +1215,65 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 // def attr_asgn(receiver, dot_t, selector_t)
 //   method_name = (value(selector_t) + '=').to_sym
 //   type = call_type_for_dot(dot_t)
-
+// 
 //   # Incomplete method call.
 //   n(type, [ receiver, method_name ],
 //     send_map(receiver, dot_t, selector_t))
 // end
+pub fn attr_asgn(receiver: Node, dot_t: Token, selector_t: Token) -> Node {
+    wip!();
+}
 
 // def index(receiver, lbrack_t, indexes, rbrack_t)
 //   n(:send, [ receiver, :[], *indexes ],
 //     send_index_map(receiver, lbrack_t, rbrack_t))
 // end
+pub fn index(receiver: Node, lbrack_t: Token, indexes: Nodes, rbrack_t: Token) -> Node {
+    wip!();
+}
 
 // def index_asgn(receiver, lbrack_t, indexes, rbrack_t)
 //   # Incomplete method call.
 //   n(:send, [ receiver, :[]=, *indexes ],
 //     send_index_map(receiver, lbrack_t, rbrack_t))
 // end
+pub fn index_asgn(receiver: Node, lbrack_t: Token, indexes: Nodes, rbrack_t: Token) -> Node {
+    wip!();
+}
 
 // def binary_op(receiver, operator_t, arg)
 //   source_map = send_binary_op_map(receiver, operator_t, arg)
-
+// 
 //   if @parser.version == 18
 //     operator = value(operator_t)
-
+// 
 //     if operator == '!='
 //       method_call = n(:send, [ receiver, :==, arg ], source_map)
 //     elsif operator == '!~'
 //       method_call = n(:send, [ receiver, :=~, arg ], source_map)
 //     end
-
+// 
 //     if %w(!= !~).include?(operator)
 //       return n(:not, [ method_call ],
 //                expr_map(source_map.expression))
 //     end
 //   end
-
+// 
 //   n(:send, [ receiver, value(operator_t).to_sym, arg ],
 //     source_map)
 // end
+pub fn binary_op(receiver: Node, operator_t: Token, arg: Node) -> Node {
+    wip!();
+}
 
 // def match_op(receiver, match_t, arg)
 //   source_map = send_binary_op_map(receiver, match_t, arg)
-
+// 
 //   if (regexp = static_regexp_node(receiver))
 //     regexp.names.each do |name|
 //       @parser.static_env.declare(name)
 //     end
-
+// 
 //     n(:match_with_lVasgn, [ receiver, arg ],
 //       source_map)
 //   else
@@ -1046,6 +1281,9 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //       source_map)
 //   end
 // end
+pub fn match_op(receiver: Node, match_t: Token, arg: Node) -> Node {
+    wip!();
+}
 
 // def unary_op(op_t, receiver)
 //   case value(op_t)
@@ -1054,10 +1292,13 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //   else
 //     method = value(op_t)
 //   end
-
+// 
 //   n(:send, [ receiver, method.to_sym ],
 //     send_unary_op_map(op_t, receiver))
 // end
+pub fn unary_op(op_t: Token, receiver: Node) -> Node {
+    wip!();
+}
 
 // def not_op(not_t, begin_t=nil, receiver=nil, end_t=nil)
 //   if @parser.version == 18
@@ -1066,7 +1307,7 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //   else
 //     if receiver.nil?
 //       nil_node = n0(:begin, collection_map(begin_t, nil, end_t))
-
+// 
 //       n(:send, [
 //         nil_node, :'!'
 //       ], send_unary_op_map(not_t, nil_node))
@@ -1076,6 +1317,9 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //     end
 //   end
 // end
+pub fn not_op(not_t: Token, begin_t: Option<Token>, receiver: Option<Node>, end_t: Option<Token>) -> Node {
+    wip!();
+}
 
 // #
 // # Control flow
@@ -1087,6 +1331,9 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //   n(type, [ lhs, rhs ],
 //     binary_op_map(lhs, op_t, rhs))
 // end
+pub fn logical_op(node_type: &str, lhs: Node, op_t: Token, rhs: Node) -> Node {
+    wip!();
+}
 
 // # Conditionals
 
@@ -1095,16 +1342,25 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //   n(:if, [ check_condition(cond), if_true, if_false ],
 //     condition_map(cond_t, cond, then_t, if_true, else_t, if_false, end_t))
 // end
+pub fn condition(cond_t: Token, cond: Node, then_t: Token, if_true: Option<Node>, else_t: Option<Token>, if_false: Option<Node>, end_t: Option<Token>) -> Node {
+    wip!();
+}
 
 // def condition_mod(if_true, if_false, cond_t, cond)
 //   n(:if, [ check_condition(cond), if_true, if_false ],
 //     keyword_mod_map(if_true || if_false, cond_t, cond))
 // end
+pub fn condition_mod(if_true: Option<Node>, if_false: Option<Node>, cond_t: Token, cond: Node) -> Node {
+    wip!();
+}
 
 // def ternary(cond, question_t, if_true, colon_t, if_false)
 //   n(:if, [ check_condition(cond), if_true, if_false ],
 //     ternary_map(cond, question_t, if_true, colon_t, if_false))
 // end
+pub fn ternary(cond: Node, question_t: Token, if_true: Node, colon_t: Token, if_false: Node) -> Node {
+    wip!();
+}
 
 // # Case matching
 
@@ -1113,6 +1369,9 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //   n(:when, children,
 //     keyword_map(when_t, then_t, children, nil))
 // end
+pub fn when(when_t: Token, patterns: Nodes, then_t: Token, body: Node) -> Node {
+    wip!();
+}
 
 // def case(case_t, expr, when_bodies, else_t, else_body, end_t)
 //   n(:case, [ expr, *(when_bodies << else_body)],
@@ -1125,6 +1384,9 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //   n(type, [ check_condition(cond), body ],
 //     keyword_map(keyword_t, do_t, nil, end_t))
 // end
+pub fn build_loop(node_type: &str, keyword_t: Token, cond: Node, do_t: Token, body: Node, end_t: Token) -> Node {
+    wip!();
+}
 
 // def loop_mod(type, body, keyword_t, cond)
 //   if body.type == :kwbegin
@@ -1134,12 +1396,18 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //   n(type, [ check_condition(cond), body ],
 //     keyword_mod_map(body, keyword_t, cond))
 // end
+pub fn loop_mod(node_type: &str, body: Node, keyword_t: Token, cond: Node) -> Node {
+    wip!();
+}
 
 // def for(for_t, iterator, in_t, iteratee,
 //         do_t, body, end_t)
 //   n(:for, [ iterator, iteratee, body ],
 //     for_map(for_t, in_t, do_t, end_t))
 // end
+pub fn build_for(for_t: Token, iterator: Node, in_t: Token, iteratee: Node, do_t: Token, body: Node, end_t: Token) -> Node {
+    wip!();
+}
 
 // # Keywords
 
@@ -1150,10 +1418,13 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //       diagnostic :error, :block_given_to_yield, nil, loc(keyword_t), [last_arg.loc.expression]
 //     end
 //   end
-
+// 
 //   n(type, args,
 //     keyword_map(keyword_t, lparen_t, args, rparen_t))
 // end
+pub fn keyword_cmd(node_type: &str, keyword_t: Token, lparen_t: Option<Token>, args: Nodes, rparen_t: Option<Token>) -> Node {
+    wip!();
+}
 
 // # BEGIN, END
 
@@ -1161,11 +1432,19 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //   n(:preexe, [ compstmt ],
 //     keyword_map(preexe_t, lbrace_t, [], rbrace_t))
 // end
+// TODO NOTE
+pub fn preexe(preexe_t: Token, lbrace_t: Token, compstmt: Node, rbrace_t: Token) -> Node {
+    wip!();
+}
 
 // def postexe(postexe_t, lbrace_t, compstmt, rbrace_t)
 //   n(:postexe, [ compstmt ],
 //     keyword_map(postexe_t, lbrace_t, [], rbrace_t))
 // end
+// TODO NOTE
+pub fn postexe(postexe_t: Token, lbrace_t: Token, compstmt: Node, rbrace_t: Token) -> Node {
+    wip!();
+}
 
 // # Exception handling
 
@@ -1176,10 +1455,17 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //     rescue_body_map(rescue_t, exc_list, assoc_t,
 //                     exc_var, then_t, compound_stmt))
 // end
+// 
+// TODO NOTE
+//     exclist: Option<Node::Array>
+pub fn rescue_body(rescue_t: Token, exc_list: Option<Node>, assoc_t: Option<Token>, exc_var: Option<Node>, then_t: Option<Token>, compound_stmt: Node) -> Node {
+    wip!();
+}
 
 // def begin_body(compound_stmt, rescue_bodies=[],
 //                else_t=nil,    else_=nil,
 //                ensure_t=nil,  ensure_=nil)
+// 
 //   if rescue_bodies.any?
 //     if else_t
 //       compound_stmt =
@@ -1208,16 +1494,21 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 //       n(:begin, statements,
 //         collection_map(nil, statements, nil))
 //   end
-
+// 
 //   if ensure_t
 //     compound_stmt =
 //       n(:ensure,
 //         [ compound_stmt, ensure_ ],
 //         eh_keyword_map(compound_stmt, ensure_t, [ ensure_ ], nil, nil))
 //   end
-
+// 
 //   compound_stmt
 // end
+pub fn begin_body(  compound_stmt: Node,     rescue_bodies: Nodes,
+                    else_t: Option<Token>,   else_: Option<Node>,
+                    ensure_t: Option<Token>, ensure_: Option<Node> ) -> Node {
+    wip!();
+}
 
 // #
 // # Expression grouping
@@ -1261,6 +1552,9 @@ pub fn compstmt(nodes: Nodes) -> Node {
 //       collection_map(begin_t, [ body ], end_t))
 //   end
 // end
+pub fn begin(begin_t: Token, body: Option<Node>, end_t: Token) -> Node {
+    wip!();
+}
 
 // def begin_keyword(begin_t, body, end_t)
 //   if body.nil?
@@ -1277,6 +1571,9 @@ pub fn compstmt(nodes: Nodes) -> Node {
 //       collection_map(begin_t, [ body ], end_t))
 //   end
 // end
+pub fn begin_keyword(begin_t: Token, body: Node, end_t: Token) -> Node {
+    wip!();
+}
 
 //     #
 //     # HELPERS
@@ -1305,7 +1602,7 @@ pub fn compstmt(nodes: Nodes) -> Node {
 //     def static_regexp(parts, options)
 //       source = static_string(parts)
 //       return nil if source.nil?
-
+// 
 //       source = case
 //       when options.children.include?(:u)
 //         source.encode(Encoding::UTF_8)
@@ -1318,7 +1615,7 @@ pub fn compstmt(nodes: Nodes) -> Node {
 //       else
 //         source
 //       end
-
+// 
 //       Regexp.new(source, (Regexp::EXTENDED if options.children.include?(:x)))
 //     end
 
@@ -1334,21 +1631,18 @@ pub fn compstmt(nodes: Nodes) -> Node {
 //           [:str, :dstr].include?(parts.first.type)
 //     end
 // TODO note
-fn is_collapse_string_parts(parts: &Node) -> bool {
-    // parts: Node::Nodes(nodes)
-    if let Node::Nodes(nodes) = parts {
-        if nodes.len() == 1 {
-            match nodes.get(0).unwrap() {
-                // TODO emm why can't we just use
-                // Node::Str(_str) | Node::DStr(_dstr) => { return true; },
-                Node::Str(_str) => { return true; },
-                Node::DStr(_dstr) => { return true; },
-                _ => { return false; }
-            }
-        } else { return false; }
+fn is_collapse_string_parts(parts: &Nodes) -> bool {
+    if parts.len() == 1 {
+        match parts.get(0).unwrap() {
+            // TODO emm why can't we just use
+            // Node::Str(_str) | Node::DStr(_dstr) => { return true; },
+            Node::Str(_str) => { return true; },
+            Node::DStr(_dstr) => { return true; },
+            _ => {}
+        }
     }
 
-    unreachable!();
+    false
 }
 
 //     def value(token)
@@ -1359,7 +1653,7 @@ fn is_collapse_string_parts(parts: &Node) -> bool {
 //       unless token[0].valid_encoding?
 //         diagnostic(:error, :invalid_encoding, nil, token[1])
 //       end
-
+// 
 //       token[0]
 //     end
 
@@ -1371,7 +1665,7 @@ fn is_collapse_string_parts(parts: &Node) -> bool {
 //     def diagnostic(type, reason, arguments, location, highlights=[])
 //       @parser.diagnostics.process(
 //           Diagnostic.new(type, reason, arguments, location, highlights))
-
+// 
 //       if type == :error
 //         @parser.send :yyerror
 //       end
