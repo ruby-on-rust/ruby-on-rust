@@ -1,6 +1,9 @@
 // https://raw.githubusercontent.com/whitequark/parser/2a73841d6da04a5ab9bd270561165fd766722d43/lib/parser/builders/default.rb
 
-use crate::token::token::Token;
+use crate::{
+    token::token::Token,
+    parser::static_env::StaticEnv,
+};
 
 macro_rules! wip { () => { panic!("WIP"); }; }
 
@@ -713,50 +716,45 @@ pub fn nth_ref(token: Token) -> Node {
     wip!();
 }
 
-// def accessible(node)
-//   case node.type
-//   when :__FILE__
-//     if @emit_file_line_as_literals
-//       n(:str, [ node.loc.expression.source_buffer.name ],
-//         node.loc.dup)
-//     else
-//       node
-//     end
-// 
-//   when :__LINE__
-//     if @emit_file_line_as_literals
-//       n(:int, [ node.loc.expression.line ],
-//         node.loc.dup)
-//     else
-//       node
-//     end
-// 
-//   when :__ENCODING__
-//     n(:const, [ n(:const, [ nil, :Encoding], nil), :UTF_8 ],
-//       node.loc.dup)
-// 
-//   when :ident
-//     name, = *node
-// 
-//     if @parser.static_env.declared?(name)
-//       node.updated(:lvar)
-//     else
-//       name, = *node
-//       n(:send, [ nil, name ],
-//         var_send_map(node))
-//     end
-// 
-//   else
-//     node
-//   end
-// end
 // TODO INCOMPLETE
-pub fn accessible(node: Node) -> Node {
-    println!("building node:accessible, node: {:?}", node);
+pub fn accessible(node: Node, static_env: &StaticEnv) -> Node {
     match node {
-        Node::Ident(n_ident_value) => {
-            // TODO DUMMY handle static_env
-            Node::LVar(n_ident_value)
+        //   when :__FILE__
+        //     if @emit_file_line_as_literals
+        //       n(:str, [ node.loc.expression.source_buffer.name ],
+        //         node.loc.dup)
+        //     else
+        //       node
+        //     end
+        // 
+        //   when :__LINE__
+        //     if @emit_file_line_as_literals
+        //       n(:int, [ node.loc.expression.line ],
+        //         node.loc.dup)
+        //     else
+        //       node
+        //     end
+        // 
+        //   when :__ENCODING__
+        //     n(:const, [ n(:const, [ nil, :Encoding], nil), :UTF_8 ],
+        //       node.loc.dup)
+        // 
+        //   when :ident
+        //     name, = *node
+        // 
+        //     if @parser.static_env.declared?(name)
+        //       node.updated(:lvar)
+        //     else
+        //       name, = *node
+        //       n(:send, [ nil, name ],
+        //         var_send_map(node))
+        //     end
+        Node::Ident(n_value) => {
+            if static_env.has_declared(&n_value) {
+                Node::LVar(n_value)
+            } else {
+                n_send!(None, n_value, vec![])
+            }
         }
         _ => { node }
     }

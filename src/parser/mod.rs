@@ -1,5 +1,5 @@
 mod token;
 mod tokenizer;
-mod static_env;
-mod context;
+pub mod static_env;
+pub mod context;
 pub mod parser;

@@ -248,19 +248,18 @@ expr_end := |*
     call_or_var
     => local_ident;
 
-# TODO
-#    bareword ambiguous_fid_suffix
-#    => {
-#      if tm == @te
-#        # Suffix was consumed, e.g. foo!
-#        emit(:tFID)
-#      else
-#        # Suffix was not consumed, e.g. foo!=
-#        emit(:tIDENTIFIER, tok(@ts, tm), @ts, tm)
-#        p = tm - 1
-#      end
-#      fnext expr_arg; fbreak;
-#    };
+    bareword ambiguous_fid_suffix
+    => {
+      if tm == te {
+        // # Suffix was consumed, e.g. foo!
+        !emit T_FID;
+      } else {
+        // # Suffix was not consumed, e.g. foo!=
+        !emit T_IDENTIFIER, ts, tm;
+        p = tm - 1;
+      }
+      fnext expr_arg; fnbreak;
+    };
 
     #
     # OPERATORS

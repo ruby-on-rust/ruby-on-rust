@@ -9504,7 +9504,7 @@ fn _handler496(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
-let __ = node::accessible(_1);
+let __ = node::accessible(_1, &self.static_env);
 println!("    *** PARSER production: var_ref -> user_variable");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -9516,7 +9516,7 @@ fn _handler497(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
-let __ = node::accessible(_1);
+let __ = node::accessible(_1, &self.static_env);
 println!("    *** PARSER production: var_ref -> keyword_variable");
 
 println!("    values_stack: {:?}", self.values_stack);

@@ -962,13 +962,12 @@ call_args
     }
 ;
 
-    command_args: fake_embedded_action__command_args call_args {
-        |$1:StackState, $2:Nodes| -> Nodes;
+command_args: fake_embedded_action__command_args call_args {
+    |$1:StackState, $2:Nodes| -> Nodes;
 
-        self.tokenizer.interior_lexer.cmdarg = $1;
-        $$ = $2;
-    }
-;
+    self.tokenizer.interior_lexer.cmdarg = $1;
+    $$ = $2;
+};
 
 fake_embedded_action__command_args: {
     ||->StackState;
@@ -2288,11 +2287,11 @@ keyword_variable
 var_ref
     : user_variable {
         |$1:Node| -> Node;
-        $$ = node::accessible($1);
+        $$ = node::accessible($1, &self.static_env);
     }
     | keyword_variable {
         |$1:Node| -> Node;
-        $$ = node::accessible($1);
+        $$ = node::accessible($1, &self.static_env);
     }
 ;
 

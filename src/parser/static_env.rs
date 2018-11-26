@@ -62,7 +62,7 @@ impl StaticEnv {
     //     def declared?(name)
     //       @variables.include?(name.to_sym)
     //     end
-    pub fn has_declared(&self, name: String) -> bool {
-        self.variables.contains(&name)
+    pub fn has_declared(&self, name: &String) -> bool {
+        self.variables.contains(name)
     }
 }
