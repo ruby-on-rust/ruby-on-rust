@@ -203,6 +203,59 @@ impl Node {
     }
 }
 
+// #
+// # Literals
+// #
+
+// # Singletons
+
+// def nil(nil_t)
+//   n0(:nil,
+//     token_map(nil_t))
+// end
+
+// def true(true_t)
+//   n0(:true,
+//     token_map(true_t))
+// end
+
+// def false(false_t)
+//   n0(:false,
+//     token_map(false_t))
+// end
+
+// # Numerics
+
+// def integer(integer_t)
+//   numeric(:int, integer_t)
+// end
+pub fn integer(integer_t: Token) -> Node {
+    numeric(integer_t)
+}
+
+// def float(float_t)
+//   numeric(:float, float_t)
+// end
+
+// def rational(rational_t)
+//   numeric(:rational, rational_t)
+// end
+
+// def complex(complex_t)
+//   numeric(:complex, complex_t)
+// end
+
+// def numeric(kind, token)
+//   n(kind, [ value(token) ],
+//     Source::Map::Operator.new(nil, loc(token)))
+// end
+pub fn numeric(token: Token) -> Node {
+    match token {
+        Token::T_INTEGER(value) => Node::Int(value),
+        _ => { panic!("unknown numeric token") }
+    }
+}
+
 // def unary_num(unary_t, numeric)
 //   value, = *numeric
 //   operator_loc = loc(unary_t)
@@ -235,6 +288,11 @@ pub fn unary_num(t_unary: Token, n_simple_numeric: Node) -> Node {
 
     return Node::Int(numeric_value);
 }
+
+// def __LINE__(__LINE__t)
+//   n0(:__LINE__,
+//     token_map(__LINE__t))
+// end
 
 // # Strings
 

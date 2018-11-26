@@ -2206,9 +2206,7 @@ simple_numeric
     : tINTEGER {
         |$1: Token| -> Node;
         self.tokenizer.interior_lexer.set_state("expr_endarg");
-        // result = @builder.integer(val[0])
-        // $$ = node::integer($1);
-        wip!(); $$=Node::DUMMY;
+        $$ = node::integer($1);
     }
     | tFLOAT {
         |$1: Token| -> Node;

@@ -7214,11 +7214,10 @@ self.values_stack.pop();
 
 let __ =Node::DUMMY;
 
-    // if @context.in_class?
-    //   diagnostic :error, :invalid_return, nil, val[0]
-    // end
-
-    wip!();
+    if self.context.is_in_class() {
+        //   diagnostic :error, :invalid_return, nil, val[0]
+        panic!("diagnostic error invalid_return");
+    };
 println!("    *** PARSER production: k_return -> kRETURN");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -9298,9 +9297,7 @@ fn _handler480(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_endarg");
-        // result = @builder.integer(val[0])
-        // let __ = node::integer(_1);
-        wip!(); let __ =Node::DUMMY;
+        let __ = node::integer(_1);
 println!("    *** PARSER production: simple_numeric -> tINTEGER");
 
 println!("    values_stack: {:?}", self.values_stack);

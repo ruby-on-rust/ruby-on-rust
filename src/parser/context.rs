@@ -59,7 +59,10 @@ impl Context {
     //       @stack.last == :class
     //     end
     pub fn is_in_class(&self) -> bool {
-        self.stack.last().unwrap() == ScopeStateKind::Class
+        match self.stack.last().unwrap() {
+            ScopeStateKind::Class => true,
+            _ => false
+        }
     }
 
     //     def indirectly_in_def?
