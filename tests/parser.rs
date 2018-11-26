@@ -1,7 +1,6 @@
 // // BASED ON https://github.com/whitequark/parser/blob/2a73841d6da04a5ab9bd270561165fd766722d43/test/test_parser.rb
 
-#[macro_use]
-extern crate ruby_on_rust;
+#[macro_use] extern crate ruby_on_rust;
 
 use ruby_on_rust::parser::parser::Parser;
 use ruby_on_rust::ast::node::*;
@@ -3081,18 +3080,17 @@ fn asgn_cmd() {
 //   end
 #[test]
 fn send_self() {
-    // TODO PASSED
-    // assert_parses!(
-    //     r"fun", n_send!(None, "fun", vec![])
-    // );
+    assert_parses!(
+        r"fun", n_send!(None, "fun", vec![])
+    );
 
     assert_parses!(
         r"fun!", n_send!(None, "fun!", vec![])
     );
 
-    // assert_parses!(
-    //     r"fun(1)", n_send!(None, "fun", vec![])
-    // );
+    assert_parses!(
+        r"fun(1)", n_send!(None, "fun", vec![n_int!(1)])
+    );
 }
 
 //   def test_send_self_block

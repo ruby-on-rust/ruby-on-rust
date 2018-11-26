@@ -111,6 +111,7 @@ macro_rules! wip { () => { panic!("WIP"); }; }
 //     NODE_LAST
 // };
 
+// TODO refine order, maybe via ruby-parser/AST_FORMAT
 #[derive(Debug, PartialEq, Clone)]
 pub enum Node {
     // TODO CLEANUP
@@ -171,13 +172,14 @@ pub enum Node {
     // TODO
     // Module,
 
+    Arg(String),
+
     Send { receiver: Option<Box<Node>>, selector: String, args: Nodes },
     // https://github.com/whitequark/parser/blob/master/doc/AST_FORMAT.md#send
     // NOTE
     //     receiver being None means sending to self
-    // send_map(receiver_e, dot_t, selector_t, begin_t=nil, args=[], end_t=nil)
-
-    Arg(String),
+    // TODO note about selector and such
+    CSend { receiver: Option<Box<Node>>, selector: String, args: Nodes },
 }
 
 pub type Nodes = Vec<Node>;
@@ -191,9 +193,11 @@ pub type Nodes = Vec<Node>;
 #[macro_export] macro_rules! n_gvar { ($string:expr) => { Node::GVar(String::from($string)) }; }
 #[macro_export] macro_rules! n_begin { ( $( $x:expr ),* ) => { { Node::Begin(vec![ $($x),* ]) } }; }
 #[macro_export] macro_rules! n_dstr { ( $( $x:expr ),* ) => { { Node::DStr(vec![ $($x),* ]) } }; }
-#[macro_export] macro_rules! n_send { ($receiver:expr, $selector:expr, $args:expr) => { Node::Send { receiver: $receiver, selector: String::from($selector), args: $args } }; }
 #[macro_export] macro_rules! n_hash { ( $( $x:expr ),* ) => { { Node::Hash(vec![ $($x),* ]) } }; }
 #[macro_export] macro_rules! n_pair { ($key:expr, $value:expr) => { Node::Pair { key: Box::new($key), value: Box::new($value) }; } }
+#[macro_export] macro_rules! n_send { ($receiver:expr, $selector:expr, $args:expr) => { Node::Send { receiver: $receiver, selector: String::from($selector), args: $args } }; }
+#[macro_export] macro_rules! n_csend { ($receiver:expr, $selector:expr, $args:expr) => { Node::CSend { receiver: $receiver, selector: String::from($selector), args: $args } }; }
+#[macro_export] macro_rules! n_int { ($v:expr) => { Node::Int($v) }; }
 
 impl Node {
     pub fn push_children(&mut self, node: Node) {
@@ -1192,6 +1196,17 @@ pub fn blockarg(amper_t: Token, name_t: Token) -> Node {
 //     :send
 //   end
 // end
+// 
+// TODO REFINE THIS METHOD
+// returns a "csend" or "send"
+fn call_type_for_dot(dot_t: Option<Token>) -> &'static str {
+    if let Some(dot_t) = dot_t {
+        if dot_t.to_string() == "Token::T_ANDDOT" {
+            return "csend"
+        }
+    }
+    "send"
+}
 
 // def call_method(receiver, dot_t, selector_t,
 //                 lparen_t=nil, args=[], rparen_t=nil)
@@ -1205,7 +1220,35 @@ pub fn blockarg(amper_t: Token, name_t: Token) -> Node {
 //   end
 // end
 pub fn call_method(receiver: Option<Node>, dot_t: Option<Token>, selector_t: Option<Token>, lparen_t: Option<Token>, args: Nodes, rparen_t: Option<Token>) -> Node {
-    wip!();
+    let r#type = call_type_for_dot(dot_t);
+
+    // unwrap from Option, wrap again with Option<Box<>>>
+    let receiver = match receiver {
+        Some(node) => Some(Box::new(node)),
+        None => None
+    };
+
+    if let Some(selector_t) = selector_t {
+        // TODO refine this after we make every token has a value
+        let selector_t_value = match selector_t {
+            Token::T_FID(v) | Token::T_IDENTIFIER(v) => v,
+            _ => { panic!("unknown how to handle token {:?}", selector_t) }
+        };
+
+        match r#type {
+            // TODO what is this ":call"? when selector is empty
+            "csend" => n_csend!(receiver, selector_t_value, args),
+            "send" => n_send!(receiver, selector_t_value, args),
+            _ => { panic!("invalid type"); }
+        }
+    } else {
+        match r#type {
+            // TODO what is this ":call"? when selector is empty
+            "csend" => n_csend!(receiver, "call", args),
+            "send" => n_send!(receiver, "call", args),
+            _ => { panic!("invalid type"); }
+        }
+    }
 }
 
 // def call_lambda(lambda_t)
