@@ -19,12 +19,12 @@ puts "cleaning..."
 parser_file = 'src/parser/parser.rs'
 content = File.read parser_file
 
-content.gsub! """
-extern crate regex;
-
-#[macro_use]
-extern crate lazy_static;
-""", ''
+# content.gsub! """
+# extern crate regex;
+# 
+# #[macro_use]
+# extern crate lazy_static;
+# """, ''
 
 content.gsub! /(^\/\*\*$\n^ \* Generic tokenizer used by the parser in the Syntax tool)(.*)(^\/\/ Parser\.)/m, ''
 
@@ -36,105 +36,10 @@ content.gsub! /(^\/\*\*$\n^ \* Generic tokenizer used by the parser in the Synta
 content.gsub! 'pop!(self.values_stack, _0)', 'interior_token!(pop!(self.values_stack, _0))'
 
 #
-# `let $$ =` -> `$$ =`
-#
-content.gsub! '<REMOVE THIS LET>let ', ''
-
-#
-# Debug info in parser
-#
-
-content.gsub! "enum SV {", """
-#[derive(Debug)]
-enum SV {
-"""
-
-content.gsub! /(\/\/ Shift a token, go to state\.)(.*)(\/\/ Reduce by production\.)/m, %q[
-                // Shift a token, go to state.
-
-                // Shift a token, go to state.
-                &TE::Shift(next_state) => {
-                    println!("");
-                    println!("*** PARSER: SHIFT!");
-                
-                    // Push token.
-                    self.values_stack.push(SV::_0(token));
-                
-                    // Push next state number: "s5" -> 5
-                    self.states_stack.push(next_state as usize);
-                
-                    shifted_token = token;
-                    token = self.tokenizer.get_next_token();
-                
-                    println!("*** PARSER: shifted_token: {:?}", shifted_token);
-                    println!("*** PARSER: next token: {:?}", token.value);
-                    println!("*** PARSER: values_stack: {:?}", self.values_stack);
-                },
-                
-                // Reduce by production.
-]
-
-content.gsub! /(\/\/ Reduce by production\.)(.*)(\/\/ Accept the string\.)/m, %q[
-                // Reduce by production.
-
-                &TE::Reduce(production_number) => {
-                    println!("");
-                    println!("*** PARSER: REDUCE!");
-    
-                    let production = PRODUCTIONS[production_number];
-    
-                    // println!("production: {:?}", production);
-    
-                    self.tokenizer.yytext = shifted_token.value;
-                    self.tokenizer.yyleng = shifted_token.value.len();
-    
-                    let mut rhs_length = production[1];
-                    while rhs_length > 0 {
-                        self.states_stack.pop();
-                        rhs_length = rhs_length - 1;
-                    }
-    
-                    // Call the handler, push result onto the stack.
-                    let result_value = self.handlers[production_number](self);
-
-                    println!("*** PARSER: handler: {:?}", production_number );
-                    println!("*** PARSER: result_value: {:?}", result_value);
-    
-                    let previous_state = *self.states_stack.last().unwrap();
-                    let symbol_to_reduce_with = production[0];
-    
-                    // Then push LHS onto the stack.
-                    self.values_stack.push(result_value);
-    
-                    let next_state = match &TABLE[previous_state][&symbol_to_reduce_with] {
-                        &TE::Transit(next_state) => next_state,
-                        _ => unreachable!(),
-                    };
-    
-                    self.states_stack.push(next_state);
-
-                    println!("*** PARSER: values_stack: {:?}", self.values_stack);
-                },
-
-                // Accept the string.
-]
-
-#
 # since we removed Copy trait from the original Token
 #
 content.gsub! 'let mut shifted_token = token;', 'let mut shifted_token = token.clone();'
 content.gsub! 'self.values_stack.push(SV::_0(token));', 'self.values_stack.push(SV::_0(token.clone()));'
-
-#
-# debug info in handlers
-#
-(1..999).each do |i|
-  content.gsub! "fn _handler#{i}(&mut self) -> SV {\n", %Q[
-fn _handler#{i}(&mut self) -> SV {\n
-    println!("   *** PARSER: _handler#{i}");
-    println!("   values_stack: {:?}", self.values_stack);
-  ]
-end
 
 # 
 # parser: &'static str -> &str

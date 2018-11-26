@@ -2,16 +2,19 @@
 #![allow(unused_mut)]
 #![allow(unreachable_code)]
 
-use regex::Regex;
+// extern crate regex;
+
+// #[macro_use]
+// extern crate lazy_static;
+
+// use regex::Regex;
 use std::collections::HashMap;
 
 /**
  * Stack value.
  */
-
 #[derive(Debug)]
 enum SV {
-
     Undefined,
     _0(Token),
     _1(Nodes),
@@ -2441,6 +2444,7 @@ impl Parser {
     Parser::_handler599
 ],
 
+            // private fields for RoR
             static_env: StaticEnv::new(),
         }
     }
@@ -2477,72 +2481,60 @@ impl Parser {
 
             match entry {
 
-                
-                // Shift a token, go to state.
-
                 // Shift a token, go to state.
                 &TE::Shift(next_state) => {
-                    println!("");
-                    println!("*** PARSER: SHIFT!");
-                
                     // Push token.
                     self.values_stack.push(SV::_0(token.clone()));
-                
+
                     // Push next state number: "s5" -> 5
                     self.states_stack.push(next_state as usize);
-                
+
                     shifted_token = token;
                     token = self.tokenizer.get_next_token();
-                
+
                     println!("*** PARSER: shifted_token: {:?}", shifted_token);
                     println!("*** PARSER: next token: {:?}", token.value);
                     println!("*** PARSER: values_stack: {:?}", self.values_stack);
                 },
-                
-                
-                // Reduce by production.
 
+                // Reduce by production.
                 &TE::Reduce(production_number) => {
-                    println!("");
-                    println!("*** PARSER: REDUCE!");
-    
+                    println!("\n*** PARSER: REDUCE!");
+
                     let production = PRODUCTIONS[production_number];
-    
-                    // println!("production: {:?}", production);
-    
+
                     self.tokenizer.yytext = shifted_token.value;
                     self.tokenizer.yyleng = shifted_token.value.len();
-    
+
                     let mut rhs_length = production[1];
                     while rhs_length > 0 {
                         self.states_stack.pop();
                         rhs_length = rhs_length - 1;
                     }
-    
+
                     // Call the handler, push result onto the stack.
                     let result_value = self.handlers[production_number](self);
 
                     println!("*** PARSER: handler: {:?}", production_number );
                     println!("*** PARSER: result_value: {:?}", result_value);
-    
+
                     let previous_state = *self.states_stack.last().unwrap();
                     let symbol_to_reduce_with = production[0];
-    
+
                     // Then push LHS onto the stack.
                     self.values_stack.push(result_value);
-    
+
                     let next_state = match &TABLE[previous_state][&symbol_to_reduce_with] {
                         &TE::Transit(next_state) => next_state,
                         _ => unreachable!(),
                     };
-    
+
                     self.states_stack.push(next_state);
 
                     println!("*** PARSER: values_stack: {:?}", self.values_stack);
                 },
 
                 // Accept the string.
-
                 &TE::Accept => {
                     // Pop state number.
                     self.states_stack.pop();
@@ -2582,122 +2574,106 @@ impl Parser {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: $accept -> program
+println!("    *** PARSER production: $accept -> program");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler1(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler1");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: program -> top_compstmt
+println!("    *** PARSER production: program -> top_compstmt");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler2(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler2");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = node::compstmt(_1);
-SV::_2(__)
-// raw production: top_compstmt -> top_stmts opt_terms
+println!("    *** PARSER production: top_compstmt -> top_stmts opt_terms");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler3(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler3");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = vec![];
-SV::_1(__)
-// raw production: top_stmts -> undefined
+println!("    *** PARSER production: top_stmts -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler4(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler4");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
-SV::_1(__)
-// raw production: top_stmts -> top_stmt
+println!("    *** PARSER production: top_stmts -> top_stmt");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler5(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler5");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
-SV::_1(__)
-// raw production: top_stmts -> top_stmts terms top_stmt
+println!("    *** PARSER production: top_stmts -> top_stmts terms top_stmt");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler6(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler6");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: top_stmt -> stmt
+println!("    *** PARSER production: top_stmt -> stmt");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler7(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler7");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::preexe(_1, _2, _3, _4);
-SV::_2(__)
-// raw production: top_stmt -> klBEGIN tLCURLY top_compstmt tRCURLY
+println!("    *** PARSER production: top_stmt -> klBEGIN tLCURLY top_compstmt tRCURLY");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler8(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler8");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _3);
 let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = pop!(self.values_stack, _1);
@@ -2719,93 +2695,81 @@ let rescue_bodies = _2;
         //                                   else_t,   else_,
         //                                   ensure_t, ensure_)
         let __ = Node::DUMMY;
-SV::_2(__)
-// raw production: bodystmt -> compstmt opt_rescue opt_else opt_ensure
+println!("    *** PARSER production: bodystmt -> compstmt opt_rescue opt_else opt_ensure");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler9(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler9");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 // TODO well @builder.compstmt actually returns an Option<Node>
     // result = @builder.compstmt(val[0])
     let __ = node::compstmt(_1);
-SV::_2(__)
-// raw production: compstmt -> stmts opt_terms
+println!("    *** PARSER production: compstmt -> stmts opt_terms");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler10(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler10");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = vec![];
-SV::_1(__)
-// raw production: stmts -> undefined
+println!("    *** PARSER production: stmts -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler11(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler11");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
-SV::_1(__)
-// raw production: stmts -> stmt_or_begin
+println!("    *** PARSER production: stmts -> stmt_or_begin");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler12(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler12");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
-SV::_1(__)
-// raw production: stmts -> stmts terms stmt_or_begin
+println!("    *** PARSER production: stmts -> stmts terms stmt_or_begin");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler13(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler13");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: stmt_or_begin -> stmt
+println!("    *** PARSER production: stmt_or_begin -> stmt");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler14(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler14");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -2815,50 +2779,44 @@ self.values_stack.pop();
         panic!("diagnostic error");
 
         let __ =Node::DUMMY;
-SV::_2(__)
-// raw production: stmt_or_begin -> klBEGIN tLCURLY top_compstmt tRCURLY
+println!("    *** PARSER production: stmt_or_begin -> klBEGIN tLCURLY top_compstmt tRCURLY");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler15(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler15");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = Node::DUMMY;
 
     self.tokenizer.interior_lexer.set_state("expr_fname");
-SV::_2(__)
-// raw production: fake_embedded_action__stmt__1 -> undefined
+println!("    *** PARSER production: fake_embedded_action__stmt__1 -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler16(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler16");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::alias(_1, _2, _4);
-SV::_2(__)
-// raw production: stmt -> kALIAS fitem fake_embedded_action__stmt__1 fitem
+println!("    *** PARSER production: stmt -> kALIAS fitem fake_embedded_action__stmt__1 fitem");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler17(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler17");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
@@ -2867,17 +2825,15 @@ let __ = node::alias(
                 _1,
                 node::gvar(_2),
                 node::gvar(_3));
-SV::_2(__)
-// raw production: stmt -> kALIAS tGVAR tGVAR
+println!("    *** PARSER production: stmt -> kALIAS tGVAR tGVAR");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler18(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler18");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
@@ -2886,17 +2842,15 @@ let __ = node::alias(
                 _1,
                 node::gvar(_2),
                 node::back_ref(_3));
-SV::_2(__)
-// raw production: stmt -> kALIAS tGVAR tBACK_REF
+println!("    *** PARSER production: stmt -> kALIAS tGVAR tBACK_REF");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler19(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler19");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -2904,96 +2858,84 @@ self.values_stack.pop();
 let __ =Node::DUMMY;
         // diagnostic :error, :nth_ref_alias, nil, val[2]
         panic!("diagnostic error");
-SV::_2(__)
-// raw production: stmt -> kALIAS tGVAR tNTH_REF
+println!("    *** PARSER production: stmt -> kALIAS tGVAR tNTH_REF");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler20(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler20");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::undef_method(_1, _2);
-SV::_2(__)
-// raw production: stmt -> kUNDEF undef_list
+println!("    *** PARSER production: stmt -> kUNDEF undef_list");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler21(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler21");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::condition_mod(Some(_1), None, _2, _3);
-SV::_2(__)
-// raw production: stmt -> stmt kIF_MOD expr_value
+println!("    *** PARSER production: stmt -> stmt kIF_MOD expr_value");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler22(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler22");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::condition_mod(None, Some(_1), _2, _3);
-SV::_2(__)
-// raw production: stmt -> stmt kUNLESS_MOD expr_value
+println!("    *** PARSER production: stmt -> stmt kUNLESS_MOD expr_value");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler23(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler23");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::loop_mod("while", _1, _2, _3);
-SV::_2(__)
-// raw production: stmt -> stmt kWHILE_MOD expr_value
+println!("    *** PARSER production: stmt -> stmt kWHILE_MOD expr_value");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler24(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler24");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::loop_mod("until", _1, _2, _3);
-SV::_2(__)
-// raw production: stmt -> stmt kUNTIL_MOD expr_value
+println!("    *** PARSER production: stmt -> stmt kUNTIL_MOD expr_value");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler25(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler25");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
@@ -3001,142 +2943,124 @@ let mut _1 = pop!(self.values_stack, _2);
 let rescue_body = node::rescue_body(_2, None, None, None, None, _3);
 
         let __ = node::begin_body(_1, vec![ rescue_body ], None, None, None, None);
-SV::_2(__)
-// raw production: stmt -> stmt kRESCUE_MOD stmt
+println!("    *** PARSER production: stmt -> stmt kRESCUE_MOD stmt");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler26(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler26");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::postexe(_1, _2, _3, _4);
-SV::_2(__)
-// raw production: stmt -> klEND tLCURLY compstmt tRCURLY
+println!("    *** PARSER production: stmt -> klEND tLCURLY compstmt tRCURLY");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler27(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler27");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: stmt -> command_asgn
+println!("    *** PARSER production: stmt -> command_asgn");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler28(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler28");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::multi_assign(_1, _2, _3);
-SV::_2(__)
-// raw production: stmt -> mlhs tEQL command_call
+println!("    *** PARSER production: stmt -> mlhs tEQL command_call");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler29(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler29");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _1);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::assign(_1, _2, node::array(None, _3, None) );
-SV::_2(__)
-// raw production: stmt -> lhs tEQL mrhs
+println!("    *** PARSER production: stmt -> lhs tEQL mrhs");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler30(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler30");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::multi_assign(_1, _2, _3);
-SV::_2(__)
-// raw production: stmt -> mlhs tEQL mrhs_arg
+println!("    *** PARSER production: stmt -> mlhs tEQL mrhs_arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler31(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler31");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: stmt -> expr
+println!("    *** PARSER production: stmt -> expr");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler32(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler32");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::assign(_1, _2, _3);
-SV::_2(__)
-// raw production: command_asgn -> lhs tEQL command_rhs
+println!("    *** PARSER production: command_asgn -> lhs tEQL command_rhs");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler33(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler33");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::op_assign(_1, _2, _3);
-SV::_2(__)
-// raw production: command_asgn -> var_lhs tOP_ASGN command_rhs
+println!("    *** PARSER production: command_asgn -> var_lhs tOP_ASGN command_rhs");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler34(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler34");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _6 = pop!(self.values_stack, _2);
 let mut _5 = interior_token!(pop!(self.values_stack, _0));
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
@@ -3148,17 +3072,15 @@ let __ = node::op_assign(
             node::index(_1, _2, _3, _4),
             _5, _6
         );
+println!("    *** PARSER production: command_asgn -> primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN command_rhs");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: command_asgn -> primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN command_rhs
-
 }
-
 
 fn _handler35(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler35");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _5 = pop!(self.values_stack, _2);
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
@@ -3169,17 +3091,15 @@ let __ = node::op_assign(
             node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
             _4, _5
         );
+println!("    *** PARSER production: command_asgn -> primary_value call_op tIDENTIFIER tOP_ASGN command_rhs");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: command_asgn -> primary_value call_op tIDENTIFIER tOP_ASGN command_rhs
-
 }
-
 
 fn _handler36(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler36");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _5 = pop!(self.values_stack, _2);
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
@@ -3190,17 +3110,15 @@ let __ = node::op_assign(
             node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
             _4, _5
         );
-SV::_2(__)
-// raw production: command_asgn -> primary_value call_op tCONSTANT tOP_ASGN command_rhs
+println!("    *** PARSER production: command_asgn -> primary_value call_op tCONSTANT tOP_ASGN command_rhs");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler37(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler37");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _5 = pop!(self.values_stack, _2);
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
@@ -3209,17 +3127,15 @@ let mut _1 = pop!(self.values_stack, _2);
 
 let const_node = node::const_op_assignable(node::const_fetch(_1, _2, _3));
         let __ = node::op_assign(const_node, _4, _5);
-SV::_2(__)
-// raw production: command_asgn -> primary_value tCOLON2 tCONSTANT tOP_ASGN command_rhs
+println!("    *** PARSER production: command_asgn -> primary_value tCOLON2 tCONSTANT tOP_ASGN command_rhs");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler38(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler38");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _5 = pop!(self.values_stack, _2);
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
@@ -3230,47 +3146,41 @@ let __ = node::op_assign(
             node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
             _4, _5
         );
-SV::_2(__)
-// raw production: command_asgn -> primary_value tCOLON2 tIDENTIFIER tOP_ASGN command_rhs
+println!("    *** PARSER production: command_asgn -> primary_value tCOLON2 tIDENTIFIER tOP_ASGN command_rhs");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler39(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler39");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::op_assign(_1, _2, _3);
-SV::_2(__)
-// raw production: command_asgn -> backref tOP_ASGN command_rhs
+println!("    *** PARSER production: command_asgn -> backref tOP_ASGN command_rhs");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler40(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler40");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: command_rhs -> command_call
+println!("    *** PARSER production: command_rhs -> command_call");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler41(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler41");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
@@ -3278,240 +3188,208 @@ let mut _1 = pop!(self.values_stack, _2);
 let rescue_body = node::rescue_body(_2, None, None, None, None, _3);
 
         let __ = node::begin_body(_1, vec![ rescue_body ], None, None, None, None);
+println!("    *** PARSER production: command_rhs -> command_call kRESCUE_MOD stmt");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: command_rhs -> command_call kRESCUE_MOD stmt
-
 }
-
 
 fn _handler42(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler42");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: command_rhs -> command_asgn");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: command_rhs -> command_asgn
-
 }
-
 
 fn _handler43(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler43");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: expr -> command_call
+println!("    *** PARSER production: expr -> command_call");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler44(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler44");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::logical_op("and", _1, _2, _3);
-SV::_2(__)
-// raw production: expr -> expr kAND expr
+println!("    *** PARSER production: expr -> expr kAND expr");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler45(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler45");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::logical_op("or", _1, _2, _3);
-SV::_2(__)
-// raw production: expr -> expr kOR expr
+println!("    *** PARSER production: expr -> expr kOR expr");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler46(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler46");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::not_op(_1, None, Some(_3), None);
-SV::_2(__)
-// raw production: expr -> kNOT opt_nl expr
+println!("    *** PARSER production: expr -> kNOT opt_nl expr");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler47(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler47");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::not_op(_1, None, Some(_2), None);
+println!("    *** PARSER production: expr -> tBANG command_call");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: expr -> tBANG command_call
-
 }
-
 
 fn _handler48(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler48");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: expr -> arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: expr -> arg
-
 }
-
 
 fn _handler49(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler49");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: expr_value -> expr");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: expr_value -> expr
-
 }
-
 
 fn _handler50(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler50");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: command_call -> command");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: command_call -> command
-
 }
-
 
 fn _handler51(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler51");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: command_call -> block_command");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: command_call -> block_command
-
 }
-
 
 fn _handler52(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler52");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: block_command -> block_call
+println!("    *** PARSER production: block_command -> block_call");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler53(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler53");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
-SV::_2(__)
-// raw production: block_command -> block_call dot_or_colon operation2 command_args
+println!("    *** PARSER production: block_command -> block_call dot_or_colon operation2 command_args");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler54(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler54");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _4);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = (_1, _2, _3);
-SV::_5(__)
-// raw production: cmd_brace_block -> tLBRACE_ARG brace_body tRCURLY
+println!("    *** PARSER production: cmd_brace_block -> tLBRACE_ARG brace_body tRCURLY");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_5(__)
 }
 
-
 fn _handler55(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler55");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: fcall -> operation
+println!("    *** PARSER production: fcall -> operation");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler56(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler56");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::call_method(None, None, Some(_1), None, _2, None);
-SV::_2(__)
-// raw production: command -> fcall command_args
+println!("    *** PARSER production: command -> fcall command_args");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler57(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler57");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _5);
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
@@ -3519,34 +3397,30 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 let method_call = node::call_method(None, None, Some(_1), None, _2, None);
         let (begin_t, (args, body), end_t) = _3;
         let __ = node::block(method_call, begin_t, args, body, end_t);
+println!("    *** PARSER production: command -> fcall command_args cmd_brace_block");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: command -> fcall command_args cmd_brace_block
-
 }
-
 
 fn _handler58(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler58");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
+println!("    *** PARSER production: command -> primary_value call_op operation2 command_args");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: command -> primary_value call_op operation2 command_args
-
 }
-
 
 fn _handler59(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler59");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _5 = pop!(self.values_stack, _5);
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
@@ -3556,34 +3430,30 @@ let mut _1 = pop!(self.values_stack, _2);
 let method_call = node::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
         let (begin_t, (args, body), end_t) = _5;
         let __ = node::block(method_call, begin_t, args, body, end_t);
-SV::_2(__)
-// raw production: command -> primary_value call_op operation2 command_args cmd_brace_block
+println!("    *** PARSER production: command -> primary_value call_op operation2 command_args cmd_brace_block");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler60(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler60");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
-SV::_2(__)
-// raw production: command -> primary_value tCOLON2 operation2 command_args
+println!("    *** PARSER production: command -> primary_value tCOLON2 operation2 command_args");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler61(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler61");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _5 = pop!(self.values_stack, _5);
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
@@ -3593,199 +3463,173 @@ let mut _1 = pop!(self.values_stack, _2);
 let method_call = node::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
         let (begin_t, (args, body), end_t) = _5;
         let __ = node::block(method_call, begin_t, args, body, end_t);
-SV::_2(__)
-// raw production: command -> primary_value tCOLON2 operation2 command_args cmd_brace_block
+println!("    *** PARSER production: command -> primary_value tCOLON2 operation2 command_args cmd_brace_block");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler62(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler62");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("super", _1, None, _2, None);
-SV::_2(__)
-// raw production: command -> kSUPER command_args
+println!("    *** PARSER production: command -> kSUPER command_args");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler63(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler63");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("yield", _1, None, _2, None);
-SV::_2(__)
-// raw production: command -> kYIELD command_args
+println!("    *** PARSER production: command -> kYIELD command_args");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler64(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler64");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("return", _1, None, _2, None);
-SV::_2(__)
-// raw production: command -> kRETURN call_args
+println!("    *** PARSER production: command -> kRETURN call_args");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler65(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler65");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("break", _1, None, _2, None);
-SV::_2(__)
-// raw production: command -> kBREAK call_args
+println!("    *** PARSER production: command -> kBREAK call_args");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler66(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler66");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("next", _1, None, _2, None);
-SV::_2(__)
-// raw production: command -> kNEXT call_args
+println!("    *** PARSER production: command -> kNEXT call_args");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler67(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler67");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = node::multi_lhs(None, _1, None);
-SV::_2(__)
-// raw production: mlhs -> mlhs_basic
+println!("    *** PARSER production: mlhs -> mlhs_basic");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler68(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler68");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::begin(_1, Some(_2), _3);
-SV::_2(__)
-// raw production: mlhs -> tLPAREN mlhs_inner rparen
+println!("    *** PARSER production: mlhs -> tLPAREN mlhs_inner rparen");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler69(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler69");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = node::multi_lhs(None, _1, None);
-SV::_2(__)
-// raw production: mlhs_inner -> mlhs_basic
+println!("    *** PARSER production: mlhs_inner -> mlhs_basic");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler70(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler70");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::multi_lhs(Some(_1), _2, Some(_3));
-SV::_2(__)
-// raw production: mlhs_inner -> tLPAREN mlhs_inner rparen
+println!("    *** PARSER production: mlhs_inner -> tLPAREN mlhs_inner rparen");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler71(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler71");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: mlhs_basic -> mlhs_head
+println!("    *** PARSER production: mlhs_basic -> mlhs_head");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler72(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler72");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_2);
         let __ = _1;
-SV::_1(__)
-// raw production: mlhs_basic -> mlhs_head mlhs_item
+println!("    *** PARSER production: mlhs_basic -> mlhs_head mlhs_item");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler73(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler73");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push( node::splat(_2, Some(_3)) );
         let __ = _1;
-SV::_1(__)
-// raw production: mlhs_basic -> mlhs_head tSTAR mlhs_node
+println!("    *** PARSER production: mlhs_basic -> mlhs_head tSTAR mlhs_node");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler74(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler74");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _5 = pop!(self.values_stack, _1);
 self.values_stack.pop();
 let mut _3 = pop!(self.values_stack, _2);
@@ -3795,33 +3639,29 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.push( node::splat(_2, Some(_3)) );
         _1.append(&mut _5);
         let __ = _1;
-SV::_1(__)
-// raw production: mlhs_basic -> mlhs_head tSTAR mlhs_node tCOMMA mlhs_post
+println!("    *** PARSER production: mlhs_basic -> mlhs_head tSTAR mlhs_node tCOMMA mlhs_post");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler75(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler75");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push( node::splat(_2, None) );
         let __ = _1;
-SV::_1(__)
-// raw production: mlhs_basic -> mlhs_head tSTAR
+println!("    *** PARSER production: mlhs_basic -> mlhs_head tSTAR");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler76(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler76");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _1);
 self.values_stack.pop();
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
@@ -3830,32 +3670,28 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.push( node::splat(_2, None) );
         _1.append(&mut _4);
         let __ = _1;
-SV::_1(__)
-// raw production: mlhs_basic -> mlhs_head tSTAR tCOMMA mlhs_post
+println!("    *** PARSER production: mlhs_basic -> mlhs_head tSTAR tCOMMA mlhs_post");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler77(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler77");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = vec![ node::splat(_1, Some(_2)) ];
-SV::_1(__)
-// raw production: mlhs_basic -> tSTAR mlhs_node
+println!("    *** PARSER production: mlhs_basic -> tSTAR mlhs_node");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler78(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler78");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _1);
 self.values_stack.pop();
 let mut _2 = pop!(self.values_stack, _2);
@@ -3864,31 +3700,27 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 let mut r = vec![ node::splat(_1, Some(_2)) ];
         r.append(&mut _4);
         let __ = r;
-SV::_1(__)
-// raw production: mlhs_basic -> tSTAR mlhs_node tCOMMA mlhs_post
+println!("    *** PARSER production: mlhs_basic -> tSTAR mlhs_node tCOMMA mlhs_post");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler79(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler79");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = vec![ node::splat(_1, None) ];
-SV::_1(__)
-// raw production: mlhs_basic -> tSTAR
+println!("    *** PARSER production: mlhs_basic -> tSTAR");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler80(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler80");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
@@ -3896,602 +3728,522 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 let mut r = vec![ node::splat(_1, None) ];
         r.append(&mut _3);
         let __ = r;
-SV::_1(__)
-// raw production: mlhs_basic -> tSTAR tCOMMA mlhs_post
+println!("    *** PARSER production: mlhs_basic -> tSTAR tCOMMA mlhs_post");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler81(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler81");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: mlhs_item -> mlhs_node
+println!("    *** PARSER production: mlhs_item -> mlhs_node");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler82(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler82");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::begin(_1, Some(_2), _3);
-SV::_2(__)
-// raw production: mlhs_item -> tLPAREN mlhs_inner rparen
+println!("    *** PARSER production: mlhs_item -> tLPAREN mlhs_inner rparen");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler83(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler83");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![ _1 ];
-SV::_1(__)
-// raw production: mlhs_head -> mlhs_item tCOMMA
+println!("    *** PARSER production: mlhs_head -> mlhs_item tCOMMA");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler84(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler84");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_2);
         let __ = _1;
-SV::_1(__)
-// raw production: mlhs_head -> mlhs_head mlhs_item tCOMMA
+println!("    *** PARSER production: mlhs_head -> mlhs_head mlhs_item tCOMMA");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler85(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler85");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
-SV::_1(__)
-// raw production: mlhs_post -> mlhs_item
+println!("    *** PARSER production: mlhs_post -> mlhs_item");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler86(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler86");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
+println!("    *** PARSER production: mlhs_post -> mlhs_post tCOMMA mlhs_item");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: mlhs_post -> mlhs_post tCOMMA mlhs_item
-
 }
-
 
 fn _handler87(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler87");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::assignable(_1);
+println!("    *** PARSER production: mlhs_node -> user_variable");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: mlhs_node -> user_variable
-
 }
-
 
 fn _handler88(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler88");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::assignable(_1);
+println!("    *** PARSER production: mlhs_node -> keyword_variable");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: mlhs_node -> keyword_variable
-
 }
-
 
 fn _handler89(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler89");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = pop!(self.values_stack, _1);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::index_asgn(_1, _2, _3, _4);
+println!("    *** PARSER production: mlhs_node -> primary_value tLBRACK2 opt_call_args rbracket");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: mlhs_node -> primary_value tLBRACK2 opt_call_args rbracket
-
 }
-
 
 fn _handler90(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler90");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::attr_asgn(_1, _2, _3);
+println!("    *** PARSER production: mlhs_node -> primary_value call_op tIDENTIFIER");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: mlhs_node -> primary_value call_op tIDENTIFIER
-
 }
-
 
 fn _handler91(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler91");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::attr_asgn(_1, _2, _3);
+println!("    *** PARSER production: mlhs_node -> primary_value tCOLON2 tIDENTIFIER");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: mlhs_node -> primary_value tCOLON2 tIDENTIFIER
-
 }
-
 
 fn _handler92(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler92");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::attr_asgn(_1, _2, _3);
-SV::_2(__)
-// raw production: mlhs_node -> primary_value call_op tCONSTANT
+println!("    *** PARSER production: mlhs_node -> primary_value call_op tCONSTANT");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler93(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler93");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::assignable(node::const_fetch(_1, _2, _3));
-SV::_2(__)
-// raw production: mlhs_node -> primary_value tCOLON2 tCONSTANT
+println!("    *** PARSER production: mlhs_node -> primary_value tCOLON2 tCONSTANT");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler94(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler94");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::assignable(node::const_global(_1, _2));
+println!("    *** PARSER production: mlhs_node -> tCOLON3 tCONSTANT");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: mlhs_node -> tCOLON3 tCONSTANT
-
 }
-
 
 fn _handler95(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler95");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::assignable(_1);
+println!("    *** PARSER production: mlhs_node -> backref");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: mlhs_node -> backref
-
 }
-
 
 fn _handler96(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler96");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::assignable(_1);
+println!("    *** PARSER production: lhs -> user_variable");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: lhs -> user_variable
-
 }
-
 
 fn _handler97(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler97");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::assignable(_1);
-SV::_2(__)
-// raw production: lhs -> keyword_variable
+println!("    *** PARSER production: lhs -> keyword_variable");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler98(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler98");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = pop!(self.values_stack, _1);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::index_asgn(_1, _2, _3, _4);
+println!("    *** PARSER production: lhs -> primary_value tLBRACK2 opt_call_args rbracket");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: lhs -> primary_value tLBRACK2 opt_call_args rbracket
-
 }
-
 
 fn _handler99(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler99");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::attr_asgn(_1, _2, _3);
+println!("    *** PARSER production: lhs -> primary_value call_op tIDENTIFIER");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: lhs -> primary_value call_op tIDENTIFIER
-
 }
-
 
 fn _handler100(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler100");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::attr_asgn(_1, _2, _3);
+println!("    *** PARSER production: lhs -> primary_value tCOLON2 tIDENTIFIER");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: lhs -> primary_value tCOLON2 tIDENTIFIER
-
 }
-
 
 fn _handler101(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler101");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::attr_asgn(_1, _2, _3);
-SV::_2(__)
-// raw production: lhs -> primary_value call_op tCONSTANT
+println!("    *** PARSER production: lhs -> primary_value call_op tCONSTANT");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler102(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler102");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::assignable(node::const_fetch(_1, _2, _3));
-SV::_2(__)
-// raw production: lhs -> primary_value tCOLON2 tCONSTANT
+println!("    *** PARSER production: lhs -> primary_value tCOLON2 tCONSTANT");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler103(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler103");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::assignable(node::const_global(_1, _2));
-SV::_2(__)
-// raw production: lhs -> tCOLON3 tCONSTANT
+println!("    *** PARSER production: lhs -> tCOLON3 tCONSTANT");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler104(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler104");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::assignable(_1);
-SV::_2(__)
-// raw production: lhs -> backref
+println!("    *** PARSER production: lhs -> backref");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler105(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler105");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 
 let __ =Node::DUMMY;
 
         //   diagnostic :error, :module_name_const, nil, val[0]
         panic!("diagnostic error");
-SV::_2(__)
-// raw production: cname -> tIDENTIFIER
+println!("    *** PARSER production: cname -> tIDENTIFIER");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler106(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler106");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: cname -> tCONSTANT
+println!("    *** PARSER production: cname -> tCONSTANT");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler107(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler107");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::const_global(_1, _2);
-SV::_2(__)
-// raw production: cpath -> tCOLON3 cname
+println!("    *** PARSER production: cpath -> tCOLON3 cname");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler108(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler108");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::build_const(_1);
-SV::_2(__)
-// raw production: cpath -> cname
+println!("    *** PARSER production: cpath -> cname");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler109(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler109");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::const_fetch(_1, _2, _3);
+println!("    *** PARSER production: cpath -> primary_value tCOLON2 cname");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: cpath -> primary_value tCOLON2 cname
-
 }
-
 
 fn _handler110(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler110");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: fname -> tIDENTIFIER");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: fname -> tIDENTIFIER
-
 }
-
 
 fn _handler111(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler111");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: fname -> tCONSTANT");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: fname -> tCONSTANT
-
 }
-
 
 fn _handler112(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler112");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: fname -> tFID");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: fname -> tFID
-
 }
-
 
 fn _handler113(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler113");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: fname -> op");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: fname -> op
-
 }
-
 
 fn _handler114(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler114");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: fname -> reswords
+println!("    *** PARSER production: fname -> reswords");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler115(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler115");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::symbol(_1);
+println!("    *** PARSER production: fsym -> fname");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: fsym -> fname
-
 }
-
 
 fn _handler116(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler116");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: fsym -> symbol");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: fsym -> symbol
-
 }
-
 
 fn _handler117(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler117");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: fitem -> fsym");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: fitem -> fsym
-
 }
-
 
 fn _handler118(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler118");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: fitem -> dsym
+println!("    *** PARSER production: fitem -> dsym");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler119(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler119");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
-SV::_1(__)
-// raw production: undef_list -> fitem
+println!("    *** PARSER production: undef_list -> fitem");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler120(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler120");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 self.values_stack.pop();
@@ -4499,1058 +4251,908 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_4);
         let __ = _1;
-SV::_1(__)
-// raw production: undef_list -> undef_list tCOMMA fake_embedded_action_undef_list fitem
+println!("    *** PARSER production: undef_list -> undef_list tCOMMA fake_embedded_action_undef_list fitem");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler121(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler121");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.set_state("expr_fname");
+println!("    *** PARSER production: fake_embedded_action_undef_list -> undefined");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: fake_embedded_action_undef_list -> undefined
-
 }
-
 
 fn _handler122(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler122");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tPIPE");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tPIPE
-
 }
-
 
 fn _handler123(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler123");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tCARET");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tCARET
-
 }
-
 
 fn _handler124(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler124");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tAMPER2");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tAMPER2
-
 }
-
 
 fn _handler125(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler125");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tCMP");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tCMP
-
 }
-
 
 fn _handler126(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler126");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tEQ");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tEQ
-
 }
-
 
 fn _handler127(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler127");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tEQQ");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tEQQ
-
 }
-
 
 fn _handler128(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler128");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tMATCH");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tMATCH
-
 }
-
 
 fn _handler129(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler129");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tNMATCH");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tNMATCH
-
 }
-
 
 fn _handler130(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler130");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tGT");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tGT
-
 }
-
 
 fn _handler131(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler131");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tGEQ");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tGEQ
-
 }
-
 
 fn _handler132(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler132");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tLT");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tLT
-
 }
-
 
 fn _handler133(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler133");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tLEQ");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tLEQ
-
 }
-
 
 fn _handler134(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler134");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tNEQ");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tNEQ
-
 }
-
 
 fn _handler135(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler135");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tLSHFT");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tLSHFT
-
 }
-
 
 fn _handler136(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler136");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tRSHFT");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tRSHFT
-
 }
-
 
 fn _handler137(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler137");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tPLUS");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tPLUS
-
 }
-
 
 fn _handler138(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler138");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tMINUS");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tMINUS
-
 }
-
 
 fn _handler139(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler139");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tSTAR2");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tSTAR2
-
 }
-
 
 fn _handler140(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler140");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tSTAR");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tSTAR
-
 }
-
 
 fn _handler141(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler141");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tDIVIDE");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tDIVIDE
-
 }
-
 
 fn _handler142(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler142");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tPERCENT");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tPERCENT
-
 }
-
 
 fn _handler143(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler143");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tPOW");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tPOW
-
 }
-
 
 fn _handler144(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler144");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tBANG");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tBANG
-
 }
-
 
 fn _handler145(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler145");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tTILDE");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tTILDE
-
 }
-
 
 fn _handler146(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler146");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tUPLUS");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tUPLUS
-
 }
-
 
 fn _handler147(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler147");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tUMINUS");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tUMINUS
-
 }
-
 
 fn _handler148(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler148");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tAREF");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tAREF
-
 }
-
 
 fn _handler149(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler149");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tASET");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tASET
-
 }
-
 
 fn _handler150(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler150");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tDSTAR");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tDSTAR
-
 }
-
 
 fn _handler151(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler151");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: op -> tBACK_REF2");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: op -> tBACK_REF2
-
 }
-
 
 fn _handler152(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler152");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> k__LINE__");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> k__LINE__
-
 }
-
 
 fn _handler153(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler153");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> k__FILE__");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> k__FILE__
-
 }
-
 
 fn _handler154(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler154");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> k__ENCODING__");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> k__ENCODING__
-
 }
-
 
 fn _handler155(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler155");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> klBEGIN");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> klBEGIN
-
 }
-
 
 fn _handler156(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler156");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> klEND");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> klEND
-
 }
-
 
 fn _handler157(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler157");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kALIAS");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kALIAS
-
 }
-
 
 fn _handler158(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler158");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kAND");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kAND
-
 }
-
 
 fn _handler159(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler159");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kBEGIN");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kBEGIN
-
 }
-
 
 fn _handler160(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler160");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kBREAK");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kBREAK
-
 }
-
 
 fn _handler161(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler161");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kCASE");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kCASE
-
 }
-
 
 fn _handler162(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler162");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kCLASS");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kCLASS
-
 }
-
 
 fn _handler163(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler163");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kDEF");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kDEF
-
 }
-
 
 fn _handler164(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler164");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kDEFINED");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kDEFINED
-
 }
-
 
 fn _handler165(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler165");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kDO");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kDO
-
 }
-
 
 fn _handler166(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler166");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kELSE");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kELSE
-
 }
-
 
 fn _handler167(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler167");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kELSIF");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kELSIF
-
 }
-
 
 fn _handler168(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler168");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kEND");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kEND
-
 }
-
 
 fn _handler169(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler169");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kENSURE");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kENSURE
-
 }
-
 
 fn _handler170(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler170");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kFALSE");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kFALSE
-
 }
-
 
 fn _handler171(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler171");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kFOR");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kFOR
-
 }
-
 
 fn _handler172(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler172");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kIN");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kIN
-
 }
-
 
 fn _handler173(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler173");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kMODULE");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kMODULE
-
 }
-
 
 fn _handler174(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler174");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kNEXT");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kNEXT
-
 }
-
 
 fn _handler175(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler175");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kNIL");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kNIL
-
 }
-
 
 fn _handler176(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler176");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kNOT");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kNOT
-
 }
-
 
 fn _handler177(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler177");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kOR");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kOR
-
 }
-
 
 fn _handler178(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler178");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kREDO");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kREDO
-
 }
-
 
 fn _handler179(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler179");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kRESCUE");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kRESCUE
-
 }
-
 
 fn _handler180(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler180");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kRETRY");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kRETRY
-
 }
-
 
 fn _handler181(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler181");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kRETURN");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kRETURN
-
 }
-
 
 fn _handler182(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler182");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kSELF");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kSELF
-
 }
-
 
 fn _handler183(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler183");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kSUPER");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kSUPER
-
 }
-
 
 fn _handler184(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler184");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kTHEN");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kTHEN
-
 }
-
 
 fn _handler185(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler185");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kTRUE");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kTRUE
-
 }
-
 
 fn _handler186(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler186");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kUNDEF");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kUNDEF
-
 }
-
 
 fn _handler187(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler187");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kWHEN");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kWHEN
-
 }
-
 
 fn _handler188(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler188");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kYIELD");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kYIELD
-
 }
-
 
 fn _handler189(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler189");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kIF");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kIF
-
 }
-
 
 fn _handler190(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler190");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kUNLESS");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kUNLESS
-
 }
-
 
 fn _handler191(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler191");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: reswords -> kWHILE");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: reswords -> kWHILE
-
 }
-
 
 fn _handler192(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler192");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: reswords -> kUNTIL
+println!("    *** PARSER production: reswords -> kUNTIL");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler193(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler193");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::assign(_1, _2, _3);
-SV::_2(__)
-// raw production: arg -> lhs tEQL arg_rhs
+println!("    *** PARSER production: arg -> lhs tEQL arg_rhs");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler194(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler194");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::op_assign(_1, _2, _3);
-SV::_2(__)
-// raw production: arg -> var_lhs tOP_ASGN arg_rhs
+println!("    *** PARSER production: arg -> var_lhs tOP_ASGN arg_rhs");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler195(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler195");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _6 = pop!(self.values_stack, _2);
 let mut _5 = interior_token!(pop!(self.values_stack, _0));
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
@@ -5562,17 +5164,15 @@ let __ = node::op_assign(
             node::index(_1, _2, _3, _4),
             _5, _6
         );
+println!("    *** PARSER production: arg -> primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN arg_rhs");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN arg_rhs
-
 }
-
 
 fn _handler196(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler196");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _5 = pop!(self.values_stack, _2);
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
@@ -5583,17 +5183,15 @@ let __ = node::op_assign(
             node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
             _4, _5
         );
+println!("    *** PARSER production: arg -> primary_value call_op tIDENTIFIER tOP_ASGN arg_rhs");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> primary_value call_op tIDENTIFIER tOP_ASGN arg_rhs
-
 }
-
 
 fn _handler197(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler197");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _5 = pop!(self.values_stack, _2);
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
@@ -5604,17 +5202,15 @@ let __ = node::op_assign(
             node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
             _4, _5
         );
+println!("    *** PARSER production: arg -> primary_value call_op tCONSTANT tOP_ASGN arg_rhs");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> primary_value call_op tCONSTANT tOP_ASGN arg_rhs
-
 }
-
 
 fn _handler198(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler198");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _5 = pop!(self.values_stack, _2);
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
@@ -5625,17 +5221,15 @@ let __ = node::op_assign(
             node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
             _4, _5
         );
-SV::_2(__)
-// raw production: arg -> primary_value tCOLON2 tIDENTIFIER tOP_ASGN arg_rhs
+println!("    *** PARSER production: arg -> primary_value tCOLON2 tIDENTIFIER tOP_ASGN arg_rhs");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler199(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler199");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _5 = pop!(self.values_stack, _2);
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
@@ -5644,17 +5238,15 @@ let mut _1 = pop!(self.values_stack, _2);
 
 let const_node = node::const_op_assignable(node::const_fetch(_1, _2, _3));
         let __ = node::op_assign(const_node, _4, _5);
-SV::_2(__)
-// raw production: arg -> primary_value tCOLON2 tCONSTANT tOP_ASGN arg_rhs
+println!("    *** PARSER production: arg -> primary_value tCOLON2 tCONSTANT tOP_ASGN arg_rhs");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler200(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler200");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _2);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
@@ -5662,476 +5254,416 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let const_node = node::const_op_assignable(node::const_global(_1, _2));
         let __ = node::op_assign(const_node, _3, _4);
-SV::_2(__)
-// raw production: arg -> tCOLON3 tCONSTANT tOP_ASGN arg_rhs
+println!("    *** PARSER production: arg -> tCOLON3 tCONSTANT tOP_ASGN arg_rhs");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler201(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler201");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::op_assign(_1, _2, _3);
-SV::_2(__)
-// raw production: arg -> backref tOP_ASGN arg_rhs
+println!("    *** PARSER production: arg -> backref tOP_ASGN arg_rhs");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler202(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler202");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::range_inclusive(_1, _2, _3);
-SV::_2(__)
-// raw production: arg -> arg tDOT2 arg
+println!("    *** PARSER production: arg -> arg tDOT2 arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler203(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler203");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::range_exclusive(_1, _2, _3);
+println!("    *** PARSER production: arg -> arg tDOT3 arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> arg tDOT3 arg
-
 }
-
 
 fn _handler204(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler204");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::binary_op(_1, _2, _3);
+println!("    *** PARSER production: arg -> arg tPLUS arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> arg tPLUS arg
-
 }
-
 
 fn _handler205(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler205");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::binary_op(_1, _2, _3);
+println!("    *** PARSER production: arg -> arg tMINUS arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> arg tMINUS arg
-
 }
-
 
 fn _handler206(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler206");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::binary_op(_1, _2, _3);
+println!("    *** PARSER production: arg -> arg tSTAR2 arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> arg tSTAR2 arg
-
 }
-
 
 fn _handler207(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler207");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::binary_op(_1, _2, _3);
+println!("    *** PARSER production: arg -> arg tDIVIDE arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> arg tDIVIDE arg
-
 }
-
 
 fn _handler208(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler208");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::binary_op(_1, _2, _3);
+println!("    *** PARSER production: arg -> arg tPERCENT arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> arg tPERCENT arg
-
 }
-
 
 fn _handler209(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler209");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::binary_op(_1, _2, _3);
-SV::_2(__)
-// raw production: arg -> arg tPOW arg
+println!("    *** PARSER production: arg -> arg tPOW arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler210(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler210");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _2);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::unary_op(_1, node::binary_op(_2, _3, _4));
+println!("    *** PARSER production: arg -> tUNARY_NUM simple_numeric tPOW arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> tUNARY_NUM simple_numeric tPOW arg
-
 }
-
 
 fn _handler211(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler211");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::unary_op(_1, _2);
+println!("    *** PARSER production: arg -> tUPLUS arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> tUPLUS arg
-
 }
-
 
 fn _handler212(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler212");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::unary_op(_1, _2);
+println!("    *** PARSER production: arg -> tUMINUS arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> tUMINUS arg
-
 }
-
 
 fn _handler213(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler213");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::binary_op(_1, _2, _3);
+println!("    *** PARSER production: arg -> arg tPIPE arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> arg tPIPE arg
-
 }
-
 
 fn _handler214(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler214");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::binary_op(_1, _2, _3);
+println!("    *** PARSER production: arg -> arg tCARET arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> arg tCARET arg
-
 }
-
 
 fn _handler215(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler215");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::binary_op(_1, _2, _3);
+println!("    *** PARSER production: arg -> arg tAMPER2 arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> arg tAMPER2 arg
-
 }
-
 
 fn _handler216(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler216");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::binary_op(_1, _2, _3);
-SV::_2(__)
-// raw production: arg -> arg tCMP arg
+println!("    *** PARSER production: arg -> arg tCMP arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler217(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler217");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: arg -> rel_expr");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: arg -> rel_expr
-
 }
-
 
 fn _handler218(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler218");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::binary_op(_1, _2, _3);
+println!("    *** PARSER production: arg -> arg tEQ arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> arg tEQ arg
-
 }
-
 
 fn _handler219(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler219");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::binary_op(_1, _2, _3);
+println!("    *** PARSER production: arg -> arg tEQQ arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> arg tEQQ arg
-
 }
-
 
 fn _handler220(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler220");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::binary_op(_1, _2, _3);
-SV::_2(__)
-// raw production: arg -> arg tNEQ arg
+println!("    *** PARSER production: arg -> arg tNEQ arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler221(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler221");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::match_op(_1, _2, _3);
-SV::_2(__)
-// raw production: arg -> arg tMATCH arg
+println!("    *** PARSER production: arg -> arg tMATCH arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler222(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler222");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::binary_op(_1, _2, _3);
-SV::_2(__)
-// raw production: arg -> arg tNMATCH arg
+println!("    *** PARSER production: arg -> arg tNMATCH arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler223(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler223");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::not_op(_1, None, Some(_2), None);
-SV::_2(__)
-// raw production: arg -> tBANG arg
+println!("    *** PARSER production: arg -> tBANG arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler224(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler224");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::unary_op(_1, _2);
+println!("    *** PARSER production: arg -> tTILDE arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> tTILDE arg
-
 }
-
 
 fn _handler225(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler225");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::binary_op(_1, _2, _3);
+println!("    *** PARSER production: arg -> arg tLSHFT arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> arg tLSHFT arg
-
 }
-
 
 fn _handler226(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler226");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::binary_op(_1, _2, _3);
-SV::_2(__)
-// raw production: arg -> arg tRSHFT arg
+println!("    *** PARSER production: arg -> arg tRSHFT arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler227(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler227");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::logical_op("and", _1, _2, _3);
-SV::_2(__)
-// raw production: arg -> arg tANDOP arg
+println!("    *** PARSER production: arg -> arg tANDOP arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler228(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler228");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::logical_op("or", _1, _2, _3);
-SV::_2(__)
-// raw production: arg -> arg tOROP arg
+println!("    *** PARSER production: arg -> arg tOROP arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler229(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler229");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("defined?", _1, None, vec![_3], None);
-SV::_2(__)
-// raw production: arg -> kDEFINED opt_nl arg
+println!("    *** PARSER production: arg -> kDEFINED opt_nl arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler230(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler230");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _6 = pop!(self.values_stack, _2);
 let mut _5 = interior_token!(pop!(self.values_stack, _0));
 self.values_stack.pop();
@@ -6140,162 +5672,140 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::ternary(_1, _2, _3, _5, _6);
+println!("    *** PARSER production: arg -> arg tEH arg opt_nl tCOLON arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: arg -> arg tEH arg opt_nl tCOLON arg
-
 }
-
 
 fn _handler231(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler231");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: arg -> primary");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: arg -> primary
-
 }
-
 
 fn _handler232(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler232");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: relop -> tGT");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: relop -> tGT
-
 }
-
 
 fn _handler233(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler233");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: relop -> tLT");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: relop -> tLT
-
 }
-
 
 fn _handler234(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler234");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: relop -> tGEQ");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: relop -> tGEQ
-
 }
-
 
 fn _handler235(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler235");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: relop -> tLEQ");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: relop -> tLEQ
-
 }
-
 
 fn _handler236(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler236");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::binary_op(_1, _2, _3);
+println!("    *** PARSER production: rel_expr -> arg relop arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: rel_expr -> arg relop arg
-
 }
-
 
 fn _handler237(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler237");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::binary_op(_1, _2, _3);
-SV::_2(__)
-// raw production: rel_expr -> rel_expr relop arg
+println!("    *** PARSER production: rel_expr -> rel_expr relop arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler238(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler238");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: arg_value -> arg
+println!("    *** PARSER production: arg_value -> arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler239(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler239");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = vec![];
-SV::_1(__)
-// raw production: aref_args -> undefined
+println!("    *** PARSER production: aref_args -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler240(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler240");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: aref_args -> args trailer
+println!("    *** PARSER production: aref_args -> args trailer");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler241(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler241");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -6303,46 +5813,40 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(node::associate(None, _3, None));
         let __ = _1;
-SV::_1(__)
-// raw production: aref_args -> args tCOMMA assocs trailer
+println!("    *** PARSER production: aref_args -> args tCOMMA assocs trailer");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler242(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler242");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = vec![ node::associate(None, _1, None) ];
-SV::_1(__)
-// raw production: aref_args -> assocs trailer
+println!("    *** PARSER production: aref_args -> assocs trailer");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler243(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler243");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: arg_rhs -> arg
+println!("    *** PARSER production: arg_rhs -> arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler244(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler244");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
@@ -6350,104 +5854,90 @@ let mut _1 = pop!(self.values_stack, _2);
 let rescue_body = node::rescue_body(_2, None, None, None, None, _3);
 
         let __ = node::begin_body(_1, vec![ rescue_body ], None, None, None, None);
-SV::_2(__)
-// raw production: arg_rhs -> arg kRESCUE_MOD arg
+println!("    *** PARSER production: arg_rhs -> arg kRESCUE_MOD arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler245(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler245");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = (Some(_1), _2, Some(_3));
-SV::_6(__)
-// raw production: paren_args -> tLPAREN2 opt_call_args rparen
+println!("    *** PARSER production: paren_args -> tLPAREN2 opt_call_args rparen");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_6(__)
 }
 
-
 fn _handler246(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler246");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = (None, vec![], None);
-SV::_6(__)
-// raw production: opt_paren_args -> undefined
+println!("    *** PARSER production: opt_paren_args -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_6(__)
 }
 
-
 fn _handler247(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler247");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: opt_paren_args -> paren_args
+println!("    *** PARSER production: opt_paren_args -> paren_args");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler248(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler248");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = vec![];
-SV::_1(__)
-// raw production: opt_call_args -> undefined
+println!("    *** PARSER production: opt_call_args -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler249(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler249");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: opt_call_args -> call_args
+println!("    *** PARSER production: opt_call_args -> call_args");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler250(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler250");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
 let __ = SV::Undefined;
-__
-// raw production: opt_call_args -> args tCOMMA
+println!("    *** PARSER production: opt_call_args -> args tCOMMA");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler251(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler251");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -6455,79 +5945,69 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(node::associate(None, _3, None));
         let __ = _1;
-SV::_1(__)
-// raw production: opt_call_args -> args tCOMMA assocs tCOMMA
+println!("    *** PARSER production: opt_call_args -> args tCOMMA assocs tCOMMA");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler252(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler252");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = vec![ node::associate(None, _1, None) ];
-SV::_1(__)
-// raw production: opt_call_args -> assocs tCOMMA
+println!("    *** PARSER production: opt_call_args -> assocs tCOMMA");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler253(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler253");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
-SV::_1(__)
-// raw production: call_args -> command
+println!("    *** PARSER production: call_args -> command");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler254(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler254");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
-SV::_1(__)
-// raw production: call_args -> args opt_block_arg
+println!("    *** PARSER production: call_args -> args opt_block_arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler255(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler255");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _1);
 
 let mut result = vec![node::associate(None, _1, None)];
         result.append(&mut _2);
         let __ = result;
-SV::_1(__)
-// raw production: call_args -> assocs opt_block_arg
+println!("    *** PARSER production: call_args -> assocs opt_block_arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler256(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler256");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -6537,151 +6017,131 @@ let mut assocs = node::associate(None, _3, None);
         _1.push(assocs);
         _1.append(&mut _4);
         let __ = _1;
-SV::_1(__)
-// raw production: call_args -> args tCOMMA assocs opt_block_arg
+println!("    *** PARSER production: call_args -> args tCOMMA assocs opt_block_arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler257(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler257");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
-SV::_1(__)
-// raw production: call_args -> block_arg
+println!("    *** PARSER production: call_args -> block_arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler258(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler258");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _7);
 
 self.tokenizer.interior_lexer.cmdarg = _1;
         let __ = _2;
-SV::_1(__)
-// raw production: command_args -> fake_embedded_action__command_args call_args
+println!("    *** PARSER production: command_args -> fake_embedded_action__command_args call_args");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler259(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler259");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = self.tokenizer.interior_lexer.cmdarg.clone();
     self.tokenizer.interior_lexer.cmdarg.push(true);
-SV::_7(__)
-// raw production: fake_embedded_action__command_args -> undefined
+println!("    *** PARSER production: fake_embedded_action__command_args -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_7(__)
 }
 
-
 fn _handler260(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler260");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::block_pass(_1, _2);
-SV::_2(__)
-// raw production: block_arg -> tAMPER arg_value
+println!("    *** PARSER production: block_arg -> tAMPER arg_value");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler261(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler261");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 
 let __ = vec![_2];
-SV::_1(__)
-// raw production: opt_block_arg -> tCOMMA block_arg
+println!("    *** PARSER production: opt_block_arg -> tCOMMA block_arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler262(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler262");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = vec![];
-SV::_1(__)
-// raw production: opt_block_arg -> undefined
+println!("    *** PARSER production: opt_block_arg -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler263(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler263");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
-SV::_1(__)
-// raw production: args -> arg_value
+println!("    *** PARSER production: args -> arg_value");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler264(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler264");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = vec![ node::splat(_1, Some(_2)) ];
-SV::_1(__)
-// raw production: args -> tSTAR arg_value
+println!("    *** PARSER production: args -> tSTAR arg_value");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler265(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler265");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3); let __ = _1;
-SV::_1(__)
-// raw production: args -> args tCOMMA arg_value
+println!("    *** PARSER production: args -> args tCOMMA arg_value");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler266(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler266");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _2);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 self.values_stack.pop();
@@ -6689,61 +6149,53 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(node::splat(_3, Some(_4)));
         let __ = _1;
-SV::_1(__)
-// raw production: args -> args tCOMMA tSTAR arg_value
+println!("    *** PARSER production: args -> args tCOMMA tSTAR arg_value");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler267(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler267");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = node::array(None, _1, None);
-SV::_2(__)
-// raw production: mrhs_arg -> mrhs
+println!("    *** PARSER production: mrhs_arg -> mrhs");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler268(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler268");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: mrhs_arg -> arg_value
+println!("    *** PARSER production: mrhs_arg -> arg_value");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler269(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler269");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3); let __ = _1;
-SV::_1(__)
-// raw production: mrhs -> args tCOMMA arg_value
+println!("    *** PARSER production: mrhs -> args tCOMMA arg_value");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler270(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler270");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _2);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 self.values_stack.pop();
@@ -6751,199 +6203,173 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(node::splat(_3, Some(_4)));
         let __ = _1;
-SV::_1(__)
-// raw production: mrhs -> args tCOMMA tSTAR arg_value
+println!("    *** PARSER production: mrhs -> args tCOMMA tSTAR arg_value");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler271(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler271");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = vec![ node::splat(_1, Some(_2)) ];
-SV::_1(__)
-// raw production: mrhs -> tSTAR arg_value
+println!("    *** PARSER production: mrhs -> tSTAR arg_value");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler272(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler272");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = self.tokenizer.interior_lexer.cmdarg.clone();
     self.tokenizer.interior_lexer.cmdarg.clear();
-SV::_7(__)
-// raw production: fake_embedded_action_primary_kBEGIN -> undefined
+println!("    *** PARSER production: fake_embedded_action_primary_kBEGIN -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_7(__)
 }
 
-
 fn _handler273(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler273");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ =self.tokenizer.interior_lexer.cmdarg.clone();
     self.tokenizer.interior_lexer.cmdarg.clear();
+println!("    *** PARSER production: fake_embedded_action_primary_tLPAREN_ARG -> undefined");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_7(__)
-// raw production: fake_embedded_action_primary_tLPAREN_ARG -> undefined
-
 }
-
 
 fn _handler274(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler274");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.set_state("expr_endarg");
+println!("    *** PARSER production: fake_embedded_action_primary_tLPAREN_ARG_stmt -> undefined");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: fake_embedded_action_primary_tLPAREN_ARG_stmt -> undefined
-
 }
-
 
 fn _handler275(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler275");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.set_state("expr_endarg");
+println!("    *** PARSER production: fake_embedded_action_primary_tLPAREN_ARG_2 -> undefined");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: fake_embedded_action_primary_tLPAREN_ARG_2 -> undefined
-
 }
-
 
 fn _handler276(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler276");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.cond.push(true);
+println!("    *** PARSER production: fake_embedded_action_primary_kWHILE_1 -> undefined");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: fake_embedded_action_primary_kWHILE_1 -> undefined
-
 }
-
 
 fn _handler277(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler277");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.cond.pop();
+println!("    *** PARSER production: fake_embedded_action_primary_kWHILE_2 -> undefined");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: fake_embedded_action_primary_kWHILE_2 -> undefined
-
 }
-
 
 fn _handler278(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler278");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.cond.push(true);
+println!("    *** PARSER production: fake_embedded_action_primary_kUNTIL_1 -> undefined");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: fake_embedded_action_primary_kUNTIL_1 -> undefined
-
 }
-
 
 fn _handler279(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler279");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.cond.pop();
-SV::_2(__)
-// raw production: fake_embedded_action_primary_kUNTIL_2 -> undefined
+println!("    *** PARSER production: fake_embedded_action_primary_kUNTIL_2 -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler280(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler280");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.cond.push(true);
-SV::_2(__)
-// raw production: fake_embedded_action__primary__kFOR_1 -> undefined
+println!("    *** PARSER production: fake_embedded_action__primary__kFOR_1 -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler281(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler281");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.cond.pop();
-SV::_2(__)
-// raw production: fake_embedded_action__primary__kFOR_2 -> undefined
+println!("    *** PARSER production: fake_embedded_action__primary__kFOR_2 -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler282(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler282");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ =Node::DUMMY;
 
     self.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
-SV::_2(__)
-// raw production: fake_embedded_action__primary__kCLASS_1 -> undefined
+println!("    *** PARSER production: fake_embedded_action__primary__kCLASS_1 -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler283(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler283");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 //   result = @def_level
@@ -6952,237 +6378,205 @@ fn _handler283(&mut self) -> SV {
     //   @static_env.extend_static
     //   @lexer.push_cmdarg
     wip!(); let __ =Node::DUMMY;
-SV::_2(__)
-// raw production: fake_embedded_action__primary__kCLASS_2 -> undefined
+println!("    *** PARSER production: fake_embedded_action__primary__kCLASS_2 -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler284(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler284");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ =Node::DUMMY;
 
     self.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
-SV::_2(__)
-// raw production: fake_embedded_action__primary__kMODULE_1 -> undefined
+println!("    *** PARSER production: fake_embedded_action__primary__kMODULE_1 -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler285(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler285");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 //   @def_level += 1
     //   @static_env.extend_static
     //   @lexer.push_cmdarg
     wip!(); let __ =Node::DUMMY;
-SV::_2(__)
-// raw production: fake_embedded_action__primary__kDEF_1 -> undefined
+println!("    *** PARSER production: fake_embedded_action__primary__kDEF_1 -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler286(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler286");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.set_state("expr_fname");
-SV::_2(__)
-// raw production: fake_embedded_action__primary__kDEF_2 -> undefined
+println!("    *** PARSER production: fake_embedded_action__primary__kDEF_2 -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler287(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler287");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 //   @def_level += 1
     //   @static_env.extend_static
     //   @lexer.push_cmdarg
     wip!(); let __ =Node::DUMMY;
+println!("    *** PARSER production: fake_embedded_action__primary__kDEF_3 -> undefined");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: fake_embedded_action__primary__kDEF_3 -> undefined
-
 }
-
 
 fn _handler288(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler288");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: primary -> literal");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: primary -> literal
-
 }
-
 
 fn _handler289(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler289");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: primary -> strings");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: primary -> strings
-
 }
-
 
 fn _handler290(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler290");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: primary -> xstring");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: primary -> xstring
-
 }
-
 
 fn _handler291(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler291");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: primary -> regexp");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: primary -> regexp
-
 }
-
 
 fn _handler292(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler292");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: primary -> words");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: primary -> words
-
 }
-
 
 fn _handler293(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler293");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: primary -> qwords");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: primary -> qwords
-
 }
-
 
 fn _handler294(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler294");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: primary -> symbols");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: primary -> symbols
-
 }
-
 
 fn _handler295(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler295");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: primary -> qsymbols");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: primary -> qsymbols
-
 }
-
 
 fn _handler296(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler296");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: primary -> var_ref");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: primary -> var_ref
-
 }
-
 
 fn _handler297(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler297");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: primary -> backref
+println!("    *** PARSER production: primary -> backref");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler298(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler298");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::call_method(None, None, Some(_1), None, vec![], None);
-SV::_2(__)
-// raw production: primary -> tFID
+println!("    *** PARSER production: primary -> tFID");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler299(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler299");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = pop!(self.values_stack, _7);
@@ -7191,17 +6585,15 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 self.tokenizer.interior_lexer.cmdarg = _2;
 
         let __ = node::begin_keyword(_1, _3, _4);
-SV::_2(__)
-// raw production: primary -> kBEGIN fake_embedded_action_primary_kBEGIN bodystmt kEND
+println!("    *** PARSER production: primary -> kBEGIN fake_embedded_action_primary_kBEGIN bodystmt kEND");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler300(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler300");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _5 = interior_token!(pop!(self.values_stack, _0));
 self.values_stack.pop();
 let mut _3 = pop!(self.values_stack, _2);
@@ -7211,174 +6603,152 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 self.tokenizer.interior_lexer.cmdarg = _2;
 
         let __ = node::begin(_1, Some(_3), _5);
-SV::_2(__)
-// raw production: primary -> tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG stmt fake_embedded_action_primary_tLPAREN_ARG_stmt rparen
+println!("    *** PARSER production: primary -> tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG stmt fake_embedded_action_primary_tLPAREN_ARG_stmt rparen");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler301(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler301");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 self.values_stack.pop();
 self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::begin(_1, None, _4);
-SV::_2(__)
-// raw production: primary -> tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG_2 opt_nl tRPAREN
+println!("    *** PARSER production: primary -> tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG_2 opt_nl tRPAREN");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler302(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler302");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::begin(_1, None, _3);
-SV::_2(__)
-// raw production: primary -> tLPAREN compstmt tRPAREN
+println!("    *** PARSER production: primary -> tLPAREN compstmt tRPAREN");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler303(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler303");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::const_fetch(_1, _2, _3);
-SV::_2(__)
-// raw production: primary -> primary_value tCOLON2 tCONSTANT
+println!("    *** PARSER production: primary -> primary_value tCOLON2 tCONSTANT");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler304(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler304");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::const_global(_1, _2);
-SV::_2(__)
-// raw production: primary -> tCOLON3 tCONSTANT
+println!("    *** PARSER production: primary -> tCOLON3 tCONSTANT");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler305(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler305");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::array( Some(_1), _2, Some(_3) );
-SV::_2(__)
-// raw production: primary -> tLBRACK aref_args tRBRACK
+println!("    *** PARSER production: primary -> tLBRACK aref_args tRBRACK");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler306(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler306");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::associate( Some(_1), _2, Some(_3) );
-SV::_2(__)
-// raw production: primary -> tLBRACE assoc_list tRCURLY
+println!("    *** PARSER production: primary -> tLBRACE assoc_list tRCURLY");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler307(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler307");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("return", _1, None, vec![], None);
-SV::_2(__)
-// raw production: primary -> kRETURN
+println!("    *** PARSER production: primary -> kRETURN");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler308(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler308");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = pop!(self.values_stack, _1);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("yield", _1, Some(_2), _3, Some(_4));
-SV::_2(__)
-// raw production: primary -> kYIELD tLPAREN2 call_args rparen
+println!("    *** PARSER production: primary -> kYIELD tLPAREN2 call_args rparen");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler309(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler309");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("yield", _1, Some(_2), vec![], Some(_3));
-SV::_2(__)
-// raw production: primary -> kYIELD tLPAREN2 rparen
+println!("    *** PARSER production: primary -> kYIELD tLPAREN2 rparen");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler310(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler310");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("yield", _1, None, vec![], None);
-SV::_2(__)
-// raw production: primary -> kYIELD
+println!("    *** PARSER production: primary -> kYIELD");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler311(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler311");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _5 = interior_token!(pop!(self.values_stack, _0));
 let mut _4 = pop!(self.values_stack, _2);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
@@ -7386,97 +6756,85 @@ self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("defined?", _1, Some(_3), vec![_4], Some(_5));
-SV::_2(__)
-// raw production: primary -> kDEFINED opt_nl tLPAREN2 expr rparen
+println!("    *** PARSER production: primary -> kDEFINED opt_nl tLPAREN2 expr rparen");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler312(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler312");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::not_op(_1, Some(_2), Some(_3), Some(_4));
-SV::_2(__)
-// raw production: primary -> kNOT tLPAREN2 expr rparen
+println!("    *** PARSER production: primary -> kNOT tLPAREN2 expr rparen");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler313(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler313");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::not_op(_1, Some(_2), None, Some(_3));
-SV::_2(__)
-// raw production: primary -> kNOT tLPAREN2 rparen
+println!("    *** PARSER production: primary -> kNOT tLPAREN2 rparen");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler314(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler314");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _5);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let method_call = node::call_method(None, None, Some(_1), None, vec![], None);
         let (begin_t, (args, body), end_t) = _2;
         let __ = node::block(method_call, begin_t, args, body, end_t);
-SV::_2(__)
-// raw production: primary -> fcall brace_block
+println!("    *** PARSER production: primary -> fcall brace_block");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler315(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler315");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: primary -> method_call
+println!("    *** PARSER production: primary -> method_call");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler316(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler316");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _5);
 let mut _1 = pop!(self.values_stack, _2);
 
 let (begin_t, (args, body), end_t) = _2;
         let __ = node::block(_1, begin_t, args, body, end_t);
-SV::_2(__)
-// raw production: primary -> method_call brace_block
+println!("    *** PARSER production: primary -> method_call brace_block");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler317(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler317");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _8);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
@@ -7484,17 +6842,15 @@ let lambda_call = node::call_lambda(_1);
         let (args, ( begin_t, body, end_t )) = _2;
 
         let __ = node::block(lambda_call, begin_t, args, body, end_t);
-SV::_2(__)
-// raw production: primary -> tLAMBDA lambda
+println!("    *** PARSER production: primary -> tLAMBDA lambda");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler318(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler318");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _6 = interior_token!(pop!(self.values_stack, _0));
 let mut _5 = pop!(self.values_stack, _9);
 let mut _4 = pop!(self.values_stack, _2);
@@ -7504,17 +6860,15 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (else_t, else_) = unwrap_some_token_node!(_5);
         let __ = node::condition(_1, _2, _3, Some(_4), else_t, else_, Some(_6));
-SV::_2(__)
-// raw production: primary -> kIF expr_value then compstmt if_tail kEND
+println!("    *** PARSER production: primary -> kIF expr_value then compstmt if_tail kEND");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler319(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler319");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _6 = interior_token!(pop!(self.values_stack, _0));
 let mut _5 = pop!(self.values_stack, _9);
 let mut _4 = pop!(self.values_stack, _2);
@@ -7524,17 +6878,15 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (else_t, else_) = unwrap_some_token_node!(_5);
         let __ = node::condition(_1, _2, _3, else_, else_t, Some(_4), Some(_6));
-SV::_2(__)
-// raw production: primary -> kUNLESS expr_value then compstmt opt_else kEND
+println!("    *** PARSER production: primary -> kUNLESS expr_value then compstmt opt_else kEND");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler320(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler320");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _7 = interior_token!(pop!(self.values_stack, _0));
 let mut _6 = pop!(self.values_stack, _2);
 self.values_stack.pop();
@@ -7544,17 +6896,15 @@ self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::build_loop("while", _1, _3, _4, _6, _7);
-SV::_2(__)
-// raw production: primary -> kWHILE fake_embedded_action_primary_kWHILE_1 expr_value do fake_embedded_action_primary_kWHILE_2 compstmt kEND
+println!("    *** PARSER production: primary -> kWHILE fake_embedded_action_primary_kWHILE_1 expr_value do fake_embedded_action_primary_kWHILE_2 compstmt kEND");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler321(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler321");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _7 = interior_token!(pop!(self.values_stack, _0));
 let mut _6 = pop!(self.values_stack, _2);
 self.values_stack.pop();
@@ -7564,17 +6914,15 @@ self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::build_loop("until", _1, _3, _4, _6, _7);
-SV::_2(__)
-// raw production: primary -> kUNTIL fake_embedded_action_primary_kUNTIL_1 expr_value do fake_embedded_action_primary_kUNTIL_2 compstmt kEND
+println!("    *** PARSER production: primary -> kUNTIL fake_embedded_action_primary_kUNTIL_1 expr_value do fake_embedded_action_primary_kUNTIL_2 compstmt kEND");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler322(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler322");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7587,17 +6935,15 @@ self.values_stack.pop();
         //                          when_bodies, else_t, else_body,
         //                          val[4])
         wip!(); let __ =Node::DUMMY;
-SV::_2(__)
-// raw production: primary -> kCASE expr_value opt_terms case_body kEND
+println!("    *** PARSER production: primary -> kCASE expr_value opt_terms case_body kEND");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler323(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler323");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7609,17 +6955,15 @@ self.values_stack.pop();
         //                          when_bodies, else_t, else_body,
         //                          val[3])
         wip!(); let __ =Node::DUMMY;
-SV::_2(__)
-// raw production: primary -> kCASE opt_terms case_body kEND
+println!("    *** PARSER production: primary -> kCASE opt_terms case_body kEND");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler324(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler324");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _9 = interior_token!(pop!(self.values_stack, _0));
 let mut _8 = pop!(self.values_stack, _2);
 self.values_stack.pop();
@@ -7631,17 +6975,15 @@ let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::build_for(_1, _2, _3, _5, _6, _8, _9);
-SV::_2(__)
-// raw production: primary -> kFOR for_var kIN fake_embedded_action__primary__kFOR_1 expr_value do fake_embedded_action__primary__kFOR_2 compstmt kEND
+println!("    *** PARSER production: primary -> kFOR for_var kIN fake_embedded_action__primary__kFOR_1 expr_value do fake_embedded_action__primary__kFOR_2 compstmt kEND");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler325(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler325");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7661,17 +7003,15 @@ self.values_stack.pop();
         //   @lexer.pop_cmdarg
         //   @static_env.unextend
         wip!(); let __ =Node::DUMMY;
-SV::_2(__)
-// raw production: primary -> kCLASS cpath superclass fake_embedded_action__primary__kCLASS_1 bodystmt kEND
+println!("    *** PARSER production: primary -> kCLASS cpath superclass fake_embedded_action__primary__kCLASS_1 bodystmt kEND");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler326(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler326");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7688,17 +7028,15 @@ self.values_stack.pop();
 
         //   @def_level = val[4]
         wip!(); let __ =Node::DUMMY;
-SV::_2(__)
-// raw production: primary -> kCLASS tLSHFT expr term fake_embedded_action__primary__kCLASS_2 bodystmt kEND
+println!("    *** PARSER production: primary -> kCLASS tLSHFT expr term fake_embedded_action__primary__kCLASS_2 bodystmt kEND");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler327(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler327");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7715,17 +7053,15 @@ self.values_stack.pop();
         //   @lexer.pop_cmdarg
         //   @static_env.unextend
         wip!(); let __ =Node::DUMMY;
-SV::_2(__)
-// raw production: primary -> kMODULE cpath fake_embedded_action__primary__kMODULE_1 bodystmt kEND
+println!("    *** PARSER production: primary -> kMODULE cpath fake_embedded_action__primary__kMODULE_1 bodystmt kEND");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler328(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler328");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7740,17 +7076,15 @@ self.values_stack.pop();
         //   @static_env.unextend
         //   @def_level -= 1
         wip!(); let __ =Node::DUMMY;
-SV::_2(__)
-// raw production: primary -> kDEF fname fake_embedded_action__primary__kDEF_1 f_arglist bodystmt kEND
+println!("    *** PARSER production: primary -> kDEF fname fake_embedded_action__primary__kDEF_1 f_arglist bodystmt kEND");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler329(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler329");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -7768,172 +7102,148 @@ self.values_stack.pop();
         //   @static_env.unextend
         //   @def_level -= 1
         wip!(); let __ =Node::DUMMY;
-SV::_2(__)
-// raw production: primary -> kDEF singleton dot_or_colon fake_embedded_action__primary__kDEF_2 fname fake_embedded_action__primary__kDEF_3 f_arglist bodystmt kEND
+println!("    *** PARSER production: primary -> kDEF singleton dot_or_colon fake_embedded_action__primary__kDEF_2 fname fake_embedded_action__primary__kDEF_3 f_arglist bodystmt kEND");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler330(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler330");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("break", _1, None, vec![], None);
-SV::_2(__)
-// raw production: primary -> kBREAK
+println!("    *** PARSER production: primary -> kBREAK");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler331(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler331");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("next", _1, None, vec![], None);
-SV::_2(__)
-// raw production: primary -> kNEXT
+println!("    *** PARSER production: primary -> kNEXT");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler332(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler332");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("redo", _1, None, vec![], None);
-SV::_2(__)
-// raw production: primary -> kREDO
+println!("    *** PARSER production: primary -> kREDO");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler333(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler333");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("retry", _1, None, vec![], None);
+println!("    *** PARSER production: primary -> kRETRY");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: primary -> kRETRY
-
 }
-
 
 fn _handler334(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler334");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: primary_value -> primary");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: primary_value -> primary
-
 }
-
 
 fn _handler335(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler335");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: then -> term");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: then -> term
-
 }
-
 
 fn _handler336(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler336");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: then -> kTHEN
+println!("    *** PARSER production: then -> kTHEN");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler337(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler337");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 self.values_stack.pop();
 
 let __ = _2.wrap_as_token();
+println!("    *** PARSER production: then -> term kTHEN");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_0(__)
-// raw production: then -> term kTHEN
-
 }
-
 
 fn _handler338(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler338");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: do -> term");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: do -> term
-
 }
-
 
 fn _handler339(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler339");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: do -> kDO_COND");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: do -> kDO_COND
-
 }
-
 
 fn _handler340(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler340");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: if_tail -> opt_else
+println!("    *** PARSER production: if_tail -> opt_else");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler341(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler341");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _5 = pop!(self.values_stack, _9);
 let mut _4 = pop!(self.values_stack, _2);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
@@ -7946,149 +7256,129 @@ let k_elseif_clone = _1.clone();
             _1,
             node::condition(k_elseif_clone, _2, _3, Some(_4), else_t, else_, None)
         ));
-SV::_9(__)
-// raw production: if_tail -> kELSIF expr_value then compstmt if_tail
+println!("    *** PARSER production: if_tail -> kELSIF expr_value then compstmt if_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_9(__)
 }
 
-
 fn _handler342(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler342");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = None;
-SV::_9(__)
-// raw production: opt_else -> undefined
+println!("    *** PARSER production: opt_else -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_9(__)
 }
 
-
 fn _handler343(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler343");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = Some((_1, _2));
+println!("    *** PARSER production: opt_else -> kELSE compstmt");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_9(__)
-// raw production: opt_else -> kELSE compstmt
-
 }
-
 
 fn _handler344(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler344");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: for_var -> lhs");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: for_var -> lhs
-
 }
-
 
 fn _handler345(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler345");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: for_var -> mlhs
+println!("    *** PARSER production: for_var -> mlhs");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler346(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler346");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::arg(_1);
-SV::_2(__)
-// raw production: f_marg -> f_norm_arg
+println!("    *** PARSER production: f_marg -> f_norm_arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler347(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler347");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::multi_lhs(Some(_1), _2, Some(_3));
-SV::_2(__)
-// raw production: f_marg -> tLPAREN f_margs rparen
+println!("    *** PARSER production: f_marg -> tLPAREN f_margs rparen");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler348(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler348");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
-SV::_1(__)
-// raw production: f_marg_list -> f_marg
+println!("    *** PARSER production: f_marg_list -> f_marg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler349(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler349");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
-SV::_1(__)
-// raw production: f_marg_list -> f_marg_list tCOMMA f_marg
+println!("    *** PARSER production: f_marg_list -> f_marg_list tCOMMA f_marg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler350(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler350");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: f_margs -> f_marg_list
+println!("    *** PARSER production: f_margs -> f_marg_list");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler351(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler351");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 self.values_stack.pop();
@@ -8096,17 +7386,15 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(node::restarg(_3, Some(_4) ));
         let __ = _1;
-SV::_1(__)
-// raw production: f_margs -> f_marg_list tCOMMA tSTAR f_norm_arg
+println!("    *** PARSER production: f_margs -> f_marg_list tCOMMA tSTAR f_norm_arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler352(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler352");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _6 = pop!(self.values_stack, _1);
 self.values_stack.pop();
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
@@ -8117,34 +7405,30 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.push(node::restarg(_3, Some(_4) ));
         _1.append(&mut _6);
         let __ = _1;
-SV::_1(__)
-// raw production: f_margs -> f_marg_list tCOMMA tSTAR f_norm_arg tCOMMA f_marg_list
+println!("    *** PARSER production: f_margs -> f_marg_list tCOMMA tSTAR f_norm_arg tCOMMA f_marg_list");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler353(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler353");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(node::restarg(_3, None ));
         let __ = _1;
-SV::_1(__)
-// raw production: f_margs -> f_marg_list tCOMMA tSTAR
+println!("    *** PARSER production: f_margs -> f_marg_list tCOMMA tSTAR");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler354(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler354");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _5 = pop!(self.values_stack, _1);
 self.values_stack.pop();
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
@@ -8154,32 +7438,28 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.push(node::restarg(_3, None ));
         _1.append(&mut _5);
         let __ = _1;
-SV::_1(__)
-// raw production: f_margs -> f_marg_list tCOMMA tSTAR tCOMMA f_marg_list
+println!("    *** PARSER production: f_margs -> f_marg_list tCOMMA tSTAR tCOMMA f_marg_list");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler355(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler355");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = vec![ node::restarg(_1, Some(_2)) ];
-SV::_1(__)
-// raw production: f_margs -> tSTAR f_norm_arg
+println!("    *** PARSER production: f_margs -> tSTAR f_norm_arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler356(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler356");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _1);
 self.values_stack.pop();
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
@@ -8188,31 +7468,27 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 let mut result = vec![ node::restarg( _1, Some(_2) ) ];
         result.append(&mut _4);
         let __ = result;
-SV::_1(__)
-// raw production: f_margs -> tSTAR f_norm_arg tCOMMA f_marg_list
+println!("    *** PARSER production: f_margs -> tSTAR f_norm_arg tCOMMA f_marg_list");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler357(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler357");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = vec![ node::restarg(_1, None) ];
-SV::_1(__)
-// raw production: f_margs -> tSTAR
+println!("    *** PARSER production: f_margs -> tSTAR");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler358(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler358");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
@@ -8220,17 +7496,15 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 let mut result = vec![ node::restarg(_1, None) ];
         result.append(&mut _3);
         let __ = result;
-SV::_1(__)
-// raw production: f_margs -> tSTAR tCOMMA f_marg_list
+println!("    *** PARSER production: f_margs -> tSTAR tCOMMA f_marg_list");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler359(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler359");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -8239,92 +7513,80 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
+println!("    *** PARSER production: block_args_tail -> f_block_kwarg tCOMMA f_kwrest opt_f_block_arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: block_args_tail -> f_block_kwarg tCOMMA f_kwrest opt_f_block_arg
-
 }
-
 
 fn _handler360(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler360");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
+println!("    *** PARSER production: block_args_tail -> f_block_kwarg opt_f_block_arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: block_args_tail -> f_block_kwarg opt_f_block_arg
-
 }
-
 
 fn _handler361(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler361");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
-SV::_1(__)
-// raw production: block_args_tail -> f_kwrest opt_f_block_arg
+println!("    *** PARSER production: block_args_tail -> f_kwrest opt_f_block_arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler362(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler362");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![ _1 ];
-SV::_1(__)
-// raw production: block_args_tail -> f_block_arg
+println!("    *** PARSER production: block_args_tail -> f_block_arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler363(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler363");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 self.values_stack.pop();
 
 let __ = _2;
-SV::_1(__)
-// raw production: opt_block_args_tail -> tCOMMA block_args_tail
+println!("    *** PARSER production: opt_block_args_tail -> tCOMMA block_args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler364(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler364");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = vec![];
-SV::_1(__)
-// raw production: opt_block_args_tail -> undefined
+println!("    *** PARSER production: opt_block_args_tail -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler365(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler365");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _6 = pop!(self.values_stack, _1);
 let mut _5 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -8336,17 +7598,15 @@ _1.append(&mut _3);
         _1.append(&mut _5);
         _1.append(&mut _6);
         let __ = _1;
-SV::_1(__)
-// raw production: block_param -> f_arg tCOMMA f_block_optarg tCOMMA f_rest_arg opt_block_args_tail
+println!("    *** PARSER production: block_param -> f_arg tCOMMA f_block_optarg tCOMMA f_rest_arg opt_block_args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler366(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler366");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _8 = pop!(self.values_stack, _1);
 let mut _7 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -8361,17 +7621,15 @@ _1.append(&mut _3);
         _1.append(&mut _7);
         _1.append(&mut _8);
         let __ = _1;
-SV::_1(__)
-// raw production: block_param -> f_arg tCOMMA f_block_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_block_args_tail
+println!("    *** PARSER production: block_param -> f_arg tCOMMA f_block_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_block_args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler367(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler367");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -8380,17 +7638,15 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-SV::_1(__)
-// raw production: block_param -> f_arg tCOMMA f_block_optarg opt_block_args_tail
+println!("    *** PARSER production: block_param -> f_arg tCOMMA f_block_optarg opt_block_args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler368(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler368");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _6 = pop!(self.values_stack, _1);
 let mut _5 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -8402,17 +7658,15 @@ _1.append(&mut _3);
         _1.append(&mut _5);
         _1.append(&mut _6);
         let __ = _1;
-SV::_1(__)
-// raw production: block_param -> f_arg tCOMMA f_block_optarg tCOMMA f_arg opt_block_args_tail
+println!("    *** PARSER production: block_param -> f_arg tCOMMA f_block_optarg tCOMMA f_arg opt_block_args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler369(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler369");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -8421,32 +7675,28 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-SV::_1(__)
-// raw production: block_param -> f_arg tCOMMA f_rest_arg opt_block_args_tail
+println!("    *** PARSER production: block_param -> f_arg tCOMMA f_rest_arg opt_block_args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler370(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler370");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
 let __ = SV::Undefined;
-__
-// raw production: block_param -> f_arg tCOMMA
+println!("    *** PARSER production: block_param -> f_arg tCOMMA");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler371(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler371");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _6 = pop!(self.values_stack, _1);
 let mut _5 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -8458,17 +7708,15 @@ _1.append(&mut _3);
         _1.append(&mut _5);
         _1.append(&mut _6);
         let __ = _1;
-SV::_1(__)
-// raw production: block_param -> f_arg tCOMMA f_rest_arg tCOMMA f_arg opt_block_args_tail
+println!("    *** PARSER production: block_param -> f_arg tCOMMA f_rest_arg tCOMMA f_arg opt_block_args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler372(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler372");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _1);
 
@@ -8481,17 +7729,15 @@ let __ = if ( _2.is_empty() && _1.len() == 1 ) {
             _1.append(&mut _2);
             _1
         };
-SV::_1(__)
-// raw production: block_param -> f_arg opt_block_args_tail
+println!("    *** PARSER production: block_param -> f_arg opt_block_args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler373(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler373");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -8500,17 +7746,15 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-SV::_1(__)
-// raw production: block_param -> f_block_optarg tCOMMA f_rest_arg opt_block_args_tail
+println!("    *** PARSER production: block_param -> f_block_optarg tCOMMA f_rest_arg opt_block_args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler374(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler374");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _6 = pop!(self.values_stack, _1);
 let mut _5 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -8522,33 +7766,29 @@ _1.append(&mut _3);
         _1.append(&mut _5);
         _1.append(&mut _6);
         let __ = _1;
+println!("    *** PARSER production: block_param -> f_block_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_block_args_tail");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: block_param -> f_block_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_block_args_tail
-
 }
-
 
 fn _handler375(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler375");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
+println!("    *** PARSER production: block_param -> f_block_optarg opt_block_args_tail");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: block_param -> f_block_optarg opt_block_args_tail
-
 }
-
 
 fn _handler376(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler376");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -8557,33 +7797,29 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-SV::_1(__)
-// raw production: block_param -> f_block_optarg tCOMMA f_arg opt_block_args_tail
+println!("    *** PARSER production: block_param -> f_block_optarg tCOMMA f_arg opt_block_args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler377(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler377");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
-SV::_1(__)
-// raw production: block_param -> f_rest_arg opt_block_args_tail
+println!("    *** PARSER production: block_param -> f_rest_arg opt_block_args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler378(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler378");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -8592,92 +7828,80 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-SV::_1(__)
-// raw production: block_param -> f_rest_arg tCOMMA f_arg opt_block_args_tail
+println!("    *** PARSER production: block_param -> f_rest_arg tCOMMA f_arg opt_block_args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler379(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler379");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: block_param -> block_args_tail
+println!("    *** PARSER production: block_param -> block_args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler380(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler380");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = node::args(None, vec![], None);
-SV::_2(__)
-// raw production: opt_block_param -> undefined
+println!("    *** PARSER production: opt_block_param -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler381(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler381");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 
 self.tokenizer.interior_lexer.set_state("expr_value");
         //   @lexer.state = :expr_value
         wip!(); let __ =Node::DUMMY;
-SV::_2(__)
-// raw production: opt_block_param -> block_param_def
+println!("    *** PARSER production: opt_block_param -> block_param_def");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler382(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler382");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::args(Some(_1), _2, Some(_3));
-SV::_2(__)
-// raw production: block_param_def -> tPIPE opt_bv_decl tPIPE
+println!("    *** PARSER production: block_param_def -> tPIPE opt_bv_decl tPIPE");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler383(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler383");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let _2 = _1.clone();
         let __ = node::args(Some(_1), vec![], Some(_2));
-SV::_2(__)
-// raw production: block_param_def -> tOROP
+println!("    *** PARSER production: block_param_def -> tOROP");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler384(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler384");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = pop!(self.values_stack, _1);
 let mut _2 = pop!(self.values_stack, _1);
@@ -8685,79 +7909,69 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 _2.append(&mut _3);
         let __ = node::args(Some(_1), _2, Some(_4));
-SV::_2(__)
-// raw production: block_param_def -> tPIPE block_param opt_bv_decl tPIPE
+println!("    *** PARSER production: block_param_def -> tPIPE block_param opt_bv_decl tPIPE");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler385(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler385");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![ _1 ];
-SV::_1(__)
-// raw production: opt_bv_decl -> opt_nl
+println!("    *** PARSER production: opt_bv_decl -> opt_nl");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler386(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler386");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
 self.values_stack.pop();
 
 let __ = _3;
-SV::_1(__)
-// raw production: opt_bv_decl -> opt_nl tSEMI bv_decls opt_nl
+println!("    *** PARSER production: opt_bv_decl -> opt_nl tSEMI bv_decls opt_nl");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler387(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler387");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![ _1 ];
-SV::_1(__)
-// raw production: bv_decls -> bvar
+println!("    *** PARSER production: bv_decls -> bvar");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler388(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler388");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
-SV::_1(__)
-// raw production: bv_decls -> bv_decls tCOMMA bvar
+println!("    *** PARSER production: bv_decls -> bv_decls tCOMMA bvar");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler389(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler389");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 if let InteriorToken::T_IDENTIFIER(ref t_value) = _1 {
@@ -8765,61 +7979,53 @@ if let InteriorToken::T_IDENTIFIER(ref t_value) = _1 {
         } else { unreachable!(); }
 
         let __ = node::shadowarg(_1);
-SV::_2(__)
-// raw production: bvar -> tIDENTIFIER
+println!("    *** PARSER production: bvar -> tIDENTIFIER");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler390(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler390");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: bvar -> f_bad_arg
+println!("    *** PARSER production: bvar -> f_bad_arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler391(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler391");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ =Node::DUMMY;
     self.static_env.extend_dynamic();
-SV::_2(__)
-// raw production: fake_embedded_action_lambda_1 -> undefined
+println!("    *** PARSER production: fake_embedded_action_lambda_1 -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler392(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler392");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = self.tokenizer.interior_lexer.cmdarg.clone();
     self.tokenizer.interior_lexer.cmdarg.clear();
-SV::_7(__)
-// raw production: fake_embedded_action_lambda_2 -> undefined
+println!("    *** PARSER production: fake_embedded_action_lambda_2 -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_7(__)
 }
 
-
 fn _handler393(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler393");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _10);
 let mut _3 = pop!(self.values_stack, _7);
 let mut _2 = pop!(self.values_stack, _2);
@@ -8831,17 +8037,15 @@ self.tokenizer.interior_lexer.cmdarg = _3;
     let __ = (_2, _4);
 
     self.static_env.unextend();
-SV::_8(__)
-// raw production: lambda -> fake_embedded_action_lambda_1 f_larglist fake_embedded_action_lambda_2 lambda_body
+println!("    *** PARSER production: lambda -> fake_embedded_action_lambda_1 f_larglist fake_embedded_action_lambda_2 lambda_body");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_8(__)
 }
 
-
 fn _handler394(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler394");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = pop!(self.values_stack, _1);
 let mut _2 = pop!(self.values_stack, _1);
@@ -8849,95 +8053,83 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 _2.append(&mut _3);
         let __ = node::args(Some(_1), _2, Some(_4));
-SV::_2(__)
-// raw production: f_larglist -> tLPAREN2 f_args opt_bv_decl tRPAREN
+println!("    *** PARSER production: f_larglist -> tLPAREN2 f_args opt_bv_decl tRPAREN");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler395(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler395");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = node::args(None, _1, None);
+println!("    *** PARSER production: f_larglist -> f_args");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: f_larglist -> f_args
-
 }
-
 
 fn _handler396(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler396");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = (_1, _2, _3);
+println!("    *** PARSER production: lambda_body -> tLAMBEG compstmt tRCURLY");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_10(__)
-// raw production: lambda_body -> tLAMBEG compstmt tRCURLY
-
 }
-
 
 fn _handler397(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler397");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = (_1, _2, _3);
-SV::_10(__)
-// raw production: lambda_body -> kDO_LAMBDA compstmt kEND
+println!("    *** PARSER production: lambda_body -> kDO_LAMBDA compstmt kEND");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_10(__)
 }
 
-
 fn _handler398(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler398");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _11);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = ( _1, _2, _3 );
-SV::_12(__)
-// raw production: do_block -> kDO_BLOCK do_body kEND
+println!("    *** PARSER production: do_block -> kDO_BLOCK do_body kEND");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_12(__)
 }
 
-
 fn _handler399(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler399");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _12);
 let mut _1 = pop!(self.values_stack, _2);
 
 let (begin_t, ( block_args, body), end_t) = _2;
         let __ = node::block(_1, begin_t, block_args, body, end_t);
-SV::_2(__)
-// raw production: block_call -> command do_block
+println!("    *** PARSER production: block_call -> command do_block");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler400(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler400");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _6);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
@@ -8945,17 +8137,15 @@ let mut _1 = pop!(self.values_stack, _2);
 
 let (lparen_t, args, rparen_t) = _4;
         let __ = node::call_method(Some(_1), Some(_2), Some(_3), lparen_t, args, rparen_t);
-SV::_2(__)
-// raw production: block_call -> block_call dot_or_colon operation2 opt_paren_args
+println!("    *** PARSER production: block_call -> block_call dot_or_colon operation2 opt_paren_args");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler401(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler401");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _5 = pop!(self.values_stack, _5);
 let mut _4 = pop!(self.values_stack, _6);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
@@ -8967,17 +8157,15 @@ let (lparen_t, args, rparen_t) = _4;
 
         let (begin_t, (args, body), end_t) = _5;
         let __ = node::block(method_call, begin_t, args, body, end_t);
-SV::_2(__)
-// raw production: block_call -> block_call dot_or_colon operation2 opt_paren_args brace_block
+println!("    *** PARSER production: block_call -> block_call dot_or_colon operation2 opt_paren_args brace_block");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler402(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler402");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _5 = pop!(self.values_stack, _12);
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
@@ -8988,33 +8176,29 @@ let method_call = node::call_method(Some(_1), Some(_2), Some(_3), None, _4, None
 
         let (begin_t, (args, body), end_t) = _5;
         let __ = node::block(method_call, begin_t, args, body, end_t);
-SV::_2(__)
-// raw production: block_call -> block_call dot_or_colon operation2 command_args do_block
+println!("    *** PARSER production: block_call -> block_call dot_or_colon operation2 command_args do_block");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler403(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler403");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _6);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (lparen_t, args, rparen_t) = _2;
         let __ = node::call_method(None, None, Some(_1), lparen_t, args, rparen_t);
+println!("    *** PARSER production: method_call -> fcall paren_args");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: method_call -> fcall paren_args
-
 }
-
 
 fn _handler404(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler404");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _6);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
@@ -9022,17 +8206,15 @@ let mut _1 = pop!(self.values_stack, _2);
 
 let (lparen_t, args, rparen_t) = _4;
         let __ = node::call_method(Some(_1), Some(_2), Some(_3), lparen_t, args, rparen_t);
+println!("    *** PARSER production: method_call -> primary_value call_op operation2 opt_paren_args");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: method_call -> primary_value call_op operation2 opt_paren_args
-
 }
-
 
 fn _handler405(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler405");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _6);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
@@ -9040,176 +8222,154 @@ let mut _1 = pop!(self.values_stack, _2);
 
 let (lparen_t, args, rparen_t) = _4;
         let __ = node::call_method(Some(_1), Some(_2), Some(_3), lparen_t, args, rparen_t);
-SV::_2(__)
-// raw production: method_call -> primary_value tCOLON2 operation2 paren_args
+println!("    *** PARSER production: method_call -> primary_value tCOLON2 operation2 paren_args");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler406(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler406");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None);
+println!("    *** PARSER production: method_call -> primary_value tCOLON2 operation3");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: method_call -> primary_value tCOLON2 operation3
-
 }
-
 
 fn _handler407(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler407");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _6);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let (lparen_t, args, rparen_t) = _3;
         let __ = node::call_method(Some(_1), Some(_2), None, lparen_t, args, rparen_t);
+println!("    *** PARSER production: method_call -> primary_value call_op paren_args");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: method_call -> primary_value call_op paren_args
-
 }
-
 
 fn _handler408(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler408");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _6);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let (lparen_t, args, rparen_t) = _3;
         let __ = node::call_method(Some(_1), Some(_2), None, lparen_t, args, rparen_t);
-SV::_2(__)
-// raw production: method_call -> primary_value tCOLON2 paren_args
+println!("    *** PARSER production: method_call -> primary_value tCOLON2 paren_args");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler409(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler409");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _6);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (lparen_t, args, rparen_t) = _2;
         let __ = node::keyword_cmd("super", _1, lparen_t, args, rparen_t);
-SV::_2(__)
-// raw production: method_call -> kSUPER paren_args
+println!("    *** PARSER production: method_call -> kSUPER paren_args");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler410(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler410");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("zsuper", _1, None, vec![], None);
-SV::_2(__)
-// raw production: method_call -> kSUPER
+println!("    *** PARSER production: method_call -> kSUPER");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler411(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler411");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = pop!(self.values_stack, _1);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::index(_1, _2, _3, _4);
-SV::_2(__)
-// raw production: method_call -> primary_value tLBRACK2 opt_call_args rbracket
+println!("    *** PARSER production: method_call -> primary_value tLBRACK2 opt_call_args rbracket");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler412(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler412");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _4);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = (_1, _2, _3);
-SV::_5(__)
-// raw production: brace_block -> tLCURLY brace_body tRCURLY
+println!("    *** PARSER production: brace_block -> tLCURLY brace_body tRCURLY");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_5(__)
 }
 
-
 fn _handler413(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler413");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _11);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = (_1, _2, _3);
-SV::_5(__)
-// raw production: brace_block -> kDO do_body kEND
+println!("    *** PARSER production: brace_block -> kDO do_body kEND");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_5(__)
 }
 
-
 fn _handler414(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler414");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ =Node::DUMMY;
     self.static_env.extend_dynamic();
-SV::_2(__)
-// raw production: fake_embedded_action_brace_body_1 -> undefined
+println!("    *** PARSER production: fake_embedded_action_brace_body_1 -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler415(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler415");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = self.tokenizer.interior_lexer.cmdarg.clone();
     self.tokenizer.interior_lexer.cmdarg.clear();
-SV::_7(__)
-// raw production: fake_embedded_action_brace_body_2 -> undefined
+println!("    *** PARSER production: fake_embedded_action_brace_body_2 -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_7(__)
 }
 
-
 fn _handler416(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler416");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _2);
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = pop!(self.values_stack, _7);
@@ -9220,48 +8380,42 @@ let __ = (_3, _4);
     self.static_env.unextend();
     self.tokenizer.interior_lexer.cmdarg = _2;
     self.tokenizer.interior_lexer.cmdarg.pop();
-SV::_4(__)
-// raw production: brace_body -> fake_embedded_action_brace_body_1 fake_embedded_action_brace_body_2 opt_block_param compstmt
+println!("    *** PARSER production: brace_body -> fake_embedded_action_brace_body_1 fake_embedded_action_brace_body_2 opt_block_param compstmt");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_4(__)
 }
 
-
 fn _handler417(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler417");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ =Node::DUMMY;
 
     self.static_env.extend_dynamic();
-SV::_2(__)
-// raw production: fake_embedded_action_do_body_1 -> undefined
+println!("    *** PARSER production: fake_embedded_action_do_body_1 -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler418(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler418");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = self.tokenizer.interior_lexer.cmdarg.clone();
     self.tokenizer.interior_lexer.cmdarg.clear();
-SV::_7(__)
-// raw production: fake_embedded_action_do_body_2 -> undefined
+println!("    *** PARSER production: fake_embedded_action_do_body_2 -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_7(__)
 }
 
-
 fn _handler419(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler419");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _2);
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = pop!(self.values_stack, _7);
@@ -9271,17 +8425,15 @@ let __ = ( _3, _4 );
     self.static_env.unextend();
 
     self.tokenizer.interior_lexer.cmdarg = _2;
-SV::_11(__)
-// raw production: do_body -> fake_embedded_action_do_body_1 fake_embedded_action_do_body_2 opt_block_param bodystmt
+println!("    *** PARSER production: do_body -> fake_embedded_action_do_body_1 fake_embedded_action_do_body_2 opt_block_param bodystmt");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_11(__)
 }
 
-
 fn _handler420(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler420");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _5 = pop!(self.values_stack, _1);
 let mut _4 = pop!(self.values_stack, _2);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
@@ -9291,45 +8443,39 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 let mut r = vec![ node::when(_1, _2, _3, _4) ];
     r.append(&mut _5);
     let __ = r;
-SV::_1(__)
-// raw production: case_body -> kWHEN args then compstmt cases
+println!("    *** PARSER production: case_body -> kWHEN args then compstmt cases");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler421(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler421");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
-SV::_1(__)
-// raw production: cases -> opt_else
+println!("    *** PARSER production: cases -> opt_else");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler422(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler422");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: cases -> case_body
+println!("    *** PARSER production: cases -> case_body");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler423(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler423");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _6 = pop!(self.values_stack, _1);
 let mut _5 = pop!(self.values_stack, _2);
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
@@ -9357,280 +8503,242 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
         ];
         r.append(&mut _6);
         let __ = r;
-SV::_1(__)
-// raw production: opt_rescue -> kRESCUE exc_list exc_var then compstmt opt_rescue
+println!("    *** PARSER production: opt_rescue -> kRESCUE exc_list exc_var then compstmt opt_rescue");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler424(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler424");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = vec![];
-SV::_1(__)
-// raw production: opt_rescue -> undefined
+println!("    *** PARSER production: opt_rescue -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler425(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler425");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = Some( vec![ _1 ] );
+println!("    *** PARSER production: exc_list -> arg_value");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_13(__)
-// raw production: exc_list -> arg_value
-
 }
-
 
 fn _handler426(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler426");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: exc_list -> mrhs");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: exc_list -> mrhs
-
 }
-
 
 fn _handler427(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler427");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = None;
+println!("    *** PARSER production: exc_list -> undefined");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_13(__)
-// raw production: exc_list -> undefined
-
 }
-
 
 fn _handler428(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler428");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = Some((_1, _2));
+println!("    *** PARSER production: exc_var -> tASSOC lhs");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_9(__)
-// raw production: exc_var -> tASSOC lhs
-
 }
-
 
 fn _handler429(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler429");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = None;
-SV::_9(__)
-// raw production: exc_var -> undefined
+println!("    *** PARSER production: exc_var -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_9(__)
 }
 
-
 fn _handler430(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler430");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = Some((_1, _2));
-SV::_9(__)
-// raw production: opt_ensure -> kENSURE compstmt
+println!("    *** PARSER production: opt_ensure -> kENSURE compstmt");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_9(__)
 }
 
-
 fn _handler431(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler431");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = None;
+println!("    *** PARSER production: opt_ensure -> undefined");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_9(__)
-// raw production: opt_ensure -> undefined
-
 }
-
 
 fn _handler432(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler432");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: literal -> numeric");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: literal -> numeric
-
 }
-
 
 fn _handler433(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler433");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: literal -> symbol");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: literal -> symbol
-
 }
-
 
 fn _handler434(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler434");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: literal -> dsym
+println!("    *** PARSER production: literal -> dsym");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler435(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler435");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = node::string_compose(None, _1, None);
-SV::_2(__)
-// raw production: strings -> string
+println!("    *** PARSER production: strings -> string");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler436(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler436");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
-SV::_1(__)
-// raw production: string -> string1
+println!("    *** PARSER production: string -> string1");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler437(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler437");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_2);
         let __ = _1;
-SV::_1(__)
-// raw production: string -> string string1
+println!("    *** PARSER production: string -> string string1");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler438(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler438");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let string = node::string_compose(Some(_1), _2, Some(_3));
         let __ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
-SV::_2(__)
-// raw production: string1 -> tSTRING_BEG string_contents tSTRING_END
+println!("    *** PARSER production: string1 -> tSTRING_BEG string_contents tSTRING_END");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler439(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler439");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let string = node::string(_1);
         let __ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
-SV::_2(__)
-// raw production: string1 -> tSTRING
+println!("    *** PARSER production: string1 -> tSTRING");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler440(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler440");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::character(_1);
-SV::_2(__)
-// raw production: string1 -> tCHARACTER
+println!("    *** PARSER production: string1 -> tCHARACTER");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler441(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler441");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let string = node::xstring_compose(_1, _2, _3);
     let __ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
-SV::_2(__)
-// raw production: xstring -> tXSTRING_BEG xstring_contents tSTRING_END
+println!("    *** PARSER production: xstring -> tXSTRING_BEG xstring_contents tSTRING_END");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler442(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler442");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
@@ -9639,369 +8747,321 @@ self.values_stack.pop();
 //   opts   = @builder.regexp_options(val[3])
     //   result = @builder.regexp_compose(val[0], val[1], val[2], opts)
     wip!(); let __ =Node::DUMMY;
-SV::_2(__)
-// raw production: regexp -> tREGEXP_BEG regexp_contents tSTRING_END tREGEXP_OPT
+println!("    *** PARSER production: regexp -> tREGEXP_BEG regexp_contents tSTRING_END tREGEXP_OPT");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler443(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler443");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::words_compose(_1, _2, _3);
-SV::_2(__)
-// raw production: words -> tWORDS_BEG word_list tSTRING_END
+println!("    *** PARSER production: words -> tWORDS_BEG word_list tSTRING_END");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler444(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler444");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = vec![];
-SV::_1(__)
-// raw production: word_list -> undefined
+println!("    *** PARSER production: word_list -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler445(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler445");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push( node::word(_2) );
         let __ = _1;
-SV::_1(__)
-// raw production: word_list -> word_list word tSPACE
+println!("    *** PARSER production: word_list -> word_list word tSPACE");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler446(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler446");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
-SV::_1(__)
-// raw production: word -> string_content
+println!("    *** PARSER production: word -> string_content");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler447(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler447");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_2); let __ = _1;
-SV::_1(__)
-// raw production: word -> word string_content
+println!("    *** PARSER production: word -> word string_content");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler448(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler448");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::symbols_compose(_1, _2, _3);
-SV::_2(__)
-// raw production: symbols -> tSYMBOLS_BEG symbol_list tSTRING_END
+println!("    *** PARSER production: symbols -> tSYMBOLS_BEG symbol_list tSTRING_END");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler449(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler449");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = vec![];
-SV::_1(__)
-// raw production: symbol_list -> undefined
+println!("    *** PARSER production: symbol_list -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler450(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler450");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_2);
         let __ = _1;
-SV::_1(__)
-// raw production: symbol_list -> symbol_list word tSPACE
+println!("    *** PARSER production: symbol_list -> symbol_list word tSPACE");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler451(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler451");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::words_compose(_1, _2, _3);
-SV::_2(__)
-// raw production: qwords -> tQWORDS_BEG qword_list tSTRING_END
+println!("    *** PARSER production: qwords -> tQWORDS_BEG qword_list tSTRING_END");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler452(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler452");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::symbols_compose(_1, _2, _3);
-SV::_2(__)
-// raw production: qsymbols -> tQSYMBOLS_BEG qsym_list tSTRING_END
+println!("    *** PARSER production: qsymbols -> tQSYMBOLS_BEG qsym_list tSTRING_END");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler453(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler453");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = vec![];
-SV::_1(__)
-// raw production: qword_list -> undefined
+println!("    *** PARSER production: qword_list -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler454(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler454");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(node::string_internal(_2));
         let __ = _1;
-SV::_1(__)
-// raw production: qword_list -> qword_list tSTRING_CONTENT tSPACE
+println!("    *** PARSER production: qword_list -> qword_list tSTRING_CONTENT tSPACE");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler455(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler455");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = vec![];
-SV::_1(__)
-// raw production: qsym_list -> undefined
+println!("    *** PARSER production: qsym_list -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler456(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler456");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(node::symbol_internal(_2));
         let __ = _1;
+println!("    *** PARSER production: qsym_list -> qsym_list tSTRING_CONTENT tSPACE");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: qsym_list -> qsym_list tSTRING_CONTENT tSPACE
-
 }
-
 
 fn _handler457(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler457");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = vec![];
+println!("    *** PARSER production: string_contents -> undefined");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: string_contents -> undefined
-
 }
-
 
 fn _handler458(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler458");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_2);
         let __ = _1;
+println!("    *** PARSER production: string_contents -> string_contents string_content");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: string_contents -> string_contents string_content
-
 }
-
 
 fn _handler459(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler459");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = vec![];
-SV::_1(__)
-// raw production: xstring_contents -> undefined
+println!("    *** PARSER production: xstring_contents -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler460(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler460");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_2);
         let __ = _1;
-SV::_1(__)
-// raw production: xstring_contents -> xstring_contents string_content
+println!("    *** PARSER production: xstring_contents -> xstring_contents string_content");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler461(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler461");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = vec![];
-SV::_1(__)
-// raw production: regexp_contents -> undefined
+println!("    *** PARSER production: regexp_contents -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler462(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler462");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_2); let __ = _1;
-SV::_1(__)
-// raw production: regexp_contents -> regexp_contents string_content
+println!("    *** PARSER production: regexp_contents -> regexp_contents string_content");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler463(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler463");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ =Node::DUMMY;
 
     self.tokenizer.interior_lexer.cond.push(false);
     self.tokenizer.interior_lexer.cmdarg.push(false);
-SV::_2(__)
-// raw production: fake_embedded_action__string_content__tSTRING_DBEG -> undefined
+println!("    *** PARSER production: fake_embedded_action__string_content__tSTRING_DBEG -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler464(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler464");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::string_internal(_1);
-SV::_2(__)
-// raw production: string_content -> tSTRING_CONTENT
+println!("    *** PARSER production: string_content -> tSTRING_CONTENT");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler465(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler465");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 
 let __ = _2;
-SV::_2(__)
-// raw production: string_content -> tSTRING_DVAR string_dvar
+println!("    *** PARSER production: string_content -> tSTRING_DVAR string_dvar");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler466(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler466");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = pop!(self.values_stack, _2);
 self.values_stack.pop();
@@ -10011,119 +9071,103 @@ self.tokenizer.interior_lexer.cond.lexpop();
         self.tokenizer.interior_lexer.cmdarg.lexpop();
 
         let __ = node::begin(_1, Some(_3), _4);
-SV::_2(__)
-// raw production: string_content -> tSTRING_DBEG fake_embedded_action__string_content__tSTRING_DBEG compstmt tSTRING_DEND
+println!("    *** PARSER production: string_content -> tSTRING_DBEG fake_embedded_action__string_content__tSTRING_DBEG compstmt tSTRING_DEND");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler467(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler467");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::gvar(_1);
-SV::_2(__)
-// raw production: string_dvar -> tGVAR
+println!("    *** PARSER production: string_dvar -> tGVAR");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler468(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler468");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::ivar(_1);
-SV::_2(__)
-// raw production: string_dvar -> tIVAR
+println!("    *** PARSER production: string_dvar -> tIVAR");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler469(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler469");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::cvar(_1);
-SV::_2(__)
-// raw production: string_dvar -> tCVAR
+println!("    *** PARSER production: string_dvar -> tCVAR");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler470(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler470");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: string_dvar -> backref
+println!("    *** PARSER production: string_dvar -> backref");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler471(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler471");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_endarg");
     let __ = node::symbol(_1);
-SV::_2(__)
-// raw production: symbol -> tSYMBOL
+println!("    *** PARSER production: symbol -> tSYMBOL");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler472(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler472");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_endarg");
     let __ = node::symbol_compose(_1, _2, _3);
-SV::_2(__)
-// raw production: dsym -> tSYMBEG xstring_contents tSTRING_END
+println!("    *** PARSER production: dsym -> tSYMBEG xstring_contents tSTRING_END");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler473(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler473");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: numeric -> simple_numeric
+println!("    *** PARSER production: numeric -> simple_numeric");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler474(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler474");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
@@ -10134,438 +9178,380 @@ self.values_stack.pop();
         //     result = @builder.unary_num(val[0], val[1])
         //   end
         wip!(); let __ =Node::DUMMY;
-SV::_2(__)
-// raw production: numeric -> tUNARY_NUM simple_numeric
+println!("    *** PARSER production: numeric -> tUNARY_NUM simple_numeric");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler475(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler475");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_endarg");
         // result = @builder.integer(val[0])
         // let __ = node::integer(_1);
         wip!(); let __ =Node::DUMMY;
-SV::_2(__)
-// raw production: simple_numeric -> tINTEGER
+println!("    *** PARSER production: simple_numeric -> tINTEGER");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler476(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler476");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_endarg");
         // result = @builder.float(val[0])
         // let __ = node::float(_1);
         wip!(); let __ =Node::DUMMY;
-SV::_2(__)
-// raw production: simple_numeric -> tFLOAT
+println!("    *** PARSER production: simple_numeric -> tFLOAT");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler477(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler477");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_endarg");
         // result = @builder.rational(val[0])
         // let __ = node::rational(_1);
         wip!(); let __ =Node::DUMMY;
-SV::_2(__)
-// raw production: simple_numeric -> tRATIONAL
+println!("    *** PARSER production: simple_numeric -> tRATIONAL");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler478(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler478");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_endarg");
         // result = @builder.complex(val[0])
         wip!(); let __ =Node::DUMMY;
-SV::_2(__)
-// raw production: simple_numeric -> tIMAGINARY
+println!("    *** PARSER production: simple_numeric -> tIMAGINARY");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler479(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler479");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::ident(_1);
-SV::_2(__)
-// raw production: user_variable -> tIDENTIFIER
+println!("    *** PARSER production: user_variable -> tIDENTIFIER");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler480(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler480");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::ivar(_1);
-SV::_2(__)
-// raw production: user_variable -> tIVAR
+println!("    *** PARSER production: user_variable -> tIVAR");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler481(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler481");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::gvar(_1);
-SV::_2(__)
-// raw production: user_variable -> tGVAR
+println!("    *** PARSER production: user_variable -> tGVAR");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler482(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler482");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::build_const(_1);
-SV::_2(__)
-// raw production: user_variable -> tCONSTANT
+println!("    *** PARSER production: user_variable -> tCONSTANT");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler483(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler483");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::cvar(_1);
-SV::_2(__)
-// raw production: user_variable -> tCVAR
+println!("    *** PARSER production: user_variable -> tCVAR");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler484(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler484");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = Node::Nil;
         // TODO @builder.nil;
-SV::_2(__)
-// raw production: keyword_variable -> kNIL
+println!("    *** PARSER production: keyword_variable -> kNIL");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler485(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler485");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = Node::NSelf;
         // TODO @builder.self;
-SV::_2(__)
-// raw production: keyword_variable -> kSELF
+println!("    *** PARSER production: keyword_variable -> kSELF");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler486(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler486");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = Node::True;
         // TODO @builder.true;
-SV::_2(__)
-// raw production: keyword_variable -> kTRUE
+println!("    *** PARSER production: keyword_variable -> kTRUE");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler487(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler487");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = Node::False;
         // TODO @builder.false;
-SV::_2(__)
-// raw production: keyword_variable -> kFALSE
+println!("    *** PARSER production: keyword_variable -> kFALSE");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler488(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler488");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.__FILE__(val[0])
         wip!(); let __ =Node::DUMMY;
-SV::_2(__)
-// raw production: keyword_variable -> k__FILE__
+println!("    *** PARSER production: keyword_variable -> k__FILE__");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler489(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler489");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.__LINE__(val[0])
         wip!(); let __ =Node::DUMMY;
-SV::_2(__)
-// raw production: keyword_variable -> k__LINE__
+println!("    *** PARSER production: keyword_variable -> k__LINE__");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler490(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler490");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 
 //   result = @builder.__ENCODING__(val[0])
         wip!(); let __ =Node::DUMMY;
+println!("    *** PARSER production: keyword_variable -> k__ENCODING__");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: keyword_variable -> k__ENCODING__
-
 }
-
 
 fn _handler491(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler491");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::accessible(_1);
+println!("    *** PARSER production: var_ref -> user_variable");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: var_ref -> user_variable
-
 }
-
 
 fn _handler492(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler492");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::accessible(_1);
+println!("    *** PARSER production: var_ref -> keyword_variable");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: var_ref -> keyword_variable
-
 }
-
 
 fn _handler493(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler493");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::assignable(_1);
+println!("    *** PARSER production: var_lhs -> user_variable");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: var_lhs -> user_variable
-
 }
-
 
 fn _handler494(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler494");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::assignable(_1);
-SV::_2(__)
-// raw production: var_lhs -> keyword_variable
+println!("    *** PARSER production: var_lhs -> keyword_variable");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler495(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler495");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::nth_ref(_1);
-SV::_2(__)
-// raw production: backref -> tNTH_REF
+println!("    *** PARSER production: backref -> tNTH_REF");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler496(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler496");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::back_ref(_1);
-SV::_2(__)
-// raw production: backref -> tBACK_REF
+println!("    *** PARSER production: backref -> tBACK_REF");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler497(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler497");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.set_state("expr_value");
-SV::_2(__)
-// raw production: fake_embedded_action__superclass__tLT -> undefined
+println!("    *** PARSER production: fake_embedded_action__superclass__tLT -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler498(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler498");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 let mut _3 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = Some((_1, _3));
-SV::_9(__)
-// raw production: superclass -> tLT fake_embedded_action__superclass__tLT expr_value term
+println!("    *** PARSER production: superclass -> tLT fake_embedded_action__superclass__tLT expr_value term");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_9(__)
 }
 
-
 fn _handler499(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler499");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = None;
-SV::_9(__)
-// raw production: superclass -> undefined
+println!("    *** PARSER production: superclass -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_9(__)
 }
 
-
 fn _handler500(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler500");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = self.tokenizer.interior_lexer.in_kwarg;
     self.tokenizer.interior_lexer.in_kwarg = true;
-SV::_14(__)
-// raw production: fake_embedded_action__f_arglist__episolon -> undefined
+println!("    *** PARSER production: fake_embedded_action__f_arglist__episolon -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_14(__)
 }
 
-
 fn _handler501(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler501");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::args(Some(_1), _2, Some(_3));
         self.tokenizer.interior_lexer.set_state("expr_value");
-SV::_2(__)
-// raw production: f_arglist -> tLPAREN2 f_args rparen
+println!("    *** PARSER production: f_arglist -> tLPAREN2 f_args rparen");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler502(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler502");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _14);
 
 self.tokenizer.interior_lexer.in_kwarg = _1;
         let __ = node::args(None, _2, None);
-SV::_2(__)
-// raw production: f_arglist -> fake_embedded_action__f_arglist__episolon f_args term
+println!("    *** PARSER production: f_arglist -> fake_embedded_action__f_arglist__episolon f_args term");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler503(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler503");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -10574,92 +9560,80 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
+println!("    *** PARSER production: args_tail -> f_kwarg tCOMMA f_kwrest opt_f_block_arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: args_tail -> f_kwarg tCOMMA f_kwrest opt_f_block_arg
-
 }
-
 
 fn _handler504(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler504");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
+println!("    *** PARSER production: args_tail -> f_kwarg opt_f_block_arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: args_tail -> f_kwarg opt_f_block_arg
-
 }
-
 
 fn _handler505(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler505");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
-SV::_1(__)
-// raw production: args_tail -> f_kwrest opt_f_block_arg
+println!("    *** PARSER production: args_tail -> f_kwrest opt_f_block_arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler506(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler506");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
-SV::_1(__)
-// raw production: args_tail -> f_block_arg
+println!("    *** PARSER production: args_tail -> f_block_arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler507(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler507");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 
 let __ = vec![_2];
-SV::_1(__)
-// raw production: opt_args_tail -> tCOMMA args_tail
+println!("    *** PARSER production: opt_args_tail -> tCOMMA args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler508(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler508");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = vec![];
-SV::_1(__)
-// raw production: opt_args_tail -> undefined
+println!("    *** PARSER production: opt_args_tail -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler509(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler509");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _6 = pop!(self.values_stack, _1);
 let mut _5 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -10671,17 +9645,15 @@ _1.append(&mut _3);
         _1.append(&mut _5);
         _1.append(&mut _6);
         let __ = _1;
-SV::_1(__)
-// raw production: f_args -> f_arg tCOMMA f_optarg tCOMMA f_rest_arg opt_args_tail
+println!("    *** PARSER production: f_args -> f_arg tCOMMA f_optarg tCOMMA f_rest_arg opt_args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler510(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler510");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _8 = pop!(self.values_stack, _1);
 let mut _7 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -10696,17 +9668,15 @@ _1.append(&mut _3);
         _1.append(&mut _7);
         _1.append(&mut _8);
         let __ = _1;
+println!("    *** PARSER production: f_args -> f_arg tCOMMA f_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_args_tail");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: f_args -> f_arg tCOMMA f_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_args_tail
-
 }
-
 
 fn _handler511(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler511");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -10715,17 +9685,15 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
+println!("    *** PARSER production: f_args -> f_arg tCOMMA f_optarg opt_args_tail");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: f_args -> f_arg tCOMMA f_optarg opt_args_tail
-
 }
-
 
 fn _handler512(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler512");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _6 = pop!(self.values_stack, _1);
 let mut _5 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -10737,17 +9705,15 @@ _1.append(&mut _3);
         _1.append(&mut _5);
         _1.append(&mut _6);
         let __ = _1;
+println!("    *** PARSER production: f_args -> f_arg tCOMMA f_optarg tCOMMA f_arg opt_args_tail");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: f_args -> f_arg tCOMMA f_optarg tCOMMA f_arg opt_args_tail
-
 }
-
 
 fn _handler513(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler513");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -10756,17 +9722,15 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
+println!("    *** PARSER production: f_args -> f_arg tCOMMA f_rest_arg opt_args_tail");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: f_args -> f_arg tCOMMA f_rest_arg opt_args_tail
-
 }
-
 
 fn _handler514(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler514");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _6 = pop!(self.values_stack, _1);
 let mut _5 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -10778,33 +9742,29 @@ _1.append(&mut _3);
         _1.append(&mut _5);
         _1.append(&mut _6);
         let __ = _1;
+println!("    *** PARSER production: f_args -> f_arg tCOMMA f_rest_arg tCOMMA f_arg opt_args_tail");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: f_args -> f_arg tCOMMA f_rest_arg tCOMMA f_arg opt_args_tail
-
 }
-
 
 fn _handler515(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler515");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
-SV::_1(__)
-// raw production: f_args -> f_arg opt_args_tail
+println!("    *** PARSER production: f_args -> f_arg opt_args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler516(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler516");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -10813,17 +9773,15 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-SV::_1(__)
-// raw production: f_args -> f_optarg tCOMMA f_rest_arg opt_args_tail
+println!("    *** PARSER production: f_args -> f_optarg tCOMMA f_rest_arg opt_args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler517(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler517");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _6 = pop!(self.values_stack, _1);
 let mut _5 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -10835,33 +9793,29 @@ _1.append(&mut _3);
         _1.append(&mut _5);
         _1.append(&mut _6);
         let __ = _1;
+println!("    *** PARSER production: f_args -> f_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_args_tail");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: f_args -> f_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_args_tail
-
 }
-
 
 fn _handler518(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler518");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
+println!("    *** PARSER production: f_args -> f_optarg opt_args_tail");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: f_args -> f_optarg opt_args_tail
-
 }
-
 
 fn _handler519(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler519");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -10870,33 +9824,29 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-SV::_1(__)
-// raw production: f_args -> f_optarg tCOMMA f_arg opt_args_tail
+println!("    *** PARSER production: f_args -> f_optarg tCOMMA f_arg opt_args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler520(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler520");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
-SV::_1(__)
-// raw production: f_args -> f_rest_arg opt_args_tail
+println!("    *** PARSER production: f_args -> f_rest_arg opt_args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler521(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler521");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
@@ -10905,115 +9855,99 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-SV::_1(__)
-// raw production: f_args -> f_rest_arg tCOMMA f_arg opt_args_tail
+println!("    *** PARSER production: f_args -> f_rest_arg tCOMMA f_arg opt_args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler522(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler522");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = _1;
-SV::_1(__)
-// raw production: f_args -> args_tail
+println!("    *** PARSER production: f_args -> args_tail");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler523(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler523");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = vec![];
-SV::_1(__)
-// raw production: f_args -> undefined
+println!("    *** PARSER production: f_args -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler524(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler524");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 
 let __ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_const, nil, val[0];
-SV::_2(__)
-// raw production: f_bad_arg -> tCONSTANT
+println!("    *** PARSER production: f_bad_arg -> tCONSTANT");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler525(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler525");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 
 let __ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_ivar, nil, val[0];
-SV::_2(__)
-// raw production: f_bad_arg -> tIVAR
+println!("    *** PARSER production: f_bad_arg -> tIVAR");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler526(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler526");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 
 let __ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_gvar, nil, val[0];
-SV::_2(__)
-// raw production: f_bad_arg -> tGVAR
+println!("    *** PARSER production: f_bad_arg -> tGVAR");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler527(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler527");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 
 let __ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_cvar, nil, val[0];
-SV::_2(__)
-// raw production: f_bad_arg -> tCVAR
+println!("    *** PARSER production: f_bad_arg -> tCVAR");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler528(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler528");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: f_norm_arg -> f_bad_arg
+println!("    *** PARSER production: f_norm_arg -> f_bad_arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler529(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler529");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 if let InteriorToken::T_IDENTIFIER(ref t_value) = _1 {
@@ -11021,92 +9955,80 @@ if let InteriorToken::T_IDENTIFIER(ref t_value) = _1 {
         } else { unreachable!(); }
 
         let __ = _1.wrap_as_token();
-SV::_0(__)
-// raw production: f_norm_arg -> tIDENTIFIER
+println!("    *** PARSER production: f_norm_arg -> tIDENTIFIER");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_0(__)
 }
 
-
 fn _handler530(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler530");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = _1;
-SV::_2(__)
-// raw production: f_arg_asgn -> f_norm_arg
+println!("    *** PARSER production: f_arg_asgn -> f_norm_arg");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler531(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler531");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::arg(_1);
-SV::_2(__)
-// raw production: f_arg_item -> f_arg_asgn
+println!("    *** PARSER production: f_arg_item -> f_arg_asgn");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler532(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler532");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::multi_lhs(Some(_1), _2, Some(_3));
-SV::_2(__)
-// raw production: f_arg_item -> tLPAREN f_margs rparen
+println!("    *** PARSER production: f_arg_item -> tLPAREN f_margs rparen");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler533(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler533");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
-SV::_1(__)
-// raw production: f_arg -> f_arg_item
+println!("    *** PARSER production: f_arg -> f_arg_item");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler534(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler534");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
-SV::_1(__)
-// raw production: f_arg -> f_arg tCOMMA f_arg_item
+println!("    *** PARSER production: f_arg -> f_arg tCOMMA f_arg_item");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler535(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler535");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 
 //   check_kwarg_name(val[0])
@@ -11115,165 +10037,143 @@ self.values_stack.pop();
 
     //   result = val[0]
     wip!(); let __ =Node::DUMMY;
+println!("    *** PARSER production: f_label -> tLABEL");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: f_label -> tLABEL
-
 }
-
 
 fn _handler536(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler536");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::kwoptarg(_1, _2);
+println!("    *** PARSER production: f_kw -> f_label arg_value");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: f_kw -> f_label arg_value
-
 }
-
 
 fn _handler537(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler537");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::kwarg(_1);
-SV::_2(__)
-// raw production: f_kw -> f_label
+println!("    *** PARSER production: f_kw -> f_label");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler538(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler538");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::kwoptarg(_1, _2);
-SV::_2(__)
-// raw production: f_block_kw -> f_label primary_value
+println!("    *** PARSER production: f_block_kw -> f_label primary_value");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler539(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler539");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::kwarg(_1);
+println!("    *** PARSER production: f_block_kw -> f_label");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: f_block_kw -> f_label
-
 }
-
 
 fn _handler540(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler540");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
+println!("    *** PARSER production: f_block_kwarg -> f_block_kw");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: f_block_kwarg -> f_block_kw
-
 }
-
 
 fn _handler541(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler541");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
-SV::_1(__)
-// raw production: f_block_kwarg -> f_block_kwarg tCOMMA f_block_kw
+println!("    *** PARSER production: f_block_kwarg -> f_block_kwarg tCOMMA f_block_kw");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler542(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler542");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
-SV::_1(__)
-// raw production: f_kwarg -> f_kw
+println!("    *** PARSER production: f_kwarg -> f_kw");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler543(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler543");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
+println!("    *** PARSER production: f_kwarg -> f_kwarg tCOMMA f_kw");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: f_kwarg -> f_kwarg tCOMMA f_kw
-
 }
-
 
 fn _handler544(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler544");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: kwrest_mark -> tPOW");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: kwrest_mark -> tPOW
-
 }
-
 
 fn _handler545(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler545");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: kwrest_mark -> tDSTAR
+println!("    *** PARSER production: kwrest_mark -> tDSTAR");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler546(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler546");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
@@ -11282,153 +10182,133 @@ if let InteriorToken::T_IDENTIFIER(ref t_value) = _2 {
         } else { unreachable!(); }
 
         let __ = vec![ node::kwrestarg(_1, Some(_2)) ];
-SV::_1(__)
-// raw production: f_kwrest -> kwrest_mark tIDENTIFIER
+println!("    *** PARSER production: f_kwrest -> kwrest_mark tIDENTIFIER");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler547(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler547");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = vec![ node::kwrestarg(_1, None) ];
+println!("    *** PARSER production: f_kwrest -> kwrest_mark");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: f_kwrest -> kwrest_mark
-
 }
-
 
 fn _handler548(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler548");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::optarg(_1, _2, _3);
+println!("    *** PARSER production: f_opt -> f_arg_asgn tEQL arg_value");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: f_opt -> f_arg_asgn tEQL arg_value
-
 }
-
 
 fn _handler549(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler549");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::optarg(_1, _2, _3);
+println!("    *** PARSER production: f_block_opt -> f_arg_asgn tEQL primary_value");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: f_block_opt -> f_arg_asgn tEQL primary_value
-
 }
-
 
 fn _handler550(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler550");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
+println!("    *** PARSER production: f_block_optarg -> f_block_opt");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: f_block_optarg -> f_block_opt
-
 }
-
 
 fn _handler551(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler551");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
-SV::_1(__)
-// raw production: f_block_optarg -> f_block_optarg tCOMMA f_block_opt
+println!("    *** PARSER production: f_block_optarg -> f_block_optarg tCOMMA f_block_opt");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler552(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler552");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
-SV::_1(__)
-// raw production: f_optarg -> f_opt
+println!("    *** PARSER production: f_optarg -> f_opt");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler553(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler553");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
+println!("    *** PARSER production: f_optarg -> f_optarg tCOMMA f_opt");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: f_optarg -> f_optarg tCOMMA f_opt
-
 }
-
 
 fn _handler554(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler554");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: restarg_mark -> tSTAR2");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: restarg_mark -> tSTAR2
-
 }
-
 
 fn _handler555(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler555");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: restarg_mark -> tSTAR
+println!("    *** PARSER production: restarg_mark -> tSTAR");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler556(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler556");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
@@ -11437,59 +10317,51 @@ if let InteriorToken::T_IDENTIFIER(ref t_value) = _2 {
         } else { unreachable!(); }
 
         let __ = vec![ node::restarg(_1, Some(_2)) ];
-SV::_1(__)
-// raw production: f_rest_arg -> restarg_mark tIDENTIFIER
+println!("    *** PARSER production: f_rest_arg -> restarg_mark tIDENTIFIER");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler557(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler557");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = vec![node::restarg(_1, None)];
+println!("    *** PARSER production: f_rest_arg -> restarg_mark");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: f_rest_arg -> restarg_mark
-
 }
-
 
 fn _handler558(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler558");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: blkarg_mark -> tAMPER2");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: blkarg_mark -> tAMPER2
-
 }
-
 
 fn _handler559(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler559");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: blkarg_mark -> tAMPER
+println!("    *** PARSER production: blkarg_mark -> tAMPER");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler560(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler560");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
@@ -11498,579 +10370,503 @@ if let InteriorToken::T_IDENTIFIER(ref t_value) = _2 {
     } else { unreachable!(); }
 
     let __ = vec![ node::blockarg(_1, _2) ];
+println!("    *** PARSER production: f_block_arg -> blkarg_mark tIDENTIFIER");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: f_block_arg -> blkarg_mark tIDENTIFIER
-
 }
-
 
 fn _handler561(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler561");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 
 let __ = vec![_2];
+println!("    *** PARSER production: opt_f_block_arg -> tCOMMA f_block_arg");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_1(__)
-// raw production: opt_f_block_arg -> tCOMMA f_block_arg
-
 }
-
 
 fn _handler562(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler562");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = vec![];
-SV::_1(__)
-// raw production: opt_f_block_arg -> undefined
+println!("    *** PARSER production: opt_f_block_arg -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler563(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler563");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: singleton -> var_ref
+println!("    *** PARSER production: singleton -> var_ref");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler564(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler564");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 let mut _2 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 
 let __ = vec![_2];
-SV::_1(__)
-// raw production: singleton -> tLPAREN2 expr rparen
+println!("    *** PARSER production: singleton -> tLPAREN2 expr rparen");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler565(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler565");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = vec![];
-SV::_1(__)
-// raw production: assoc_list -> undefined
+println!("    *** PARSER production: assoc_list -> undefined");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler566(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler566");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: assoc_list -> assocs trailer
+println!("    *** PARSER production: assoc_list -> assocs trailer");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler567(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler567");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = vec![_1];
-SV::_1(__)
-// raw production: assocs -> assoc
+println!("    *** PARSER production: assocs -> assoc");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler568(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler568");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
-SV::_1(__)
-// raw production: assocs -> assocs tCOMMA assoc
+println!("    *** PARSER production: assocs -> assocs tCOMMA assoc");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_1(__)
 }
 
-
 fn _handler569(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler569");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _3 = pop!(self.values_stack, _2);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _2);
 
 let __ = node::pair(_1, _2, _3);
-SV::_2(__)
-// raw production: assoc -> arg_value tASSOC arg_value
+println!("    *** PARSER production: assoc -> arg_value tASSOC arg_value");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler570(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler570");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::pair_keyword(_1, _2);
-SV::_2(__)
-// raw production: assoc -> tLABEL arg_value
+println!("    *** PARSER production: assoc -> tLABEL arg_value");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler571(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler571");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _2);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::pair_quoted(_1, _2, _3, _4);
-SV::_2(__)
-// raw production: assoc -> tSTRING_BEG string_contents tLABEL_END arg_value
+println!("    *** PARSER production: assoc -> tSTRING_BEG string_contents tLABEL_END arg_value");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_2(__)
 }
 
-
 fn _handler572(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler572");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::kwsplat(_1, _2);
+println!("    *** PARSER production: assoc -> tDSTAR arg_value");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_2(__)
-// raw production: assoc -> tDSTAR arg_value
-
 }
-
 
 fn _handler573(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler573");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: operation -> tIDENTIFIER");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: operation -> tIDENTIFIER
-
 }
-
 
 fn _handler574(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler574");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: operation -> tCONSTANT");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: operation -> tCONSTANT
-
 }
-
 
 fn _handler575(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler575");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: operation -> tFID");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: operation -> tFID
-
 }
-
 
 fn _handler576(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler576");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: operation2 -> tIDENTIFIER");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: operation2 -> tIDENTIFIER
-
 }
-
 
 fn _handler577(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler577");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: operation2 -> tCONSTANT");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: operation2 -> tCONSTANT
-
 }
-
 
 fn _handler578(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler578");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: operation2 -> tFID");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: operation2 -> tFID
-
 }
-
 
 fn _handler579(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler579");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: operation2 -> op");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: operation2 -> op
-
 }
-
 
 fn _handler580(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler580");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: operation3 -> tIDENTIFIER");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: operation3 -> tIDENTIFIER
-
 }
-
 
 fn _handler581(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler581");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: operation3 -> tFID");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: operation3 -> tFID
-
 }
-
 
 fn _handler582(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler582");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: operation3 -> op");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: operation3 -> op
-
 }
-
 
 fn _handler583(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler583");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: dot_or_colon -> call_op");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: dot_or_colon -> call_op
-
 }
-
 
 fn _handler584(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler584");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: dot_or_colon -> tCOLON2
+println!("    *** PARSER production: dot_or_colon -> tCOLON2");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler585(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler585");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 
 let __ = InteriorToken::T_DOT.wrap_as_token();
 
                     //   result = [:dot, val[0][1]]
                     // TODO;
-SV::_0(__)
-// raw production: call_op -> tDOT
+println!("    *** PARSER production: call_op -> tDOT");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+SV::_0(__)
 }
 
-
 fn _handler586(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler586");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 
 let __ = InteriorToken::T_ANDDOT.wrap_as_token();
 
                     //   result = [:anddot, val[0][1]]
                     // TODO;
+println!("    *** PARSER production: call_op -> tANDDOT");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 SV::_0(__)
-// raw production: call_op -> tANDDOT
-
 }
-
 
 fn _handler587(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler587");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = SV::Undefined;
+println!("    *** PARSER production: opt_terms -> undefined");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: opt_terms -> undefined
-
 }
-
 
 fn _handler588(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler588");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: opt_terms -> terms");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: opt_terms -> terms
-
 }
-
 
 fn _handler589(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler589");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = SV::Undefined;
+println!("    *** PARSER production: opt_nl -> undefined");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: opt_nl -> undefined
-
 }
-
 
 fn _handler590(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler590");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: opt_nl -> tNL");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: opt_nl -> tNL
-
 }
-
 
 fn _handler591(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler591");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = self.values_stack.pop().unwrap();
 self.values_stack.pop();
 
 let __ = _2;
+println!("    *** PARSER production: rparen -> opt_nl tRPAREN");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: rparen -> opt_nl tRPAREN
-
 }
-
 
 fn _handler592(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler592");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _2 = self.values_stack.pop().unwrap();
 self.values_stack.pop();
 
 let __ = _2;
-__
-// raw production: rbracket -> opt_nl tRBRACK
+println!("    *** PARSER production: rbracket -> opt_nl tRBRACK");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler593(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler593");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 
 
 let __ = SV::Undefined;
+println!("    *** PARSER production: trailer -> undefined");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: trailer -> undefined
-
 }
-
 
 fn _handler594(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler594");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: trailer -> tNL");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: trailer -> tNL
-
 }
-
 
 fn _handler595(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler595");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: trailer -> tCOMMA
+println!("    *** PARSER production: trailer -> tCOMMA");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler596(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler596");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 // yyerrok
         // TODO
         let __ = _1;
+println!("    *** PARSER production: term -> tSEMI");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: term -> tSEMI
-
 }
-
 
 fn _handler597(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler597");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
+println!("    *** PARSER production: term -> tNL");
+
+println!("    values_stack: {:?}", self.values_stack);
+
 __
-// raw production: term -> tNL
-
 }
-
 
 fn _handler598(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler598");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-__
-// raw production: terms -> term
+println!("    *** PARSER production: terms -> term");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 
-
 fn _handler599(&mut self) -> SV {
-
-    println!("   *** PARSER: _handler599");
-    println!("   values_stack: {:?}", self.values_stack);
-  // Semantic values prologue.
+// Semantic values prologue.
 self.values_stack.pop();
 self.values_stack.pop();
 
 let __ = SV::Undefined;
-__
-// raw production: terms -> terms tSEMI
+println!("    *** PARSER production: terms -> terms tSEMI");
 
+println!("    values_stack: {:?}", self.values_stack);
+
+__
 }
 }

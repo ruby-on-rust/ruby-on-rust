@@ -1,30 +1,5 @@
 // note about extracting values(token/node) in production
 // 
-// example 1
-// 
-// simple_numeric
-//     :
-//     tINTEGER {
-//         || -> Node;
-// 
-//         let $$;
-//         if let SV::_0(token) = $1 {
-//             if let box InteriorToken::T_INTEGER(value) = token.interior_token {
-//                 <REMOVE THIS LET>$$ = Node::Int(value);
-//             } else { unreachable!(); }
-//         } else { unreachable!(); }
-//     }
-// ;
-// 
-// `|| -> Node` means `$1` is unwrapped, so have to do the matching manually
-// 
-// TODO and why we don't want to unwrap it?
-// 
-// TODO <REMOVE THIS LET> is another issue here
-// 
-// 
-// example 2
-// 
 // var_ref
 //     : keyword_variable {
 //         |$1:Node| -> Node;
@@ -34,8 +9,6 @@
 // ;
 // 
 // `|$1:Node|` means a `pop` and an `unwrap`, so `$1` is already a `Node` unwrapped from `SV`
-// 
-// TODO make macros
 // 
 
 // TODO update
@@ -47,7 +20,6 @@
 // TODO fake embedded actions
 // https://github.com/DmitrySoshnikov/syntax/issues/65
 // TODO many embedded actions actually dont need a return value
-// 
 
 // TODO `error` in yacc/bison/racc is `a terminal symbol reserved for error recovery`, see http://dinosaur.compilertools.net/bison/bison_9.html#SEC81
 // figure out what's the corresponsing word in syntax

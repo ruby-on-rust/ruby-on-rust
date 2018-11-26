@@ -4,7 +4,6 @@ version = "0.0.0"
 authors = ["Nami.WANG <namiheike@gmail.com>"]
 
 [dependencies]
-
 regex = "1.0.4"
 lazy_static = "1.1.0"
 maplit = "1.0.1"
