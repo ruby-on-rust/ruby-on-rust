@@ -14,17 +14,8 @@ syntax_cli_path = 'node ../syntax/dist/bin/syntax.js'
 
 puts `#{syntax_cli_path} -g src/parser/parser.g -m LALR1 -o src/parser/parser.rs`
 
-puts "cleaning..."
-
 parser_file = 'src/parser/parser.rs'
 content = File.read parser_file
-
-# content.gsub! """
-# extern crate regex;
-# 
-# #[macro_use]
-# extern crate lazy_static;
-# """, ''
 
 content.gsub! /(^\/\*\*$\n^ \* Generic tokenizer used by the parser in the Syntax tool)(.*)(^\/\/ Parser\.)/m, ''
 
@@ -40,11 +31,6 @@ content.gsub! 'pop!(self.values_stack, _0)', 'interior_token!(pop!(self.values_s
 #
 content.gsub! 'let mut shifted_token = token;', 'let mut shifted_token = token.clone();'
 content.gsub! 'self.values_stack.push(SV::_0(token));', 'self.values_stack.push(SV::_0(token.clone()));'
-
-# 
-# parser: &'static str -> &str
-# 
-content.gsub! 'pub fn parse(&mut self, string: &\'static str) -> TResult {', 'pub fn parse(&mut self, string: &str) -> TResult {'
 
 File.open parser_file, "w" do |file| file.puts content end
 
