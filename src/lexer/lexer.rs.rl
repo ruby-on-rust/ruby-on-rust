@@ -1,14 +1,19 @@
 // TODO
 // set starting cs as lexer_en_line_begin
 
-// NOTE this is not effective
-#[allow(non_upper_case_globals)]
+// TODO
+// apply #[allow(non_upper_case_globals)] for values
 
 use std::rc::Rc;
 use std::cell::RefCell;
-use crate::token::token::Token;
-use crate::lexer::literal::Literal;
-use crate::lexer::stack_state::StackState;
+use crate::{
+    token::token::Token,
+    lexer::{
+        literal::Literal,
+        stack_state::StackState,
+        dedenter::Dedenter,
+    }
+};
 
 %%{
     machine lexer;
@@ -102,7 +107,7 @@ pub struct Lexer {
     // # expanded inside the lexer, but count as non-whitespace for
     // # indentation purposes.
     // @dedent_level  = nil
-    pub dedent_level: isize,
+    pub dedent_level: Option<isize>,
 
     // # If the lexer is in `command state' (aka expr_value)
     // # at the entry to #advance, it will transition to expr_cmdarg
@@ -153,7 +158,7 @@ impl Lexer {
             paren_nest: 0,
             lambda_stack: vec![],
 
-            dedent_level: 0,
+            dedent_level: None,
             command_state: false,
 
             in_kwarg: false

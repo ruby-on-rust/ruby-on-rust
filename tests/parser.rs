@@ -24,7 +24,6 @@ macro_rules! assert_parses {
 //       nil,
 //       %q{})
 //   end
-// TODO FAILING
 #[test] fn test_empty_stmt() { assert_parses!("", Node::Null); } // We're using a Node::Null, DK if that will fit later
 
 //   def test_nil

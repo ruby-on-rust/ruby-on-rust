@@ -6078,7 +6078,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _7);
 
 self.tokenizer.interior_lexer.cmdarg = _1;
-        let __ = _2;
+    let __ = _2;
 println!("    *** PARSER production: command_args -> fake_embedded_action__command_args call_args");
 
 println!("    values_stack: {:?}", self.values_stack);

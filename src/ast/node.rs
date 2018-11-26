@@ -2,6 +2,7 @@
 
 use crate::{
     token::token::Token,
+    lexer::dedenter::Dedenter,
     parser::static_env::StaticEnv,
 };
 
@@ -133,10 +134,11 @@ pub enum Node {
     Int(isize),
 
     Str(String),
-    DStr(Vec<Node>),
+    DStr(Nodes),
+    XStr(Nodes),
 
     Sym(String),
-    DSym(Vec<Node>),
+    DSym(Nodes),
 
     Array(Nodes),
 
@@ -308,21 +310,17 @@ pub fn unary_num(t_unary: Token, n_simple_numeric: Node) -> Node {
 //     delimited_string_map(string_t))
 // end
 pub fn string(string_t: Token) -> Node {
-    wip!();
+    Node::Str(string_value(string_t))
 }
 
 // def string_internal(string_t)
 //   n(:str, [ string_value(string_t) ],
 //     unquoted_map(string_t))
 // end
-
-// TODO INCOMPLETE
+// 
 // string_t: Token::T_STRING_CONTENT
 pub fn string_internal(string_t: Token) -> Node {
-    if let Token::T_STRING_CONTENT(string_value) = string_t {
-        return Node::Str(string_value);
-    }
-    unreachable!();
+    Node::Str(string_value(string_t))
 }
 
 // def string_compose(begin_t, parts, end_t)
@@ -370,13 +368,7 @@ pub fn character(char_t: Token) -> Node {
 // end
 // TODO INCOMPLETE
 pub fn symbol(symbol_t: Token) -> Node {
-    // symbol_t: Token:T_SYMBOL
-
-    if let Token::T_SYMBOL(symbol_string) = symbol_t {
-        return Node::Sym(symbol_string);
-    }
-
-    unreachable!();
+    Node::Sym(string_value(symbol_t))
 }
 
 // def symbol_internal(symbol_t)
@@ -430,29 +422,42 @@ pub fn xstring_compose(begin_t: Token, parts: Nodes, end_t: Token) -> Node {
 
 // # Indented (interpolated, noninterpolated, executable) strings
 
-// def dedent_string(node, dedent_level)
-//   if !dedent_level.nil?
-//     dedenter = Lexer::Dedenter.new(dedent_level)
-// 
-//     if node.type == :str
-//       str = node.children.first
-//       dedenter.dedent(str)
-//     elsif node.type == :dstr || node.type == :xstr
-//       node.children.each do |str_node|
-//         if str_node.type == :str
-//           str = str_node.children.first
-//           dedenter.dedent(str)
-//         else
-//           dedenter.interrupt
-//         end
-//       end
-//     end
-//   end
-// 
-//   node
-// end
-pub fn dedent_string(node: Node, dedent_level: isize) -> Node {
-    wip!();
+pub fn dedent_string(node: Node, dedent_level: Option<isize>) -> Node {
+    //   if !dedent_level.nil?
+    //     dedenter = Lexer::Dedenter.new(dedent_level)
+    // 
+    //     if node.type == :str
+    //       str = node.children.first
+    //       dedenter.dedent(str)
+    //     elsif node.type == :dstr || node.type == :xstr
+    //       node.children.each do |str_node|
+    //         if str_node.type == :str
+    //           str = str_node.children.first
+    //           dedenter.dedent(str)
+    //         else
+    //           dedenter.interrupt
+    //         end
+    //       end
+    //     end
+    //   end
+    // 
+    //   node
+
+    if let Some(dedent_level) = dedent_level {
+        let mut dedenter = Dedenter::new(dedent_level);
+        match node {
+            Node::Str(ref string) => {
+                dedenter.dedent(string);
+            },
+            Node::DStr(nodes) | Node::XStr(nodes) => {
+                // dedenter.dedent(nodes[0].expect("node:dedent_string empty nodes"));
+                wip!();
+            },
+            _ => { panic!("node:dedent_string: unknown how to handle node {:?}", node); }
+        }
+    }
+
+    node
 }
 
 // # Regular expressions
@@ -1755,6 +1760,15 @@ fn is_collapse_string_parts(parts: &Nodes) -> bool {
 // 
 //       token[0]
 //     end
+fn string_value(token: Token) -> String {
+    // TODO encoding stuff
+
+    // TODO refine this after we make all Token has a value
+    match token {
+        Token::T_STRING(v) | Token::T_STRING_CONTENT(v) | Token::T_SYMBOL(v) => v,
+        _ => { panic!("node::string_value: unknown how to handle token {:?}", token); }
+    }
+}
 
 //     def loc(token)
 //       # Pass through `nil`s and return nil for tNL.
