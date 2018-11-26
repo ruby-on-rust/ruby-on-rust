@@ -182,6 +182,8 @@ pub enum Node {
     //     receiver being None means sending to self
     // TODO note about selector and such
     CSend { receiver: Option<Box<Node>>, selector: String, args: Nodes },
+
+    MLhs(Nodes),
 }
 
 pub type Nodes = Vec<Node>;
@@ -1611,7 +1613,10 @@ pub fn rescue_body(rescue_t: Token, exc_list: Option<Node>, assoc_t: Option<Toke
 pub fn begin_body(  compound_stmt: Node,     rescue_bodies: Nodes,
                     else_t: Option<Token>,   else_: Option<Node>,
                     ensure_t: Option<Token>, ensure_: Option<Node> ) -> Node {
-    wip!();
+
+    // TODO
+
+    compound_stmt
 }
 
 // #
@@ -1657,7 +1662,10 @@ pub fn compstmt(nodes: Nodes) -> Node {
 //   end
 // end
 pub fn begin(begin_t: Token, body: Option<Node>, end_t: Token) -> Node {
-    wip!();
+    match body {
+        None => { Node::Begin(vec![]) },
+        _ => { wip!(); }
+    }
 }
 
 // def begin_keyword(begin_t, body, end_t)
@@ -1675,8 +1683,11 @@ pub fn begin(begin_t: Token, body: Option<Node>, end_t: Token) -> Node {
 //       collection_map(begin_t, [ body ], end_t))
 //   end
 // end
-pub fn begin_keyword(begin_t: Token, body: Node, end_t: Token) -> Node {
-    wip!();
+pub fn begin_keyword(begin_t: Token, body: Option<Node>, end_t: Token) -> Node {
+    match body {
+        None => { Node::Begin(vec![]) },
+        _ => { wip!(); }
+    }
 }
 
 //     #

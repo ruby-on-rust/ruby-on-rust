@@ -278,14 +278,14 @@ fn string_dvar() {
 //       %q{~~~~~~ expression
 //         |       ~~~~~~~~ heredoc_body
 //         |               ~~~~ heredoc_end})
-
+// 
 //     assert_parses(
 //       s(:dstr, s(:str, "foo\n"), s(:str, "bar\n")),
 //       %Q{<<'HERE'!foo!bar!HERE}.gsub('!', "\n"),
 //       %q{~~~~~~~~ expression
 //         |         ~~~~~~~~ heredoc_body
 //         |                 ~~~~ heredoc_end})
-
+// 
 //     assert_parses(
 //       s(:xstr, s(:str, "foo\n"), s(:str, "bar\n")),
 //       %Q{<<`HERE`!foo!bar!HERE}.gsub('!', "\n"),
@@ -561,13 +561,13 @@ fn symbol_interp() {
 //     rescue RegexpError => e
 //       message = e.message
 //     end
-
+// 
 //     assert_diagnoses(
 //       [:error, :invalid_regexp, {:message => message}],
 //       %q[/?/],
 //       %q(~~~ location),
 //       SINCE_1_9)
-
+// 
 //     assert_diagnoses(
 //       [:error, :invalid_regexp, {:message => message}],
 //       %q[/#{""}?/],

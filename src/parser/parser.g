@@ -129,24 +129,20 @@ top_stmt
 
 bodystmt
     : compstmt opt_rescue opt_else opt_ensure {
-        |$1:Node, $2:Nodes, $3:TTokenNode, $4:TTokenNode| -> Node;
+        |$1:Node, $2:Nodes, $3:TSomeTokenNode, $4:TSomeTokenNode| -> Node;
 
         let rescue_bodies = $2;
-        let (else_t, else_) = $3;
-        let (ensure_t, ensure_) = $4;
+        let (else_t, else_) = unwrap_some_token_node!($3);
+        let (ensure_t, ensure_) = unwrap_some_token_node!($4);
 
-        if rescue_bodies.is_empty() {
-            panic!("diagnostic warning");
+        // if rescue_bodies.empty? && !else_.nil?
+        //   diagnostic :warning, :useless_else, nil, else_t
+        // end
+        if rescue_bodies.is_empty() { // TODO !else_.nil?
+            // TODO diagnostic warning
         }
-        //                       if rescue_bodies.empty? && !else_.nil?
-        //                         diagnostic :warning, :useless_else, nil, else_t
-        //                       end
-        // 
-        //                       result = @builder.begin_body(val[0],
-        //                                   rescue_bodies,
-        //                                   else_t,   else_,
-        //                                   ensure_t, ensure_)
-        $$ = Node::DUMMY;
+
+        $$ = node::begin_body($1, rescue_bodies, else_t, else_, ensure_t, ensure_);
     }
 ;
 
@@ -1155,7 +1151,9 @@ primary
 
         self.tokenizer.interior_lexer.cmdarg = $2;
 
-        $$ = node::begin_keyword($1, $3, $4);
+        $$ = node::begin_keyword($1, Some($3), $4);
+
+        // TODO sth is wrong here. this is the only begin_keyword invocation, yet in node::begin_keyword, bodystmt may be nil, say `kegin end`
     }
     | tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG stmt fake_embedded_action_primary_tLPAREN_ARG_stmt rparen {
         |$1: Token, $2: StackState, $3: Node, $5: Token| -> Node;
