@@ -1610,9 +1610,9 @@ pub fn rescue_body(rescue_t: Token, exc_list: Option<Node>, assoc_t: Option<Toke
 // 
 //   compound_stmt
 // end
-pub fn begin_body(  compound_stmt: Node,     rescue_bodies: Nodes,
-                    else_t: Option<Token>,   else_: Option<Node>,
-                    ensure_t: Option<Token>, ensure_: Option<Node> ) -> Node {
+pub fn begin_body(  compound_stmt: Option<Node>, rescue_bodies: Nodes,
+                    else_t: Option<Token>,       else_: Option<Node>,
+                    ensure_t: Option<Token>,     ensure_: Option<Node> ) -> Option<Node> {
 
     // TODO
 
@@ -1634,13 +1634,12 @@ pub fn begin_body(  compound_stmt: Node,     rescue_bodies: Nodes,
 //       collection_map(nil, statements, nil))
 //   end
 // end
-pub fn compstmt(nodes: Nodes) -> Node {
+pub fn compstmt(nodes: Nodes) -> Option<Node> {
     match nodes.len() {
-        // TODO nil <-> Node::Null
-        0 => { return Node::Null; }
-        1 => { return nodes.get(0).unwrap().clone(); }
+        0 => { None }
+        1 => { Some(nodes.get(0).unwrap().clone()) }
         // TODO collection_map
-        _ => { return Node::Begin(nodes); }
+        _ => { Some(Node::Begin(nodes)) }
     }
 }
 

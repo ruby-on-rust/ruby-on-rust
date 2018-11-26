@@ -10,7 +10,7 @@ use ruby_on_rust::ast::node::*;
 macro_rules! assert_parses {
     ($content:expr, $node:expr) => {
         let mut parser = Parser::new();
-        let node = parser.parse($content);
+        let node = parser.parse($content).expect("unexpected empty parsing result");
         assert_eq!(node, $node);
     };
 }
@@ -24,7 +24,11 @@ macro_rules! assert_parses {
 //       nil,
 //       %q{})
 //   end
-#[test] fn test_empty_stmt() { assert_parses!("", Node::Null); } // We're using a Node::Null, DK if that will fit later
+#[test] fn test_empty_stmt() {
+    let mut parser = Parser::new();
+    let node = parser.parse("");
+    assert_eq!(node, None);
+}
 
 //   def test_nil
 //     assert_parses(

@@ -63,11 +63,10 @@ use crate::{
     ast::node::{ Node, Nodes },
 };
 
-pub type TResult = Node;
-
+type TSomeNode = Option<Node>;
+type TSomeNodes = Option<Nodes>;
 type TTokenNode = ( InteriorToken, Node );
 type TSomeTokenNode = Option<(InteriorToken, Node)>;
-type TSomeNodes = Option<Nodes>;
 type TParenArgs = ( Option<InteriorToken>, Nodes, Option<InteriorToken> );
 type TLambdaBody = ( InteriorToken, Node, InteriorToken );
 type TLambda = ( Node, TLambdaBody );
@@ -75,6 +74,8 @@ type TDoBody = ( Node, Node ); // args/opt_block_param body/bodystmt
 type TDoBlock = ( InteriorToken, TDoBody, InteriorToken );
 type TBraceBody = ( Node, Node ); // opt_block_param, compstmt
 type TBraceBlock = ( InteriorToken, TBraceBody, InteriorToken );
+
+pub type TResult = TSomeNode;
 
 macro_rules! wip { () => { panic!("WIP"); }; }
 macro_rules! interior_token { ($token:expr) => { *$token.interior_token }; }
@@ -95,7 +96,7 @@ program: top_compstmt;
 
 top_compstmt
     : top_stmts opt_terms {
-        |$1: Nodes| -> Node;
+        |$1: Nodes| -> TSomeNode;
         $$ = node::compstmt($1);
     }
 ;
@@ -129,7 +130,7 @@ top_stmt
 
 bodystmt
     : compstmt opt_rescue opt_else opt_ensure {
-        |$1:Node, $2:Nodes, $3:TSomeTokenNode, $4:TSomeTokenNode| -> Node;
+        |$1:TSomeNode, $2:Nodes, $3:TSomeTokenNode, $4:TSomeTokenNode| -> TSomeNode;
 
         let rescue_bodies = $2;
         let (else_t, else_) = unwrap_some_token_node!($3);
@@ -147,9 +148,7 @@ bodystmt
 ;
 
 compstmt: stmts opt_terms {
-    // TODO well @builder.compstmt actually returns an Option<Node>
-    // result = @builder.compstmt(val[0])
-    |$1:Nodes| -> Node;
+    |$1:Nodes| -> TSomeNode;
     $$ = node::compstmt($1);
 };
 
@@ -238,7 +237,7 @@ stmt
         |$1:Node, $2:Token, $3:Node| -> Node;
         let rescue_body = node::rescue_body($2, None, None, None, None, $3);
 
-        $$ = node::begin_body($1, vec![ rescue_body ], None, None, None, None);
+        $$ = node::begin_body(Some($1), vec![ rescue_body ], None, None, None, None).expect("unexpected None");
     }
     | klEND tLCURLY compstmt tRCURLY {
         |$1:Token, $2:Token, $3:Node, $4:Token| -> Node;
@@ -314,10 +313,10 @@ command_asgn
 command_rhs
     : command_call %prec tOP_ASGN
     | command_call kRESCUE_MOD stmt {
-        |$1:Node, $2:Token, $3:Node| -> Node;
+        |$1:Node, $2:Token, $3:Node| -> TSomeNode;
         let rescue_body = node::rescue_body($2, None, None, None, None, $3);
 
-        $$ = node::begin_body($1, vec![ rescue_body ], None, None, None, None);
+        $$ = node::begin_body(Some($1), vec![ rescue_body ], None, None, None, None);
     }
     | command_asgn
 ;
@@ -891,10 +890,10 @@ aref_args
 arg_rhs
     : arg %prec tOP_ASGN
     | arg kRESCUE_MOD arg {
-        |$1:Node, $2:Token, $3:Node| -> Node;
+        |$1:Node, $2:Token, $3:Node| -> TSomeNode;
         let rescue_body = node::rescue_body($2, None, None, None, None, $3);
 
-        $$ = node::begin_body($1, vec![ rescue_body ], None, None, None, None);
+        $$ = node::begin_body(Some($1), vec![ rescue_body ], None, None, None, None);
     }
 ;
 
@@ -1147,13 +1146,11 @@ primary
         $$ = node::call_method(None, None, Some($1), None, vec![], None);
     }
     | kBEGIN fake_embedded_action_primary_kBEGIN bodystmt kEND {
-        |$1: Token, $2: StackState, $3: Node, $4: Token| -> Node;
+        |$1: Token, $2: StackState, $3: TSomeNode, $4: Token| -> Node;
 
         self.tokenizer.interior_lexer.cmdarg = $2;
 
-        $$ = node::begin_keyword($1, Some($3), $4);
-
-        // TODO sth is wrong here. this is the only begin_keyword invocation, yet in node::begin_keyword, bodystmt may be nil, say `kegin end`
+        $$ = node::begin_keyword($1, $3, $4);
     }
     | tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG stmt fake_embedded_action_primary_tLPAREN_ARG_stmt rparen {
         |$1: Token, $2: StackState, $3: Node, $5: Token| -> Node;
@@ -1168,9 +1165,9 @@ primary
         $$ = node::begin($1, None, $4);
     }
     | tLPAREN compstmt tRPAREN {
-        |$1: Token, $2: Node, $3: Token| -> Node;
+        |$1: Token, $2: TSomeNode, $3: Token| -> Node;
 
-        $$ = node::begin($1, None, $3);
+        $$ = node::begin($1, $2, $3);
     }
     | primary_value tCOLON2 tCONSTANT {
         |$1:Node; $2:Token, $3:Token| -> Node;
