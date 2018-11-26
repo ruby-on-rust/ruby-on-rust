@@ -1,4 +1,4 @@
-// https://github.com/whitequark/parser/commit/3d588f42a67235828744e458e45daa963a0d24a8#diff-5267493af36869d868502e7fd1f342bd
+// https://github.com/whitequark/parser/blob/3d588f42a67235828744e458e45daa963a0d24a8/lib/parser/ruby25.y
 
 // note about extracting values(token/node) in production
 // 
