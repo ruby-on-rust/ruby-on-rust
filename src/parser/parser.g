@@ -1,3 +1,5 @@
+// https://github.com/whitequark/parser/commit/3d588f42a67235828744e458e45daa963a0d24a8#diff-5267493af36869d868502e7fd1f342bd
+
 // note about extracting values(token/node) in production
 // 
 // var_ref
@@ -50,13 +52,16 @@
 
 %{
 
-use crate::lexer::stack_state::StackState;
-use crate::token::token::Token as InteriorToken;
-use crate::parser::token::Token;
-use crate::parser::tokenizer::Tokenizer;
-use crate::parser::static_env::StaticEnv;
-use crate::ast::node;
-use crate::ast::node::{ Node, Nodes };
+use crate::{
+    token::token::Token as InteriorToken,
+    lexer::stack_state::StackState,
+    parser::context::Context,
+    parser::token::Token,
+    parser::tokenizer::Tokenizer,
+    parser::static_env::StaticEnv,
+    ast::node,
+    ast::node::{ Node, Nodes },
+};
 
 pub type TResult = Node;
 
@@ -70,7 +75,6 @@ type TDoBody = ( Node, Node ); // args/opt_block_param body/bodystmt
 type TDoBlock = ( InteriorToken, TDoBody, InteriorToken );
 type TBraceBody = ( Node, Node ); // opt_block_param, compstmt
 type TBraceBlock = ( InteriorToken, TBraceBody, InteriorToken );
-type TOptRescue = ( Node, TSomeTokenNode );
 
 macro_rules! wip { () => { panic!("WIP"); }; }
 macro_rules! interior_token { ($token:expr) => { *$token.interior_token }; }
@@ -358,10 +362,16 @@ block_command
     }
 ;
 
-cmd_brace_block: tLBRACE_ARG brace_body tRCURLY {
-    |$1:Token, $2:TBraceBody, $3:Token| -> TBraceBlock;
+fake_embedded_action__cmd_brace_block: {
+    || -> Node; $$ = Node::DUMMY;
+    self.context.push("block");
+};
 
-    $$ = ($1, $2, $3);
+cmd_brace_block: tLBRACE_ARG fake_embedded_action__cmd_brace_block brace_body tRCURLY {
+    |$1:Token, $3:TBraceBody, $4:Token| -> TBraceBlock;
+
+    $$ = ($1, $3, $4);
+    self.context.pop();
 };
 
 fcall: operation;
@@ -409,7 +419,7 @@ command
         |$1:Token, $2:Nodes| -> Node;
         $$ = node::keyword_cmd("yield", $1, None, $2, None);
     }
-    | kRETURN call_args {
+    | k_return call_args {
         |$1:Token, $2:Nodes| -> Node;
         $$ = node::keyword_cmd("return", $1, None, $2, None);
     }
@@ -1087,16 +1097,15 @@ fake_embedded_action__primary__kCLASS_1: {
 
     self.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
+    self.context.push("class");
 };
 
 fake_embedded_action__primary__kCLASS_2: {
-    //   result = @def_level
-    //   @def_level = 0
+    ||->Node; $$=Node::DUMMY;
 
-    //   @static_env.extend_static
-    //   @lexer.push_cmdarg
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    self.static_env.extend_static();
+    self.tokenizer.interior_lexer.push_cmdarg();
+    self.context.push("sclass");
 };
 
 fake_embedded_action__primary__kMODULE_1: {
@@ -1107,11 +1116,11 @@ fake_embedded_action__primary__kMODULE_1: {
 };
 
 fake_embedded_action__primary__kDEF_1: {
-    //   @def_level += 1
-    //   @static_env.extend_static
-    //   @lexer.push_cmdarg
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    ||->Node; $$=Node::DUMMY;
+
+    self.static_env.extend_static();
+    self.tokenizer.interior_lexer.push_cmdarg();
+    self.context.push("def");
 };
 
 fake_embedded_action__primary__kDEF_2: {
@@ -1120,11 +1129,11 @@ fake_embedded_action__primary__kDEF_2: {
 };
 
 fake_embedded_action__primary__kDEF_3: {
-    //   @def_level += 1
-    //   @static_env.extend_static
-    //   @lexer.push_cmdarg
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+    ||->Node; $$=Node::DUMMY;
+
+    self.static_env.extend_static();
+    self.tokenizer.interior_lexer.push_cmdarg();
+    self.context.push("defs");
 };
 
 primary
@@ -1186,7 +1195,7 @@ primary
 
         $$ = node::associate( Some($1), $2, Some($3) );
     }
-    | kRETURN {
+    | k_return {
         |$1:Token| -> Node; $$ = node::keyword_cmd("return", $1, None, vec![], None);
     }
     | kYIELD tLPAREN2 call_args rparen {
@@ -1277,7 +1286,7 @@ primary
         $$ = node::build_for($1, $2, $3, $5, $6, $8, $9);
     }
     | kCLASS cpath superclass fake_embedded_action__primary__kCLASS_1 bodystmt kEND {
-        //   if in_def?
+        //   if @context.indirectly_in_def?
         //     diagnostic :error, :class_in_def, nil, val[0]
         //   end
 
@@ -1288,6 +1297,7 @@ primary
 
         //   @lexer.pop_cmdarg
         //   @static_env.unextend
+        //   @context.pop
         ||->Node;
         wip!(); $$=Node::DUMMY;
     }
@@ -1298,12 +1308,12 @@ primary
         //   @lexer.pop_cmdarg
         //   @static_env.unextend
 
-        //   @def_level = val[4]
+        //   @context.pop
         ||->Node;
         wip!(); $$=Node::DUMMY;
     }
     | kMODULE cpath fake_embedded_action__primary__kMODULE_1 bodystmt kEND {
-        //   if in_def?
+        //   if @context.indirectly_in_def?
         //     diagnostic :error, :module_in_def, nil, val[0]
         //   end
 
@@ -1321,7 +1331,7 @@ primary
 
         //   @lexer.pop_cmdarg
         //   @static_env.unextend
-        //   @def_level -= 1
+        //   @context.pop
         ||->Node;
         wip!(); $$=Node::DUMMY;
     }
@@ -1331,7 +1341,7 @@ primary
 
         //   @lexer.pop_cmdarg
         //   @static_env.unextend
-        //   @def_level -= 1
+        //   @context.pop
         ||->Node;
         wip!(); $$=Node::DUMMY;
     }
@@ -1350,6 +1360,15 @@ primary
 ;
 
 primary_value: primary;
+
+k_return: kRETURN {
+    ||->Node; $$=Node::DUMMY;
+
+    if self.context.is_in_class() {
+        //   diagnostic :error, :invalid_return, nil, val[0]
+        panic!("diagnostic error invalid_return");
+    }
+};
 
 then
     : term
@@ -1697,20 +1716,33 @@ f_larglist
     }
 ;
 
+fake_embedded__lambda_body__1: {
+    ||->Node; $$=Node::DUMMY;
+    self.context.push("lambda");
+};
+
 lambda_body
-    : tLAMBEG compstmt tRCURLY {
-        |$1:Token, $2:Node, $3:Token| -> TLambdaBody;
-        $$ = ($1, $2, $3);
+    : tLAMBEG fake_embedded__lambda_body__1 compstmt tRCURLY {
+        |$1:Token, $3:Node, $4:Token| -> TLambdaBody;
+        $$ = ($1, $3, $4);
+        self.context.pop();
     }
-    | kDO_LAMBDA compstmt kEND {
-        |$1:Token, $2:Node, $3:Token| -> TLambdaBody;
-        $$ = ($1, $2, $3);
+    | kDO_LAMBDA fake_embedded__lambda_body__1 compstmt kEND {
+        |$1:Token, $3:Node, $4:Token| -> TLambdaBody;
+        $$ = ($1, $3, $4);
+        self.context.pop();
     }
 ;
 
-do_block: kDO_BLOCK do_body kEND {
-    |$1:Token, $2:TDoBody, $3:Token| -> TDoBlock;
-    $$ = ( $1, $2, $3 );
+fake_embedded__do_block__1: {
+    ||->Node; $$=Node::DUMMY;
+    self.context.push("block");
+};
+
+do_block: kDO_BLOCK fake_embedded__do_block__1 do_body kEND {
+    |$1:Token, $3:TDoBody, $4:Token| -> TDoBlock;
+    $$ = ( $1, $3, $4 );
+    self.context.pop();
 };
 
 block_call
@@ -1798,14 +1830,23 @@ method_call
     }
 ;
 
+fake_embedded__brace_block__1: {
+    ||->Node; $$=Node::DUMMY;
+
+    self.context.push("block");
+    wip!();
+};
+
 brace_block
-    : tLCURLY brace_body tRCURLY {
-        |$1:Token, $2:TBraceBody, $3:Token| -> TBraceBlock;
-        $$ = ($1, $2, $3);
+    : tLCURLY fake_embedded__brace_block__1 brace_body tRCURLY {
+        |$1:Token, $3:TBraceBody, $4:Token| -> TBraceBlock;
+        $$ = ($1, $3, $4);
+        self.context.pop();
     }
-    | kDO do_body kEND {
-        |$1:Token, $2:TDoBody, $3:Token| -> TBraceBlock;
-        $$ = ($1, $2, $3);
+    | kDO fake_embedded__brace_block__1 do_body kEND {
+        |$1:Token, $3:TDoBody, $4:Token| -> TBraceBlock;
+        $$ = ($1, $3, $4);
+        self.context.pop();
     }
 ;
 

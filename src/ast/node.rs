@@ -805,7 +805,7 @@ pub fn assignable(node: Node) -> Node {
         },
 
         //   when :const
-        //     if @parser.in_def?
+        //     if @parser.context.indirectly_in_def?
         //       diagnostic :error, :dynamic_const, nil, node.loc.expression
         //     end
         // 
