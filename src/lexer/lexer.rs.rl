@@ -1,3 +1,5 @@
+// based on https://github.com/whitequark/parser/blob/3b48c2ef10b1346dc2e77f9c83059b50d5cd8258/lib/parser/lexer.rl
+
 // TODO
 // set starting cs as lexer_en_line_begin
 
