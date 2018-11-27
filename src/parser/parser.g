@@ -534,11 +534,12 @@ mlhs_post
 mlhs_node
     : user_variable {
         |$1:Node| -> Node;
-        $$ = node::assignable($1); }
+        $$ = node::assignable($1); 
+    }
     | keyword_variable {
-            |$1:Node| -> Node;
-            $$ = node::assignable($1);
-        }
+        |$1:Node| -> Node;
+        $$ = node::assignable($1);
+    }
     | primary_value tLBRACK2 opt_call_args rbracket {
         |$1: Node, $2: Token, $3: Nodes, $4:Token| -> Node;
 
