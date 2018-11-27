@@ -977,7 +977,8 @@ fn hash_label_end() {
 //       %q{foo},
 //       %q{~~~ expression})
 //   end
-#[test] fn lvar() { assert_parses!("foo", Node::LVar(String::from("foo"))); }
+// TODO emm why this isn't a send-to-self method call?
+#[test] fn lvar() { assert_parses!("foo", n_lvar!("foo")); }
 
 //   def test_ivar
 //     assert_parses(
@@ -985,7 +986,7 @@ fn hash_label_end() {
 //       %q{@foo},
 //       %q{~~~~ expression})
 //   end
-#[test] fn ivar() { assert_parses!("@foo", Node::IVar(String::from("@foo"))); }
+#[test] fn ivar() { assert_parses!("@foo", n_ivar!("@foo")); }
 
 //   def test_cvar
 //     assert_parses(
@@ -993,7 +994,7 @@ fn hash_label_end() {
 //       %q{@@foo},
 //       %q{~~~~~ expression})
 //   end
-#[test] fn cvar() { assert_parses!("@@foo", Node::CVar(String::from("@@foo"))); }
+#[test] fn cvar() { assert_parses!("@@foo", n_cvar!("@@foo")); }
 
 //   def test_gvar
 //     assert_parses(
@@ -1001,7 +1002,7 @@ fn hash_label_end() {
 //       %q{$foo},
 //       %q{~~~~ expression})
 //   end
-#[test] fn gvar() { assert_parses!("$foo", Node::GVar(String::from("$foo"))); }
+#[test] fn gvar() { assert_parses!("$foo", n_gvar!("$foo")); }
 
 //   def test_gvar_dash_empty
 //     assert_diagnoses(

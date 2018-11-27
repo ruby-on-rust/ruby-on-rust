@@ -729,6 +729,8 @@ pub fn nth_ref(token: Token) -> Node {
 
 // TODO INCOMPLETE
 pub fn accessible(node: Node, static_env: &StaticEnv) -> Node {
+    println!("node:accessible, node: {:?}", node);
+
     match node {
         //   when :__FILE__
         //     if @emit_file_line_as_literals
