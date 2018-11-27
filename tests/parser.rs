@@ -1,4 +1,5 @@
-// // BASED ON https://github.com/whitequark/parser/blob/2a73841d6da04a5ab9bd270561165fd766722d43/test/test_parser.rb
+// BASED ON https://github.com/whitequark/parser/blob/2a73841d6da04a5ab9bd270561165fd766722d43/test/test_parser.rb
+// TODO bad news, it's not the version it says. udpate this file.
 
 #[macro_use] extern crate ruby_on_rust;
 
@@ -742,7 +743,7 @@ fn array_words_empty() {
 //         |         ~~~ expression (dsym.begin.lvar)
 //         |~~~~~~~~~~~~~~ expression},
 //       SINCE_2_0)
-
+// 
 //     assert_parses(
 //       s(:array,
 //         s(:dsym,
@@ -761,13 +762,25 @@ fn array_words_empty() {
 //         |   ^ end
 //         |~~~~ expression},
 //       SINCE_2_0)
-
+// 
 //     assert_parses(
 //       s(:array),
 //       %q{%I()},
 //       %q{},
 //       SINCE_2_0)
 //   end
+#[test]
+pub fn array_symbols_empty() {
+    assert_parses!(
+        r"%i[]",
+        Node::Array(vec![])
+    );
+
+    assert_parses!(
+        r"%I[]",
+        Node::Array(vec![])
+    );
+}
 
 //   # Hashes
 
