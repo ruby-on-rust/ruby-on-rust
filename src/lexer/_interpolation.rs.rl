@@ -75,6 +75,13 @@ e_rbrace = '}' % {
     //       @herebody_s = current_literal.saved_herebody_s
     //     end
     // 
+    //     @cond.lexpop
+    //     if @version < 24
+    //       @cmdarg.lexpop
+    //     else
+    //       @cmdarg.pop
+    //     end
+    // 
     //     fhold;
     //     fnext *next_state_for_literal(current_literal);
     //     fbreak;
