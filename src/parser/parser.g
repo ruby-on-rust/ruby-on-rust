@@ -1,4 +1,4 @@
-// 969fb247f089145a9dfe646c579f937cfe2f4fde
+// 60558fcd536560b9e109a30eb8ff635333cdb4e0
 
 // note about extracting values(token/node) in production
 // 
@@ -1718,7 +1718,7 @@ lambda_body
         $$ = ($1, $3, $4);
         self.context.pop();
     }
-    | kDO_LAMBDA fake_embedded__lambda_body__1 compstmt kEND {
+    | kDO_LAMBDA fake_embedded__lambda_body__1 bodystmt kEND {
         |$1:Token, $3:Node, $4:Token| -> TLambdaBody;
         $$ = ($1, $3, $4);
         self.context.pop();
