@@ -1831,7 +1831,7 @@ pub struct Parser {
 
     // private fields for RoR
     // static_env: StaticEnv,
-    context: Context,
+    // context: Context,
 
 }
 
@@ -2452,7 +2452,7 @@ impl Parser {
 
             // private fields for RoR
             // static_env: StaticEnv::new(),
-            context: Context::new(),
+            // context: Context::new(),
         }
     }
 
@@ -3394,7 +3394,7 @@ fn _handler57(&mut self) -> SV {
 
 
 let __ = Node::DUMMY;
-    self.context.push("block");
+    self.tokenizer.context.push("block");
 println!("    *** PARSER production: fake_embedded_action__cmd_brace_block -> undefined");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -3410,7 +3410,7 @@ self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = (_1, _3, _4);
-    self.context.pop();
+    self.tokenizer.context.pop();
 println!("    *** PARSER production: cmd_brace_block -> tLBRACE_ARG fake_embedded_action__cmd_brace_block brace_body tRCURLY");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -6349,7 +6349,7 @@ let __ =Node::DUMMY;
     self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
-    self.context.push("class");
+    self.tokenizer.context.push("class");
 println!("    *** PARSER production: fake_embedded_action__primary__kCLASS_1 -> undefined");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -6366,7 +6366,7 @@ let __ =Node::DUMMY;
     self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
-    self.context.push("sclass");
+    self.tokenizer.context.push("sclass");
 println!("    *** PARSER production: fake_embedded_action__primary__kCLASS_2 -> undefined");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -6398,7 +6398,7 @@ let __ =Node::DUMMY;
     self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
-    self.context.push("def");
+    self.tokenizer.context.push("def");
 println!("    *** PARSER production: fake_embedded_action__primary__kDEF_1 -> undefined");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -6428,7 +6428,7 @@ let __ =Node::DUMMY;
     self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
-    self.context.push("defs");
+    self.tokenizer.context.push("defs");
 println!("    *** PARSER production: fake_embedded_action__primary__kDEF_3 -> undefined");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -7164,7 +7164,7 @@ self.values_stack.pop();
 
 let __ =Node::DUMMY;
 
-    if self.context.is_in_class() {
+    if self.tokenizer.context.is_in_class() {
         //   diagnostic :error, :invalid_return, nil, val[0]
         panic!("diagnostic error invalid_return");
     };
@@ -8083,7 +8083,7 @@ fn _handler394(&mut self) -> SV {
 
 
 let __ =Node::DUMMY;
-    self.context.push("lambda");
+    self.tokenizer.context.push("lambda");
 println!("    *** PARSER production: fake_embedded__lambda_body__1 -> undefined");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -8099,7 +8099,7 @@ self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = (_1, _3, _4);
-        self.context.pop();
+        self.tokenizer.context.pop();
 println!("    *** PARSER production: lambda_body -> tLAMBEG fake_embedded__lambda_body__1 compstmt tRCURLY");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -8115,7 +8115,7 @@ self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = (_1, _3, _4);
-        self.context.pop();
+        self.tokenizer.context.pop();
 println!("    *** PARSER production: lambda_body -> kDO_LAMBDA fake_embedded__lambda_body__1 bodystmt kEND");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -8128,7 +8128,7 @@ fn _handler397(&mut self) -> SV {
 
 
 let __ =Node::DUMMY;
-    self.context.push("block");
+    self.tokenizer.context.push("block");
 println!("    *** PARSER production: fake_embedded__do_block__1 -> undefined");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -8144,7 +8144,7 @@ self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = ( _1, _3, _4 );
-    self.context.pop();
+    self.tokenizer.context.pop();
 println!("    *** PARSER production: do_block -> kDO_BLOCK fake_embedded__do_block__1 do_body kEND");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -8358,7 +8358,7 @@ fn _handler412(&mut self) -> SV {
 
 let __ =Node::DUMMY;
 
-    self.context.push("block");
+    self.tokenizer.context.push("block");
     wip!();
 println!("    *** PARSER production: fake_embedded__brace_block__1 -> undefined");
 
@@ -8375,7 +8375,7 @@ self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = (_1, _3, _4);
-        self.context.pop();
+        self.tokenizer.context.pop();
 println!("    *** PARSER production: brace_block -> tLCURLY fake_embedded__brace_block__1 brace_body tRCURLY");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -8391,7 +8391,7 @@ self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = (_1, _3, _4);
-        self.context.pop();
+        self.tokenizer.context.pop();
 println!("    *** PARSER production: brace_block -> kDO fake_embedded__brace_block__1 do_body kEND");
 
 println!("    values_stack: {:?}", self.values_stack);

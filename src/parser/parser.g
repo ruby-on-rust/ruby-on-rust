@@ -378,14 +378,14 @@ block_command
 
 fake_embedded_action__cmd_brace_block: {
     || -> Node; $$ = Node::DUMMY;
-    self.context.push("block");
+    self.tokenizer.context.push("block");
 };
 
 cmd_brace_block: tLBRACE_ARG fake_embedded_action__cmd_brace_block brace_body tRCURLY {
     |$1:Token, $3:TBraceBody, $4:Token| -> TBraceBlock;
 
     $$ = ($1, $3, $4);
-    self.context.pop();
+    self.tokenizer.context.pop();
 };
 
 fcall: operation;
@@ -1097,7 +1097,7 @@ fake_embedded_action__primary__kCLASS_1: {
     self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
-    self.context.push("class");
+    self.tokenizer.context.push("class");
 };
 
 fake_embedded_action__primary__kCLASS_2: {
@@ -1106,7 +1106,7 @@ fake_embedded_action__primary__kCLASS_2: {
     self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
-    self.context.push("sclass");
+    self.tokenizer.context.push("sclass");
 };
 
 fake_embedded_action__primary__kMODULE_1: {
@@ -1122,7 +1122,7 @@ fake_embedded_action__primary__kDEF_1: {
     self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
-    self.context.push("def");
+    self.tokenizer.context.push("def");
 };
 
 fake_embedded_action__primary__kDEF_2: {
@@ -1136,7 +1136,7 @@ fake_embedded_action__primary__kDEF_3: {
     self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
-    self.context.push("defs");
+    self.tokenizer.context.push("defs");
 };
 
 primary
@@ -1372,7 +1372,7 @@ primary_value: primary;
 k_return: kRETURN {
     ||->Node; $$=Node::DUMMY;
 
-    if self.context.is_in_class() {
+    if self.tokenizer.context.is_in_class() {
         //   diagnostic :error, :invalid_return, nil, val[0]
         panic!("diagnostic error invalid_return");
     }
@@ -1724,31 +1724,31 @@ f_larglist
 
 fake_embedded__lambda_body__1: {
     ||->Node; $$=Node::DUMMY;
-    self.context.push("lambda");
+    self.tokenizer.context.push("lambda");
 };
 
 lambda_body
     : tLAMBEG fake_embedded__lambda_body__1 compstmt tRCURLY {
         |$1:Token, $3:Node, $4:Token| -> TLambdaBody;
         $$ = ($1, $3, $4);
-        self.context.pop();
+        self.tokenizer.context.pop();
     }
     | kDO_LAMBDA fake_embedded__lambda_body__1 bodystmt kEND {
         |$1:Token, $3:Node, $4:Token| -> TLambdaBody;
         $$ = ($1, $3, $4);
-        self.context.pop();
+        self.tokenizer.context.pop();
     }
 ;
 
 fake_embedded__do_block__1: {
     ||->Node; $$=Node::DUMMY;
-    self.context.push("block");
+    self.tokenizer.context.push("block");
 };
 
 do_block: kDO_BLOCK fake_embedded__do_block__1 do_body kEND {
     |$1:Token, $3:TDoBody, $4:Token| -> TDoBlock;
     $$ = ( $1, $3, $4 );
-    self.context.pop();
+    self.tokenizer.context.pop();
 };
 
 block_call
@@ -1839,7 +1839,7 @@ method_call
 fake_embedded__brace_block__1: {
     ||->Node; $$=Node::DUMMY;
 
-    self.context.push("block");
+    self.tokenizer.context.push("block");
     wip!();
 };
 
@@ -1847,12 +1847,12 @@ brace_block
     : tLCURLY fake_embedded__brace_block__1 brace_body tRCURLY {
         |$1:Token, $3:TBraceBody, $4:Token| -> TBraceBlock;
         $$ = ($1, $3, $4);
-        self.context.pop();
+        self.tokenizer.context.pop();
     }
     | kDO fake_embedded__brace_block__1 do_body kEND {
         |$1:Token, $3:TDoBody, $4:Token| -> TBraceBlock;
         $$ = ($1, $3, $4);
-        self.context.pop();
+        self.tokenizer.context.pop();
     }
 ;
 

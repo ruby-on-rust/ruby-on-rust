@@ -298,6 +298,7 @@ use crate::{
     parser::{
         token::{ Token, get_an_eof_token },
         static_env::StaticEnv,
+        context::Context,
     }
 };
 
@@ -314,6 +315,7 @@ pub struct Tokenizer {
 
     // RoR exclusive fields
     pub static_env: StaticEnv,
+    pub context: Context,
 }
 
 impl Tokenizer {
@@ -329,6 +331,7 @@ impl Tokenizer {
             no_more_tokens: false,
 
             static_env: StaticEnv::new(),
+            context: Context::new(),
         };
 
         tokenizer
