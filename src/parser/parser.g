@@ -1,4 +1,4 @@
-// 2de0c52634041465068baba9006df986c4745dea
+// 6779cd638cfe3a77622078357131c0f4489da5f7
 
 // note about extracting values(token/node) in production
 // 
@@ -1291,7 +1291,7 @@ primary
         $$ = node::build_for($1, $2, $3, expr_value_node, expr_value_token, $5, $6);
     }
     | kCLASS cpath superclass fake_embedded_action__primary__kCLASS_1 bodystmt kEND {
-        //   if @context.indirectly_in_def?
+        //   unless @context.class_definition_allowed?
         //     diagnostic :error, :class_in_def, nil, val[0]
         //   end
 
@@ -1320,7 +1320,7 @@ primary
         wip!(); $$=Node::DUMMY;
     }
     | kMODULE cpath fake_embedded_action__primary__kMODULE_1 bodystmt kEND {
-        //   if @context.indirectly_in_def?
+        //   unless @context.class_definition_allowed?
         //     diagnostic :error, :module_in_def, nil, val[0]
         //   end
 
