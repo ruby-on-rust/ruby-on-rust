@@ -3880,7 +3880,7 @@ fn _handler91(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(_1);
+let __ = node::assignable(_1, &mut self.tokenizer.static_env);
 println!("    *** PARSER production: mlhs_node -> user_variable");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -3892,7 +3892,7 @@ fn _handler92(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(_1);
+let __ = node::assignable(_1, &mut self.tokenizer.static_env);
 println!("    *** PARSER production: mlhs_node -> keyword_variable");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -3963,7 +3963,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(node::const_fetch(_1, _2, _3));
+let __ = node::assignable(node::const_fetch(_1, _2, _3), &mut self.tokenizer.static_env);
 println!("    *** PARSER production: mlhs_node -> primary_value tCOLON2 tCONSTANT");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -3976,7 +3976,7 @@ fn _handler98(&mut self) -> SV {
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::assignable(node::const_global(_1, _2));
+let __ = node::assignable(node::const_global(_1, _2), &mut self.tokenizer.static_env);
 println!("    *** PARSER production: mlhs_node -> tCOLON3 tCONSTANT");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -3988,7 +3988,7 @@ fn _handler99(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(_1);
+let __ = node::assignable(_1, &mut self.tokenizer.static_env);
 println!("    *** PARSER production: mlhs_node -> backref");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -4000,7 +4000,7 @@ fn _handler100(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(_1);
+let __ = node::assignable(_1, &mut self.tokenizer.static_env);
 println!("    *** PARSER production: lhs -> user_variable");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -4012,7 +4012,7 @@ fn _handler101(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(_1);
+let __ = node::assignable(_1, &mut self.tokenizer.static_env);
 println!("    *** PARSER production: lhs -> keyword_variable");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -4083,7 +4083,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(node::const_fetch(_1, _2, _3));
+let __ = node::assignable(node::const_fetch(_1, _2, _3), &mut self.tokenizer.static_env);
 println!("    *** PARSER production: lhs -> primary_value tCOLON2 tCONSTANT");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -4096,7 +4096,7 @@ fn _handler107(&mut self) -> SV {
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::assignable(node::const_global(_1, _2));
+let __ = node::assignable(node::const_global(_1, _2), &mut self.tokenizer.static_env);
 println!("    *** PARSER production: lhs -> tCOLON3 tCONSTANT");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -4108,7 +4108,7 @@ fn _handler108(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(_1);
+let __ = node::assignable(_1, &mut self.tokenizer.static_env);
 println!("    *** PARSER production: lhs -> backref");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -8404,7 +8404,6 @@ fn _handler414(&mut self) -> SV {
 let __ =Node::DUMMY;
 
     self.tokenizer.context.push("block");
-    wip!();
 println!("    *** PARSER production: fake_embedded__brace_block__1 -> undefined");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -9507,7 +9506,7 @@ fn _handler495(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(_1);
+let __ = node::assignable(_1, &mut self.tokenizer.static_env);
 println!("    *** PARSER production: var_lhs -> user_variable");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -9519,7 +9518,7 @@ fn _handler496(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(_1);
+let __ = node::assignable(_1, &mut self.tokenizer.static_env);
 println!("    *** PARSER production: var_lhs -> keyword_variable");
 
 println!("    values_stack: {:?}", self.values_stack);

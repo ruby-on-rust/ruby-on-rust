@@ -549,11 +549,11 @@ mlhs_post
 mlhs_node
     : user_variable {
         |$1:Node| -> Node;
-        $$ = node::assignable($1); 
+        $$ = node::assignable($1, &mut self.tokenizer.static_env);
     }
     | keyword_variable {
         |$1:Node| -> Node;
-        $$ = node::assignable($1);
+        $$ = node::assignable($1, &mut self.tokenizer.static_env);
     }
     | primary_value tLBRACK2 opt_call_args rbracket {
         |$1: Node, $2: Token, $3: Nodes, $4:Token| -> Node;
@@ -574,26 +574,26 @@ mlhs_node
     }
     | primary_value tCOLON2 tCONSTANT {
         |$1:Node, $2:Token, $3:Token| -> Node;
-        $$ = node::assignable(node::const_fetch($1, $2, $3));
+        $$ = node::assignable(node::const_fetch($1, $2, $3), &mut self.tokenizer.static_env);
     }
     | tCOLON3 tCONSTANT {
         |$1:Token, $2:Token| -> Node;
-        $$ = node::assignable(node::const_global($1, $2));
+        $$ = node::assignable(node::const_global($1, $2), &mut self.tokenizer.static_env);
     }
     | backref {
         |$1:Node| -> Node;
-        $$ = node::assignable($1);
+        $$ = node::assignable($1, &mut self.tokenizer.static_env);
     }
 ;
 
 lhs
     : user_variable {
         |$1:Node| -> Node;
-        $$ = node::assignable($1);
+        $$ = node::assignable($1, &mut self.tokenizer.static_env);
     }
     | keyword_variable {
         |$1:Node| -> Node;
-        $$ = node::assignable($1);
+        $$ = node::assignable($1, &mut self.tokenizer.static_env);
     }
     | primary_value tLBRACK2 opt_call_args rbracket {
         |$1: Node, $2: Token, $3: Nodes, $4:Token| -> Node;
@@ -614,15 +614,15 @@ lhs
     }
     | primary_value tCOLON2 tCONSTANT {
         |$1:Node, $2:Token, $3:Token| -> Node;
-        $$ = node::assignable(node::const_fetch($1, $2, $3));
+        $$ = node::assignable(node::const_fetch($1, $2, $3), &mut self.tokenizer.static_env);
     }
     | tCOLON3 tCONSTANT {
         |$1:Token, $2:Token| -> Node;
-        $$ = node::assignable(node::const_global($1, $2));
+        $$ = node::assignable(node::const_global($1, $2), &mut self.tokenizer.static_env);
     }
     | backref {
         |$1:Node| -> Node;
-        $$ = node::assignable($1);
+        $$ = node::assignable($1, &mut self.tokenizer.static_env);
     }
 ;
 
@@ -2311,10 +2311,10 @@ var_ref
 
 var_lhs
     : user_variable {
-        |$1:Node| -> Node; $$ = node::assignable($1);
+        |$1:Node| -> Node; $$ = node::assignable($1, &mut self.tokenizer.static_env);
     }
     | keyword_variable {
-        |$1:Node| -> Node; $$ = node::assignable($1);
+        |$1:Node| -> Node; $$ = node::assignable($1, &mut self.tokenizer.static_env);
     }
 ;
 

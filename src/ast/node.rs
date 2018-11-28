@@ -861,7 +861,7 @@ pub fn const_fetch(scope: Node, t_colon2: Token, name_t: Token) -> Node {
 //   end
 // end
 // TODO INCOMPLETE
-pub fn assignable(node: Node) -> Node {
+pub fn assignable(node: Node, static_env: &mut StaticEnv) -> Node {
     match node {
         Node::CVar(cvar_str) => {
             return Node::CVasgn(cvar_str, vec![]);
@@ -890,8 +890,7 @@ pub fn assignable(node: Node) -> Node {
         // 
         //     node.updated(:lVasgn)
         Node::Ident(ident) => {
-            // TODO handle appending nodes list
-            // TODO handle static_env
+            static_env.declare(ident.clone());
             return Node::LVasgn(ident, vec![]);
         },
 
