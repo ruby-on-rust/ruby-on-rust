@@ -6389,6 +6389,7 @@ let __ =Node::DUMMY;
 
     self.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
+    self.tokenizer.interior_lexer.push_cond();
     self.context.push("class");
 println!("    *** PARSER production: fake_embedded_action__primary__kCLASS_1 -> undefined");
 
@@ -6405,6 +6406,7 @@ let __ =Node::DUMMY;
 
     self.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
+    self.tokenizer.interior_lexer.push_cond();
     self.context.push("sclass");
 println!("    *** PARSER production: fake_embedded_action__primary__kCLASS_2 -> undefined");
 
@@ -6436,6 +6438,7 @@ let __ =Node::DUMMY;
 
     self.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
+    self.tokenizer.interior_lexer.push_cond();
     self.context.push("def");
 println!("    *** PARSER production: fake_embedded_action__primary__kDEF_1 -> undefined");
 
@@ -6465,6 +6468,7 @@ let __ =Node::DUMMY;
 
     self.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
+    self.tokenizer.interior_lexer.push_cond();
     self.context.push("defs");
 println!("    *** PARSER production: fake_embedded_action__primary__kDEF_3 -> undefined");
 
@@ -7031,6 +7035,7 @@ self.values_stack.pop();
         //                               val[4], val[5])
 
         //   @lexer.pop_cmdarg
+        //   @lexer.pop_cond
         //   @static_env.unextend
         //   @context.pop
         wip!(); let __ =Node::DUMMY;
@@ -7055,6 +7060,7 @@ self.values_stack.pop();
         //                                val[5], val[6])
 
         //   @lexer.pop_cmdarg
+        //   @lexer.pop_cond
         //   @static_env.unextend
 
         //   @context.pop
@@ -7104,6 +7110,7 @@ self.values_stack.pop();
         //               val[3], val[4], val[5])
 
         //   @lexer.pop_cmdarg
+        //   @lexer.pop_cond
         //   @static_env.unextend
         //   @context.pop
         wip!(); let __ =Node::DUMMY;
@@ -7130,6 +7137,7 @@ self.values_stack.pop();
         //               val[4], val[6], val[7], val[8])
 
         //   @lexer.pop_cmdarg
+        //   @lexer.pop_cond
         //   @static_env.unextend
         //   @context.pop
         wip!(); let __ =Node::DUMMY;

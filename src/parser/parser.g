@@ -1,4 +1,4 @@
-// 60558fcd536560b9e109a30eb8ff635333cdb4e0
+// b42bb9f10f71765c6ce9e4b859a8328e0a67fe8b
 
 // note about extracting values(token/node) in production
 // 
@@ -1090,6 +1090,7 @@ fake_embedded_action__primary__kCLASS_1: {
 
     self.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
+    self.tokenizer.interior_lexer.push_cond();
     self.context.push("class");
 };
 
@@ -1098,6 +1099,7 @@ fake_embedded_action__primary__kCLASS_2: {
 
     self.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
+    self.tokenizer.interior_lexer.push_cond();
     self.context.push("sclass");
 };
 
@@ -1113,6 +1115,7 @@ fake_embedded_action__primary__kDEF_1: {
 
     self.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
+    self.tokenizer.interior_lexer.push_cond();
     self.context.push("def");
 };
 
@@ -1126,6 +1129,7 @@ fake_embedded_action__primary__kDEF_3: {
 
     self.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
+    self.tokenizer.interior_lexer.push_cond();
     self.context.push("defs");
 };
 
@@ -1289,6 +1293,7 @@ primary
         //                               val[4], val[5])
 
         //   @lexer.pop_cmdarg
+        //   @lexer.pop_cond
         //   @static_env.unextend
         //   @context.pop
         ||->Node;
@@ -1299,6 +1304,7 @@ primary
         //                                val[5], val[6])
 
         //   @lexer.pop_cmdarg
+        //   @lexer.pop_cond
         //   @static_env.unextend
 
         //   @context.pop
@@ -1323,6 +1329,7 @@ primary
         //               val[3], val[4], val[5])
 
         //   @lexer.pop_cmdarg
+        //   @lexer.pop_cond
         //   @static_env.unextend
         //   @context.pop
         ||->Node;
@@ -1333,6 +1340,7 @@ primary
         //               val[4], val[6], val[7], val[8])
 
         //   @lexer.pop_cmdarg
+        //   @lexer.pop_cond
         //   @static_env.unextend
         //   @context.pop
         ||->Node;
