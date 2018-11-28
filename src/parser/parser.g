@@ -1094,7 +1094,7 @@ fake_embedded_action_primary_tLPAREN_ARG_2: {
 fake_embedded_action__primary__kCLASS_1: {
     ||->Node; $$=Node::DUMMY;
 
-    self.static_env.extend_static();
+    self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
     self.context.push("class");
@@ -1103,7 +1103,7 @@ fake_embedded_action__primary__kCLASS_1: {
 fake_embedded_action__primary__kCLASS_2: {
     ||->Node; $$=Node::DUMMY;
 
-    self.static_env.extend_static();
+    self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
     self.context.push("sclass");
@@ -1112,14 +1112,14 @@ fake_embedded_action__primary__kCLASS_2: {
 fake_embedded_action__primary__kMODULE_1: {
     ||->Node; $$=Node::DUMMY;
 
-    self.static_env.extend_static();
+    self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
 };
 
 fake_embedded_action__primary__kDEF_1: {
     ||->Node; $$=Node::DUMMY;
 
-    self.static_env.extend_static();
+    self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
     self.context.push("def");
@@ -1133,7 +1133,7 @@ fake_embedded_action__primary__kDEF_2: {
 fake_embedded_action__primary__kDEF_3: {
     ||->Node; $$=Node::DUMMY;
 
-    self.static_env.extend_static();
+    self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
     self.context.push("defs");
@@ -1682,7 +1682,7 @@ bvar
         |$1: Token| -> Node;
 
         if let InteriorToken::T_IDENTIFIER(ref t_value) = $1 {
-            self.static_env.declare(t_value.clone());
+            self.tokenizer.static_env.declare(t_value.clone());
         } else { unreachable!(); }
 
         $$ = node::shadowarg($1);
@@ -1692,7 +1692,7 @@ bvar
 
 fake_embedded_action_lambda_1: {
     ||->Node; $$=Node::DUMMY;
-    self.static_env.extend_dynamic();
+    self.tokenizer.static_env.extend_dynamic();
 };
 
 fake_embedded_action_lambda_2: {
@@ -1708,7 +1708,7 @@ lambda: fake_embedded_action_lambda_1 f_larglist fake_embedded_action_lambda_2 l
 
     $$ = ($2, $4);
 
-    self.static_env.unextend();
+    self.tokenizer.static_env.unextend();
 };
 
 f_larglist
@@ -1858,20 +1858,20 @@ brace_block
 
 fake_embedded_action_brace_body_1: {
     ||->Node;$$=Node::DUMMY;
-    self.static_env.extend_dynamic();
+    self.tokenizer.static_env.extend_dynamic();
 };
 
 brace_body: fake_embedded_action_brace_body_1 opt_block_param compstmt {
     |$2:Node, $3:Node| -> TBraceBody;
     $$ = ($2, $3);
 
-    self.static_env.unextend();
+    self.tokenizer.static_env.unextend();
 };
 
 fake_embedded_action_do_body_1: {
     ||->Node; $$=Node::DUMMY;
 
-    self.static_env.extend_dynamic();
+    self.tokenizer.static_env.extend_dynamic();
 };
 
 fake_embedded_action_do_body_2: {
@@ -1884,7 +1884,7 @@ do_body: fake_embedded_action_do_body_1 fake_embedded_action_do_body_2 opt_block
     |$2: StackState, $3: Node, $4: Node| -> TDoBody;
 
     $$ = ( $3, $4 );
-    self.static_env.unextend();
+    self.tokenizer.static_env.unextend();
 
     self.tokenizer.interior_lexer.cmdarg = $2;
 };
@@ -2285,11 +2285,11 @@ keyword_variable
 var_ref
     : user_variable {
         |$1:Node| -> Node;
-        $$ = node::accessible($1, &self.static_env);
+        $$ = node::accessible($1, &self.tokenizer.static_env);
     }
     | keyword_variable {
         |$1:Node| -> Node;
-        $$ = node::accessible($1, &self.static_env);
+        $$ = node::accessible($1, &self.tokenizer.static_env);
     }
 ;
 
@@ -2503,7 +2503,7 @@ f_norm_arg
         |$1: Token| -> Token;
 
         if let InteriorToken::T_IDENTIFIER(ref t_value) = $1 {
-            self.static_env.declare(t_value.clone());
+            self.tokenizer.static_env.declare(t_value.clone());
         } else { unreachable!(); }
 
         $$ = $1.wrap_as_token();
@@ -2592,7 +2592,7 @@ f_kwrest
         |$1:Token, $2:Token| -> Nodes;
 
         if let InteriorToken::T_IDENTIFIER(ref t_value) = $2 {
-            self.static_env.declare(t_value.clone());
+            self.tokenizer.static_env.declare(t_value.clone());
         } else { unreachable!(); }
 
         $$ = vec![ node::kwrestarg($1, Some($2)) ];
@@ -2641,7 +2641,7 @@ f_rest_arg
         |$1:Token, $2:Token| -> Nodes;
 
         if let InteriorToken::T_IDENTIFIER(ref t_value) = $2 {
-            self.static_env.declare(t_value.clone());
+            self.tokenizer.static_env.declare(t_value.clone());
         } else { unreachable!(); }
 
         $$ = vec![ node::restarg($1, Some($2)) ];
@@ -2657,7 +2657,7 @@ f_block_arg: blkarg_mark tIDENTIFIER {
     |$1:Token, $2:Token| -> Nodes;
 
     if let InteriorToken::T_IDENTIFIER(ref t_value) = $2 {
-        self.static_env.declare(t_value.clone());
+        self.tokenizer.static_env.declare(t_value.clone());
     } else { unreachable!(); }
 
     $$ = vec![ node::blockarg($1, $2) ];

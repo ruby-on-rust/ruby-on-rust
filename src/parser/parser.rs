@@ -1830,7 +1830,7 @@ pub struct Parser {
     handlers: [fn(&mut Parser) -> SV; 600],
 
     // private fields for RoR
-    static_env: StaticEnv,
+    // static_env: StaticEnv,
     context: Context,
 
 }
@@ -2451,7 +2451,7 @@ impl Parser {
 ],
 
             // private fields for RoR
-            static_env: StaticEnv::new(),
+            // static_env: StaticEnv::new(),
             context: Context::new(),
         }
     }
@@ -6346,7 +6346,7 @@ fn _handler279(&mut self) -> SV {
 
 let __ =Node::DUMMY;
 
-    self.static_env.extend_static();
+    self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
     self.context.push("class");
@@ -6363,7 +6363,7 @@ fn _handler280(&mut self) -> SV {
 
 let __ =Node::DUMMY;
 
-    self.static_env.extend_static();
+    self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
     self.context.push("sclass");
@@ -6380,7 +6380,7 @@ fn _handler281(&mut self) -> SV {
 
 let __ =Node::DUMMY;
 
-    self.static_env.extend_static();
+    self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
 println!("    *** PARSER production: fake_embedded_action__primary__kMODULE_1 -> undefined");
 
@@ -6395,7 +6395,7 @@ fn _handler282(&mut self) -> SV {
 
 let __ =Node::DUMMY;
 
-    self.static_env.extend_static();
+    self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
     self.context.push("def");
@@ -6425,7 +6425,7 @@ fn _handler284(&mut self) -> SV {
 
 let __ =Node::DUMMY;
 
-    self.static_env.extend_static();
+    self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
     self.context.push("defs");
@@ -7981,7 +7981,7 @@ fn _handler387(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 if let InteriorToken::T_IDENTIFIER(ref t_value) = _1 {
-            self.static_env.declare(t_value.clone());
+            self.tokenizer.static_env.declare(t_value.clone());
         } else { unreachable!(); }
 
         let __ = node::shadowarg(_1);
@@ -8009,7 +8009,7 @@ fn _handler389(&mut self) -> SV {
 
 
 let __ =Node::DUMMY;
-    self.static_env.extend_dynamic();
+    self.tokenizer.static_env.extend_dynamic();
 println!("    *** PARSER production: fake_embedded_action_lambda_1 -> undefined");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -8042,7 +8042,7 @@ self.tokenizer.interior_lexer.cmdarg.pop();
 
     let __ = (_2, _4);
 
-    self.static_env.unextend();
+    self.tokenizer.static_env.unextend();
 println!("    *** PARSER production: lambda -> fake_embedded_action_lambda_1 f_larglist fake_embedded_action_lambda_2 lambda_body");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -8404,7 +8404,7 @@ fn _handler415(&mut self) -> SV {
 
 
 let __ =Node::DUMMY;
-    self.static_env.extend_dynamic();
+    self.tokenizer.static_env.extend_dynamic();
 println!("    *** PARSER production: fake_embedded_action_brace_body_1 -> undefined");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -8420,7 +8420,7 @@ self.values_stack.pop();
 
 let __ = (_2, _3);
 
-    self.static_env.unextend();
+    self.tokenizer.static_env.unextend();
 println!("    *** PARSER production: brace_body -> fake_embedded_action_brace_body_1 opt_block_param compstmt");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -8434,7 +8434,7 @@ fn _handler417(&mut self) -> SV {
 
 let __ =Node::DUMMY;
 
-    self.static_env.extend_dynamic();
+    self.tokenizer.static_env.extend_dynamic();
 println!("    *** PARSER production: fake_embedded_action_do_body_1 -> undefined");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -8463,7 +8463,7 @@ let mut _2 = pop!(self.values_stack, _10);
 self.values_stack.pop();
 
 let __ = ( _3, _4 );
-    self.static_env.unextend();
+    self.tokenizer.static_env.unextend();
 
     self.tokenizer.interior_lexer.cmdarg = _2;
 println!("    *** PARSER production: do_body -> fake_embedded_action_do_body_1 fake_embedded_action_do_body_2 opt_block_param bodystmt");
@@ -9438,7 +9438,7 @@ fn _handler491(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::accessible(_1, &self.static_env);
+let __ = node::accessible(_1, &self.tokenizer.static_env);
 println!("    *** PARSER production: var_ref -> user_variable");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -9450,7 +9450,7 @@ fn _handler492(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::accessible(_1, &self.static_env);
+let __ = node::accessible(_1, &self.tokenizer.static_env);
 println!("    *** PARSER production: var_ref -> keyword_variable");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -9990,7 +9990,7 @@ fn _handler529(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 if let InteriorToken::T_IDENTIFIER(ref t_value) = _1 {
-            self.static_env.declare(t_value.clone());
+            self.tokenizer.static_env.declare(t_value.clone());
         } else { unreachable!(); }
 
         let __ = _1.wrap_as_token();
@@ -10217,7 +10217,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 if let InteriorToken::T_IDENTIFIER(ref t_value) = _2 {
-            self.static_env.declare(t_value.clone());
+            self.tokenizer.static_env.declare(t_value.clone());
         } else { unreachable!(); }
 
         let __ = vec![ node::kwrestarg(_1, Some(_2)) ];
@@ -10352,7 +10352,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 if let InteriorToken::T_IDENTIFIER(ref t_value) = _2 {
-            self.static_env.declare(t_value.clone());
+            self.tokenizer.static_env.declare(t_value.clone());
         } else { unreachable!(); }
 
         let __ = vec![ node::restarg(_1, Some(_2)) ];
@@ -10405,7 +10405,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 if let InteriorToken::T_IDENTIFIER(ref t_value) = _2 {
-        self.static_env.declare(t_value.clone());
+        self.tokenizer.static_env.declare(t_value.clone());
     } else { unreachable!(); }
 
     let __ = vec![ node::blockarg(_1, _2) ];

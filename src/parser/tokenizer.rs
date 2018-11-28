@@ -293,8 +293,13 @@
 //
 // }
 
-use crate::parser::token::{ Token, get_an_eof_token };
-use crate::lexer::lexer::Lexer;
+use crate::{
+    lexer::lexer::Lexer,
+    parser::{
+        token::{ Token, get_an_eof_token },
+        static_env::StaticEnv,
+    }
+};
 
 pub struct Tokenizer {
     // string: &'static str,
@@ -306,6 +311,9 @@ pub struct Tokenizer {
     pub interior_lexer: Lexer,
 
     no_more_tokens: bool,
+
+    // RoR exclusive fields
+    pub static_env: StaticEnv,
 }
 
 impl Tokenizer {
@@ -319,6 +327,8 @@ impl Tokenizer {
             interior_lexer: Lexer::new(String::from("")),
 
             no_more_tokens: false,
+
+            static_env: StaticEnv::new(),
         };
 
         tokenizer
