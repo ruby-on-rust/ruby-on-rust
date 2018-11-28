@@ -72,8 +72,8 @@ expr_beg := |*
       ( '"' ( any - '"' )* '"'
       | "'" ( any - "'" )* "'"
       | "`" ( any - "`" )* "`"
-      | bareword ) % { heredoc_e      = p }
-      c_line* c_nl % { new_herebody_s = p }
+      | bareword ) % { let heredoc_e      = p; }
+      c_line* c_nl % { let new_herebody_s = p; }
     => {
         panic!("UNIMPL");
         // #    tok(@ts, heredoc_e) =~ /^<<(-?)(~?)(["'`]?)(.*)\3$/m
@@ -311,21 +311,21 @@ expr_beg := |*
     call_or_var
     => local_ident;
 
-    # TODO
-    # (call_or_var - keyword)
-    #   % { ident_tok = tok; ident_ts = @ts; ident_te = @te; }
-    # w_space+ '('
-    # => {
-    #   // emit(:tIDENTIFIER, ident_tok, ident_ts, ident_te)
-    #   // p = ident_te - 1
-    #
-    #   // if !@static_env.nil? && @static_env.declared?(ident_tok) && @version < 25
-    #   //   fnext expr_endfn;
-    #   // else
-    #   //   fnext expr_cmdarg;
-    #   // end
-    #   // fbreak;
-    # };
+    (call_or_var - keyword)
+      % { let ident_tok = self.current_slice(ts, te); let ident_ts = ts; let ident_te = te; }
+    w_space+ '('
+    => {
+        panic!("UNIMPL");
+      // emit(:tIDENTIFIER, ident_tok, ident_ts, ident_te)
+      // p = ident_te - 1
+    
+      // if !@static_env.nil? && @static_env.declared?(ident_tok) && @version < 25
+      //   fnext expr_endfn;
+      // else
+      //   fnext expr_cmdarg;
+      // end
+      // fbreak;
+    };
 
     #
     # WHITESPACE
