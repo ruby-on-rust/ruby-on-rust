@@ -1,4 +1,4 @@
-// 0d84d897a67e34a5a229d79d8ae933e01239e697
+// 2de0c52634041465068baba9006df986c4745dea
 
 // note about extracting values(token/node) in production
 // 
@@ -2137,8 +2137,8 @@ regexp_contents
 fake_embedded_action__string_content__tSTRING_DBEG: {
     ||->Node; $$=Node::DUMMY;
 
-    self.tokenizer.interior_lexer.cond.push(false);
-    self.tokenizer.interior_lexer.cmdarg.push(false);
+    self.tokenizer.interior_lexer.push_cmdarg();
+    self.tokenizer.interior_lexer.push_cond();
 };
 
 string_content
@@ -2151,8 +2151,8 @@ string_content
     | tSTRING_DBEG fake_embedded_action__string_content__tSTRING_DBEG compstmt tSTRING_DEND {
         |$1: Token, $3: Node, $4: Token| -> Node;
 
-        self.tokenizer.interior_lexer.cond.pop();
-        self.tokenizer.interior_lexer.cmdarg.pop();
+        self.tokenizer.interior_lexer.pop_cmdarg();
+        self.tokenizer.interior_lexer.pop_cond();
 
         $$ = node::begin($1, Some($3), $4);
     }

@@ -9067,8 +9067,8 @@ fn _handler463(&mut self) -> SV {
 
 let __ =Node::DUMMY;
 
-    self.tokenizer.interior_lexer.cond.push(false);
-    self.tokenizer.interior_lexer.cmdarg.push(false);
+    self.tokenizer.interior_lexer.push_cmdarg();
+    self.tokenizer.interior_lexer.push_cond();
 println!("    *** PARSER production: fake_embedded_action__string_content__tSTRING_DBEG -> undefined");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -9108,8 +9108,8 @@ let mut _3 = pop!(self.values_stack, _3);
 self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-self.tokenizer.interior_lexer.cond.pop();
-        self.tokenizer.interior_lexer.cmdarg.pop();
+self.tokenizer.interior_lexer.pop_cmdarg();
+        self.tokenizer.interior_lexer.pop_cond();
 
         let __ = node::begin(_1, Some(_3), _4);
 println!("    *** PARSER production: string_content -> tSTRING_DBEG fake_embedded_action__string_content__tSTRING_DBEG compstmt tSTRING_DEND");
