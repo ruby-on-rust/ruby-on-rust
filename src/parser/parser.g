@@ -146,10 +146,11 @@ bodystmt
         let (ensure_t, ensure_) = unwrap_some_token_node!($4);
 
         // if rescue_bodies.empty? && !else_.nil?
-        //   diagnostic :warning, :useless_else, nil, else_t
+        //   diagnostic :error, :useless_else, nil, else_t
         // end
         if rescue_bodies.is_empty() { // TODO !else_.nil?
-            // TODO diagnostic warning
+            // TODO diagnostic error
+            panic!("diagnostic error");
         }
 
         $$ = node::begin_body($1, rescue_bodies, else_t, else_, ensure_t, ensure_);

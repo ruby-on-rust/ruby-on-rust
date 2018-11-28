@@ -2704,10 +2704,11 @@ let rescue_bodies = _2;
         let (ensure_t, ensure_) = unwrap_some_token_node!(_4);
 
         // if rescue_bodies.empty? && !else_.nil?
-        //   diagnostic :warning, :useless_else, nil, else_t
+        //   diagnostic :error, :useless_else, nil, else_t
         // end
         if rescue_bodies.is_empty() { // TODO !else_.nil?
-            // TODO diagnostic warning
+            // TODO diagnostic error
+            panic!("diagnostic error");
         }
 
         let __ = node::begin_body(_1, rescue_bodies, else_t, else_, ensure_t, ensure_);
@@ -6124,7 +6125,7 @@ let __ = Node::DUMMY;
     // #
     // # For all other cases (like `m n` or `m n, []`) we simply put 1 to the stack
     // # and later lexer pushes corresponding bits on top of it.
-    // last_token = @lexer.last_token[0]
+    // last_token = @last_token[0]
     // lookahead = last_token == :tLBRACK || last_token == :tLPAREN_ARG
     // 
     // if lookahead
