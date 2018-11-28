@@ -6097,7 +6097,22 @@ fn _handler262(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _1);
 self.values_stack.pop();
 
-self.tokenizer.interior_lexer.cmdarg.pop();
+//   # call_args can be followed by tLBRACE_ARG (that does cmdarg.push(0) in the lexer)
+    //   # but the push must be done after cmdarg.pop() in the parser.
+    //   # So this code does cmdarg.pop() to pop 0 pushed by tLBRACE_ARG,
+    //   # cmdarg.pop() to pop 1 pushed by command_args,
+    //   # and cmdarg.push(0) to restore back the flag set by tLBRACE_ARG.
+    //   last_token = @last_token[0]
+    //   lookahead = last_token == :tLBRACE_ARG
+    //   if lookahead
+    //     top = @lexer.cmdarg.pop
+    //     @lexer.cmdarg.pop
+    //     @lexer.cmdarg.push(top)
+    //   else
+    //     @lexer.cmdarg.pop
+    //   end
+    wip!();
+
     let __ = _2;
 println!("    *** PARSER production: command_args -> fake_embedded_action__command_args call_args");
 
