@@ -17,7 +17,7 @@
 expr_endarg := |*
     e_lbrace
     => {
-        panic!("UNIMPL");
+        wip!();
         // if @lambda_stack.last == @paren_nest
         //   @lambda_stack.pop
         //   emit(:tLAMBEG, '{'.freeze)
@@ -29,7 +29,7 @@ expr_endarg := |*
 
     'do'
     => {
-        panic!("UNIMPL");
+        wip!();
         // TODO
         // emit_do(true)
         // fnext expr_value; fbreak;

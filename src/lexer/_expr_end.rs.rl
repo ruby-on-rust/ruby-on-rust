@@ -5,36 +5,36 @@ expr_end := |*
 # STABBY LAMBDA
 #
 
-# TODO
-#    '->'
-#    => {
-#      emit(:tLAMBDA, '->'.freeze, @ts, @ts + 2)
-#
-#      @lambda_stack.push @paren_nest
-#      fnext expr_endfn; fbreak;
-#    };
+    '->'
+    => {
+        // emit(:tLAMBDA, '->'.freeze, @ts, @ts + 2)
+        // 
+        // @lambda_stack.push @paren_nest
+        // fnext expr_endfn; fbreak;
+        wip!();
+    };
 
-# TODO
-#    e_lbrace | 'do'
-#    => {
-#      if @lambda_stack.last == @paren_nest
-#        @lambda_stack.pop
-#
-#        if tok == '{'.freeze
-#          emit(:tLAMBEG, '{'.freeze)
-#        else # 'do'
-#          emit(:kDO_LAMBDA, 'do'.freeze)
-#        end
-#      else
-#        if tok == '{'.freeze
-#          emit(:tLCURLY, '{'.freeze)
-#        else # 'do'
-#          emit_do
-#        end
-#      end
-#
-#      fnext expr_value; fbreak;
-#    };
+    e_lbrace | 'do'
+    => {
+        //   if @lambda_stack.last == @paren_nest
+        //     @lambda_stack.pop
+
+        //     if tok == '{'.freeze
+        //       emit(:tLAMBEG, '{'.freeze)
+        //     else # 'do'
+        //       emit(:kDO_LAMBDA, 'do'.freeze)
+        //     end
+        //   else
+        //     if tok == '{'.freeze
+        //       emit(:tLCURLY, '{'.freeze)
+        //     else # 'do'
+        //       emit_do
+        //     end
+        //   end
+        // 
+        //   fnext expr_value; fbreak;
+        wip!();
+    };
 
     #
     # KEYWORDS
@@ -46,12 +46,14 @@ expr_end := |*
         fnext expr_fname; fnbreak;
     };
 
-# TODO
-#    'class' w_any* '<<'
-#    => { emit(:kCLASS, 'class'.freeze, @ts, @ts + 5)
-#          emit(:tLSHFT, '<<'.freeze,    @te - 2, @te)
-#          fnext expr_value; fbreak; };
-#
+    'class' w_any* '<<'
+    => {
+        // emit(:kCLASS, 'class'.freeze, @ts, @ts + 5)
+        // emit(:tLSHFT, '<<'.freeze,    @te - 2, @te)
+        // fnext expr_value; fbreak;
+        wip!();
+    };
+
     # a if b:c: Syntax error.
     keyword_modifier
     => {

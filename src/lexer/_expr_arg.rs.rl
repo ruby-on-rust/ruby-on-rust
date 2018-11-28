@@ -45,7 +45,6 @@ expr_arg := |*
     # Command: method call without parentheses.
     w_space* e_lbrace
     => {
-        panic!("UNIMPL");
         // if @lambda_stack.last == @paren_nest
         //   @lambda_stack.pop
         //   emit(:tLAMBEG, '{'.freeze, @te - 1, @te)
@@ -53,6 +52,7 @@ expr_arg := |*
         //   emit(:tLCURLY, '{'.freeze, @te - 1, @te)
         // end
         // fnext expr_value; fbreak;
+        wip!();
     };
 
     #
@@ -63,10 +63,10 @@ expr_arg := |*
     # Ternary operator
     '?' c_space_nl
     => {
-        panic!("UNIMPL");
         //   # Unlike expr_beg as invoked in the next rule, do not warn
         //   p = @ts - 1
         //   fgoto expr_end;
+        wip!();
     };
 
     # a ?b, a? ?
@@ -82,27 +82,26 @@ expr_arg := |*
     | '<<'
     )
     => {
-        panic!("UNIMPL");
-
         //    if tok(tm, tm + 1) == '/'.freeze
         //      # Ambiguous regexp literal.
         //      diagnostic :warning, :ambiguous_literal, nil, range(tm, tm + 1)
         //    end
-    
+        // 
         //    p = tm - 1
         //    fgoto expr_beg;
+        wip!();
     };
 
     # x *1
     # Ambiguous splat, kwsplat or block-pass.
     w_space+ %{ tm = p } ( '+' | '-' | '*' | '&' | '**' )
     => {
-        panic!("UNIMPL");
         //   diagnostic :warning, :ambiguous_prefix, { :prefix => tok(tm, @te) },
         //               range(tm, @te)
-
+        // 
         //   p = tm - 1
         //   fgoto expr_beg;
+        wip!();
     };
 
     # x ::Foo

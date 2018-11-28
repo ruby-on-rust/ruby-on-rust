@@ -30,7 +30,7 @@ expr_beg := |*
     # /=/ (disambiguation with /=)
     '/' c_any
     => {
-        panic!("UNIMPL");
+        wip!();
         // type = delimiter = tok[0].chr
         // fhold; fgoto *push_literal(type, delimiter, @ts);
     };
@@ -38,7 +38,7 @@ expr_beg := |*
     # %<string>
     '%' ( any - [A-Za-z] )
     => {
-        panic!("UNIMPL");
+        wip!();
         // type, delimiter = @source_buffer.slice(@ts).chr, tok[-1].chr
         // fgoto *push_literal(type, delimiter, @ts);
     };
@@ -75,7 +75,7 @@ expr_beg := |*
       | bareword ) % { let heredoc_e      = p; }
       c_line* c_nl % { let new_herebody_s = p; }
     => {
-        panic!("UNIMPL");
+        wip!();
         // #    tok(@ts, heredoc_e) =~ /^<<(-?)(~?)(["'`]?)(.*)\3$/m
         // #
         // #    indent      = !$1.empty? || !$2.empty?
@@ -162,7 +162,7 @@ expr_beg := |*
     #     | (c_any - c_space_nl - e_bs) % { @escape = nil }
     #     )
     # => {
-    #     panic!("UNIMPL");
+    #     wip!();
     #     // value = @escape || tok(@ts + 1)
     #     //
     #     // if version?(18)
@@ -315,7 +315,7 @@ expr_beg := |*
       % { let ident_tok = self.current_slice(ts, te); let ident_ts = ts; let ident_te = te; }
     w_space+ '('
     => {
-        panic!("UNIMPL");
+        wip!();
       // emit(:tIDENTIFIER, ident_tok, ident_ts, ident_te)
       // p = ident_te - 1
     

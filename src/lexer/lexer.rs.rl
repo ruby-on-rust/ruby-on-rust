@@ -15,6 +15,35 @@ use crate::{
     }
 };
 
+macro_rules! wip { () => { panic!("WIP"); }; }
+
+fn state_name_from_int(state_id: i32) -> &'static str {
+    if state_id == lexer_en_interp_words { return "interp_words"; }
+    if state_id == lexer_en_interp_string { return "interp_string"; }
+    if state_id == lexer_en_plain_words { return "plain_words"; }
+    if state_id == lexer_en_plain_string { return "plain_string"; }
+    if state_id == lexer_en_interp_backslash_delimited { return "interp_backslash_delimited"; }
+    if state_id == lexer_en_plain_backslash_delimited { return "plain_backslash_delimited"; }
+    if state_id == lexer_en_interp_backslash_delimited_words { return "interp_backslash_delimited_words"; }
+    if state_id == lexer_en_plain_backslash_delimited_words { return "plain_backslash_delimited_words"; }
+    if state_id == lexer_en_regexp_modifiers { return "regexp_modifiers"; }
+    if state_id == lexer_en_expr_variable { return "expr_variable"; }
+    if state_id == lexer_en_expr_fname { return "expr_fname"; }
+    if state_id == lexer_en_expr_endfn { return "expr_endfn"; }
+    if state_id == lexer_en_expr_dot { return "expr_dot"; }
+    if state_id == lexer_en_expr_arg { return "expr_arg"; }
+    if state_id == lexer_en_expr_cmdarg { return "expr_cmdarg"; }
+    if state_id == lexer_en_expr_endarg { return "expr_endarg"; }
+    if state_id == lexer_en_expr_mid { return "expr_mid"; }
+    if state_id == lexer_en_expr_beg { return "expr_beg"; }
+    if state_id == lexer_en_expr_labelarg { return "expr_labelarg"; }
+    if state_id == lexer_en_expr_value { return "expr_value"; }
+    if state_id == lexer_en_expr_end { return "expr_end"; }
+    if state_id == lexer_en_leading_dot { return "leading_dot"; }
+    if state_id == lexer_en_line_begin { return "line_begin"; }
+    unreachable!();
+}
+
 %%{
     machine lexer;
 
@@ -169,7 +198,7 @@ impl Lexer {
     // return a Token
     #[allow(unused_parens, unused_assignments, unused_variables)]
     pub fn advance(&mut self) -> Option<Token> {
-        println!("---\nlexer.advance");
+        println!("---\nlexer:advance: current_state: {}", state_name_from_int(self.cs));
 
         if !self.tokens.borrow().is_empty() { return Some(self.tokens.borrow_mut().remove(0)); }
 
@@ -209,6 +238,8 @@ impl Lexer {
         self.act = act;
         self.stack = stack;
         self.top = top;
+
+        println!("lexer:advance:advanced current state: {}", state_name_from_int(self.cs));
 
         if self.tokens.borrow().is_empty() {
             return None;

@@ -6,8 +6,7 @@ expr_labelarg := |*
 
     w_newline
     => {
-        panic!("UNIMPL");
-        // TODO
+        wip!();
         // if @in_kwarg
         //   fhold; fgoto expr_end;
         // else

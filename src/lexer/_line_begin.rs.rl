@@ -5,7 +5,7 @@ line_begin := |*
 
     '=begin' ( c_space | c_nl_zlen )
     => {
-        panic!("UNIMPL");
+        wip!();
         // @eq_begin_s = @ts
         // fgoto line_comment;
     };
