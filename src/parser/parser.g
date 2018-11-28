@@ -1,4 +1,4 @@
-// a4fc650a47bcd5d859bb42687209a0ca27fafc35
+// 0d84d897a67e34a5a229d79d8ae933e01239e697
 
 // note about extracting values(token/node) in production
 // 
@@ -1081,12 +1081,6 @@ fake_embedded_action_primary_kBEGIN: {
     self.tokenizer.interior_lexer.cmdarg.clear();
 };
 
-fake_embedded_action_primary_tLPAREN_ARG: {
-    ||->StackState;
-    $$=self.tokenizer.interior_lexer.cmdarg.clone();
-    self.tokenizer.interior_lexer.cmdarg.clear();
-};
-
 fake_embedded_action_primary_tLPAREN_ARG_stmt: {
     ||->Node; $$=Node::DUMMY;
     self.tokenizer.interior_lexer.set_state("expr_endarg");
@@ -1167,12 +1161,10 @@ primary
 
         $$ = node::begin_keyword($1, $3, $4);
     }
-    | tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG stmt fake_embedded_action_primary_tLPAREN_ARG_stmt rparen {
-        |$1: Token, $2: StackState, $3: Node, $5: Token| -> Node;
+    | tLPAREN_ARG stmt fake_embedded_action_primary_tLPAREN_ARG_stmt rparen {
+        |$1: Token, $2: Node, $4: Token| -> Node;
 
-        self.tokenizer.interior_lexer.cmdarg = $2;
-
-        $$ = node::begin($1, Some($3), $5);
+        $$ = node::begin($1, Some($2), $4);
     }
     | tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG_2 opt_nl tRPAREN {
         |$1: Token, $4: Token| -> Node;
