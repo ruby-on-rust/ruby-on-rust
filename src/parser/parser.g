@@ -1,4 +1,4 @@
-// bb50272fbe33454c4a18031d0d38238cd69dcb5a
+// b59cb7682ab4a7e5985a3c8ea103d8d69091bd1c
 
 // note about extracting values(token/node) in production
 // 
@@ -66,6 +66,7 @@ use crate::{
 type TSomeNode = Option<Node>;
 type TSomeNodes = Option<Nodes>;
 type TTokenNode = ( InteriorToken, Node );
+type TNodeToken = ( Node, InteriorToken );
 type TSomeTokenNode = Option<(InteriorToken, Node)>;
 type TParenArgs = ( Option<InteriorToken>, Nodes, Option<InteriorToken> );
 type TLambdaBody = ( InteriorToken, Node, InteriorToken );
@@ -349,6 +350,18 @@ expr
 ;
 
 expr_value: expr;
+
+fake_embedded__expr_value_do: {
+    ||->Node;$$=Node::DUMMY;
+    self.tokenizer.interior_lexer.cond.push(true);
+};
+
+expr_value_do: fake_embedded__expr_value_do expr_value do {
+    |$2: Node, $3:Token| -> TNodeToken;
+
+    self.tokenizer.interior_lexer.cond.pop();
+    $$ = ($2, $3);
+};
 
 command_call
     : command
@@ -1061,36 +1074,6 @@ fake_embedded_action_primary_tLPAREN_ARG_2: {
     self.tokenizer.interior_lexer.set_state("expr_endarg");
 };
 
-fake_embedded_action_primary_kWHILE_1: {
-    ||->Node; $$=Node::DUMMY;
-    self.tokenizer.interior_lexer.cond.push(true);
-};
-
-fake_embedded_action_primary_kWHILE_2: {
-    ||->Node; $$=Node::DUMMY;
-    self.tokenizer.interior_lexer.cond.pop();
-};
-
-fake_embedded_action_primary_kUNTIL_1: {
-    ||->Node; $$=Node::DUMMY;
-    self.tokenizer.interior_lexer.cond.push(true);
-};
-
-fake_embedded_action_primary_kUNTIL_2: {
-    ||->Node; $$=Node::DUMMY;
-    self.tokenizer.interior_lexer.cond.pop();
-};
-
-fake_embedded_action__primary__kFOR_1: {
-    ||->Node; $$=Node::DUMMY;
-    self.tokenizer.interior_lexer.cond.push(true);
-};
-
-fake_embedded_action__primary__kFOR_2: {
-    ||->Node; $$=Node::DUMMY;
-    self.tokenizer.interior_lexer.cond.pop();
-};
-
 fake_embedded_action__primary__kCLASS_1: {
     ||->Node; $$=Node::DUMMY;
 
@@ -1258,13 +1241,15 @@ primary
         let (else_t, else_) = unwrap_some_token_node!($5);
         $$ = node::condition($1, $2, $3, else_, else_t, Some($4), Some($6));
     }
-    | kWHILE fake_embedded_action_primary_kWHILE_1 expr_value do fake_embedded_action_primary_kWHILE_2 compstmt kEND {
-        |$1:Token, $3:Node, $4:Token, $6:Node, $7:Token| -> Node;
-        $$ = node::build_loop("while", $1, $3, $4, $6, $7);
+    | kWHILE expr_value_do compstmt kEND {
+        |$1:Token, $2:TNodeToken, $3:Node, $4:Token| -> Node;
+        let (expr_value_node, expr_value_token) = $2;
+        $$ = node::build_loop("while", $1, expr_value_node, expr_value_token, $3, $4);
     }
-    | kUNTIL fake_embedded_action_primary_kUNTIL_1 expr_value do fake_embedded_action_primary_kUNTIL_2 compstmt kEND {
-        |$1:Token, $3:Node, $4:Token, $6:Node, $7:Token| -> Node;
-        $$ = node::build_loop("until", $1, $3, $4, $6, $7);
+    | kUNTIL expr_value_do compstmt kEND {
+        |$1:Token, $2:TNodeToken, $3:Node, $4:Token| -> Node;
+        let (expr_value_node, expr_value_token) = $2;
+        $$ = node::build_loop("until", $1, expr_value_node, expr_value_token, $3, $4);
     }
     | kCASE expr_value opt_terms case_body kEND {
         //   *when_bodies, (else_t, else_body) = *val[3]
@@ -1284,9 +1269,10 @@ primary
         ||->Node;
         wip!(); $$=Node::DUMMY;
     }
-    | kFOR for_var kIN fake_embedded_action__primary__kFOR_1 expr_value do fake_embedded_action__primary__kFOR_2 compstmt kEND {
-        |$1:Token, $2:Node, $3:Token, $5:Node, $6:Token, $8:Node, $9:Token| -> Node;
-        $$ = node::build_for($1, $2, $3, $5, $6, $8, $9);
+    | kFOR for_var kIN expr_value_do compstmt kEND {
+        |$1:Token, $2:Node, $3:Token, $4:TNodeToken, $5:Node, $6:Token| -> Node;
+        let (expr_value_node, expr_value_token) = $4;
+        $$ = node::build_for($1, $2, $3, expr_value_node, expr_value_token, $5, $6);
     }
     | kCLASS cpath superclass fake_embedded_action__primary__kCLASS_1 bodystmt kEND {
         //   if @context.indirectly_in_def?
