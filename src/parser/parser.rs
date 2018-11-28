@@ -2710,8 +2710,8 @@ let rescue_bodies = _2;
         // if rescue_bodies.empty? && !else_.nil?
         //   diagnostic :error, :useless_else, nil, else_t
         // end
-        if rescue_bodies.is_empty() { // TODO !else_.nil?
-            // TODO diagnostic error
+        if rescue_bodies.is_empty() && !else_.is_none() {
+            // TODO
             panic!("diagnostic error");
         }
 
@@ -7915,9 +7915,8 @@ fn _handler381(&mut self) -> SV {
 // Semantic values prologue.
 self.values_stack.pop();
 
-self.tokenizer.interior_lexer.set_state("expr_value");
-        //   @lexer.state = :expr_value
-        wip!(); let __ =Node::DUMMY;
+let __ =Node::DUMMY;
+        self.tokenizer.interior_lexer.set_state("expr_value");
 println!("    *** PARSER production: opt_block_param -> block_param_def");
 
 println!("    values_stack: {:?}", self.values_stack);

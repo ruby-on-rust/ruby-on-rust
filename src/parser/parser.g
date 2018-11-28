@@ -143,8 +143,8 @@ bodystmt
         // if rescue_bodies.empty? && !else_.nil?
         //   diagnostic :error, :useless_else, nil, else_t
         // end
-        if rescue_bodies.is_empty() { // TODO !else_.nil?
-            // TODO diagnostic error
+        if rescue_bodies.is_empty() && !else_.is_none() {
+            // TODO
             panic!("diagnostic error");
         }
 
@@ -1651,10 +1651,8 @@ opt_block_param
         || -> Node; $$ = node::args(None, vec![], None);
     }
     | block_param_def {
+        ||->Node;$$=Node::DUMMY;
         self.tokenizer.interior_lexer.set_state("expr_value");
-        //   @lexer.state = :expr_value
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
     }
 ;
 
@@ -1859,7 +1857,6 @@ fake_embedded__brace_block__1: {
     ||->Node; $$=Node::DUMMY;
 
     self.tokenizer.context.push("block");
-    wip!();
 };
 
 brace_block
