@@ -4609,7 +4609,7 @@ impl Lexer {
 																// else
 																//   @cmdarg.pop
 																// end
-																// NOTE ignored ruby24
+																// NOTE ignored ruby24-and-below
 																self.cmdarg.pop();
 																
 																// if tok == '}'.freeze || tok == ']'.freeze
@@ -4621,9 +4621,15 @@ impl Lexer {
 																// else # )
 																//   # fnext expr_endfn; ?
 																// end
-																panic!("UNIMPL");
-																{(self.cs) = 661;
-																}{p+= 1;
+																// NOTE ignored ruby24-and-below
+																match self.current_slice(ts, te).as_ref() {
+																	"}" | "]" => {
+																		{(self.cs) = 468;
+																		}},
+																	_ => {}
+																}
+																
+																{p+= 1;
 																	_cont = 0;
 																}
 															}
@@ -4948,7 +4954,7 @@ impl Lexer {
 																// else
 																//   @cmdarg.pop
 																// end
-																// NOTE ignored ruby24
+																// NOTE ignored ruby24-and-below
 																self.cmdarg.pop();
 																
 																// if tok == '}'.freeze || tok == ']'.freeze
@@ -4960,9 +4966,15 @@ impl Lexer {
 																// else # )
 																//   # fnext expr_endfn; ?
 																// end
-																panic!("UNIMPL");
-																{(self.cs) = 661;
-																}{p+= 1;
+																// NOTE ignored ruby24-and-below
+																match self.current_slice(ts, te).as_ref() {
+																	"}" | "]" => {
+																		{(self.cs) = 468;
+																		}},
+																	_ => {}
+																}
+																
+																{p+= 1;
 																	_cont = 0;
 																}
 															}

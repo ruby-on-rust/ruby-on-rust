@@ -297,7 +297,7 @@ expr_end := |*
         // else
         //   @cmdarg.pop
         // end
-        // NOTE ignored ruby24
+        // NOTE ignored ruby24-and-below
         self.cmdarg.pop();
 
         // if tok == '}'.freeze || tok == ']'.freeze
@@ -309,8 +309,13 @@ expr_end := |*
         // else # )
         //   # fnext expr_endfn; ?
         // end
-        panic!("UNIMPL");
-        fnext expr_end;
+        // NOTE ignored ruby24-and-below
+        match self.current_slice(ts, te).as_ref() {
+            "}" | "]" => {
+                fnext expr_endarg;
+            },
+            _ => {}
+        }
 
         fnbreak;
     };
