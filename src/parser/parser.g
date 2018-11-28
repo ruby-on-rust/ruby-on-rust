@@ -1,4 +1,4 @@
-// b42bb9f10f71765c6ce9e4b859a8328e0a67fe8b
+// bb50272fbe33454c4a18031d0d38238cd69dcb5a
 
 // note about extracting values(token/node) in production
 // 
@@ -74,6 +74,7 @@ type TDoBody = ( Node, Node ); // args/opt_block_param body/bodystmt
 type TDoBlock = ( InteriorToken, TDoBody, InteriorToken );
 type TBraceBody = ( Node, Node ); // opt_block_param, compstmt
 type TBraceBlock = ( InteriorToken, TBraceBody, InteriorToken );
+type TBeginBlock = ( InteriorToken, Node, InteriorToken );
 
 pub type TResult = TSomeNode;
 
@@ -122,11 +123,18 @@ top_stmts
 
 top_stmt
     : stmt
-    | klBEGIN tLCURLY top_compstmt tRCURLY {
-        |$1:Token, $2:Token, $3:Node, $4:Token| -> Node;
-        $$ = node::preexe($1, $2, $3, $4);
+    | klBEGIN begin_block {
+        |$1:Token, $2:TBeginBlock| -> Node;
+        let (begin_block_t_lcurly, begin_block_top_compstmt, begin_block_t_rcurly) = $2;
+        $$ = node::preexe($1, begin_block_t_lcurly, begin_block_top_compstmt, begin_block_t_rcurly);
     }
 ;
+
+// TODO sth wrong with this, top_compstmt is an Option<Node> right?
+begin_block: tLCURLY top_compstmt tRCURLY {
+    |$1:Token, $2:Node, $3:Token| -> TBeginBlock;
+    $$ = ($1, $2, $3);
+};
 
 bodystmt
     : compstmt opt_rescue opt_else opt_ensure {
@@ -173,13 +181,11 @@ stmts
 
 stmt_or_begin
     : stmt
-    | klBEGIN tLCURLY top_compstmt tRCURLY {
-        ||->Node;
+    | klBEGIN begin_block {
+        || -> Node; $$ = Node::DUMMY;
 
         // diagnostic :error, :begin_in_method, nil, val[0]
         panic!("diagnostic error");
-
-        $$=Node::DUMMY;
     }
 ;
 
