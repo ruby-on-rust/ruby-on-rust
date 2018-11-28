@@ -277,7 +277,7 @@ expr_end := |*
     ( operator_arithmetic | operator_rest ) - ( '|' | '~' | '!' | '*' )
     => {
       !emit_table PUNCTUATION;
-      fnext expr_value; fnbreak;
+      fgoto expr_value;
     };
 
     ( e_lparen | '|' | '~' | '!' )
