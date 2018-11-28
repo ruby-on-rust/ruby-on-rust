@@ -1,4 +1,4 @@
-// newer than 2a73841d6da04a5ab9bd270561165fd766722d43
+// 7336721746da5d4b8bdbe147727594b1dc6824d1
 
 use crate::{
     token::token::Token,
@@ -926,11 +926,15 @@ pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
 
 // def op_assign(lhs, op_t, rhs)
 //   case lhs.type
-//   when :gvasgn, :ivasgn, :lVasgn, :cvasgn, :casgn, :send, :csend
+//   when :gvasgn, :ivasgn, :lVasgn, :cvasgn, :casgn, :send, :csend, :index
 //     operator   = value(op_t)[0..-1].to_sym
 //     source_map = lhs.loc.
 //                     with_operator(loc(op_t)).
 //                     with_expression(join_exprs(lhs, rhs))
+// 
+//     if lhs.type  == :index
+//       lhs = lhs.updated(:indexasgn)
+//     end
 // 
 //     case operator
 //     when :'&&'
@@ -1284,7 +1288,7 @@ pub fn call_lambda(lambda_t: Token) -> Node {
 //     diagnostic :error, :block_and_blockarg, nil, last_arg.loc.expression, [loc(begin_t)]
 //   end
 // 
-//   if [:send, :csend, :super, :zsuper, :lambda].include?(method_call.type)
+//   if [:send, :csend, :index, :super, :zsuper, :lambda].include?(method_call.type)
 //     n(:block, [ method_call, args, body ],
 //       block_map(method_call.loc.expression, begin_t, end_t))
 //   else
@@ -1333,17 +1337,27 @@ pub fn attr_asgn(receiver: Node, dot_t: Token, selector_t: Token) -> Node {
 }
 
 // def index(receiver, lbrack_t, indexes, rbrack_t)
-//   n(:send, [ receiver, :[], *indexes ],
-//     send_index_map(receiver, lbrack_t, rbrack_t))
+//     if self.class.emit_index
+//     n(:index, [ receiver, *indexes ],
+//         index_map(receiver, lbrack_t, rbrack_t))
+//     else
+//     n(:send, [ receiver, :[], *indexes ],
+//         send_index_map(receiver, lbrack_t, rbrack_t))
+//     end
 // end
 pub fn index(receiver: Node, lbrack_t: Token, indexes: Nodes, rbrack_t: Token) -> Node {
     wip!();
 }
 
 // def index_asgn(receiver, lbrack_t, indexes, rbrack_t)
-//   # Incomplete method call.
-//   n(:send, [ receiver, :[]=, *indexes ],
-//     send_index_map(receiver, lbrack_t, rbrack_t))
+//     if self.class.emit_index
+//     n(:indexasgn, [ receiver, *indexes ],
+//         index_map(receiver, lbrack_t, rbrack_t))
+//     else
+//     # Incomplete method call.
+//     n(:send, [ receiver, :[]=, *indexes ],
+//         send_index_map(receiver, lbrack_t, rbrack_t))
+//     end
 // end
 pub fn index_asgn(receiver: Node, lbrack_t: Token, indexes: Nodes, rbrack_t: Token) -> Node {
     wip!();
