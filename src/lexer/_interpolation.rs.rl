@@ -194,11 +194,7 @@ regexp_modifiers := |*
         //
         // emit(:tREGEXP_OPT)
         //
-        // if @version < 24
-        //   fnext expr_end;
-        // else
-        //   fnext expr_endarg;
-        // end
+        // fnext expr_end;
         // fbreak;
     };
 
@@ -207,11 +203,7 @@ regexp_modifiers := |*
         panic!("UNIMPL");
         // emit(:tREGEXP_OPT, tok(@ts, @te - 1), @ts, @te - 1)
         // fhold;
-        // if @version < 24
-        //   fgoto expr_end;
-        // else
-        //   fgoto expr_endarg;
-        // end
+        // fgoto expr_end;
     };
 *|;
 }%%

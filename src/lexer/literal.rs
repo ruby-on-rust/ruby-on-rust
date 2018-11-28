@@ -1,3 +1,5 @@
+// newer than 2a73841d6da04a5ab9bd270561165fd766722d43
+
 // TODO INCOMPLETE
 // TODO NOTE DOCS
 
@@ -615,10 +617,8 @@ impl Lexer {
     //     if old_literal.type == :tREGEXP_BEG
     //       # Fetch modifiers.
     //       self.class.lex_en_regexp_modifiers
-    //     elsif @version < 24
-    //       self.class.lex_en_expr_end
     //     else
-    //       self.class.lex_en_expr_endarg
+    //       self.class.lex_en_expr_end
     //     end
     //   end
     // TODO DUMMY

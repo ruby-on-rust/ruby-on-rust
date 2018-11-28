@@ -1,4 +1,4 @@
-// https://github.com/whitequark/parser/blob/3d588f42a67235828744e458e45daa963a0d24a8/lib/parser/ruby25.y
+// 969fb247f089145a9dfe646c579f937cfe2f4fde
 
 // note about extracting values(token/node) in production
 // 
@@ -959,16 +959,14 @@ call_args
 ;
 
 command_args: fake_embedded_action__command_args call_args {
-    |$1:StackState, $2:Nodes| -> Nodes;
+    |$2:Nodes| -> Nodes;
 
-    self.tokenizer.interior_lexer.cmdarg = $1;
+    self.tokenizer.interior_lexer.cmdarg.pop();
     $$ = $2;
 };
 
 fake_embedded_action__command_args: {
-    ||->StackState;
-
-    $$ = self.tokenizer.interior_lexer.cmdarg.clone();
+    ||->Node; $$ = Node::DUMMY;
     self.tokenizer.interior_lexer.cmdarg.push(true);
 };
 
@@ -1683,17 +1681,15 @@ fake_embedded_action_lambda_1: {
 };
 
 fake_embedded_action_lambda_2: {
-    || -> StackState;
+    ||->Node; $$=Node::DUMMY;
 
-    $$ = self.tokenizer.interior_lexer.cmdarg.clone();
-    self.tokenizer.interior_lexer.cmdarg.clear();
+    self.tokenizer.interior_lexer.cmdarg.push(false);
 };
 
 lambda: fake_embedded_action_lambda_1 f_larglist fake_embedded_action_lambda_2 lambda_body {
-    |$2: Node, $3: StackState, $4: TLambdaBody| -> TLambda;
+    |$2: Node, $4: TLambdaBody| -> TLambda;
 
-    self.tokenizer.interior_lexer.cmdarg = $3;
-    self.tokenizer.interior_lexer.cmdarg.lexpop();
+    self.tokenizer.interior_lexer.cmdarg.pop();
 
     $$ = ($2, $4);
 
@@ -1850,20 +1846,11 @@ fake_embedded_action_brace_body_1: {
     self.static_env.extend_dynamic();
 };
 
-fake_embedded_action_brace_body_2: {
-    || -> StackState;
-
-    $$ = self.tokenizer.interior_lexer.cmdarg.clone();
-    self.tokenizer.interior_lexer.cmdarg.clear();
-};
-
-brace_body: fake_embedded_action_brace_body_1 fake_embedded_action_brace_body_2 opt_block_param compstmt {
-    |$2:StackState, $3:Node, $4:Node| -> TBraceBody;
-    $$ = ($3, $4);
+brace_body: fake_embedded_action_brace_body_1 opt_block_param compstmt {
+    |$2:Node, $3:Node| -> TBraceBody;
+    $$ = ($2, $3);
 
     self.static_env.unextend();
-    self.tokenizer.interior_lexer.cmdarg = $2;
-    self.tokenizer.interior_lexer.cmdarg.pop();
 };
 
 fake_embedded_action_do_body_1: {
@@ -2150,7 +2137,7 @@ string_content
         |$1: Token, $3: Node, $4: Token| -> Node;
 
         self.tokenizer.interior_lexer.cond.lexpop();
-        self.tokenizer.interior_lexer.cmdarg.lexpop();
+        self.tokenizer.interior_lexer.cmdarg.pop();
 
         $$ = node::begin($1, Some($3), $4);
     }
@@ -2172,14 +2159,14 @@ string_dvar
 symbol: tSYMBOL {
     |$1:Token| -> Node;
 
-    self.tokenizer.interior_lexer.set_state("expr_endarg");
+    self.tokenizer.interior_lexer.set_state("expr_end");
     $$ = node::symbol($1);
 };
 
 dsym: tSYMBEG xstring_contents tSTRING_END {
     |$1:Token, $2:Nodes, $3:Token| -> Node;
 
-    self.tokenizer.interior_lexer.set_state("expr_endarg");
+    self.tokenizer.interior_lexer.set_state("expr_end");
     $$ = node::symbol_compose($1, $2, $3);
 };
 
@@ -2200,26 +2187,26 @@ numeric
 simple_numeric
     : tINTEGER {
         |$1: Token| -> Node;
-        self.tokenizer.interior_lexer.set_state("expr_endarg");
+        self.tokenizer.interior_lexer.set_state("expr_end");
         $$ = node::integer($1);
     }
     | tFLOAT {
         |$1: Token| -> Node;
-        self.tokenizer.interior_lexer.set_state("expr_endarg");
+        self.tokenizer.interior_lexer.set_state("expr_end");
         // result = @builder.float(val[0])
         // $$ = node::float($1);
         wip!(); $$=Node::DUMMY;
     }
     | tRATIONAL {
         |$1: Token| -> Node;
-        self.tokenizer.interior_lexer.set_state("expr_endarg");
+        self.tokenizer.interior_lexer.set_state("expr_end");
         // result = @builder.rational(val[0])
         // $$ = node::rational($1);
         wip!(); $$=Node::DUMMY;
     }
     | tIMAGINARY {
         |$1: Token| -> Node;
-        self.tokenizer.interior_lexer.set_state("expr_endarg");
+        self.tokenizer.interior_lexer.set_state("expr_end");
         // result = @builder.complex(val[0])
         wip!(); $$=Node::DUMMY;
     }

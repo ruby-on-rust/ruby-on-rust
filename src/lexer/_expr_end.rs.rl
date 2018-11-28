@@ -290,20 +290,13 @@ expr_end := |*
     => {
         !emit_table PUNCTUATION;
 
-        // NOTE ignored ruby24
-        // if @version < 24
-        //   @cond.lexpop
-        //   @cmdarg.lexpop
-        // else
-        //   @cond.pop
-        //   @cmdarg.pop
-        // end
-        self.cond.pop();
+        self.cond.lexpop();
         self.cmdarg.pop();
 
-        // TODO WIP
-        // if tok == '}'.freeze || tok == ']'.freeze
-        //   if @version >= 25
+        // if tok == '}'.freeze
+        //   fnext expr_endarg;
+        // elsif tok == ']'
+        //   if @version >= 24
         //     fnext expr_end;
         //   else
         //     fnext expr_endarg;
@@ -311,6 +304,7 @@ expr_end := |*
         // else # )
         //   # fnext expr_endfn; ?
         // end
+        panic!("UNIMPL");
         fnext expr_end;
 
         fnbreak;
@@ -318,7 +312,6 @@ expr_end := |*
 
     operator_arithmetic '='
     => {
-        // emit(:tOP_ASGN, tok(@ts, @te - 1))
         !emit T_OP_ASGN, ts, te - 1;
         fnext expr_beg; fnbreak;
     };

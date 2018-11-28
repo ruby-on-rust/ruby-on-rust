@@ -2598,11 +2598,7 @@ impl Lexer {
 															{panic!("UNIMPL");
 																// emit(:tREGEXP_OPT, tok(@ts, @te - 1), @ts, @te - 1)
 																// fhold;
-																// if @version < 24
-																//   fgoto expr_end;
-																// else
-																//   fgoto expr_endarg;
-																// end
+																// fgoto expr_end;
 															}
 														}}
 													
@@ -2619,11 +2615,7 @@ impl Lexer {
 																//
 																// emit(:tREGEXP_OPT)
 																//
-																// if @version < 24
-																//   fnext expr_end;
-																// else
-																//   fnext expr_endarg;
-																// end
+																// fnext expr_end;
 																// fbreak;
 															}
 														}}
@@ -4613,20 +4605,13 @@ impl Lexer {
 																}
 																
 																
-																// NOTE ignored ruby24
-																// if @version < 24
-																//   @cond.lexpop
-																//   @cmdarg.lexpop
-																// else
-																//   @cond.pop
-																//   @cmdarg.pop
-																// end
-																self.cond.pop();
+																self.cond.lexpop();
 																self.cmdarg.pop();
 																
-																// TODO WIP
-																// if tok == '}'.freeze || tok == ']'.freeze
-																//   if @version >= 25
+																// if tok == '}'.freeze
+																//   fnext expr_endarg;
+																// elsif tok == ']'
+																//   if @version >= 24
 																//     fnext expr_end;
 																//   else
 																//     fnext expr_endarg;
@@ -4634,6 +4619,7 @@ impl Lexer {
 																// else # )
 																//   # fnext expr_endfn; ?
 																// end
+																panic!("UNIMPL");
 																{(self.cs) = 661;
 																}{p+= 1;
 																	_cont = 0;
@@ -4956,20 +4942,13 @@ impl Lexer {
 																}
 																
 																
-																// NOTE ignored ruby24
-																// if @version < 24
-																//   @cond.lexpop
-																//   @cmdarg.lexpop
-																// else
-																//   @cond.pop
-																//   @cmdarg.pop
-																// end
-																self.cond.pop();
+																self.cond.lexpop();
 																self.cmdarg.pop();
 																
-																// TODO WIP
-																// if tok == '}'.freeze || tok == ']'.freeze
-																//   if @version >= 25
+																// if tok == '}'.freeze
+																//   fnext expr_endarg;
+																// elsif tok == ']'
+																//   if @version >= 24
 																//     fnext expr_end;
 																//   else
 																//     fnext expr_endarg;
@@ -4977,6 +4956,7 @@ impl Lexer {
 																// else # )
 																//   # fnext expr_endfn; ?
 																// end
+																panic!("UNIMPL");
 																{(self.cs) = 661;
 																}{p+= 1;
 																	_cont = 0;
