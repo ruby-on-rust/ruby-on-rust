@@ -4615,10 +4615,8 @@ impl Lexer {
 																// NOTE ignored ruby24
 																self.cmdarg.pop();
 																
-																// if tok == '}'.freeze
-																//   fnext expr_endarg;
-																// elsif tok == ']'
-																//   if @version >= 24
+																// if tok == '}'.freeze || tok == ']'.freeze
+																//   if @version >= 25
 																//     fnext expr_end;
 																//   else
 																//     fnext expr_endarg;
@@ -4959,10 +4957,8 @@ impl Lexer {
 																// NOTE ignored ruby24
 																self.cmdarg.pop();
 																
-																// if tok == '}'.freeze
-																//   fnext expr_endarg;
-																// elsif tok == ']'
-																//   if @version >= 24
+																// if tok == '}'.freeze || tok == ']'.freeze
+																//   if @version >= 25
 																//     fnext expr_end;
 																//   else
 																//     fnext expr_endarg;
