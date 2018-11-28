@@ -1233,7 +1233,6 @@ fn asgn_cmd() {
         )
     );
 
-    // TODO
     //     assert_parses(
     //       s(:lvasgn, :foo,
     //         s(:lvasgn, :bar,
@@ -1241,6 +1240,23 @@ fn asgn_cmd() {
     //       %q{foo = bar = m foo},
     //       %q{},
     //       ALL_VERSIONS - %w(1.8 mac ios))
+    assert_parses!(
+        "foo = bar = m foo",
+        Node::LVasgn(
+            String::from("foo"),
+            vec![
+                Node::LVasgn(
+                    String::from("bar"), vec![
+                        n_send!(
+                            None,
+                            "m",
+                            vec![n_lvar!("foo")]
+                        )
+                    ]
+                )
+            ]
+        )
+    );
 } 
 
 //   def test_asgn_keyword_invalid
