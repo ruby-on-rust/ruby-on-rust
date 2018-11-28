@@ -130,6 +130,9 @@ pub struct Lexer {
 	
 	// # State before =begin / =end block comment
 	// @cs_before_block_comment = self.class.lex_en_line_begin
+	
+	// # Last emitted token
+	// @last_token = nil
 }
 
 impl Lexer {
@@ -4606,6 +4609,13 @@ impl Lexer {
 																
 																
 																self.cond.lexpop();
+																
+																// if @version < 24
+																//   @cmdarg.lexpop
+																// else
+																//   @cmdarg.pop
+																// end
+																// NOTE ignored ruby24
 																self.cmdarg.pop();
 																
 																// if tok == '}'.freeze
@@ -4943,6 +4953,13 @@ impl Lexer {
 																
 																
 																self.cond.lexpop();
+																
+																// if @version < 24
+																//   @cmdarg.lexpop
+																// else
+																//   @cmdarg.pop
+																// end
+																// NOTE ignored ruby24
 																self.cmdarg.pop();
 																
 																// if tok == '}'.freeze

@@ -291,6 +291,13 @@ expr_end := |*
         !emit_table PUNCTUATION;
 
         self.cond.lexpop();
+
+        // if @version < 24
+        //   @cmdarg.lexpop
+        // else
+        //   @cmdarg.pop
+        // end
+        // NOTE ignored ruby24
         self.cmdarg.pop();
 
         // if tok == '}'.freeze
