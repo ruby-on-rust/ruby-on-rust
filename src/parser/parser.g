@@ -1,4 +1,4 @@
-// b59cb7682ab4a7e5985a3c8ea103d8d69091bd1c
+// a4fc650a47bcd5d859bb42687209a0ca27fafc35
 
 // note about extracting values(token/node) in production
 // 
@@ -986,7 +986,30 @@ command_args: fake_embedded_action__command_args call_args {
 
 fake_embedded_action__command_args: {
     ||->Node; $$ = Node::DUMMY;
-    self.tokenizer.interior_lexer.cmdarg.push(true);
+
+    wip!();
+    // # When branch gets invoked by RACC's lookahead
+    // # and command args start with '[' or '('
+    // # we need to put `true` to the cmdarg stack
+    // # **before** `false` pushed by lexer
+    // #   m [], n
+    // #     ^
+    // # Right here we have cmdarg [...0] because
+    // # lexer pushed it on '['
+    // # We need to modify cmdarg stack to [...10]
+    // #
+    // # For all other cases (like `m n` or `m n, []`) we simply put 1 to the stack
+    // # and later lexer pushes corresponding bits on top of it.
+    // last_token = @lexer.last_token[0]
+    // lookahead = last_token == :tLBRACK || last_token == :tLPAREN_ARG
+    // 
+    // if lookahead
+    //   top = @lexer.cmdarg.pop
+    //   @lexer.cmdarg.push(true)
+    //   @lexer.cmdarg.push(top)
+    // else
+    //   @lexer.cmdarg.push(true)
+    // end
 };
 
 block_arg
@@ -2136,7 +2159,7 @@ string_content
     | tSTRING_DBEG fake_embedded_action__string_content__tSTRING_DBEG compstmt tSTRING_DEND {
         |$1: Token, $3: Node, $4: Token| -> Node;
 
-        self.tokenizer.interior_lexer.cond.lexpop();
+        self.tokenizer.interior_lexer.cond.pop();
         self.tokenizer.interior_lexer.cmdarg.pop();
 
         $$ = node::begin($1, Some($3), $4);

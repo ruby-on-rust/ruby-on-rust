@@ -6113,7 +6113,30 @@ fn _handler263(&mut self) -> SV {
 
 
 let __ = Node::DUMMY;
-    self.tokenizer.interior_lexer.cmdarg.push(true);
+
+    wip!();
+    // # When branch gets invoked by RACC's lookahead
+    // # and command args start with '[' or '('
+    // # we need to put `true` to the cmdarg stack
+    // # **before** `false` pushed by lexer
+    // #   m [], n
+    // #     ^
+    // # Right here we have cmdarg [...0] because
+    // # lexer pushed it on '['
+    // # We need to modify cmdarg stack to [...10]
+    // #
+    // # For all other cases (like `m n` or `m n, []`) we simply put 1 to the stack
+    // # and later lexer pushes corresponding bits on top of it.
+    // last_token = @lexer.last_token[0]
+    // lookahead = last_token == :tLBRACK || last_token == :tLPAREN_ARG
+
+    // if lookahead
+    //   top = @lexer.cmdarg.pop
+    //   @lexer.cmdarg.push(true)
+    //   @lexer.cmdarg.push(top)
+    // else
+    //   @lexer.cmdarg.push(true)
+    // end;
 println!("    *** PARSER production: fake_embedded_action__command_args -> undefined");
 
 println!("    values_stack: {:?}", self.values_stack);
@@ -9104,7 +9127,7 @@ let mut _3 = pop!(self.values_stack, _3);
 self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-self.tokenizer.interior_lexer.cond.lexpop();
+self.tokenizer.interior_lexer.cond.pop();
         self.tokenizer.interior_lexer.cmdarg.pop();
 
         let __ = node::begin(_1, Some(_3), _4);
