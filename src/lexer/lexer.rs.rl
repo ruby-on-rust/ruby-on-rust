@@ -1,4 +1,4 @@
-// 3f74665070f0f573ffcf7f18a04b95b80151e0fd
+// 3fc8ce69efbab5a4cb9bd87ee5580ed5dcb04a71
 
 // TODO
 // set starting cs as lexer_en_line_begin
@@ -123,9 +123,6 @@ pub struct Lexer {
 
     // # State before =begin / =end block comment
     // @cs_before_block_comment = self.class.lex_en_line_begin
-
-    // # Last emitted token
-    // @last_token = nil
 }
 
 impl Lexer {

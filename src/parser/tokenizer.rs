@@ -313,9 +313,13 @@ pub struct Tokenizer {
 
     no_more_tokens: bool,
 
-    // RoR exclusive fields
+    //
+    //  RoR exclusive fields
+    // 
     pub static_env: StaticEnv,
     pub context: Context,
+    // Last emitted token
+    pub last_token: Option<Token>,
 }
 
 impl Tokenizer {
@@ -332,6 +336,7 @@ impl Tokenizer {
 
             static_env: StaticEnv::new(),
             context: Context::new(),
+            last_token: None,
         };
 
         tokenizer
@@ -347,9 +352,7 @@ impl Tokenizer {
     pub fn get_next_token(&mut self) -> Token {
         if let Some(interior_token) = self.interior_lexer.advance() {
             let token = interior_token.wrap_as_token();
-
-            println!("###### TOKENIZER#get_next_token: got token: {:?}", token);
-
+            self.last_token = Some(token.clone());
             token
         } else {
             println!("###### TOKENIZER#get_next_token: no_more_tokens");
