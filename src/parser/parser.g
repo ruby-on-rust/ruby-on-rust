@@ -1,4 +1,4 @@
-// 12e43a0f2bd81dbe5bc7889baad68211e48cab35
+// 85df373b6c7eaeee911c7aa2002dbd4930b8ff18
 
 // note about extracting values(token/node) in production
 // 
@@ -764,11 +764,19 @@ arg
     }
     | arg tDOT2 arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::range_inclusive($1, $2, $3);
+        $$ = node::range_inclusive($1, $2, Some($3));
     }
     | arg tDOT3 arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::range_exclusive($1, $2, $3);
+        $$ = node::range_exclusive($1, $2, Some($3));
+    }
+    | arg tDOT2 {
+        |$1:Node, $2:Token| -> Node;
+        $$ = node::range_inclusive($1, $2, None);
+    }
+    | arg tDOT3 {
+        |$1:Node, $2:Token| -> Node;
+        $$ = node::range_exclusive($1, $2, None);
     }
     | arg tPLUS arg {
         |$1:Node, $2:Token, $3:Node| -> Node;

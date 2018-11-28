@@ -629,17 +629,17 @@ pub fn associate(begin_t: Option<Token>, pairs: Nodes, end_t: Option<Token>) -> 
 
 // def range_inclusive(lhs, dot2_t, rhs)
 //   n(:irange, [ lhs, rhs ],
-//     binary_op_map(lhs, dot2_t, rhs))
+//     range_map(lhs, dot2_t, rhs))
 // end
-pub fn range_inclusive(lhs: Node, dot2_t: Token, rhs: Node) -> Node {
+pub fn range_inclusive(lhs: Node, dot2_t: Token, rhs: Option<Node>) -> Node {
     wip!();
 }
 
 // def range_exclusive(lhs, dot3_t, rhs)
 //   n(:erange, [ lhs, rhs ],
-//     binary_op_map(lhs, dot3_t, rhs))
+//     range_map(lhs, dot3_t, rhs))
 // end
-pub fn range_exclusive(lhs: Node, dot3_t: Token, rhs: Node) -> Node {
+pub fn range_exclusive(lhs: Node, dot3_t: Token, rhs: Option<Node>) -> Node {
     wip!();
 }
 
