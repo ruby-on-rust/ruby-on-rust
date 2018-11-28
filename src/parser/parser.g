@@ -1,5 +1,3 @@
-// 85df373b6c7eaeee911c7aa2002dbd4930b8ff18
-
 // note about extracting values(token/node) in production
 // 
 // var_ref
@@ -12,9 +10,6 @@
 // 
 // `|$1:Node|` means a `pop` and an `unwrap`, so `$1` is already a `Node` unwrapped from `SV`
 // 
-
-// TODO update
-// this file is based on https://github.com/whitequark/parser/blob/2a73841d6da04a5ab9bd270561165fd766722d43/lib/parser/ruby25.y
 
 // TODO
 // check out this about transforming token names https://github.com/tenderlove/racc/blob/master/rdoc/en/grammar.en.rdoc#converting-token-symbols
