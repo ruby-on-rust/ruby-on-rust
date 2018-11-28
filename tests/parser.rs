@@ -1193,7 +1193,7 @@ fn ivasgn() {
 fn cvasgn() {
     assert_parses!(
         "@@var = 10",
-        Node::CVasgn(String::from("@@var"), vec![Node::Int(10)] )
+        Node::CVasgn(String::from("@@var"), vec![n_int!(10)] )
     );
 }
 
@@ -1206,6 +1206,13 @@ fn cvasgn() {
 //         |~~~~~~~~~ expression
 //         })
 //   end
+#[test]
+fn gvasgn() {
+    assert_parses!(
+        "$var = 10",
+        Node::GVasgn(String::from("$var"), vec![n_int!(10)] )
+    );
+}
 
 #[test]
 fn asgn_cmd() {

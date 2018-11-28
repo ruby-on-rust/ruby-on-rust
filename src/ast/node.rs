@@ -203,10 +203,11 @@ pub type Nodes = Vec<Node>;
 #[macro_export] macro_rules! n_csend { ($receiver:expr, $selector:expr, $args:expr) => { Node::CSend { receiver: $receiver, selector: String::from($selector), args: $args } }; }
 #[macro_export] macro_rules! n_int { ($v:expr) => { Node::Int($v) }; }
 
+// TODO use a procedure derive for this
 impl Node {
     pub fn push_children(&mut self, node: Node) {
         match self {
-            Node::LVasgn(name, nodes) | Node::IVasgn(name, nodes) => {
+            Node::LVasgn(name, nodes) | Node::IVasgn(name, nodes) | Node::CVasgn(name, nodes) | Node::GVasgn(name, nodes) => {
                 nodes.push(node);
             },
             _ => { unreachable!(); }
@@ -913,9 +914,8 @@ pub fn const_op_assignable(node: Node) -> Node {
 // end
 // TODO INCOMPLETE
 pub fn assign(mut lhs_node: Node, token: Token, rhs_node: Node) -> Node {
-    // TODO WIP why can't match CVasgn?
     match lhs_node {
-        Node::LVasgn(_, _) | Node::IVasgn(_, _) | Node::CVasgn(_, _) => {
+        Node::LVasgn(_, _) | Node::IVasgn(_, _) | Node::CVasgn(_, _) | Node::GVasgn(_, _) => {
             lhs_node.push_children(rhs_node);
             return lhs_node;
         },
