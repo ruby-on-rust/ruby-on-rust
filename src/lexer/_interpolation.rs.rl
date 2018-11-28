@@ -186,23 +186,32 @@ regexp_modifiers := |*
     [A-Za-z]+
     => {
         panic!("UNIMPL");
-        //   unknown_options = tok.scan(/[^imxouesn]/)
-        //   if unknown_options.any?
-        //     diagnostic :error, :regexp_options,
-        //                 { :options => unknown_options.join }
-        //   end
-        // 
-        //   emit(:tREGEXP_OPT)
+        // unknown_options = tok.scan(/[^imxouesn]/)
+        // if unknown_options.any?
+        //   diagnostic :error, :regexp_options,
+        //               { :options => unknown_options.join }
+        // end
+        //
+        // emit(:tREGEXP_OPT)
+        //
+        // if @version < 24
         //   fnext expr_end;
-        //   fbreak;
+        // else
+        //   fnext expr_endarg;
+        // end
+        // fbreak;
     };
 
     any
     => {
         panic!("UNIMPL");
-        //   emit(:tREGEXP_OPT, tok(@ts, @te - 1), @ts, @te - 1)
-        //   fhold;
+        // emit(:tREGEXP_OPT, tok(@ts, @te - 1), @ts, @te - 1)
+        // fhold;
+        // if @version < 24
         //   fgoto expr_end;
+        // else
+        //   fgoto expr_endarg;
+        // end
     };
 *|;
 }%%
