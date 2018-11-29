@@ -1831,10 +1831,6 @@ pub struct Parser {
      */
     handlers: [fn(&mut Parser) -> SV; 602],
 
-    // private fields for RoR
-    // static_env: StaticEnv,
-    // context: Context,
-
 }
 
 impl Parser {
@@ -2454,9 +2450,6 @@ impl Parser {
     Parser::_handler601
 ],
 
-            // private fields for RoR
-            // static_env: StaticEnv::new(),
-            // context: Context::new(),
         }
     }
 
@@ -2494,6 +2487,8 @@ impl Parser {
 
                 // Shift a token, go to state.
                 &TE::Shift(next_state) => {
+                    println!("parser:shift");
+
                     // Push token.
                     self.values_stack.push(SV::_0(token.clone()));
 
@@ -2502,15 +2497,11 @@ impl Parser {
 
                     shifted_token = token;
                     token = self.tokenizer.get_next_token();
-
-                    println!("*** PARSER: shifted_token: {:?}", shifted_token);
-                    println!("*** PARSER: next token: {:?}", token.value);
-                    println!("*** PARSER: values_stack: {:?}", self.values_stack);
                 },
 
                 // Reduce by production.
                 &TE::Reduce(production_number) => {
-                    println!("\n*** PARSER: REDUCE!");
+                    println!("parser:shift");
 
                     let production = PRODUCTIONS[production_number];
 
@@ -2526,9 +2517,6 @@ impl Parser {
                     // Call the handler, push result onto the stack.
                     let result_value = self.handlers[production_number](self);
 
-                    println!("*** PARSER: handler: {:?}", production_number );
-                    println!("*** PARSER: result_value: {:?}", result_value);
-
                     let previous_state = *self.states_stack.last().unwrap();
                     let symbol_to_reduce_with = production[0];
 
@@ -2541,8 +2529,6 @@ impl Parser {
                     };
 
                     self.states_stack.push(next_state);
-
-                    println!("*** PARSER: values_stack: {:?}", self.values_stack);
                 },
 
                 // Accept the string.
@@ -2576,7 +2562,7 @@ impl Parser {
   if token.value == EOF && !self.tokenizer.has_more_tokens() {
     panic!("Unexpected end of input.");
   }
-  self.tokenizer.panic_unexpected_token(token.value, token.start_line, token.start_column);
+  self.tokenizer.panic_unexpected_token(token, token.start_line, token.start_column);
 
     }
 
@@ -9275,7 +9261,9 @@ fn _handler477(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-self.tokenizer.interior_lexer.set_state("expr_end");
+println!("WTF:tINTEGER _1: {:?}", _1);
+
+        self.tokenizer.interior_lexer.set_state("expr_end");
         let __ = node::integer(_1);
 println!("    *** PARSER production: simple_numeric -> tINTEGER");
 

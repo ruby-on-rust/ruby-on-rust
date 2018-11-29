@@ -350,16 +350,20 @@ impl Tokenizer {
     }
 
     pub fn get_next_token(&mut self) -> Token {
-        if let Some(interior_token) = self.interior_lexer.advance() {
-            let token = interior_token.wrap_as_token();
-            self.last_token = Some(token.clone());
-            token
-        } else {
-            println!("###### TOKENIZER#get_next_token: no_more_tokens");
-            self.no_more_tokens = true;
-            get_an_eof_token()
-        }
+        let token = match self.interior_lexer.advance() {
+            Some(interior_token) => {
+                let token = interior_token.wrap_as_token();
+                self.last_token = Some(token.clone());
+                token
+            },
+            None => {
+                self.no_more_tokens = true;
+                get_an_eof_token()
+            }
+        };
 
+        println!("tokenizer:get_next_token: token: {:?}", token.interior_token);
+        token
     }
 
     // TODO
@@ -369,7 +373,7 @@ impl Tokenizer {
         !self.no_more_tokens
     }
 
-    pub fn panic_unexpected_token(&self, string: &'static str, line: i32, column: i32) {
-        panic!("unexpected_token, token: {:?}", string);
+    pub fn panic_unexpected_token(&self, token: &Token, line: i32, column: i32) {
+        panic!("unexpected_token, token: {:?}", token.interior_token);
     }
 }

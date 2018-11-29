@@ -2219,6 +2219,9 @@ numeric
 simple_numeric
     : tINTEGER {
         |$1: Token| -> Node;
+
+        println!("WTF:tINTEGER $1: {:?}", $1);
+
         self.tokenizer.interior_lexer.set_state("expr_end");
         $$ = node::integer($1);
     }
