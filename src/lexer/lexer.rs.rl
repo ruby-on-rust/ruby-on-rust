@@ -17,31 +17,62 @@ use crate::{
 
 macro_rules! wip { () => { panic!("WIP"); }; }
 
-fn state_name_from_int(state_id: i32) -> &'static str {
-    if state_id == lexer_en_interp_words { return "interp_words"; }
-    if state_id == lexer_en_interp_string { return "interp_string"; }
-    if state_id == lexer_en_plain_words { return "plain_words"; }
-    if state_id == lexer_en_plain_string { return "plain_string"; }
-    if state_id == lexer_en_interp_backslash_delimited { return "interp_backslash_delimited"; }
-    if state_id == lexer_en_plain_backslash_delimited { return "plain_backslash_delimited"; }
-    if state_id == lexer_en_interp_backslash_delimited_words { return "interp_backslash_delimited_words"; }
-    if state_id == lexer_en_plain_backslash_delimited_words { return "plain_backslash_delimited_words"; }
-    if state_id == lexer_en_regexp_modifiers { return "regexp_modifiers"; }
-    if state_id == lexer_en_expr_variable { return "expr_variable"; }
-    if state_id == lexer_en_expr_fname { return "expr_fname"; }
-    if state_id == lexer_en_expr_endfn { return "expr_endfn"; }
-    if state_id == lexer_en_expr_dot { return "expr_dot"; }
-    if state_id == lexer_en_expr_arg { return "expr_arg"; }
-    if state_id == lexer_en_expr_cmdarg { return "expr_cmdarg"; }
-    if state_id == lexer_en_expr_endarg { return "expr_endarg"; }
-    if state_id == lexer_en_expr_mid { return "expr_mid"; }
-    if state_id == lexer_en_expr_beg { return "expr_beg"; }
-    if state_id == lexer_en_expr_labelarg { return "expr_labelarg"; }
-    if state_id == lexer_en_expr_value { return "expr_value"; }
-    if state_id == lexer_en_expr_end { return "expr_end"; }
-    if state_id == lexer_en_leading_dot { return "leading_dot"; }
-    if state_id == lexer_en_line_begin { return "line_begin"; }
+// TODO VENDOR using a static str as return value will cause ragel to run forever.
+// https://github.com/ruby-on-rust/ruby-on-rust/issues/3
+fn state_name_from_id(state_id: i32) -> String {
+    if state_id == lexer_en_interp_words { return String::from("interp_words"); }
+    if state_id == lexer_en_interp_string { return String::from("interp_string"); }
+    if state_id == lexer_en_plain_words { return String::from("plain_words"); }
+    if state_id == lexer_en_plain_string { return String::from("plain_string"); }
+    if state_id == lexer_en_interp_backslash_delimited { return String::from("interp_backslash_delimited"); }
+    if state_id == lexer_en_plain_backslash_delimited { return String::from("plain_backslash_delimited"); }
+    if state_id == lexer_en_interp_backslash_delimited_words { return String::from("interp_backslash_delimited_words"); }
+    if state_id == lexer_en_plain_backslash_delimited_words { return String::from("plain_backslash_delimited_words"); }
+    if state_id == lexer_en_regexp_modifiers { return String::from("regexp_modifiers"); }
+    if state_id == lexer_en_expr_variable { return String::from("expr_variable"); }
+    if state_id == lexer_en_expr_fname { return String::from("expr_fname"); }
+    if state_id == lexer_en_expr_endfn { return String::from("expr_endfn"); }
+    if state_id == lexer_en_expr_dot { return String::from("expr_dot"); }
+    if state_id == lexer_en_expr_arg { return String::from("expr_arg"); }
+    if state_id == lexer_en_expr_cmdarg { return String::from("expr_cmdarg"); }
+    if state_id == lexer_en_expr_endarg { return String::from("expr_endarg"); }
+    if state_id == lexer_en_expr_mid { return String::from("expr_mid"); }
+    if state_id == lexer_en_expr_beg { return String::from("expr_beg"); }
+    if state_id == lexer_en_expr_labelarg { return String::from("expr_labelarg"); }
+    if state_id == lexer_en_expr_value { return String::from("expr_value"); }
+    if state_id == lexer_en_expr_end { return String::from("expr_end"); }
+    if state_id == lexer_en_leading_dot { return String::from("leading_dot"); }
+    if state_id == lexer_en_line_begin { return String::from("line_begin"); }
     unreachable!();
+}
+
+fn state_id_from_name(state_name: &str) -> i32 {
+    match state_name {
+        "interp_words" => { lexer_en_interp_words },
+        "interp_string" => { lexer_en_interp_string },
+        "plain_words" => { lexer_en_plain_words },
+        "plain_string" => { lexer_en_plain_string },
+        "interp_backslash_delimited" => { lexer_en_interp_backslash_delimited },
+        "plain_backslash_delimited" => { lexer_en_plain_backslash_delimited },
+        "interp_backslash_delimited_words" => { lexer_en_interp_backslash_delimited_words },
+        "plain_backslash_delimited_words" => { lexer_en_plain_backslash_delimited_words },
+        "regexp_modifiers" => { lexer_en_regexp_modifiers },
+        "expr_variable" => { lexer_en_expr_variable },
+        "expr_fname" => { lexer_en_expr_fname },
+        "expr_endfn" => { lexer_en_expr_endfn },
+        "expr_dot" => { lexer_en_expr_dot },
+        "expr_arg" => { lexer_en_expr_arg },
+        "expr_cmdarg" => { lexer_en_expr_cmdarg },
+        "expr_endarg" => { lexer_en_expr_endarg },
+        "expr_mid" => { lexer_en_expr_mid },
+        "expr_beg" => { lexer_en_expr_beg },
+        "expr_labelarg" => { lexer_en_expr_labelarg },
+        "expr_value" => { lexer_en_expr_value },
+        "expr_end" => { lexer_en_expr_end },
+        "leading_dot" => { lexer_en_leading_dot },
+        "line_begin" => { lexer_en_line_begin },
+        _ => { unreachable!(); }
+    }
 }
 
 %%{
@@ -198,7 +229,7 @@ impl Lexer {
     // return a Token
     #[allow(unused_parens, unused_assignments, unused_variables)]
     pub fn advance(&mut self) -> Option<Token> {
-        println!("---\nlexer:advance: current_state: {}", state_name_from_int(self.cs));
+        println!("---\nlexer:advance: current_state: {}", state_name_from_id(self.cs));
 
         if !self.tokens.borrow().is_empty() { return Some(self.tokens.borrow_mut().remove(0)); }
 
@@ -239,7 +270,7 @@ impl Lexer {
         self.stack = stack;
         self.top = top;
 
-        println!("lexer:advance:advanced current state: {}", state_name_from_int(self.cs));
+        println!("lexer:advance:advanced current state: {}", state_name_from_id(self.cs));
 
         if self.tokens.borrow().is_empty() {
             return None;
@@ -271,31 +302,6 @@ impl Lexer {
     }
 
     pub fn set_state(&mut self, state_name: &str) {
-        match state_name {
-            "interp_words" => { self.cs = lexer_en_interp_words; },
-            "interp_string" => { self.cs = lexer_en_interp_string; },
-            "plain_words" => { self.cs = lexer_en_plain_words; },
-            "plain_string" => { self.cs = lexer_en_plain_string; },
-            "interp_backslash_delimited" => { self.cs = lexer_en_interp_backslash_delimited; },
-            "plain_backslash_delimited" => { self.cs = lexer_en_plain_backslash_delimited; },
-            "interp_backslash_delimited_words" => { self.cs = lexer_en_interp_backslash_delimited_words; },
-            "plain_backslash_delimited_words" => { self.cs = lexer_en_plain_backslash_delimited_words; },
-            "regexp_modifiers" => { self.cs = lexer_en_regexp_modifiers; },
-            "expr_variable" => { self.cs = lexer_en_expr_variable; },
-            "expr_fname" => { self.cs = lexer_en_expr_fname; },
-            "expr_endfn" => { self.cs = lexer_en_expr_endfn; },
-            "expr_dot" => { self.cs = lexer_en_expr_dot; },
-            "expr_arg" => { self.cs = lexer_en_expr_arg; },
-            "expr_cmdarg" => { self.cs = lexer_en_expr_cmdarg; },
-            "expr_endarg" => { self.cs = lexer_en_expr_endarg; },
-            "expr_mid" => { self.cs = lexer_en_expr_mid; },
-            "expr_beg" => { self.cs = lexer_en_expr_beg; },
-            "expr_labelarg" => { self.cs = lexer_en_expr_labelarg; },
-            "expr_value" => { self.cs = lexer_en_expr_value; },
-            "expr_end" => { self.cs = lexer_en_expr_end; },
-            "leading_dot" => { self.cs = lexer_en_leading_dot; },
-            "line_begin" => { self.cs = lexer_en_line_begin; },
-            _ => { panic!("unknown state name"); }
-        }
+        self.cs = state_id_from_name(state_name);
     }
 }
