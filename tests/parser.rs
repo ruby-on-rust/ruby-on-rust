@@ -3171,28 +3171,38 @@ fn send_self() {
 
 //   # To receiver
 
-//   def test_send_plain
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :fun),
-//       %q{foo.fun},
-//       %q{    ~~~ selector
-//         |   ^ dot
-//         |~~~~~~~ expression})
-// 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :fun),
-//       %q{foo::fun},
-//       %q{     ~~~ selector
-//         |   ^^ dot
-//         |~~~~~~~~ expression})
-// 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :Fun),
-//       %q{foo::Fun()},
-//       %q{     ~~~ selector
-//         |   ^^ dot
-//         |~~~~~~~~~~ expression})
-//   end
+#[test]
+pub fn send_plain() {
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :fun),
+    //       %q{foo.fun},
+    //       %q{    ~~~ selector
+    //         |   ^ dot
+    //         |~~~~~~~ expression})
+    assert_parses!(
+        "foo.fun",
+        n_send!(
+            Some(Box::new(n_lvar!("foo"))),
+            "fun",
+            vec![]
+        )
+    );
+
+    // TODO
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :fun),
+    //       %q{foo::fun},
+    //       %q{     ~~~ selector
+    //         |   ^^ dot
+    //         |~~~~~~~~ expression})
+    // 
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :Fun),
+    //       %q{foo::Fun()},
+    //       %q{     ~~~ selector
+    //         |   ^^ dot
+    //         |~~~~~~~~~~ expression})
+}
 
 //   def test_send_plain_cmd
 //     assert_parses(
@@ -3201,14 +3211,14 @@ fn send_self() {
 //       %q{    ~~~ selector
 //         |   ^ dot
 //         |~~~~~~~~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:send, s(:lvar, :foo), :fun, s(:lvar, :bar)),
 //       %q{foo::fun bar},
 //       %q{     ~~~ selector
 //         |   ^^ dot
 //         |~~~~~~~~~~~~ expression})
-
+// 
 //     assert_parses(
 //       s(:send, s(:lvar, :foo), :Fun, s(:lvar, :bar)),
 //       %q{foo::Fun bar},
