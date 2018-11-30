@@ -186,6 +186,9 @@ pub enum Node {
 
     Class { name: Box<Node>, superclass: Box<Option<Node>>, body: Box<Option<Node>> },
     // node->nd_cpath, node->nd_super, node->nd_body
+
+    If { condition: Box<Node>, then_body: Box<Option<Node>>, else_body: Box<Option<Node>> },
+    // node->nd_cond, node->nd_body, node->nd_else);
 }
 
 pub type Nodes = Vec<Node>;
@@ -206,6 +209,7 @@ pub type Nodes = Vec<Node>;
 #[macro_export] macro_rules! n_int { ($v:expr) => { Node::Int($v) }; }
 #[macro_export] macro_rules! n_const { ($scope:expr, $name:expr) => { Node::Const { scope: $scope, name: $name } }; }
 #[macro_export] macro_rules! n_class { ($name:expr, $superclass:expr, $body:expr) => { Node::Class { name: Box::new($name), superclass: Box::new($superclass), body: Box::new($body) } }; }
+#[macro_export] macro_rules! n_if { ($condition:expr, $then_body:expr, $else_body:expr) => { Node::If { condition: Box::new($condition), then_body: Box::new($then_body), else_body: Box::new($else_body) } }; }
 
 // TODO use a procedure derive for this
 impl Node {
@@ -1480,7 +1484,7 @@ pub fn logical_op(node_type: &str, lhs: Node, op_t: Token, rhs: Node) -> Node {
 //     condition_map(cond_t, cond, then_t, if_true, else_t, if_false, end_t))
 // end
 pub fn condition(cond_t: Token, cond: Node, then_t: Token, if_true: Option<Node>, else_t: Option<Token>, if_false: Option<Node>, end_t: Option<Token>) -> Node {
-    wip!();
+    n_if!( check_condition(cond), if_true, if_false )
 }
 
 // def condition_mod(if_true, if_false, cond_t, cond)
@@ -1719,6 +1723,100 @@ pub fn begin_keyword(begin_t: Token, body: Option<Node>, end_t: Token) -> Node {
         _ => { wip!(); }
     }
 }
+
+// #
+// # VERIFICATION
+// #
+
+// def check_condition(cond)
+//   case cond.type
+//   when :masgn
+//     if @parser.version <= 23
+//       diagnostic :error, :masgn_as_condition, nil, cond.loc.expression
+//     else
+//       cond
+//     end
+// 
+//   when :begin
+//     if cond.children.count == 1
+//       cond.updated(nil, [
+//         check_condition(cond.children.last)
+//       ])
+//     else
+//       cond
+//     end
+// 
+//   when :and, :or, :irange, :erange
+//     lhs, rhs = *cond
+// 
+//     type = case cond.type
+//     when :irange then :iflipflop
+//     when :erange then :eflipflop
+//     end
+// 
+//     if [:and, :or].include?(cond.type) &&
+//            @parser.version == 18
+//       cond
+//     else
+//       cond.updated(type, [
+//         check_condition(lhs),
+//         check_condition(rhs)
+//       ])
+//     end
+// 
+//   when :regexp
+//     n(:match_current_line, [ cond ], expr_map(cond.loc.expression))
+// 
+//   else
+//     cond
+//   end
+// end
+// 
+// TODO NOTE
+fn check_condition(cond: Node) -> Node {
+    // TODO
+    cond
+}
+
+// def check_duplicate_args(args, map={})
+//   args.each do |this_arg|
+//     case this_arg.type
+//     when :arg, :optarg, :restarg, :blockarg,
+//          :kwarg, :kwoptarg, :kwrestarg,
+//          :shadowarg, :procarg0
+// 
+//       this_name, = *this_arg
+// 
+//       that_arg   = map[this_name]
+//       that_name, = *that_arg
+// 
+//       if that_arg.nil?
+//         map[this_name] = this_arg
+//       elsif arg_name_collides?(this_name, that_name)
+//         diagnostic :error, :duplicate_argument, nil,
+//                    this_arg.loc.name, [ that_arg.loc.name ]
+//       end
+// 
+//     when :mlhs
+//       check_duplicate_args(this_arg.children, map)
+//     end
+//   end
+// end
+
+// def arg_name_collides?(this_name, that_name)
+//   case @parser.version
+//   when 18
+//     this_name == that_name
+//   when 19
+//     # Ignore underscore.
+//     this_name != :_ &&
+//       this_name == that_name
+//   else
+//     # Ignore everything beginning with underscore.
+//     this_name && this_name[0] != '_' &&
+//       this_name == that_name
+//   end
+// end
 
 //     #
 //     # HELPERS

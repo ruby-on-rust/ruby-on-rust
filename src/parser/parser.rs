@@ -6277,13 +6277,13 @@ fn _handler317(&mut self) -> SV {
 // Semantic values prologue.
 let mut _6 = interior_token!(pop!(self.values_stack, _0));
 let mut _5 = pop!(self.values_stack, _5);
-let mut _4 = pop!(self.values_stack, _3);
+let mut _4 = pop!(self.values_stack, _2);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (else_t, else_) = unwrap_some_token_node!(_5);
-        let __ = node::condition(_1, _2, _3, Some(_4), else_t, else_, Some(_6));
+        let __ = node::condition(_1, _2, _3, _4, else_t, else_, Some(_6));
 explain!("action: primary -> kIF expr_value then compstmt if_tail kEND");
 
 SV::_3(__)

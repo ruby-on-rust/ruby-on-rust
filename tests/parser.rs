@@ -30,7 +30,7 @@ macro_rules! assert_parses {
 //       nil,
 //       %q{})
 //   end
-#[test] fn test_empty_stmt() {
+#[test] fn empty_stmt() {
     let mut parser = Parser::new();
     let node = parser.parse("");
     assert_eq!(node, None);
@@ -42,7 +42,7 @@ macro_rules! assert_parses {
 //       %q{nil},
 //       %q{~~~ expression})
 //   end
-#[test] fn test_nil() { assert_parses!("nil", Node::Nil); }
+#[test] fn nil() { assert_parses!("nil", Node::Nil); }
 
 //   def test_nil_expression
 //     assert_parses(
@@ -72,7 +72,7 @@ macro_rules! assert_parses {
 //       %q{true},
 //       %q{~~~~ expression})
 //   end
-#[test] fn test_true() { assert_parses!("true", Node::True); }
+#[test] fn r#true() { assert_parses!("true", Node::True); }
 
 //   def test_false
 //     assert_parses(
@@ -80,7 +80,7 @@ macro_rules! assert_parses {
 //       %q{false},
 //       %q{~~~~~ expression})
 //   end
-#[test] fn test_false() { assert_parses!("false", Node::False); }
+#[test] fn r#false() { assert_parses!("false", Node::False); }
 
 //   def test_int
 //     assert_parses(
@@ -1093,7 +1093,7 @@ fn const_unscoped() {
 //       s(:const, s(:const, nil, :Encoding), :UTF_8),
 //       %q{__ENCODING__},
 //       %q{~~~~~~~~~~~~ expression},
-//       SINCE_1_9)
+//       SINCE_1_9) 
 //   ensure
 //     Parser::Builders::Default.emit_encoding = true
 //   end
@@ -4485,22 +4485,31 @@ fn send_binary_op() {
 
 //   # Branching
 
-//   def test_if
-//     assert_parses(
-//       s(:if, s(:lvar, :foo), s(:lvar, :bar), nil),
-//       %q{if foo then bar; end},
-//       %q{~~ keyword
-//         |       ~~~~ begin
-//         |                 ~~~ end
-//         |~~~~~~~~~~~~~~~~~~~~ expression})
+#[test]
+fn r#if() {
+    //     assert_parses(
+    //       s(:if, s(:lvar, :foo), s(:lvar, :bar), nil),
+    //       %q{if foo then bar; end},
+    //       %q{~~ keyword
+    //         |       ~~~~ begin
+    //         |                 ~~~ end
+    //         |~~~~~~~~~~~~~~~~~~~~ expression})
+    assert_parses!(
+        "if foo then bar; end",
+        n_if!(n_lvar!("foo"), Some(n_lvar!("bar")), None)
+    );
 
-//     assert_parses(
-//       s(:if, s(:lvar, :foo), s(:lvar, :bar), nil),
-//       %q{if foo; bar; end},
-//       %q{~~ keyword
-//         |             ~~~ end
-//         |~~~~~~~~~~~~~~~~ expression})
-//   end
+    //     assert_parses(
+    //       s(:if, s(:lvar, :foo), s(:lvar, :bar), nil),
+    //       %q{if foo; bar; end},
+    //       %q{~~ keyword
+    //         |             ~~~ end
+    //         |~~~~~~~~~~~~~~~~ expression})
+    assert_parses!(
+        "if foo; bar; end",
+        n_if!(n_lvar!("foo"), Some(n_lvar!("bar")), None)
+    );
+}
 
 //   def test_if_nl_then
 //     assert_parses(
