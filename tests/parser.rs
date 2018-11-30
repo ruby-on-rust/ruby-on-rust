@@ -976,7 +976,6 @@ fn hash_label_end() {
 //       %q{foo},
 //       %q{~~~ expression})
 //   end
-// TODO emm why this isn't a send-to-self method call?
 #[test] fn lvar() { assert_parses!("foo", n_lvar!("foo")); }
 
 //   def test_ivar
