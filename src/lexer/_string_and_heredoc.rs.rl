@@ -103,56 +103,56 @@ action extend_string {
 action extend_string_escaped {
     wip!();
 
-  // TODO
-  // current_literal = literal
-  // # Get the first character after the backslash.
-  // escaped_char = @source_buffer.slice(@escape_s).chr
+    // TODO
+    // current_literal = literal
+    // # Get the first character after the backslash.
+    // escaped_char = @source_buffer.slice(@escape_s).chr
 
-  // if current_literal.munge_escape? escaped_char
-  //   # If this particular literal uses this character as an opening
-  //   # or closing delimiter, it is an escape sequence for that
-  //   # particular character. Write it without the backslash.
+    // if current_literal.munge_escape? escaped_char
+    //   # If this particular literal uses this character as an opening
+    //   # or closing delimiter, it is an escape sequence for that
+    //   # particular character. Write it without the backslash.
 
-  //   if current_literal.regexp? && REGEXP_META_CHARACTERS.match(escaped_char)
-  //     # Regular expressions should include escaped delimiters in their
-  //     # escaped form, except when the escaped character is
-  //     # a closing delimiter but not a regexp metacharacter.
-  //     #
-  //     # The backslash itself cannot be used as a closing delimiter
-  //     # at the same time as an escape symbol, but it is always munged,
-  //     # so this branch also executes for the non-closing-delimiter case
-  //     # for the backslash.
-  //     current_literal.extend_string(tok, @ts, @te)
-  //   else
-  //     current_literal.extend_string(escaped_char, @ts, @te)
-  //   end
-  // else
-  //   # It does not. So this is an actual escape sequence, yay!
-  //   if current_literal.regexp?
-  //     # Regular expressions should include escape sequences in their
-  //     # escaped form. On the other hand, escaped newlines are removed.
-  //     current_literal.extend_string(tok.gsub("\\\n".freeze, ''.freeze), @ts, @te)
-  //   elsif current_literal.heredoc? && escaped_char == "\n".freeze
-  //     if current_literal.squiggly_heredoc?
-  //       # Squiggly heredocs like
-  //       #   <<~-HERE
-  //       #     1\
-  //       #     2
-  //       #   HERE
-  //       # treat '\' as a line continuation, but still dedent the body, so the heredoc above becomes "12\n".
-  //       # This information is emitted as is, without escaping,
-  //       # later this escape sequence (\\n) gets handled manually in the Lexer::Dedenter
-  //       current_literal.extend_string(tok, @ts, @te)
-  //     else
-  //       # Plain heredocs also parse \\n as a line continuation,
-  //       # but they don't need to know that there was originally a newline in the
-  //       # code, so we escape it and emit as "  1  2\n"
-  //       current_literal.extend_string(tok.gsub("\\\n".freeze, ''.freeze), @ts, @te)
-  //     end
-  //   else
-  //     current_literal.extend_string(@escape || tok, @ts, @te)
-  //   end
-  // end
+    //   if current_literal.regexp? && REGEXP_META_CHARACTERS.match(escaped_char)
+    //     # Regular expressions should include escaped delimiters in their
+    //     # escaped form, except when the escaped character is
+    //     # a closing delimiter but not a regexp metacharacter.
+    //     #
+    //     # The backslash itself cannot be used as a closing delimiter
+    //     # at the same time as an escape symbol, but it is always munged,
+    //     # so this branch also executes for the non-closing-delimiter case
+    //     # for the backslash.
+    //     current_literal.extend_string(tok, @ts, @te)
+    //   else
+    //     current_literal.extend_string(escaped_char, @ts, @te)
+    //   end
+    // else
+    //   # It does not. So this is an actual escape sequence, yay!
+    //   if current_literal.regexp?
+    //     # Regular expressions should include escape sequences in their
+    //     # escaped form. On the other hand, escaped newlines are removed.
+    //     current_literal.extend_string(tok.gsub("\\\n".freeze, ''.freeze), @ts, @te)
+    //   elsif current_literal.heredoc? && escaped_char == "\n".freeze
+    //     if current_literal.squiggly_heredoc?
+    //       # Squiggly heredocs like
+    //       #   <<~-HERE
+    //       #     1\
+    //       #     2
+    //       #   HERE
+    //       # treat '\' as a line continuation, but still dedent the body, so the heredoc above becomes "12\n".
+    //       # This information is emitted as is, without escaping,
+    //       # later this escape sequence (\\n) gets handled manually in the Lexer::Dedenter
+    //       current_literal.extend_string(tok, @ts, @te)
+    //     else
+    //       # Plain heredocs also parse \\n as a line continuation,
+    //       # but they don't need to know that there was originally a newline in the
+    //       # code, so we escape it and emit as "  1  2\n"
+    //       current_literal.extend_string(tok.gsub("\\\n".freeze, ''.freeze), @ts, @te)
+    //     end
+    //   else
+    //     current_literal.extend_string(@escape || tok, @ts, @te)
+    //   end
+    // end
 }
 
 # Extend a string with a newline or a EOF character.

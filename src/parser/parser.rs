@@ -5612,7 +5612,7 @@ self.values_stack.pop();
     //     @lexer.cmdarg.pop
     //   end
     // TODO
-    // wip!();
+    wip!();
 
     let __ = _2;
 explain!("action: command_args -> fake_embedded_action__command_args call_args");
@@ -5626,7 +5626,7 @@ fn _handler265(&mut self) -> SV {
 
 let __ = Node::DUMMY;
 
-    // TODO wip!();
+    wip!();
     // # When branch gets invoked by RACC's lookahead
     // # and command args start with '[' or '('
     // # we need to put `true` to the cmdarg stack

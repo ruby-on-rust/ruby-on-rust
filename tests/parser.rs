@@ -232,14 +232,14 @@ fn string_interp() {
 #[test]
 fn string_dvar() {
     assert_parses!(
-        r#"#@a #@@a #$a"#,
-        Node::DStr(vec![
-            Node::IVar(String::from("@a")),
+        r##""#@a #@@a #$a\""##,
+        n_dstr![
+            n_ivar!("@a"),
             n_str!(" "),
-            Node::CVar(String::from("@@a")),
+            n_cvar!("@@a"),
             n_str!(" "),
-            Node::GVar(String::from("$a")),
-        ])
+            n_gvar!("$a")
+        ]
     );
 }
 
@@ -918,25 +918,6 @@ fn hash_label_end() {
 //       %q{          ^^ operator (kwsplat)
 //         |          ~~~~~ expression (kwsplat)},
 //       SINCE_2_0)
-//   end
-
-//   def test_hash_no_hashrocket
-//     assert_parses(
-//       s(:hash, s(:pair, s(:int, 1), s(:int, 2))),
-//       %q[{ 1, 2 }],
-//       %q{^ begin
-//         |       ^ end
-//         |  ~~~~ expression (pair)
-//         |~~~~~~~~ expression},
-//       %w(1.8))
-//   end
-
-//   def test_hash_no_hashrocket_odd
-//     assert_diagnoses(
-//       [:error, :odd_hash],
-//       %q[{ 1, 2, 3 }],
-//       %q(        ~ location),
-//       %w(1.8))
 //   end
 
 //   # Range
@@ -1951,26 +1932,36 @@ fn asgn_cmd() {
 //       %q{module foo; end})
 //   end
 
-//   def test_class
-//     assert_parses(
-//       s(:class,
-//         s(:const, nil, :Foo),
-//         nil,
-//         nil),
-//       %q{class Foo; end},
-//       %q{~~~~~ keyword
-//         |      ~~~ name
-//         |           ~~~ end})
+#[test]
+fn class() {
+    //     assert_parses(
+    //       s(:class,
+    //         s(:const, nil, :Foo),
+    //         nil,
+    //         nil),
+    //       %q{class Foo; end},
+    //       %q{~~~~~ keyword
+    //         |      ~~~ name
+    //         |           ~~~ end})
+    assert_parses!(
+        "class Foo; end",
+        n_class!(
+            n_const!(None, String::from("Foo")),
+            None,
+            None
+        )
+    );
 
-//     assert_parses(
-//       s(:class,
-//         s(:const, nil, :Foo),
-//         nil,
-//         nil),
-//       %q{class Foo end},
-//       %q{},
-//       SINCE_2_3)
-//   end
+    // TODO
+    //     assert_parses(
+    //       s(:class,
+    //         s(:const, nil, :Foo),
+    //         nil,
+    //         nil),
+    //       %q{class Foo end},
+    //       %q{},
+    //       SINCE_2_3)
+}
 
 //   def test_class_super
 //     assert_parses(

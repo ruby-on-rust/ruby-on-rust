@@ -9,6 +9,8 @@
 //   # + :lambda - in the lambda body (-> {})
 //   #
 
+macro_rules! wip { () => { panic!("WIP"); }; }
+
 enum ScopeStateKind {
     Class, SClass, Def, Defs, Block, Lambda
 }
@@ -69,12 +71,22 @@ impl Context {
     //       @stack.include?(:def) || @stack.include?(:defs)
     //     end
     //   end
+    pub fn is_indirectly_in_def(&self) -> bool {
+        wip!();
+    }
 
     // def class_definition_allowed?
     //   def_index = stack.rindex { |item| [:def, :defs].include?(item) }
     //   sclass_index = stack.rindex(:sclass)
     //    def_index.nil? || (!sclass_index.nil? && sclass_index > def_index)
     // end
+    pub fn is_class_definition_allowed(&self) -> bool {
+        wip!();
+    }
+
     // alias module_definition_allowed? class_definition_allowed?
+    pub fn is_module_definition_allowed(&self) -> bool { self.is_class_definition_allowed() }
+
     // alias dynamic_const_definition_allowed? class_definition_allowed?
+    pub fn is_dynamic_const_definition_allowed(&self) -> bool { self.is_class_definition_allowed() }
 }

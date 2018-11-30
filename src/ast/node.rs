@@ -171,9 +171,6 @@ pub enum Node {
 
     Begin(Nodes),
 
-    // TODO
-    // Module,
-
     Arg(String),
 
     Send { receiver: Option<Box<Node>>, selector: String, args: Nodes },
@@ -184,6 +181,11 @@ pub enum Node {
     CSend { receiver: Option<Box<Node>>, selector: String, args: Nodes },
 
     MLhs(Nodes),
+
+    Module,
+
+    Class { name: Box<Node>, superclass: Box<Option<Node>>, body: Box<Option<Node>> },
+    // node->nd_cpath, node->nd_super, node->nd_body
 }
 
 pub type Nodes = Vec<Node>;
@@ -202,6 +204,8 @@ pub type Nodes = Vec<Node>;
 #[macro_export] macro_rules! n_send { ($receiver:expr, $selector:expr, $args:expr) => { Node::Send { receiver: $receiver, selector: String::from($selector), args: $args } }; }
 #[macro_export] macro_rules! n_csend { ($receiver:expr, $selector:expr, $args:expr) => { Node::CSend { receiver: $receiver, selector: String::from($selector), args: $args } }; }
 #[macro_export] macro_rules! n_int { ($v:expr) => { Node::Int($v) }; }
+#[macro_export] macro_rules! n_const { ($scope:expr, $name:expr) => { Node::Const { scope: $scope, name: $name } }; }
+#[macro_export] macro_rules! n_class { ($name:expr, $superclass:expr, $body:expr) => { Node::Class { name: Box::new($name), superclass: Box::new($superclass), body: Box::new($body) } }; }
 
 // TODO use a procedure derive for this
 impl Node {
@@ -979,6 +983,9 @@ pub fn multi_assign(lhs: Node, eql_t: Token, rhs: Node) -> Node {
 //   n(:class, [ name, superclass, body ],
 //     module_definition_map(class_t, name, lt_t, end_t))
 // end
+pub fn def_class(class_t: Token, name: Node, lt_t: Token, superclass: Option<Node>, body: Option<Node>, end_t: Token) -> Node {
+    n_class!(name, superclass, body)
+}
 
 // def def_sclass(class_t, lshft_t, expr,
 //                body, end_t)

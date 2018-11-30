@@ -1007,7 +1007,7 @@ command_args: fake_embedded_action__command_args call_args {
     //     @lexer.cmdarg.pop
     //   end
     // TODO
-    // wip!();
+    wip!();
 
     $$ = $2;
 };
@@ -1015,7 +1015,7 @@ command_args: fake_embedded_action__command_args call_args {
 fake_embedded_action__command_args: {
     ||->Node; $$ = Node::DUMMY;
 
-    // TODO wip!();
+    wip!();
     // # When branch gets invoked by RACC's lookahead
     // # and command args start with '[' or '('
     // # we need to put `true` to the cmdarg stack
@@ -1318,21 +1318,23 @@ primary
         $$ = node::build_for($1, $2, $3, expr_value_node, expr_value_token, $5, $6);
     }
     | kCLASS cpath superclass fake_embedded_action__primary__kCLASS_1 bodystmt kEND {
-        //   unless @context.class_definition_allowed?
-        //     diagnostic :error, :class_in_def, nil, val[0]
-        //   end
+        |$1:Token, $2:Node, $3:TSomeTokenNode, $5:Node, $6:Token| -> Node;
 
-        //   lt_t, superclass = val[2]
+        if !self.context.is_class_definition_allowed() {
+            wip!();
+            //     diagnostic :error, :class_in_def, nil, val[0]
+        }
+
+        let (lt_t, superclass) = unwrap_some_token_node!($3);
         //   result = @builder.def_class(val[0], val[1],
         //                               lt_t, superclass,
         //                               val[4], val[5])
+        $$ = node::def_class($1, $2, lt_t, superclass, $5, $6);
 
-        //   @lexer.pop_cmdarg
-        //   @lexer.pop_cond
-        //   @static_env.unextend
-        //   @context.pop
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        self.tokenizer.interior_lexer.pop_cmdarg();
+        self.tokenizer.interior_lexer.pop_cond();
+        self.tokenizer.static_env.unextend();
+        self.tokenizer.context.pop();
     }
     | kCLASS tLSHFT expr term fake_embedded_action__primary__kCLASS_2 bodystmt kEND {
         //   result = @builder.def_sclass(val[0], val[1], val[2],
