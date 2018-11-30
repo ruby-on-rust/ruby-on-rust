@@ -1233,7 +1233,7 @@ fn call_type_for_dot(dot_t: Option<Token>) -> &'static str {
 //   end
 // end
 pub fn call_method(receiver: Option<Node>, dot_t: Option<Token>, selector_t: Option<Token>, lparen_t: Option<Token>, args: Nodes, rparen_t: Option<Token>) -> Node {
-    println!("node:call_method, receiver: {:?}", receiver);
+    println!("node:call_method, receiver: {:?}, selector: {:?}", receiver, selector_t);
 
     let r#type = call_type_for_dot(dot_t);
 
@@ -1246,7 +1246,7 @@ pub fn call_method(receiver: Option<Node>, dot_t: Option<Token>, selector_t: Opt
     if let Some(selector_t) = selector_t {
         // TODO refine this after we make every token has a value
         let selector_t_value = match selector_t {
-            Token::T_FID(v) | Token::T_IDENTIFIER(v) => v,
+            Token::T_FID(v) | Token::T_IDENTIFIER(v) | Token::T_CONSTANT(v) => v,
             _ => { panic!("unknown how to handle token {:?}", selector_t) }
         };
 

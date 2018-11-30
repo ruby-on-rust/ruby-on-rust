@@ -3186,27 +3186,30 @@ pub fn send_plain() {
     //         |~~~~~~~ expression})
     assert_parses!(
         "foo.fun",
-        n_send!(
-            Some(Box::new(n_lvar!("foo"))),
-            "fun",
-            vec![]
-        )
+        n_send!( Some(Box::new(n_lvar!("foo"))), "fun", vec![] )
     );
 
-    // TODO
     //     assert_parses(
     //       s(:send, s(:lvar, :foo), :fun),
     //       %q{foo::fun},
     //       %q{     ~~~ selector
     //         |   ^^ dot
     //         |~~~~~~~~ expression})
-    // 
+    assert_parses!(
+        "foo::fun",
+        n_send!( Some(Box::new(n_lvar!("foo"))), "fun", vec![] )
+    );
+
     //     assert_parses(
     //       s(:send, s(:lvar, :foo), :Fun),
     //       %q{foo::Fun()},
     //       %q{     ~~~ selector
     //         |   ^^ dot
     //         |~~~~~~~~~~ expression})
+    assert_parses!(
+        "foo::Fun()",
+        n_send!( Some(Box::new(n_lvar!("foo"))), "Fun", vec![] )
+    );
 }
 
 //   def test_send_plain_cmd
