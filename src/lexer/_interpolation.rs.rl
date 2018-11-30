@@ -92,14 +92,17 @@ e_rbrace = '}' % {
     //   end
     // end
 
-    let literal_stack_is_empty = self.literal_stack.is_empty();
-    if !literal_stack_is_empty {
+    if !self.literal_stack.is_empty() {
         let mut literal = self.literal_stack.last().unwrap().borrow_mut().clone();
-        if !literal.end_interp_brace_and_try_closing() {
+        if literal.end_interp_brace_and_try_closing() {
             // IGNORED ruby1819
             !emit T_STRING_DEND_;
 
             // TODO herebody
+
+            // IGNORED ruby23-and-below
+            self.cond.lexpop();
+            self.cmdarg.pop();
 
             fhold;
             fnext *self.next_state_for_literal(&literal);

@@ -311,10 +311,10 @@ expr_end := |*
         // else # )
         //   # fnext expr_endfn; ?
         // end
-        // NOTE ignored ruby24-and-below
+        // NOTE ignored ruby25-and-below
         match self.current_slice(ts, te).as_ref() {
             "}" | "]" => {
-                fnext expr_endarg;
+                fnext expr_end;
             },
             _ => {}
         }

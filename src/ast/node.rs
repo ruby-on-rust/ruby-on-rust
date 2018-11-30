@@ -606,7 +606,8 @@ pub fn pair_keyword(key_t: Token, value: Node) -> Node {
 //   n(:pair, [ key, value ], pair_map)
 // end
 pub fn pair_quoted(begin_t: Token, parts: Nodes, end_t: Token, value: Node) -> Node {
-    wip!();
+    let key = symbol_compose(begin_t, parts, end_t);
+    n_pair!(key, value)
 }
 
 // def kwsplat(dstar_t, arg)

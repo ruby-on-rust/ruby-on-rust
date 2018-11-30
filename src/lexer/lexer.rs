@@ -668,10 +668,9 @@ impl Lexer {
 														//   end
 														// end
 														
-														let literal_stack_is_empty = self.literal_stack.is_empty();
-														if !literal_stack_is_empty {
+														if !self.literal_stack.is_empty() {
 															let mut literal = self.literal_stack.last().unwrap().borrow_mut().clone();
-															if !literal.end_interp_brace_and_try_closing() {
+															if literal.end_interp_brace_and_try_closing() {
 																// IGNORED ruby1819
 																
 																{
@@ -683,6 +682,10 @@ impl Lexer {
 																
 																
 																// TODO herebody
+																
+																// IGNORED ruby23-and-below
+																self.cond.lexpop();
+																self.cmdarg.pop();
 																
 																{p = p - 1;
 																}
@@ -4785,10 +4788,10 @@ impl Lexer {
 																// else # )
 																//   # fnext expr_endfn; ?
 																// end
-																// NOTE ignored ruby24-and-below
+																// NOTE ignored ruby25-and-below
 																match self.current_slice(ts, te).as_ref() {
 																	"}" | "]" => {
-																		{(self.cs) = 476;
+																		{(self.cs) = 669;
 																		}},
 																	_ => {}
 																}
@@ -5163,10 +5166,10 @@ impl Lexer {
 																// else # )
 																//   # fnext expr_endfn; ?
 																// end
-																// NOTE ignored ruby24-and-below
+																// NOTE ignored ruby25-and-below
 																match self.current_slice(ts, te).as_ref() {
 																	"}" | "]" => {
-																		{(self.cs) = 476;
+																		{(self.cs) = 669;
 																		}},
 																	_ => {}
 																}
