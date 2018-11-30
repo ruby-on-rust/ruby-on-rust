@@ -1232,6 +1232,8 @@ fn call_type_for_dot(dot_t: Option<Token>) -> &'static str {
 //   end
 // end
 pub fn call_method(receiver: Option<Node>, dot_t: Option<Token>, selector_t: Option<Token>, lparen_t: Option<Token>, args: Nodes, rparen_t: Option<Token>) -> Node {
+    println!("node:call_method, receiver: {:?}", receiver);
+
     let r#type = call_type_for_dot(dot_t);
 
     // unwrap from Option, wrap again with Option<Box<>>>

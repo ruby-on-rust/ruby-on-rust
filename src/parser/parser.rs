@@ -1824,7 +1824,7 @@ pub struct Parser {
     /**
      * Tokenizer instance.
      */
-    tokenizer: Tokenizer,
+    pub tokenizer: Tokenizer,
 
     /**
      * Semantic action handlers.
@@ -2487,8 +2487,6 @@ impl Parser {
 
                 // Shift a token, go to state.
                 &TE::Shift(next_state) => {
-                    println!("parser:shift");
-
                     // Push token.
                     self.values_stack.push(SV::_0(token.clone()));
 
@@ -2501,8 +2499,6 @@ impl Parser {
 
                 // Reduce by production.
                 &TE::Reduce(production_number) => {
-                    println!("parser:shift");
-
                     let production = PRODUCTIONS[production_number];
 
                     self.tokenizer.yytext = shifted_token.value;
