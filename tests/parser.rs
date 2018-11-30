@@ -11,6 +11,11 @@ use ruby_on_rust::ast::node::*;
 macro_rules! assert_parses {
     ($content:expr, $node:expr) => {
         let mut parser = Parser::new();
+
+        parser.tokenizer.static_env.declare(String::from("foo"));
+        parser.tokenizer.static_env.declare(String::from("bar"));
+        parser.tokenizer.static_env.declare(String::from("baz"));
+
         let node = parser.parse($content).expect("unexpected empty parsing result");
         assert_eq!(node, $node);
     };
