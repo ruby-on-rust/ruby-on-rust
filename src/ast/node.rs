@@ -182,8 +182,7 @@ pub enum Node {
 
     MLhs(Nodes),
 
-    Module,
-
+    Module { name: Box<Node>, body: Box<Option<Node>> },
     Class { name: Box<Node>, superclass: Box<Option<Node>>, body: Box<Option<Node>> },
     // node->nd_cpath, node->nd_super, node->nd_body
 
@@ -208,6 +207,7 @@ pub type Nodes = Vec<Node>;
 #[macro_export] macro_rules! n_csend { ($receiver:expr, $selector:expr, $args:expr) => { Node::CSend { receiver: $receiver, selector: String::from($selector), args: $args } }; }
 #[macro_export] macro_rules! n_int { ($v:expr) => { Node::Int($v) }; }
 #[macro_export] macro_rules! n_const { ($scope:expr, $name:expr) => { Node::Const { scope: $scope, name: $name } }; }
+#[macro_export] macro_rules! n_module { ($name:expr, $body:expr) => { Node::Module { name: Box::new($name), body: Box::new($body) } }; }
 #[macro_export] macro_rules! n_class { ($name:expr, $superclass:expr, $body:expr) => { Node::Class { name: Box::new($name), superclass: Box::new($superclass), body: Box::new($body) } }; }
 #[macro_export] macro_rules! n_if { ($condition:expr, $then_body:expr, $else_body:expr) => { Node::If { condition: Box::new($condition), then_body: Box::new($then_body), else_body: Box::new($else_body) } }; }
 
@@ -1002,6 +1002,9 @@ pub fn def_class(class_t: Token, name: Node, lt_t: Token, superclass: Option<Nod
 //   n(:module, [ name, body ],
 //     module_definition_map(module_t, name, nil, end_t))
 // end
+pub fn def_module(module_t: Token, name: Node, body: Option<Node>, end_t: Token) -> Node {
+    n_module!(name, body)
+}
 
 // #
 // # Method (un)definition

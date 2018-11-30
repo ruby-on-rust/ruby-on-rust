@@ -6396,8 +6396,8 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 if !self.tokenizer.context.is_class_definition_allowed() {
-            wip!();
             //     diagnostic :error, :class_in_def, nil, val[0]
+            wip!();
         }
 
         let (lt_t, superclass) = unwrap_some_token_node!(_3);
@@ -6441,22 +6441,23 @@ SV::_3(__)
 
 fn _handler326(&mut self) -> SV {
 // Semantic values prologue.
+let mut _5 = interior_token!(pop!(self.values_stack, _0));
+let mut _4 = pop!(self.values_stack, _2);
 self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _2 = pop!(self.values_stack, _3);
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-//   unless @context.class_definition_allowed?
-        //     diagnostic :error, :module_in_def, nil, val[0]
-        //   end
+if !self.tokenizer.context.is_class_definition_allowed() {
+            //     diagnostic :error, :module_in_def, nil, val[0]
+            wip!();
+        }
 
         //   result = @builder.def_module(val[0], val[1],
         //                                val[3], val[4])
+        let __ = node::def_module(_1, _2, _4, _5);
 
-        //   @lexer.pop_cmdarg
-        //   @static_env.unextend
-        wip!(); let __ =Node::DUMMY;
+        self.tokenizer.interior_lexer.pop_cmdarg();
+        self.tokenizer.static_env.unextend();
 explain!("action: primary -> kMODULE cpath fake_embedded_action__primary__kMODULE_1 bodystmt kEND");
 
 SV::_3(__)

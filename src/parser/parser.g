@@ -1344,8 +1344,8 @@ primary
         |$1:Token, $2:Node, $3:TSomeTokenNode, $5:TSomeNode, $6:Token| -> Node;
 
         if !self.tokenizer.context.is_class_definition_allowed() {
-            wip!();
             //     diagnostic :error, :class_in_def, nil, val[0]
+            wip!();
         }
 
         let (lt_t, superclass) = unwrap_some_token_node!($3);
@@ -1372,17 +1372,19 @@ primary
         wip!(); $$=Node::DUMMY;
     }
     | kMODULE cpath fake_embedded_action__primary__kMODULE_1 bodystmt kEND {
-        //   unless @context.class_definition_allowed?
-        //     diagnostic :error, :module_in_def, nil, val[0]
-        //   end
+        |$1:Token, $2:Node, $4:TSomeNode, $5:Token| -> Node;
+
+        if !self.tokenizer.context.is_class_definition_allowed() {
+            //     diagnostic :error, :module_in_def, nil, val[0]
+            wip!();
+        }
 
         //   result = @builder.def_module(val[0], val[1],
         //                                val[3], val[4])
+        $$ = node::def_module($1, $2, $4, $5);
 
-        //   @lexer.pop_cmdarg
-        //   @static_env.unextend
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        self.tokenizer.interior_lexer.pop_cmdarg();
+        self.tokenizer.static_env.unextend();
     }
     | kDEF fname fake_embedded_action__primary__kDEF_1 f_arglist bodystmt kEND {
         //   result = @builder.def_method(val[0], val[1],
