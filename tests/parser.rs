@@ -3494,7 +3494,7 @@ fn send_binary_op() {
     //       s(:send, s(:lvar, :foo), :>>, s(:int, 1)),
     //       %q{foo >> 1})
     //   end
-    }
+}
 
 //   def test_send_unary_op
 //     assert_parses(
