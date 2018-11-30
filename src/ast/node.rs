@@ -115,14 +115,6 @@ macro_rules! wip { () => { panic!("WIP"); }; }
 // TODO refine order, maybe via ruby-parser/AST_FORMAT
 #[derive(Debug, PartialEq, Clone)]
 pub enum Node {
-    // TODO CLEANUP
-    // for migrating rules in grammar
-    DUMMY,
-
-    // for rules which may returns a result being `nil`, and the rule is acutally applied so we cannot return a None, i guess.
-    // TODO still not sure about this.
-    Null,
-
     // 
     // primitive values
     // 
@@ -246,24 +238,21 @@ impl Node {
 
 // # Numerics
 
-// def integer(integer_t)
-//   numeric(:int, integer_t)
-// end
 pub fn integer(integer_t: Token) -> Node {
     numeric(integer_t)
 }
 
-// def float(float_t)
-//   numeric(:float, float_t)
-// end
+pub fn float(float_t: Token) -> Node {
+    numeric(float_t)
+}
 
-// def rational(rational_t)
-//   numeric(:rational, rational_t)
-// end
+pub fn rational(rational_t: Token) -> Node {
+    numeric(rational_t)
+}
 
-// def complex(complex_t)
-//   numeric(:complex, complex_t)
-// end
+pub fn complex(complex_t: Token) -> Node {
+    numeric(complex_t)
+}
 
 // def numeric(kind, token)
 //   n(kind, [ value(token) ],
@@ -272,6 +261,9 @@ pub fn integer(integer_t: Token) -> Node {
 pub fn numeric(token: Token) -> Node {
     match token {
         Token::T_INTEGER(value) => Node::Int(value),
+        Token::T_FLOAT(value) => { wip!(); },
+        Token::T_RATIONAL(value) => { wip!(); },
+        Token::T_COMPLEX(value) => { wip!(); },
         _ => { panic!("unknown numeric token") }
     }
 }
