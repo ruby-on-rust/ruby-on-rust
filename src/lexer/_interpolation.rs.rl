@@ -45,16 +45,20 @@ action extend_interp_var {
 interp_code = '#{';
 
 e_lbrace = '{' % {
+    explain!("lexer:e_lbrace");
+
     self.cond.push(false); self.cmdarg.push(false);
 
     if let Some(literal) = self.literal_stack.last() {
         let mut literal = literal.borrow_mut();
 
-        literal.start_interp_brace()
+        literal.start_interp_brace();
     }
 };
 
 e_rbrace = '}' % {
+    explain!("lexer:e_rbrace");
+
     // current_literal = literal
     // if current_literal
     //   if current_literal.end_interp_brace_and_try_closing
@@ -126,7 +130,7 @@ action extend_interp_code {
 
     // TODO heredoc
 
-    panic!("WIP");
+    wip!();
 }
 
 # Actual string parsers are simply combined from the primitives defined
@@ -192,7 +196,7 @@ plain_backslash_delimited_words := |*
 regexp_modifiers := |*
     [A-Za-z]+
     => {
-        panic!("UNIMPL");
+        wip!();
         // unknown_options = tok.scan(/[^imxouesn]/)
         // if unknown_options.any?
         //   diagnostic :error, :regexp_options,
@@ -207,7 +211,7 @@ regexp_modifiers := |*
 
     any
     => {
-        panic!("UNIMPL");
+        wip!();
         // emit(:tREGEXP_OPT, tok(@ts, @te - 1), @ts, @te - 1)
         // fhold;
         // fgoto expr_end;

@@ -609,7 +609,7 @@ impl Lexer {
 													
 												}
 												25  => {
-													{panic!("UNIMPL");
+													{wip!();
 														// # After every heredoc was parsed, @herebody_s contains the
 														// # position of next token after all heredocs.
 														// if @herebody_s
@@ -620,18 +620,55 @@ impl Lexer {
 													
 												}
 												26  => {
-													{self.cond.push(false); self.cmdarg.push(false);
+													{explain!("lexer:e_lbrace");
+														
+														self.cond.push(false); self.cmdarg.push(false);
 														
 														if let Some(literal) = self.literal_stack.last() {
 															let mut literal = literal.borrow_mut();
 															
-															literal.start_interp_brace()
+															literal.start_interp_brace();
 														}
 													}
 													
 												}
 												27  => {
-													{let literal_stack_is_empty = self.literal_stack.is_empty();
+													{explain!("lexer:e_rbrace");
+														
+														// current_literal = literal
+														// if current_literal
+														//   if current_literal.end_interp_brace_and_try_closing
+														//     if version?(18, 19)
+														//       emit(:tRCURLY, '}'.freeze, p - 1, p)
+														//       if @version < 24
+														//         @cond.lexpop
+														//         @cmdarg.lexpop
+														//       else
+														//         @cond.pop
+														//         @cmdarg.pop
+														//       end
+														//     else
+														//       emit(:tSTRING_DEND, '}'.freeze, p - 1, p)
+														//     end
+														// 
+														//     if current_literal.saved_herebody_s
+														//       @herebody_s = current_literal.saved_herebody_s
+														//     end
+														// 
+														//     @cond.lexpop
+														//     if @version < 24
+														//       @cmdarg.lexpop
+														//     else
+														//       @cmdarg.pop
+														//     end
+														// 
+														//     fhold;
+														//     fnext *next_state_for_literal(current_literal);
+														//     fbreak;
+														//   end
+														// end
+														
+														let literal_stack_is_empty = self.literal_stack.is_empty();
 														if !literal_stack_is_empty {
 															let mut literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 															if !literal.end_interp_brace_and_try_closing() {
@@ -793,7 +830,7 @@ impl Lexer {
 																
 																// TODO heredoc
 																
-																panic!("WIP");
+																wip!();
 															}
 														}}
 													
@@ -895,14 +932,18 @@ impl Lexer {
 															{println!("action:extend_string invoking");
 																
 																let temp_string = self.current_slice(ts, te);
+																
+																let lookahead = if !self.cond.is_active() {
+																	Some(self.current_slice(te, te + 2))
+																} else { None };
+																
 																// NOTE ignored ruby22-and-below cases
 																// TODO INCOMPLETE handle @cond.active
-																let lookahead = self.current_slice(te, te + 2);
 																
 																// NOTE clone one, and replace it later
 																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
-																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
+																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, lookahead) {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
@@ -955,7 +996,7 @@ impl Lexer {
 												64  => {
 													{{te = p;
 															p = p - 1;
-															{panic!("UNIMPL");
+															{wip!();
 																
 																// TODO
 																// current_literal = literal
@@ -1025,14 +1066,18 @@ impl Lexer {
 															{println!("action:extend_string invoking");
 																
 																let temp_string = self.current_slice(ts, te);
+																
+																let lookahead = if !self.cond.is_active() {
+																	Some(self.current_slice(te, te + 2))
+																} else { None };
+																
 																// NOTE ignored ruby22-and-below cases
 																// TODO INCOMPLETE handle @cond.active
-																let lookahead = self.current_slice(te, te + 2);
 																
 																// NOTE clone one, and replace it later
 																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
-																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
+																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, lookahead) {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
@@ -1057,7 +1102,7 @@ impl Lexer {
 												}
 												67  => {
 													{{p = ((te))-1;
-															{panic!("UNIMPL");
+															{wip!();
 																
 																// TODO
 																// current_literal = literal
@@ -1118,14 +1163,18 @@ impl Lexer {
 															{println!("action:extend_string invoking");
 																
 																let temp_string = self.current_slice(ts, te);
+																
+																let lookahead = if !self.cond.is_active() {
+																	Some(self.current_slice(te, te + 2))
+																} else { None };
+																
 																// NOTE ignored ruby22-and-below cases
 																// TODO INCOMPLETE handle @cond.active
-																let lookahead = self.current_slice(te, te + 2);
 																
 																// NOTE clone one, and replace it later
 																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
-																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
+																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, lookahead) {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
@@ -1156,7 +1205,7 @@ impl Lexer {
 																
 																// TODO heredoc
 																
-																panic!("WIP");
+																wip!();
 															}
 														}}
 													
@@ -1258,14 +1307,18 @@ impl Lexer {
 															{println!("action:extend_string invoking");
 																
 																let temp_string = self.current_slice(ts, te);
+																
+																let lookahead = if !self.cond.is_active() {
+																	Some(self.current_slice(te, te + 2))
+																} else { None };
+																
 																// NOTE ignored ruby22-and-below cases
 																// TODO INCOMPLETE handle @cond.active
-																let lookahead = self.current_slice(te, te + 2);
 																
 																// NOTE clone one, and replace it later
 																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
-																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
+																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, lookahead) {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
@@ -1318,7 +1371,7 @@ impl Lexer {
 												74  => {
 													{{te = p;
 															p = p - 1;
-															{panic!("UNIMPL");
+															{wip!();
 																
 																// TODO
 																// current_literal = literal
@@ -1380,14 +1433,18 @@ impl Lexer {
 															{println!("action:extend_string invoking");
 																
 																let temp_string = self.current_slice(ts, te);
+																
+																let lookahead = if !self.cond.is_active() {
+																	Some(self.current_slice(te, te + 2))
+																} else { None };
+																
 																// NOTE ignored ruby22-and-below cases
 																// TODO INCOMPLETE handle @cond.active
-																let lookahead = self.current_slice(te, te + 2);
 																
 																// NOTE clone one, and replace it later
 																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
-																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
+																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, lookahead) {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
@@ -1412,7 +1469,7 @@ impl Lexer {
 												}
 												76  => {
 													{{p = ((te))-1;
-															{panic!("UNIMPL");
+															{wip!();
 																
 																// TODO
 																// current_literal = literal
@@ -1473,14 +1530,18 @@ impl Lexer {
 															{println!("action:extend_string invoking");
 																
 																let temp_string = self.current_slice(ts, te);
+																
+																let lookahead = if !self.cond.is_active() {
+																	Some(self.current_slice(te, te + 2))
+																} else { None };
+																
 																// NOTE ignored ruby22-and-below cases
 																// TODO INCOMPLETE handle @cond.active
-																let lookahead = self.current_slice(te, te + 2);
 																
 																// NOTE clone one, and replace it later
 																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
-																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
+																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, lookahead) {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
@@ -1505,7 +1566,7 @@ impl Lexer {
 												}
 												78  => {
 													{{te = p+1;
-															{panic!("UNIMPL");
+															{wip!();
 																
 																// TODO
 																// current_literal = literal
@@ -1632,14 +1693,18 @@ impl Lexer {
 															{println!("action:extend_string invoking");
 																
 																let temp_string = self.current_slice(ts, te);
+																
+																let lookahead = if !self.cond.is_active() {
+																	Some(self.current_slice(te, te + 2))
+																} else { None };
+																
 																// NOTE ignored ruby22-and-below cases
 																// TODO INCOMPLETE handle @cond.active
-																let lookahead = self.current_slice(te, te + 2);
 																
 																// NOTE clone one, and replace it later
 																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
-																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
+																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, lookahead) {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
@@ -1676,14 +1741,18 @@ impl Lexer {
 															{println!("action:extend_string invoking");
 																
 																let temp_string = self.current_slice(ts, te);
+																
+																let lookahead = if !self.cond.is_active() {
+																	Some(self.current_slice(te, te + 2))
+																} else { None };
+																
 																// NOTE ignored ruby22-and-below cases
 																// TODO INCOMPLETE handle @cond.active
-																let lookahead = self.current_slice(te, te + 2);
 																
 																// NOTE clone one, and replace it later
 																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
-																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
+																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, lookahead) {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
@@ -1774,7 +1843,7 @@ impl Lexer {
 												}
 												84  => {
 													{{te = p+1;
-															{panic!("UNIMPL");
+															{wip!();
 																
 																// TODO
 																// current_literal = literal
@@ -1901,14 +1970,18 @@ impl Lexer {
 															{println!("action:extend_string invoking");
 																
 																let temp_string = self.current_slice(ts, te);
+																
+																let lookahead = if !self.cond.is_active() {
+																	Some(self.current_slice(te, te + 2))
+																} else { None };
+																
 																// NOTE ignored ruby22-and-below cases
 																// TODO INCOMPLETE handle @cond.active
-																let lookahead = self.current_slice(te, te + 2);
 																
 																// NOTE clone one, and replace it later
 																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
-																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
+																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, lookahead) {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
@@ -1937,14 +2010,18 @@ impl Lexer {
 															{println!("action:extend_string invoking");
 																
 																let temp_string = self.current_slice(ts, te);
+																
+																let lookahead = if !self.cond.is_active() {
+																	Some(self.current_slice(te, te + 2))
+																} else { None };
+																
 																// NOTE ignored ruby22-and-below cases
 																// TODO INCOMPLETE handle @cond.active
-																let lookahead = self.current_slice(te, te + 2);
 																
 																// NOTE clone one, and replace it later
 																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
-																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
+																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, lookahead) {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
@@ -1975,7 +2052,7 @@ impl Lexer {
 																
 																// TODO heredoc
 																
-																panic!("WIP");
+																wip!();
 															}
 														}}
 													
@@ -2077,14 +2154,18 @@ impl Lexer {
 															{println!("action:extend_string invoking");
 																
 																let temp_string = self.current_slice(ts, te);
+																
+																let lookahead = if !self.cond.is_active() {
+																	Some(self.current_slice(te, te + 2))
+																} else { None };
+																
 																// NOTE ignored ruby22-and-below cases
 																// TODO INCOMPLETE handle @cond.active
-																let lookahead = self.current_slice(te, te + 2);
 																
 																// NOTE clone one, and replace it later
 																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
-																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
+																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, lookahead) {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
@@ -2140,14 +2221,18 @@ impl Lexer {
 															{println!("action:extend_string invoking");
 																
 																let temp_string = self.current_slice(ts, te);
+																
+																let lookahead = if !self.cond.is_active() {
+																	Some(self.current_slice(te, te + 2))
+																} else { None };
+																
 																// NOTE ignored ruby22-and-below cases
 																// TODO INCOMPLETE handle @cond.active
-																let lookahead = self.current_slice(te, te + 2);
 																
 																// NOTE clone one, and replace it later
 																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
-																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
+																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, lookahead) {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
@@ -2175,14 +2260,18 @@ impl Lexer {
 															{println!("action:extend_string invoking");
 																
 																let temp_string = self.current_slice(ts, te);
+																
+																let lookahead = if !self.cond.is_active() {
+																	Some(self.current_slice(te, te + 2))
+																} else { None };
+																
 																// NOTE ignored ruby22-and-below cases
 																// TODO INCOMPLETE handle @cond.active
-																let lookahead = self.current_slice(te, te + 2);
 																
 																// NOTE clone one, and replace it later
 																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
-																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
+																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, lookahead) {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
@@ -2276,14 +2365,18 @@ impl Lexer {
 															{println!("action:extend_string invoking");
 																
 																let temp_string = self.current_slice(ts, te);
+																
+																let lookahead = if !self.cond.is_active() {
+																	Some(self.current_slice(te, te + 2))
+																} else { None };
+																
 																// NOTE ignored ruby22-and-below cases
 																// TODO INCOMPLETE handle @cond.active
-																let lookahead = self.current_slice(te, te + 2);
 																
 																// NOTE clone one, and replace it later
 																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
-																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
+																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, lookahead) {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
@@ -2314,7 +2407,7 @@ impl Lexer {
 																
 																// TODO heredoc
 																
-																panic!("WIP");
+																wip!();
 															}
 														}}
 													
@@ -2416,14 +2509,18 @@ impl Lexer {
 															{println!("action:extend_string invoking");
 																
 																let temp_string = self.current_slice(ts, te);
+																
+																let lookahead = if !self.cond.is_active() {
+																	Some(self.current_slice(te, te + 2))
+																} else { None };
+																
 																// NOTE ignored ruby22-and-below cases
 																// TODO INCOMPLETE handle @cond.active
-																let lookahead = self.current_slice(te, te + 2);
 																
 																// NOTE clone one, and replace it later
 																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
-																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
+																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, lookahead) {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
@@ -2487,14 +2584,18 @@ impl Lexer {
 															{println!("action:extend_string invoking");
 																
 																let temp_string = self.current_slice(ts, te);
+																
+																let lookahead = if !self.cond.is_active() {
+																	Some(self.current_slice(te, te + 2))
+																} else { None };
+																
 																// NOTE ignored ruby22-and-below cases
 																// TODO INCOMPLETE handle @cond.active
-																let lookahead = self.current_slice(te, te + 2);
 																
 																// NOTE clone one, and replace it later
 																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
-																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
+																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, lookahead) {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
@@ -2522,14 +2623,18 @@ impl Lexer {
 															{println!("action:extend_string invoking");
 																
 																let temp_string = self.current_slice(ts, te);
+																
+																let lookahead = if !self.cond.is_active() {
+																	Some(self.current_slice(te, te + 2))
+																} else { None };
+																
 																// NOTE ignored ruby22-and-below cases
 																// TODO INCOMPLETE handle @cond.active
-																let lookahead = self.current_slice(te, te + 2);
 																
 																// NOTE clone one, and replace it later
 																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
-																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
+																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, lookahead) {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
@@ -2623,14 +2728,18 @@ impl Lexer {
 															{println!("action:extend_string invoking");
 																
 																let temp_string = self.current_slice(ts, te);
+																
+																let lookahead = if !self.cond.is_active() {
+																	Some(self.current_slice(te, te + 2))
+																} else { None };
+																
 																// NOTE ignored ruby22-and-below cases
 																// TODO INCOMPLETE handle @cond.active
-																let lookahead = self.current_slice(te, te + 2);
 																
 																// NOTE clone one, and replace it later
 																let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
 																if !current_literal.is_heredoc() {
-																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
+																	if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, lookahead) {
 																		if let Token::T_LABEL_END = token {
 																			p += 1;
 																			self.pop_literal();
@@ -2663,7 +2772,7 @@ impl Lexer {
 												}
 												108  => {
 													{{te = p+1;
-															{panic!("UNIMPL");
+															{wip!();
 																// emit(:tREGEXP_OPT, tok(@ts, @te - 1), @ts, @te - 1)
 																// fhold;
 																// fgoto expr_end;
@@ -2674,7 +2783,7 @@ impl Lexer {
 												109  => {
 													{{te = p;
 															p = p - 1;
-															{panic!("UNIMPL");
+															{wip!();
 																// unknown_options = tok.scan(/[^imxouesn]/)
 																// if unknown_options.any?
 																//   diagnostic :error, :regexp_options,
@@ -4589,7 +4698,7 @@ impl Lexer {
 													{{te = p+1;
 															{let literal_type = self.current_slice(ts, te);
 																let literal_delimiter = self.current_slice(te - 1, te);
-																let literal = Literal::new(literal_type, literal_delimiter, ts, None, false, false, false, Rc::clone(&self.tokens));
+																let literal = Literal::new(literal_type, literal_delimiter, ts, None, false, false, true, Rc::clone(&self.tokens));
 																{(self.cs) = (self.push_literal(literal));
 																}
 															}

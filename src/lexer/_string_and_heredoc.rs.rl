@@ -35,7 +35,7 @@
 
 %%{
 e_heredoc_nl = c_nl % {
-    panic!("UNIMPL");
+    wip!();
   // # After every heredoc was parsed, @herebody_s contains the
   // # position of next token after all heredocs.
   // if @herebody_s
@@ -71,14 +71,18 @@ action extend_string {
     println!("action:extend_string invoking");
 
     let temp_string = self.current_slice(ts, te);
+
+    let lookahead = if !self.cond.is_active() {
+        Some(self.current_slice(te, te + 2))
+    } else { None };
+
     // NOTE ignored ruby22-and-below cases
     // TODO INCOMPLETE handle @cond.active
-    let lookahead = self.current_slice(te, te + 2);
 
     // NOTE clone one, and replace it later
     let mut current_literal = self.literal_stack.last().unwrap().borrow_mut().clone();
     if !current_literal.is_heredoc() {
-        if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, Some(lookahead)) {
+        if let Some(token) = current_literal.nest_and_try_closing(&temp_string, ts, te, lookahead) {
             if let Token::T_LABEL_END = token {
                 p += 1;
                 self.pop_literal();
@@ -97,7 +101,7 @@ action extend_string {
 }
 
 action extend_string_escaped {
-    panic!("UNIMPL");
+    wip!();
 
   // TODO
   // current_literal = literal

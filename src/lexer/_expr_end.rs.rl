@@ -213,7 +213,7 @@ expr_end := |*
         // fgoto *push_literal(type, delimiter, @ts, nil, false, false, true);
         let literal_type = self.current_slice(ts, te);
         let literal_delimiter = self.current_slice(te - 1, te);
-        let literal = Literal::new(literal_type, literal_delimiter, ts, None, false, false, false, Rc::clone(&self.tokens));
+        let literal = Literal::new(literal_type, literal_delimiter, ts, None, false, false, true, Rc::clone(&self.tokens));
         fgoto *self.push_literal(literal);
     };
 

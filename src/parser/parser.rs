@@ -2497,18 +2497,24 @@ impl Parser {
 
                 // Shift a token, go to state.
                 &TE::Shift(next_state) => {
+                    explain!("shifting...");
+
                     // Push token.
                     self.values_stack.push(SV::_0(token.clone()));
 
                     // Push next state number: "s5" -> 5
                     self.states_stack.push(next_state as usize);
 
+                    explain!("getting a new token...");
                     shifted_token = token;
                     token = self.tokenizer.get_next_token();
+                    explain!("new token: {:?}", token.interior_token);
                 },
 
                 // Reduce by production.
                 &TE::Reduce(production_number) => {
+                    explain!("reducing...");
+
                     let production = PRODUCTIONS[production_number];
 
                     self.tokenizer.yytext = shifted_token.value;
@@ -2577,9 +2583,7 @@ impl Parser {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: $accept -> program");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: $accept -> program");
 
 __
 }
@@ -2589,9 +2593,7 @@ fn _handler1(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: program -> top_compstmt");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: program -> top_compstmt");
 
 __
 }
@@ -2602,9 +2604,7 @@ self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = node::compstmt(_1);
-println!("    *** PARSER production: top_compstmt -> top_stmts opt_terms");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: top_compstmt -> top_stmts opt_terms");
 
 SV::_2(__)
 }
@@ -2614,9 +2614,7 @@ fn _handler3(&mut self) -> SV {
 
 
 let __ = vec![];
-println!("    *** PARSER production: top_stmts -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: top_stmts -> undefined");
 
 SV::_1(__)
 }
@@ -2626,9 +2624,7 @@ fn _handler4(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![_1];
-println!("    *** PARSER production: top_stmts -> top_stmt");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: top_stmts -> top_stmt");
 
 SV::_1(__)
 }
@@ -2641,9 +2637,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
-println!("    *** PARSER production: top_stmts -> top_stmts terms top_stmt");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: top_stmts -> top_stmts terms top_stmt");
 
 SV::_1(__)
 }
@@ -2653,9 +2647,7 @@ fn _handler6(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: top_stmt -> stmt");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: top_stmt -> stmt");
 
 __
 }
@@ -2667,9 +2659,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (begin_block_t_lcurly, begin_block_top_compstmt, begin_block_t_rcurly) = _2;
         let __ = node::preexe(_1, begin_block_t_lcurly, begin_block_top_compstmt, begin_block_t_rcurly);
-println!("    *** PARSER production: top_stmt -> klBEGIN begin_block");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: top_stmt -> klBEGIN begin_block");
 
 SV::_3(__)
 }
@@ -2681,9 +2671,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = (_1, _2, _3);
-println!("    *** PARSER production: begin_block -> tLCURLY top_compstmt tRCURLY");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: begin_block -> tLCURLY top_compstmt tRCURLY");
 
 SV::_4(__)
 }
@@ -2708,9 +2696,7 @@ let rescue_bodies = _2;
         }
 
         let __ = node::begin_body(_1, rescue_bodies, else_t, else_, ensure_t, ensure_);
-println!("    *** PARSER production: bodystmt -> compstmt opt_rescue opt_else opt_ensure");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: bodystmt -> compstmt opt_rescue opt_else opt_ensure");
 
 SV::_2(__)
 }
@@ -2721,9 +2707,7 @@ self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = node::compstmt(_1);
-println!("    *** PARSER production: compstmt -> stmts opt_terms");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: compstmt -> stmts opt_terms");
 
 SV::_2(__)
 }
@@ -2733,9 +2717,7 @@ fn _handler11(&mut self) -> SV {
 
 
 let __ = vec![];
-println!("    *** PARSER production: stmts -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmts -> undefined");
 
 SV::_1(__)
 }
@@ -2745,9 +2727,7 @@ fn _handler12(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![_1];
-println!("    *** PARSER production: stmts -> stmt_or_begin");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmts -> stmt_or_begin");
 
 SV::_1(__)
 }
@@ -2760,9 +2740,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
-println!("    *** PARSER production: stmts -> stmts terms stmt_or_begin");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmts -> stmts terms stmt_or_begin");
 
 SV::_1(__)
 }
@@ -2772,9 +2750,7 @@ fn _handler14(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: stmt_or_begin -> stmt");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmt_or_begin -> stmt");
 
 __
 }
@@ -2788,9 +2764,7 @@ let __ = Node::DUMMY;
 
         // diagnostic :error, :begin_in_method, nil, val[0]
         panic!("diagnostic error");
-println!("    *** PARSER production: stmt_or_begin -> klBEGIN begin_block");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmt_or_begin -> klBEGIN begin_block");
 
 SV::_3(__)
 }
@@ -2802,9 +2776,7 @@ fn _handler16(&mut self) -> SV {
 let __ = Node::DUMMY;
 
     self.tokenizer.interior_lexer.set_state("expr_fname");
-println!("    *** PARSER production: fake_embedded_action__stmt__1 -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action__stmt__1 -> undefined");
 
 SV::_3(__)
 }
@@ -2817,9 +2789,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::alias(_1, _2, _4);
-println!("    *** PARSER production: stmt -> kALIAS fitem fake_embedded_action__stmt__1 fitem");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmt -> kALIAS fitem fake_embedded_action__stmt__1 fitem");
 
 SV::_3(__)
 }
@@ -2834,9 +2804,7 @@ let __ = node::alias(
                 _1,
                 node::gvar(_2),
                 node::gvar(_3));
-println!("    *** PARSER production: stmt -> kALIAS tGVAR tGVAR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmt -> kALIAS tGVAR tGVAR");
 
 SV::_3(__)
 }
@@ -2851,9 +2819,7 @@ let __ = node::alias(
                 _1,
                 node::gvar(_2),
                 node::back_ref(_3));
-println!("    *** PARSER production: stmt -> kALIAS tGVAR tBACK_REF");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmt -> kALIAS tGVAR tBACK_REF");
 
 SV::_3(__)
 }
@@ -2867,9 +2833,7 @@ self.values_stack.pop();
 let __ =Node::DUMMY;
         // diagnostic :error, :nth_ref_alias, nil, val[2]
         panic!("diagnostic error");
-println!("    *** PARSER production: stmt -> kALIAS tGVAR tNTH_REF");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmt -> kALIAS tGVAR tNTH_REF");
 
 SV::_3(__)
 }
@@ -2880,9 +2844,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::undef_method(_1, _2);
-println!("    *** PARSER production: stmt -> kUNDEF undef_list");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmt -> kUNDEF undef_list");
 
 SV::_3(__)
 }
@@ -2894,9 +2856,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::condition_mod(Some(_1), None, _2, _3);
-println!("    *** PARSER production: stmt -> stmt kIF_MOD expr_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmt -> stmt kIF_MOD expr_value");
 
 SV::_3(__)
 }
@@ -2908,9 +2868,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::condition_mod(None, Some(_1), _2, _3);
-println!("    *** PARSER production: stmt -> stmt kUNLESS_MOD expr_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmt -> stmt kUNLESS_MOD expr_value");
 
 SV::_3(__)
 }
@@ -2922,9 +2880,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::loop_mod("while", _1, _2, _3);
-println!("    *** PARSER production: stmt -> stmt kWHILE_MOD expr_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmt -> stmt kWHILE_MOD expr_value");
 
 SV::_3(__)
 }
@@ -2936,9 +2892,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::loop_mod("until", _1, _2, _3);
-println!("    *** PARSER production: stmt -> stmt kUNTIL_MOD expr_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmt -> stmt kUNTIL_MOD expr_value");
 
 SV::_3(__)
 }
@@ -2952,9 +2906,7 @@ let mut _1 = pop!(self.values_stack, _3);
 let rescue_body = node::rescue_body(_2, None, None, None, None, _3);
 
         let __ = node::begin_body(Some(_1), vec![ rescue_body ], None, None, None, None).expect("unexpected None");
-println!("    *** PARSER production: stmt -> stmt kRESCUE_MOD stmt");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmt -> stmt kRESCUE_MOD stmt");
 
 SV::_3(__)
 }
@@ -2967,9 +2919,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::postexe(_1, _2, _3, _4);
-println!("    *** PARSER production: stmt -> klEND tLCURLY compstmt tRCURLY");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmt -> klEND tLCURLY compstmt tRCURLY");
 
 SV::_3(__)
 }
@@ -2979,9 +2929,7 @@ fn _handler28(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: stmt -> command_asgn");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmt -> command_asgn");
 
 __
 }
@@ -2993,9 +2941,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::multi_assign(_1, _2, _3);
-println!("    *** PARSER production: stmt -> mlhs tEQL command_call");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmt -> mlhs tEQL command_call");
 
 SV::_3(__)
 }
@@ -3007,9 +2953,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::assign(_1, _2, node::array(None, _3, None) );
-println!("    *** PARSER production: stmt -> lhs tEQL mrhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmt -> lhs tEQL mrhs");
 
 SV::_3(__)
 }
@@ -3021,9 +2965,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::multi_assign(_1, _2, _3);
-println!("    *** PARSER production: stmt -> mlhs tEQL mrhs_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmt -> mlhs tEQL mrhs_arg");
 
 SV::_3(__)
 }
@@ -3033,9 +2975,7 @@ fn _handler32(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: stmt -> expr");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: stmt -> expr");
 
 __
 }
@@ -3047,9 +2987,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::assign(_1, _2, _3);
-println!("    *** PARSER production: command_asgn -> lhs tEQL command_rhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command_asgn -> lhs tEQL command_rhs");
 
 SV::_3(__)
 }
@@ -3061,9 +2999,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::op_assign(_1, _2, _3);
-println!("    *** PARSER production: command_asgn -> var_lhs tOP_ASGN command_rhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command_asgn -> var_lhs tOP_ASGN command_rhs");
 
 SV::_3(__)
 }
@@ -3081,9 +3017,7 @@ let __ = node::op_assign(
             node::index(_1, _2, _3, _4),
             _5, _6
         );
-println!("    *** PARSER production: command_asgn -> primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN command_rhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command_asgn -> primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN command_rhs");
 
 SV::_3(__)
 }
@@ -3100,9 +3034,7 @@ let __ = node::op_assign(
             node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
             _4, _5
         );
-println!("    *** PARSER production: command_asgn -> primary_value call_op tIDENTIFIER tOP_ASGN command_rhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command_asgn -> primary_value call_op tIDENTIFIER tOP_ASGN command_rhs");
 
 SV::_3(__)
 }
@@ -3119,9 +3051,7 @@ let __ = node::op_assign(
             node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
             _4, _5
         );
-println!("    *** PARSER production: command_asgn -> primary_value call_op tCONSTANT tOP_ASGN command_rhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command_asgn -> primary_value call_op tCONSTANT tOP_ASGN command_rhs");
 
 SV::_3(__)
 }
@@ -3136,9 +3066,7 @@ let mut _1 = pop!(self.values_stack, _3);
 
 let const_node = node::const_op_assignable(node::const_fetch(_1, _2, _3));
         let __ = node::op_assign(const_node, _4, _5);
-println!("    *** PARSER production: command_asgn -> primary_value tCOLON2 tCONSTANT tOP_ASGN command_rhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command_asgn -> primary_value tCOLON2 tCONSTANT tOP_ASGN command_rhs");
 
 SV::_3(__)
 }
@@ -3155,9 +3083,7 @@ let __ = node::op_assign(
             node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
             _4, _5
         );
-println!("    *** PARSER production: command_asgn -> primary_value tCOLON2 tIDENTIFIER tOP_ASGN command_rhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command_asgn -> primary_value tCOLON2 tIDENTIFIER tOP_ASGN command_rhs");
 
 SV::_3(__)
 }
@@ -3169,9 +3095,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::op_assign(_1, _2, _3);
-println!("    *** PARSER production: command_asgn -> backref tOP_ASGN command_rhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command_asgn -> backref tOP_ASGN command_rhs");
 
 SV::_3(__)
 }
@@ -3181,9 +3105,7 @@ fn _handler41(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: command_rhs -> command_call");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command_rhs -> command_call");
 
 __
 }
@@ -3197,9 +3119,7 @@ let mut _1 = pop!(self.values_stack, _3);
 let rescue_body = node::rescue_body(_2, None, None, None, None, _3);
 
         let __ = node::begin_body(Some(_1), vec![ rescue_body ], None, None, None, None);
-println!("    *** PARSER production: command_rhs -> command_call kRESCUE_MOD stmt");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command_rhs -> command_call kRESCUE_MOD stmt");
 
 SV::_2(__)
 }
@@ -3209,9 +3129,7 @@ fn _handler43(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: command_rhs -> command_asgn");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command_rhs -> command_asgn");
 
 __
 }
@@ -3221,9 +3139,7 @@ fn _handler44(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: expr -> command_call");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: expr -> command_call");
 
 __
 }
@@ -3235,9 +3151,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::logical_op("and", _1, _2, _3);
-println!("    *** PARSER production: expr -> expr kAND expr");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: expr -> expr kAND expr");
 
 SV::_3(__)
 }
@@ -3249,9 +3163,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::logical_op("or", _1, _2, _3);
-println!("    *** PARSER production: expr -> expr kOR expr");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: expr -> expr kOR expr");
 
 SV::_3(__)
 }
@@ -3263,9 +3175,7 @@ self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::not_op(_1, None, Some(_3), None);
-println!("    *** PARSER production: expr -> kNOT opt_nl expr");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: expr -> kNOT opt_nl expr");
 
 SV::_3(__)
 }
@@ -3276,9 +3186,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::not_op(_1, None, Some(_2), None);
-println!("    *** PARSER production: expr -> tBANG command_call");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: expr -> tBANG command_call");
 
 SV::_3(__)
 }
@@ -3288,9 +3196,7 @@ fn _handler49(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: expr -> arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: expr -> arg");
 
 __
 }
@@ -3300,9 +3206,7 @@ fn _handler50(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: expr_value -> expr");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: expr_value -> expr");
 
 __
 }
@@ -3313,9 +3217,7 @@ fn _handler51(&mut self) -> SV {
 
 let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.cond.push(true);
-println!("    *** PARSER production: fake_embedded__expr_value_do -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded__expr_value_do -> undefined");
 
 SV::_3(__)
 }
@@ -3328,9 +3230,7 @@ self.values_stack.pop();
 
 self.tokenizer.interior_lexer.cond.pop();
     let __ = (_2, _3);
-println!("    *** PARSER production: expr_value_do -> fake_embedded__expr_value_do expr_value do");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: expr_value_do -> fake_embedded__expr_value_do expr_value do");
 
 SV::_6(__)
 }
@@ -3340,9 +3240,7 @@ fn _handler53(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: command_call -> command");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command_call -> command");
 
 __
 }
@@ -3352,9 +3250,7 @@ fn _handler54(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: command_call -> block_command");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command_call -> block_command");
 
 __
 }
@@ -3364,9 +3260,7 @@ fn _handler55(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: block_command -> block_call");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_command -> block_call");
 
 __
 }
@@ -3379,9 +3273,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
-println!("    *** PARSER production: block_command -> block_call dot_or_colon operation2 command_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_command -> block_call dot_or_colon operation2 command_args");
 
 SV::_3(__)
 }
@@ -3392,9 +3284,7 @@ fn _handler57(&mut self) -> SV {
 
 let __ = Node::DUMMY;
     self.tokenizer.context.push("block");
-println!("    *** PARSER production: fake_embedded_action__cmd_brace_block -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action__cmd_brace_block -> undefined");
 
 SV::_3(__)
 }
@@ -3408,9 +3298,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = (_1, _3, _4);
     self.tokenizer.context.pop();
-println!("    *** PARSER production: cmd_brace_block -> tLBRACE_ARG fake_embedded_action__cmd_brace_block brace_body tRCURLY");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: cmd_brace_block -> tLBRACE_ARG fake_embedded_action__cmd_brace_block brace_body tRCURLY");
 
 SV::_8(__)
 }
@@ -3420,9 +3308,7 @@ fn _handler59(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: fcall -> operation");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fcall -> operation");
 
 __
 }
@@ -3433,9 +3319,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::call_method(None, None, Some(_1), None, _2, None);
-println!("    *** PARSER production: command -> fcall command_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command -> fcall command_args");
 
 SV::_3(__)
 }
@@ -3449,9 +3333,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 let method_call = node::call_method(None, None, Some(_1), None, _2, None);
         let (begin_t, (args, body), end_t) = _3;
         let __ = node::block(method_call, begin_t, args, body, end_t);
-println!("    *** PARSER production: command -> fcall command_args cmd_brace_block");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command -> fcall command_args cmd_brace_block");
 
 SV::_3(__)
 }
@@ -3464,9 +3346,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
-println!("    *** PARSER production: command -> primary_value call_op operation2 command_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command -> primary_value call_op operation2 command_args");
 
 SV::_3(__)
 }
@@ -3482,9 +3362,7 @@ let mut _1 = pop!(self.values_stack, _3);
 let method_call = node::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
         let (begin_t, (args, body), end_t) = _5;
         let __ = node::block(method_call, begin_t, args, body, end_t);
-println!("    *** PARSER production: command -> primary_value call_op operation2 command_args cmd_brace_block");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command -> primary_value call_op operation2 command_args cmd_brace_block");
 
 SV::_3(__)
 }
@@ -3497,9 +3375,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
-println!("    *** PARSER production: command -> primary_value tCOLON2 operation2 command_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command -> primary_value tCOLON2 operation2 command_args");
 
 SV::_3(__)
 }
@@ -3515,9 +3391,7 @@ let mut _1 = pop!(self.values_stack, _3);
 let method_call = node::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
         let (begin_t, (args, body), end_t) = _5;
         let __ = node::block(method_call, begin_t, args, body, end_t);
-println!("    *** PARSER production: command -> primary_value tCOLON2 operation2 command_args cmd_brace_block");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command -> primary_value tCOLON2 operation2 command_args cmd_brace_block");
 
 SV::_3(__)
 }
@@ -3528,9 +3402,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("super", _1, None, _2, None);
-println!("    *** PARSER production: command -> kSUPER command_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command -> kSUPER command_args");
 
 SV::_3(__)
 }
@@ -3541,9 +3413,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("yield", _1, None, _2, None);
-println!("    *** PARSER production: command -> kYIELD command_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command -> kYIELD command_args");
 
 SV::_3(__)
 }
@@ -3554,9 +3424,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("return", _1, None, _2, None);
-println!("    *** PARSER production: command -> k_return call_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command -> k_return call_args");
 
 SV::_3(__)
 }
@@ -3567,9 +3435,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("break", _1, None, _2, None);
-println!("    *** PARSER production: command -> kBREAK call_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command -> kBREAK call_args");
 
 SV::_3(__)
 }
@@ -3580,9 +3446,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("next", _1, None, _2, None);
-println!("    *** PARSER production: command -> kNEXT call_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command -> kNEXT call_args");
 
 SV::_3(__)
 }
@@ -3592,9 +3456,7 @@ fn _handler71(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = node::multi_lhs(None, _1, None);
-println!("    *** PARSER production: mlhs -> mlhs_basic");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs -> mlhs_basic");
 
 SV::_3(__)
 }
@@ -3606,9 +3468,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::begin(_1, Some(_2), _3);
-println!("    *** PARSER production: mlhs -> tLPAREN mlhs_inner rparen");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs -> tLPAREN mlhs_inner rparen");
 
 SV::_3(__)
 }
@@ -3618,9 +3478,7 @@ fn _handler73(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = node::multi_lhs(None, _1, None);
-println!("    *** PARSER production: mlhs_inner -> mlhs_basic");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_inner -> mlhs_basic");
 
 SV::_3(__)
 }
@@ -3632,9 +3490,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::multi_lhs(Some(_1), _2, Some(_3));
-println!("    *** PARSER production: mlhs_inner -> tLPAREN mlhs_inner rparen");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_inner -> tLPAREN mlhs_inner rparen");
 
 SV::_3(__)
 }
@@ -3644,9 +3500,7 @@ fn _handler75(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: mlhs_basic -> mlhs_head");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_basic -> mlhs_head");
 
 __
 }
@@ -3658,9 +3512,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_2);
         let __ = _1;
-println!("    *** PARSER production: mlhs_basic -> mlhs_head mlhs_item");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_basic -> mlhs_head mlhs_item");
 
 SV::_1(__)
 }
@@ -3673,9 +3525,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push( node::splat(_2, Some(_3)) );
         let __ = _1;
-println!("    *** PARSER production: mlhs_basic -> mlhs_head tSTAR mlhs_node");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_basic -> mlhs_head tSTAR mlhs_node");
 
 SV::_1(__)
 }
@@ -3691,9 +3541,7 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.push( node::splat(_2, Some(_3)) );
         _1.append(&mut _5);
         let __ = _1;
-println!("    *** PARSER production: mlhs_basic -> mlhs_head tSTAR mlhs_node tCOMMA mlhs_post");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_basic -> mlhs_head tSTAR mlhs_node tCOMMA mlhs_post");
 
 SV::_1(__)
 }
@@ -3705,9 +3553,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push( node::splat(_2, None) );
         let __ = _1;
-println!("    *** PARSER production: mlhs_basic -> mlhs_head tSTAR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_basic -> mlhs_head tSTAR");
 
 SV::_1(__)
 }
@@ -3722,9 +3568,7 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.push( node::splat(_2, None) );
         _1.append(&mut _4);
         let __ = _1;
-println!("    *** PARSER production: mlhs_basic -> mlhs_head tSTAR tCOMMA mlhs_post");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_basic -> mlhs_head tSTAR tCOMMA mlhs_post");
 
 SV::_1(__)
 }
@@ -3735,9 +3579,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = vec![ node::splat(_1, Some(_2)) ];
-println!("    *** PARSER production: mlhs_basic -> tSTAR mlhs_node");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_basic -> tSTAR mlhs_node");
 
 SV::_1(__)
 }
@@ -3752,9 +3594,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 let mut r = vec![ node::splat(_1, Some(_2)) ];
         r.append(&mut _4);
         let __ = r;
-println!("    *** PARSER production: mlhs_basic -> tSTAR mlhs_node tCOMMA mlhs_post");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_basic -> tSTAR mlhs_node tCOMMA mlhs_post");
 
 SV::_1(__)
 }
@@ -3764,9 +3604,7 @@ fn _handler83(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = vec![ node::splat(_1, None) ];
-println!("    *** PARSER production: mlhs_basic -> tSTAR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_basic -> tSTAR");
 
 SV::_1(__)
 }
@@ -3780,9 +3618,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 let mut r = vec![ node::splat(_1, None) ];
         r.append(&mut _3);
         let __ = r;
-println!("    *** PARSER production: mlhs_basic -> tSTAR tCOMMA mlhs_post");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_basic -> tSTAR tCOMMA mlhs_post");
 
 SV::_1(__)
 }
@@ -3792,9 +3628,7 @@ fn _handler85(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: mlhs_item -> mlhs_node");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_item -> mlhs_node");
 
 __
 }
@@ -3806,9 +3640,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::begin(_1, Some(_2), _3);
-println!("    *** PARSER production: mlhs_item -> tLPAREN mlhs_inner rparen");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_item -> tLPAREN mlhs_inner rparen");
 
 SV::_3(__)
 }
@@ -3819,9 +3651,7 @@ self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![ _1 ];
-println!("    *** PARSER production: mlhs_head -> mlhs_item tCOMMA");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_head -> mlhs_item tCOMMA");
 
 SV::_1(__)
 }
@@ -3834,9 +3664,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_2);
         let __ = _1;
-println!("    *** PARSER production: mlhs_head -> mlhs_head mlhs_item tCOMMA");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_head -> mlhs_head mlhs_item tCOMMA");
 
 SV::_1(__)
 }
@@ -3846,9 +3674,7 @@ fn _handler89(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![_1];
-println!("    *** PARSER production: mlhs_post -> mlhs_item");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_post -> mlhs_item");
 
 SV::_1(__)
 }
@@ -3861,9 +3687,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
-println!("    *** PARSER production: mlhs_post -> mlhs_post tCOMMA mlhs_item");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_post -> mlhs_post tCOMMA mlhs_item");
 
 SV::_1(__)
 }
@@ -3873,9 +3697,7 @@ fn _handler91(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::assignable(_1, &mut self.tokenizer.static_env);
-println!("    *** PARSER production: mlhs_node -> user_variable");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_node -> user_variable");
 
 SV::_3(__)
 }
@@ -3885,9 +3707,7 @@ fn _handler92(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::assignable(_1, &mut self.tokenizer.static_env);
-println!("    *** PARSER production: mlhs_node -> keyword_variable");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_node -> keyword_variable");
 
 SV::_3(__)
 }
@@ -3900,9 +3720,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::index_asgn(_1, _2, _3, _4);
-println!("    *** PARSER production: mlhs_node -> primary_value tLBRACK2 opt_call_args rbracket");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_node -> primary_value tLBRACK2 opt_call_args rbracket");
 
 SV::_3(__)
 }
@@ -3914,9 +3732,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::attr_asgn(_1, _2, _3);
-println!("    *** PARSER production: mlhs_node -> primary_value call_op tIDENTIFIER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_node -> primary_value call_op tIDENTIFIER");
 
 SV::_3(__)
 }
@@ -3928,9 +3744,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::attr_asgn(_1, _2, _3);
-println!("    *** PARSER production: mlhs_node -> primary_value tCOLON2 tIDENTIFIER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_node -> primary_value tCOLON2 tIDENTIFIER");
 
 SV::_3(__)
 }
@@ -3942,9 +3756,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::attr_asgn(_1, _2, _3);
-println!("    *** PARSER production: mlhs_node -> primary_value call_op tCONSTANT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_node -> primary_value call_op tCONSTANT");
 
 SV::_3(__)
 }
@@ -3956,9 +3768,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::assignable(node::const_fetch(_1, _2, _3), &mut self.tokenizer.static_env);
-println!("    *** PARSER production: mlhs_node -> primary_value tCOLON2 tCONSTANT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_node -> primary_value tCOLON2 tCONSTANT");
 
 SV::_3(__)
 }
@@ -3969,9 +3779,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::assignable(node::const_global(_1, _2), &mut self.tokenizer.static_env);
-println!("    *** PARSER production: mlhs_node -> tCOLON3 tCONSTANT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_node -> tCOLON3 tCONSTANT");
 
 SV::_3(__)
 }
@@ -3981,9 +3789,7 @@ fn _handler99(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::assignable(_1, &mut self.tokenizer.static_env);
-println!("    *** PARSER production: mlhs_node -> backref");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mlhs_node -> backref");
 
 SV::_3(__)
 }
@@ -3993,9 +3799,7 @@ fn _handler100(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::assignable(_1, &mut self.tokenizer.static_env);
-println!("    *** PARSER production: lhs -> user_variable");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: lhs -> user_variable");
 
 SV::_3(__)
 }
@@ -4005,9 +3809,7 @@ fn _handler101(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::assignable(_1, &mut self.tokenizer.static_env);
-println!("    *** PARSER production: lhs -> keyword_variable");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: lhs -> keyword_variable");
 
 SV::_3(__)
 }
@@ -4020,9 +3822,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::index_asgn(_1, _2, _3, _4);
-println!("    *** PARSER production: lhs -> primary_value tLBRACK2 opt_call_args rbracket");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: lhs -> primary_value tLBRACK2 opt_call_args rbracket");
 
 SV::_3(__)
 }
@@ -4034,9 +3834,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::attr_asgn(_1, _2, _3);
-println!("    *** PARSER production: lhs -> primary_value call_op tIDENTIFIER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: lhs -> primary_value call_op tIDENTIFIER");
 
 SV::_3(__)
 }
@@ -4048,9 +3846,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::attr_asgn(_1, _2, _3);
-println!("    *** PARSER production: lhs -> primary_value tCOLON2 tIDENTIFIER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: lhs -> primary_value tCOLON2 tIDENTIFIER");
 
 SV::_3(__)
 }
@@ -4062,9 +3858,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::attr_asgn(_1, _2, _3);
-println!("    *** PARSER production: lhs -> primary_value call_op tCONSTANT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: lhs -> primary_value call_op tCONSTANT");
 
 SV::_3(__)
 }
@@ -4076,9 +3870,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::assignable(node::const_fetch(_1, _2, _3), &mut self.tokenizer.static_env);
-println!("    *** PARSER production: lhs -> primary_value tCOLON2 tCONSTANT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: lhs -> primary_value tCOLON2 tCONSTANT");
 
 SV::_3(__)
 }
@@ -4089,9 +3881,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::assignable(node::const_global(_1, _2), &mut self.tokenizer.static_env);
-println!("    *** PARSER production: lhs -> tCOLON3 tCONSTANT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: lhs -> tCOLON3 tCONSTANT");
 
 SV::_3(__)
 }
@@ -4101,9 +3891,7 @@ fn _handler108(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::assignable(_1, &mut self.tokenizer.static_env);
-println!("    *** PARSER production: lhs -> backref");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: lhs -> backref");
 
 SV::_3(__)
 }
@@ -4116,9 +3904,7 @@ let __ =Node::DUMMY;
 
         //   diagnostic :error, :module_name_const, nil, val[0]
         panic!("diagnostic error");
-println!("    *** PARSER production: cname -> tIDENTIFIER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: cname -> tIDENTIFIER");
 
 SV::_3(__)
 }
@@ -4128,9 +3914,7 @@ fn _handler110(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: cname -> tCONSTANT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: cname -> tCONSTANT");
 
 __
 }
@@ -4141,9 +3925,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::const_global(_1, _2);
-println!("    *** PARSER production: cpath -> tCOLON3 cname");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: cpath -> tCOLON3 cname");
 
 SV::_3(__)
 }
@@ -4153,9 +3935,7 @@ fn _handler112(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::build_const(_1);
-println!("    *** PARSER production: cpath -> cname");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: cpath -> cname");
 
 SV::_3(__)
 }
@@ -4167,9 +3947,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::const_fetch(_1, _2, _3);
-println!("    *** PARSER production: cpath -> primary_value tCOLON2 cname");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: cpath -> primary_value tCOLON2 cname");
 
 SV::_3(__)
 }
@@ -4179,9 +3957,7 @@ fn _handler114(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: fname -> tIDENTIFIER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fname -> tIDENTIFIER");
 
 __
 }
@@ -4191,9 +3967,7 @@ fn _handler115(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: fname -> tCONSTANT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fname -> tCONSTANT");
 
 __
 }
@@ -4203,9 +3977,7 @@ fn _handler116(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: fname -> tFID");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fname -> tFID");
 
 __
 }
@@ -4215,9 +3987,7 @@ fn _handler117(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: fname -> op");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fname -> op");
 
 __
 }
@@ -4227,9 +3997,7 @@ fn _handler118(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: fname -> reswords");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fname -> reswords");
 
 __
 }
@@ -4239,9 +4007,7 @@ fn _handler119(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::symbol(_1);
-println!("    *** PARSER production: fsym -> fname");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fsym -> fname");
 
 SV::_3(__)
 }
@@ -4251,9 +4017,7 @@ fn _handler120(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: fsym -> symbol");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fsym -> symbol");
 
 __
 }
@@ -4263,9 +4027,7 @@ fn _handler121(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: fitem -> fsym");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fitem -> fsym");
 
 __
 }
@@ -4275,9 +4037,7 @@ fn _handler122(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: fitem -> dsym");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fitem -> dsym");
 
 __
 }
@@ -4287,9 +4047,7 @@ fn _handler123(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![_1];
-println!("    *** PARSER production: undef_list -> fitem");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: undef_list -> fitem");
 
 SV::_1(__)
 }
@@ -4303,9 +4061,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_4);
         let __ = _1;
-println!("    *** PARSER production: undef_list -> undef_list tCOMMA fake_embedded_action_undef_list fitem");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: undef_list -> undef_list tCOMMA fake_embedded_action_undef_list fitem");
 
 SV::_1(__)
 }
@@ -4316,9 +4072,7 @@ fn _handler125(&mut self) -> SV {
 
 let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.set_state("expr_fname");
-println!("    *** PARSER production: fake_embedded_action_undef_list -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action_undef_list -> undefined");
 
 SV::_3(__)
 }
@@ -4328,9 +4082,7 @@ fn _handler126(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tPIPE");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tPIPE");
 
 __
 }
@@ -4340,9 +4092,7 @@ fn _handler127(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tCARET");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tCARET");
 
 __
 }
@@ -4352,9 +4102,7 @@ fn _handler128(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tAMPER2");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tAMPER2");
 
 __
 }
@@ -4364,9 +4112,7 @@ fn _handler129(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tCMP");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tCMP");
 
 __
 }
@@ -4376,9 +4122,7 @@ fn _handler130(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tEQ");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tEQ");
 
 __
 }
@@ -4388,9 +4132,7 @@ fn _handler131(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tEQQ");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tEQQ");
 
 __
 }
@@ -4400,9 +4142,7 @@ fn _handler132(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tMATCH");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tMATCH");
 
 __
 }
@@ -4412,9 +4152,7 @@ fn _handler133(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tNMATCH");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tNMATCH");
 
 __
 }
@@ -4424,9 +4162,7 @@ fn _handler134(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tGT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tGT");
 
 __
 }
@@ -4436,9 +4172,7 @@ fn _handler135(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tGEQ");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tGEQ");
 
 __
 }
@@ -4448,9 +4182,7 @@ fn _handler136(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tLT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tLT");
 
 __
 }
@@ -4460,9 +4192,7 @@ fn _handler137(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tLEQ");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tLEQ");
 
 __
 }
@@ -4472,9 +4202,7 @@ fn _handler138(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tNEQ");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tNEQ");
 
 __
 }
@@ -4484,9 +4212,7 @@ fn _handler139(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tLSHFT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tLSHFT");
 
 __
 }
@@ -4496,9 +4222,7 @@ fn _handler140(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tRSHFT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tRSHFT");
 
 __
 }
@@ -4508,9 +4232,7 @@ fn _handler141(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tPLUS");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tPLUS");
 
 __
 }
@@ -4520,9 +4242,7 @@ fn _handler142(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tMINUS");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tMINUS");
 
 __
 }
@@ -4532,9 +4252,7 @@ fn _handler143(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tSTAR2");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tSTAR2");
 
 __
 }
@@ -4544,9 +4262,7 @@ fn _handler144(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tSTAR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tSTAR");
 
 __
 }
@@ -4556,9 +4272,7 @@ fn _handler145(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tDIVIDE");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tDIVIDE");
 
 __
 }
@@ -4568,9 +4282,7 @@ fn _handler146(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tPERCENT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tPERCENT");
 
 __
 }
@@ -4580,9 +4292,7 @@ fn _handler147(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tPOW");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tPOW");
 
 __
 }
@@ -4592,9 +4302,7 @@ fn _handler148(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tBANG");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tBANG");
 
 __
 }
@@ -4604,9 +4312,7 @@ fn _handler149(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tTILDE");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tTILDE");
 
 __
 }
@@ -4616,9 +4322,7 @@ fn _handler150(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tUPLUS");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tUPLUS");
 
 __
 }
@@ -4628,9 +4332,7 @@ fn _handler151(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tUMINUS");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tUMINUS");
 
 __
 }
@@ -4640,9 +4342,7 @@ fn _handler152(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tAREF");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tAREF");
 
 __
 }
@@ -4652,9 +4352,7 @@ fn _handler153(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tASET");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tASET");
 
 __
 }
@@ -4664,9 +4362,7 @@ fn _handler154(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tDSTAR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tDSTAR");
 
 __
 }
@@ -4676,9 +4372,7 @@ fn _handler155(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: op -> tBACK_REF2");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: op -> tBACK_REF2");
 
 __
 }
@@ -4688,9 +4382,7 @@ fn _handler156(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> k__LINE__");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> k__LINE__");
 
 __
 }
@@ -4700,9 +4392,7 @@ fn _handler157(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> k__FILE__");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> k__FILE__");
 
 __
 }
@@ -4712,9 +4402,7 @@ fn _handler158(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> k__ENCODING__");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> k__ENCODING__");
 
 __
 }
@@ -4724,9 +4412,7 @@ fn _handler159(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> klBEGIN");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> klBEGIN");
 
 __
 }
@@ -4736,9 +4422,7 @@ fn _handler160(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> klEND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> klEND");
 
 __
 }
@@ -4748,9 +4432,7 @@ fn _handler161(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kALIAS");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kALIAS");
 
 __
 }
@@ -4760,9 +4442,7 @@ fn _handler162(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kAND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kAND");
 
 __
 }
@@ -4772,9 +4452,7 @@ fn _handler163(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kBEGIN");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kBEGIN");
 
 __
 }
@@ -4784,9 +4462,7 @@ fn _handler164(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kBREAK");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kBREAK");
 
 __
 }
@@ -4796,9 +4472,7 @@ fn _handler165(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kCASE");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kCASE");
 
 __
 }
@@ -4808,9 +4482,7 @@ fn _handler166(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kCLASS");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kCLASS");
 
 __
 }
@@ -4820,9 +4492,7 @@ fn _handler167(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kDEF");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kDEF");
 
 __
 }
@@ -4832,9 +4502,7 @@ fn _handler168(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kDEFINED");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kDEFINED");
 
 __
 }
@@ -4844,9 +4512,7 @@ fn _handler169(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kDO");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kDO");
 
 __
 }
@@ -4856,9 +4522,7 @@ fn _handler170(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kELSE");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kELSE");
 
 __
 }
@@ -4868,9 +4532,7 @@ fn _handler171(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kELSIF");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kELSIF");
 
 __
 }
@@ -4880,9 +4542,7 @@ fn _handler172(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kEND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kEND");
 
 __
 }
@@ -4892,9 +4552,7 @@ fn _handler173(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kENSURE");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kENSURE");
 
 __
 }
@@ -4904,9 +4562,7 @@ fn _handler174(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kFALSE");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kFALSE");
 
 __
 }
@@ -4916,9 +4572,7 @@ fn _handler175(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kFOR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kFOR");
 
 __
 }
@@ -4928,9 +4582,7 @@ fn _handler176(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kIN");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kIN");
 
 __
 }
@@ -4940,9 +4592,7 @@ fn _handler177(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kMODULE");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kMODULE");
 
 __
 }
@@ -4952,9 +4602,7 @@ fn _handler178(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kNEXT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kNEXT");
 
 __
 }
@@ -4964,9 +4612,7 @@ fn _handler179(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kNIL");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kNIL");
 
 __
 }
@@ -4976,9 +4622,7 @@ fn _handler180(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kNOT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kNOT");
 
 __
 }
@@ -4988,9 +4632,7 @@ fn _handler181(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kOR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kOR");
 
 __
 }
@@ -5000,9 +4642,7 @@ fn _handler182(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kREDO");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kREDO");
 
 __
 }
@@ -5012,9 +4652,7 @@ fn _handler183(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kRESCUE");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kRESCUE");
 
 __
 }
@@ -5024,9 +4662,7 @@ fn _handler184(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kRETRY");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kRETRY");
 
 __
 }
@@ -5036,9 +4672,7 @@ fn _handler185(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kRETURN");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kRETURN");
 
 __
 }
@@ -5048,9 +4682,7 @@ fn _handler186(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kSELF");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kSELF");
 
 __
 }
@@ -5060,9 +4692,7 @@ fn _handler187(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kSUPER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kSUPER");
 
 __
 }
@@ -5072,9 +4702,7 @@ fn _handler188(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kTHEN");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kTHEN");
 
 __
 }
@@ -5084,9 +4712,7 @@ fn _handler189(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kTRUE");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kTRUE");
 
 __
 }
@@ -5096,9 +4722,7 @@ fn _handler190(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kUNDEF");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kUNDEF");
 
 __
 }
@@ -5108,9 +4732,7 @@ fn _handler191(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kWHEN");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kWHEN");
 
 __
 }
@@ -5120,9 +4742,7 @@ fn _handler192(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kYIELD");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kYIELD");
 
 __
 }
@@ -5132,9 +4752,7 @@ fn _handler193(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kIF");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kIF");
 
 __
 }
@@ -5144,9 +4762,7 @@ fn _handler194(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kUNLESS");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kUNLESS");
 
 __
 }
@@ -5156,9 +4772,7 @@ fn _handler195(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kWHILE");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kWHILE");
 
 __
 }
@@ -5168,9 +4782,7 @@ fn _handler196(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: reswords -> kUNTIL");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: reswords -> kUNTIL");
 
 __
 }
@@ -5182,9 +4794,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::assign(_1, _2, _3);
-println!("    *** PARSER production: arg -> lhs tEQL arg_rhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> lhs tEQL arg_rhs");
 
 SV::_3(__)
 }
@@ -5196,9 +4806,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::op_assign(_1, _2, _3);
-println!("    *** PARSER production: arg -> var_lhs tOP_ASGN arg_rhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> var_lhs tOP_ASGN arg_rhs");
 
 SV::_3(__)
 }
@@ -5216,9 +4824,7 @@ let __ = node::op_assign(
             node::index(_1, _2, _3, _4),
             _5, _6
         );
-println!("    *** PARSER production: arg -> primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN arg_rhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN arg_rhs");
 
 SV::_3(__)
 }
@@ -5235,9 +4841,7 @@ let __ = node::op_assign(
             node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
             _4, _5
         );
-println!("    *** PARSER production: arg -> primary_value call_op tIDENTIFIER tOP_ASGN arg_rhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> primary_value call_op tIDENTIFIER tOP_ASGN arg_rhs");
 
 SV::_3(__)
 }
@@ -5254,9 +4858,7 @@ let __ = node::op_assign(
             node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
             _4, _5
         );
-println!("    *** PARSER production: arg -> primary_value call_op tCONSTANT tOP_ASGN arg_rhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> primary_value call_op tCONSTANT tOP_ASGN arg_rhs");
 
 SV::_3(__)
 }
@@ -5273,9 +4875,7 @@ let __ = node::op_assign(
             node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
             _4, _5
         );
-println!("    *** PARSER production: arg -> primary_value tCOLON2 tIDENTIFIER tOP_ASGN arg_rhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> primary_value tCOLON2 tIDENTIFIER tOP_ASGN arg_rhs");
 
 SV::_3(__)
 }
@@ -5290,9 +4890,7 @@ let mut _1 = pop!(self.values_stack, _3);
 
 let const_node = node::const_op_assignable(node::const_fetch(_1, _2, _3));
         let __ = node::op_assign(const_node, _4, _5);
-println!("    *** PARSER production: arg -> primary_value tCOLON2 tCONSTANT tOP_ASGN arg_rhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> primary_value tCOLON2 tCONSTANT tOP_ASGN arg_rhs");
 
 SV::_3(__)
 }
@@ -5306,9 +4904,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let const_node = node::const_op_assignable(node::const_global(_1, _2));
         let __ = node::op_assign(const_node, _3, _4);
-println!("    *** PARSER production: arg -> tCOLON3 tCONSTANT tOP_ASGN arg_rhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> tCOLON3 tCONSTANT tOP_ASGN arg_rhs");
 
 SV::_3(__)
 }
@@ -5320,9 +4916,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::op_assign(_1, _2, _3);
-println!("    *** PARSER production: arg -> backref tOP_ASGN arg_rhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> backref tOP_ASGN arg_rhs");
 
 SV::_3(__)
 }
@@ -5334,9 +4928,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::range_inclusive(_1, _2, Some(_3));
-println!("    *** PARSER production: arg -> arg tDOT2 arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tDOT2 arg");
 
 SV::_3(__)
 }
@@ -5348,9 +4940,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::range_exclusive(_1, _2, Some(_3));
-println!("    *** PARSER production: arg -> arg tDOT3 arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tDOT3 arg");
 
 SV::_3(__)
 }
@@ -5361,9 +4951,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::range_inclusive(_1, _2, None);
-println!("    *** PARSER production: arg -> arg tDOT2");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tDOT2");
 
 SV::_3(__)
 }
@@ -5374,9 +4962,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::range_exclusive(_1, _2, None);
-println!("    *** PARSER production: arg -> arg tDOT3");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tDOT3");
 
 SV::_3(__)
 }
@@ -5388,9 +4974,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::binary_op(_1, _2, _3);
-println!("    *** PARSER production: arg -> arg tPLUS arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tPLUS arg");
 
 SV::_3(__)
 }
@@ -5402,9 +4986,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::binary_op(_1, _2, _3);
-println!("    *** PARSER production: arg -> arg tMINUS arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tMINUS arg");
 
 SV::_3(__)
 }
@@ -5416,9 +4998,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::binary_op(_1, _2, _3);
-println!("    *** PARSER production: arg -> arg tSTAR2 arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tSTAR2 arg");
 
 SV::_3(__)
 }
@@ -5430,9 +5010,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::binary_op(_1, _2, _3);
-println!("    *** PARSER production: arg -> arg tDIVIDE arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tDIVIDE arg");
 
 SV::_3(__)
 }
@@ -5444,9 +5022,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::binary_op(_1, _2, _3);
-println!("    *** PARSER production: arg -> arg tPERCENT arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tPERCENT arg");
 
 SV::_3(__)
 }
@@ -5458,9 +5034,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::binary_op(_1, _2, _3);
-println!("    *** PARSER production: arg -> arg tPOW arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tPOW arg");
 
 SV::_3(__)
 }
@@ -5473,9 +5047,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::unary_op(_1, node::binary_op(_2, _3, _4));
-println!("    *** PARSER production: arg -> tUNARY_NUM simple_numeric tPOW arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> tUNARY_NUM simple_numeric tPOW arg");
 
 SV::_3(__)
 }
@@ -5486,9 +5058,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::unary_op(_1, _2);
-println!("    *** PARSER production: arg -> tUPLUS arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> tUPLUS arg");
 
 SV::_3(__)
 }
@@ -5499,9 +5069,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::unary_op(_1, _2);
-println!("    *** PARSER production: arg -> tUMINUS arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> tUMINUS arg");
 
 SV::_3(__)
 }
@@ -5513,9 +5081,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::binary_op(_1, _2, _3);
-println!("    *** PARSER production: arg -> arg tPIPE arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tPIPE arg");
 
 SV::_3(__)
 }
@@ -5527,9 +5093,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::binary_op(_1, _2, _3);
-println!("    *** PARSER production: arg -> arg tCARET arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tCARET arg");
 
 SV::_3(__)
 }
@@ -5541,9 +5105,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::binary_op(_1, _2, _3);
-println!("    *** PARSER production: arg -> arg tAMPER2 arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tAMPER2 arg");
 
 SV::_3(__)
 }
@@ -5555,9 +5117,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::binary_op(_1, _2, _3);
-println!("    *** PARSER production: arg -> arg tCMP arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tCMP arg");
 
 SV::_3(__)
 }
@@ -5567,9 +5127,7 @@ fn _handler223(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: arg -> rel_expr");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> rel_expr");
 
 __
 }
@@ -5581,9 +5139,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::binary_op(_1, _2, _3);
-println!("    *** PARSER production: arg -> arg tEQ arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tEQ arg");
 
 SV::_3(__)
 }
@@ -5595,9 +5151,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::binary_op(_1, _2, _3);
-println!("    *** PARSER production: arg -> arg tEQQ arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tEQQ arg");
 
 SV::_3(__)
 }
@@ -5609,9 +5163,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::binary_op(_1, _2, _3);
-println!("    *** PARSER production: arg -> arg tNEQ arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tNEQ arg");
 
 SV::_3(__)
 }
@@ -5623,9 +5175,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::match_op(_1, _2, _3);
-println!("    *** PARSER production: arg -> arg tMATCH arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tMATCH arg");
 
 SV::_3(__)
 }
@@ -5637,9 +5187,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::binary_op(_1, _2, _3);
-println!("    *** PARSER production: arg -> arg tNMATCH arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tNMATCH arg");
 
 SV::_3(__)
 }
@@ -5650,9 +5198,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::not_op(_1, None, Some(_2), None);
-println!("    *** PARSER production: arg -> tBANG arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> tBANG arg");
 
 SV::_3(__)
 }
@@ -5663,9 +5209,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::unary_op(_1, _2);
-println!("    *** PARSER production: arg -> tTILDE arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> tTILDE arg");
 
 SV::_3(__)
 }
@@ -5677,9 +5221,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::binary_op(_1, _2, _3);
-println!("    *** PARSER production: arg -> arg tLSHFT arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tLSHFT arg");
 
 SV::_3(__)
 }
@@ -5691,9 +5233,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::binary_op(_1, _2, _3);
-println!("    *** PARSER production: arg -> arg tRSHFT arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tRSHFT arg");
 
 SV::_3(__)
 }
@@ -5705,9 +5245,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::logical_op("and", _1, _2, _3);
-println!("    *** PARSER production: arg -> arg tANDOP arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tANDOP arg");
 
 SV::_3(__)
 }
@@ -5719,9 +5257,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::logical_op("or", _1, _2, _3);
-println!("    *** PARSER production: arg -> arg tOROP arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tOROP arg");
 
 SV::_3(__)
 }
@@ -5733,9 +5269,7 @@ self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("defined?", _1, None, vec![_3], None);
-println!("    *** PARSER production: arg -> kDEFINED opt_nl arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> kDEFINED opt_nl arg");
 
 SV::_3(__)
 }
@@ -5750,9 +5284,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::ternary(_1, _2, _3, _5, _6);
-println!("    *** PARSER production: arg -> arg tEH arg opt_nl tCOLON arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> arg tEH arg opt_nl tCOLON arg");
 
 SV::_3(__)
 }
@@ -5762,9 +5294,7 @@ fn _handler237(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: arg -> primary");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg -> primary");
 
 __
 }
@@ -5774,9 +5304,7 @@ fn _handler238(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: relop -> tGT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: relop -> tGT");
 
 __
 }
@@ -5786,9 +5314,7 @@ fn _handler239(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: relop -> tLT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: relop -> tLT");
 
 __
 }
@@ -5798,9 +5324,7 @@ fn _handler240(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: relop -> tGEQ");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: relop -> tGEQ");
 
 __
 }
@@ -5810,9 +5334,7 @@ fn _handler241(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: relop -> tLEQ");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: relop -> tLEQ");
 
 __
 }
@@ -5824,9 +5346,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::binary_op(_1, _2, _3);
-println!("    *** PARSER production: rel_expr -> arg relop arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: rel_expr -> arg relop arg");
 
 SV::_3(__)
 }
@@ -5838,9 +5358,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::binary_op(_1, _2, _3);
-println!("    *** PARSER production: rel_expr -> rel_expr relop arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: rel_expr -> rel_expr relop arg");
 
 SV::_3(__)
 }
@@ -5850,9 +5368,7 @@ fn _handler244(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: arg_value -> arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg_value -> arg");
 
 __
 }
@@ -5862,9 +5378,7 @@ fn _handler245(&mut self) -> SV {
 
 
 let __ = vec![];
-println!("    *** PARSER production: aref_args -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: aref_args -> undefined");
 
 SV::_1(__)
 }
@@ -5875,9 +5389,7 @@ self.values_stack.pop();
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: aref_args -> args trailer");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: aref_args -> args trailer");
 
 __
 }
@@ -5891,9 +5403,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(node::associate(None, _3, None));
         let __ = _1;
-println!("    *** PARSER production: aref_args -> args tCOMMA assocs trailer");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: aref_args -> args tCOMMA assocs trailer");
 
 SV::_1(__)
 }
@@ -5904,9 +5414,7 @@ self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = vec![ node::associate(None, _1, None) ];
-println!("    *** PARSER production: aref_args -> assocs trailer");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: aref_args -> assocs trailer");
 
 SV::_1(__)
 }
@@ -5916,9 +5424,7 @@ fn _handler249(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: arg_rhs -> arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg_rhs -> arg");
 
 __
 }
@@ -5932,9 +5438,7 @@ let mut _1 = pop!(self.values_stack, _3);
 let rescue_body = node::rescue_body(_2, None, None, None, None, _3);
 
         let __ = node::begin_body(Some(_1), vec![ rescue_body ], None, None, None, None);
-println!("    *** PARSER production: arg_rhs -> arg kRESCUE_MOD arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: arg_rhs -> arg kRESCUE_MOD arg");
 
 SV::_2(__)
 }
@@ -5946,9 +5450,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = (Some(_1), _2, Some(_3));
-println!("    *** PARSER production: paren_args -> tLPAREN2 opt_call_args rparen");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: paren_args -> tLPAREN2 opt_call_args rparen");
 
 SV::_9(__)
 }
@@ -5958,9 +5460,7 @@ fn _handler252(&mut self) -> SV {
 
 
 let __ = (None, vec![], None);
-println!("    *** PARSER production: opt_paren_args -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_paren_args -> undefined");
 
 SV::_9(__)
 }
@@ -5970,9 +5470,7 @@ fn _handler253(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: opt_paren_args -> paren_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_paren_args -> paren_args");
 
 __
 }
@@ -5982,9 +5480,7 @@ fn _handler254(&mut self) -> SV {
 
 
 let __ = vec![];
-println!("    *** PARSER production: opt_call_args -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_call_args -> undefined");
 
 SV::_1(__)
 }
@@ -5994,9 +5490,7 @@ fn _handler255(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: opt_call_args -> call_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_call_args -> call_args");
 
 __
 }
@@ -6007,9 +5501,7 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 let __ = SV::Undefined;
-println!("    *** PARSER production: opt_call_args -> args tCOMMA");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_call_args -> args tCOMMA");
 
 __
 }
@@ -6023,9 +5515,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(node::associate(None, _3, None));
         let __ = _1;
-println!("    *** PARSER production: opt_call_args -> args tCOMMA assocs tCOMMA");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_call_args -> args tCOMMA assocs tCOMMA");
 
 SV::_1(__)
 }
@@ -6036,9 +5526,7 @@ self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = vec![ node::associate(None, _1, None) ];
-println!("    *** PARSER production: opt_call_args -> assocs tCOMMA");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_call_args -> assocs tCOMMA");
 
 SV::_1(__)
 }
@@ -6048,9 +5536,7 @@ fn _handler259(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![_1];
-println!("    *** PARSER production: call_args -> command");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: call_args -> command");
 
 SV::_1(__)
 }
@@ -6062,9 +5548,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
-println!("    *** PARSER production: call_args -> args opt_block_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: call_args -> args opt_block_arg");
 
 SV::_1(__)
 }
@@ -6077,9 +5561,7 @@ let mut _1 = pop!(self.values_stack, _1);
 let mut result = vec![node::associate(None, _1, None)];
         result.append(&mut _2);
         let __ = result;
-println!("    *** PARSER production: call_args -> assocs opt_block_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: call_args -> assocs opt_block_arg");
 
 SV::_1(__)
 }
@@ -6095,9 +5577,7 @@ let mut assocs = node::associate(None, _3, None);
         _1.push(assocs);
         _1.append(&mut _4);
         let __ = _1;
-println!("    *** PARSER production: call_args -> args tCOMMA assocs opt_block_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: call_args -> args tCOMMA assocs opt_block_arg");
 
 SV::_1(__)
 }
@@ -6107,9 +5587,7 @@ fn _handler263(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![_1];
-println!("    *** PARSER production: call_args -> block_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: call_args -> block_arg");
 
 SV::_1(__)
 }
@@ -6137,9 +5615,7 @@ self.values_stack.pop();
     // wip!();
 
     let __ = _2;
-println!("    *** PARSER production: command_args -> fake_embedded_action__command_args call_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: command_args -> fake_embedded_action__command_args call_args");
 
 SV::_1(__)
 }
@@ -6173,9 +5649,7 @@ let __ = Node::DUMMY;
     // else
     //   @lexer.cmdarg.push(true)
     // end;
-println!("    *** PARSER production: fake_embedded_action__command_args -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action__command_args -> undefined");
 
 SV::_3(__)
 }
@@ -6186,9 +5660,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::block_pass(_1, _2);
-println!("    *** PARSER production: block_arg -> tAMPER arg_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_arg -> tAMPER arg_value");
 
 SV::_3(__)
 }
@@ -6199,9 +5671,7 @@ let mut _2 = pop!(self.values_stack, _3);
 self.values_stack.pop();
 
 let __ = vec![_2];
-println!("    *** PARSER production: opt_block_arg -> tCOMMA block_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_block_arg -> tCOMMA block_arg");
 
 SV::_1(__)
 }
@@ -6211,9 +5681,7 @@ fn _handler268(&mut self) -> SV {
 
 
 let __ = vec![];
-println!("    *** PARSER production: opt_block_arg -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_block_arg -> undefined");
 
 SV::_1(__)
 }
@@ -6223,9 +5691,7 @@ fn _handler269(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![_1];
-println!("    *** PARSER production: args -> arg_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: args -> arg_value");
 
 SV::_1(__)
 }
@@ -6236,9 +5702,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = vec![ node::splat(_1, Some(_2)) ];
-println!("    *** PARSER production: args -> tSTAR arg_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: args -> tSTAR arg_value");
 
 SV::_1(__)
 }
@@ -6250,9 +5714,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3); let __ = _1;
-println!("    *** PARSER production: args -> args tCOMMA arg_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: args -> args tCOMMA arg_value");
 
 SV::_1(__)
 }
@@ -6266,9 +5728,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(node::splat(_3, Some(_4)));
         let __ = _1;
-println!("    *** PARSER production: args -> args tCOMMA tSTAR arg_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: args -> args tCOMMA tSTAR arg_value");
 
 SV::_1(__)
 }
@@ -6278,9 +5738,7 @@ fn _handler273(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = node::array(None, _1, None);
-println!("    *** PARSER production: mrhs_arg -> mrhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mrhs_arg -> mrhs");
 
 SV::_3(__)
 }
@@ -6290,9 +5748,7 @@ fn _handler274(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: mrhs_arg -> arg_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mrhs_arg -> arg_value");
 
 __
 }
@@ -6304,9 +5760,7 @@ self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3); let __ = _1;
-println!("    *** PARSER production: mrhs -> args tCOMMA arg_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mrhs -> args tCOMMA arg_value");
 
 SV::_1(__)
 }
@@ -6320,9 +5774,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(node::splat(_3, Some(_4)));
         let __ = _1;
-println!("    *** PARSER production: mrhs -> args tCOMMA tSTAR arg_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mrhs -> args tCOMMA tSTAR arg_value");
 
 SV::_1(__)
 }
@@ -6333,9 +5785,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = vec![ node::splat(_1, Some(_2)) ];
-println!("    *** PARSER production: mrhs -> tSTAR arg_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: mrhs -> tSTAR arg_value");
 
 SV::_1(__)
 }
@@ -6346,9 +5796,7 @@ fn _handler278(&mut self) -> SV {
 
 let __ = self.tokenizer.interior_lexer.cmdarg.clone();
     self.tokenizer.interior_lexer.cmdarg.clear();
-println!("    *** PARSER production: fake_embedded_action_primary_kBEGIN -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action_primary_kBEGIN -> undefined");
 
 SV::_10(__)
 }
@@ -6359,9 +5807,7 @@ fn _handler279(&mut self) -> SV {
 
 let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.set_state("expr_endarg");
-println!("    *** PARSER production: fake_embedded_action_primary_tLPAREN_ARG_stmt -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action_primary_tLPAREN_ARG_stmt -> undefined");
 
 SV::_3(__)
 }
@@ -6372,9 +5818,7 @@ fn _handler280(&mut self) -> SV {
 
 let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.set_state("expr_endarg");
-println!("    *** PARSER production: fake_embedded_action_primary_tLPAREN_ARG_2 -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action_primary_tLPAREN_ARG_2 -> undefined");
 
 SV::_3(__)
 }
@@ -6389,9 +5833,7 @@ let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
     self.tokenizer.context.push("class");
-println!("    *** PARSER production: fake_embedded_action__primary__kCLASS_1 -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action__primary__kCLASS_1 -> undefined");
 
 SV::_3(__)
 }
@@ -6406,9 +5848,7 @@ let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
     self.tokenizer.context.push("sclass");
-println!("    *** PARSER production: fake_embedded_action__primary__kCLASS_2 -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action__primary__kCLASS_2 -> undefined");
 
 SV::_3(__)
 }
@@ -6421,9 +5861,7 @@ let __ =Node::DUMMY;
 
     self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
-println!("    *** PARSER production: fake_embedded_action__primary__kMODULE_1 -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action__primary__kMODULE_1 -> undefined");
 
 SV::_3(__)
 }
@@ -6438,9 +5876,7 @@ let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
     self.tokenizer.context.push("def");
-println!("    *** PARSER production: fake_embedded_action__primary__kDEF_1 -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action__primary__kDEF_1 -> undefined");
 
 SV::_3(__)
 }
@@ -6451,9 +5887,7 @@ fn _handler285(&mut self) -> SV {
 
 let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.set_state("expr_fname");
-println!("    *** PARSER production: fake_embedded_action__primary__kDEF_2 -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action__primary__kDEF_2 -> undefined");
 
 SV::_3(__)
 }
@@ -6468,9 +5902,7 @@ let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
     self.tokenizer.context.push("defs");
-println!("    *** PARSER production: fake_embedded_action__primary__kDEF_3 -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action__primary__kDEF_3 -> undefined");
 
 SV::_3(__)
 }
@@ -6480,9 +5912,7 @@ fn _handler287(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: primary -> literal");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> literal");
 
 __
 }
@@ -6492,9 +5922,7 @@ fn _handler288(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: primary -> strings");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> strings");
 
 __
 }
@@ -6504,9 +5932,7 @@ fn _handler289(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: primary -> xstring");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> xstring");
 
 __
 }
@@ -6516,9 +5942,7 @@ fn _handler290(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: primary -> regexp");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> regexp");
 
 __
 }
@@ -6528,9 +5952,7 @@ fn _handler291(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: primary -> words");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> words");
 
 __
 }
@@ -6540,9 +5962,7 @@ fn _handler292(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: primary -> qwords");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> qwords");
 
 __
 }
@@ -6552,9 +5972,7 @@ fn _handler293(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: primary -> symbols");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> symbols");
 
 __
 }
@@ -6564,9 +5982,7 @@ fn _handler294(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: primary -> qsymbols");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> qsymbols");
 
 __
 }
@@ -6576,9 +5992,7 @@ fn _handler295(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: primary -> var_ref");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> var_ref");
 
 __
 }
@@ -6588,9 +6002,7 @@ fn _handler296(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: primary -> backref");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> backref");
 
 __
 }
@@ -6600,9 +6012,7 @@ fn _handler297(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::call_method(None, None, Some(_1), None, vec![], None);
-println!("    *** PARSER production: primary -> tFID");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> tFID");
 
 SV::_3(__)
 }
@@ -6617,9 +6027,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 self.tokenizer.interior_lexer.cmdarg = _2;
 
         let __ = node::begin_keyword(_1, _3, _4);
-println!("    *** PARSER production: primary -> kBEGIN fake_embedded_action_primary_kBEGIN bodystmt kEND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kBEGIN fake_embedded_action_primary_kBEGIN bodystmt kEND");
 
 SV::_3(__)
 }
@@ -6632,9 +6040,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::begin(_1, Some(_2), _4);
-println!("    *** PARSER production: primary -> tLPAREN_ARG stmt fake_embedded_action_primary_tLPAREN_ARG_stmt rparen");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> tLPAREN_ARG stmt fake_embedded_action_primary_tLPAREN_ARG_stmt rparen");
 
 SV::_3(__)
 }
@@ -6647,9 +6053,7 @@ self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::begin(_1, None, _4);
-println!("    *** PARSER production: primary -> tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG_2 opt_nl tRPAREN");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG_2 opt_nl tRPAREN");
 
 SV::_3(__)
 }
@@ -6661,9 +6065,7 @@ let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::begin(_1, _2, _3);
-println!("    *** PARSER production: primary -> tLPAREN compstmt tRPAREN");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> tLPAREN compstmt tRPAREN");
 
 SV::_3(__)
 }
@@ -6675,9 +6077,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::const_fetch(_1, _2, _3);
-println!("    *** PARSER production: primary -> primary_value tCOLON2 tCONSTANT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> primary_value tCOLON2 tCONSTANT");
 
 SV::_3(__)
 }
@@ -6688,9 +6088,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::const_global(_1, _2);
-println!("    *** PARSER production: primary -> tCOLON3 tCONSTANT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> tCOLON3 tCONSTANT");
 
 SV::_3(__)
 }
@@ -6702,9 +6100,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::array( Some(_1), _2, Some(_3) );
-println!("    *** PARSER production: primary -> tLBRACK aref_args tRBRACK");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> tLBRACK aref_args tRBRACK");
 
 SV::_3(__)
 }
@@ -6716,9 +6112,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::associate( Some(_1), _2, Some(_3) );
-println!("    *** PARSER production: primary -> tLBRACE assoc_list tRCURLY");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> tLBRACE assoc_list tRCURLY");
 
 SV::_3(__)
 }
@@ -6728,9 +6122,7 @@ fn _handler306(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("return", _1, None, vec![], None);
-println!("    *** PARSER production: primary -> k_return");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> k_return");
 
 SV::_3(__)
 }
@@ -6743,9 +6135,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("yield", _1, Some(_2), _3, Some(_4));
-println!("    *** PARSER production: primary -> kYIELD tLPAREN2 call_args rparen");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kYIELD tLPAREN2 call_args rparen");
 
 SV::_3(__)
 }
@@ -6757,9 +6147,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("yield", _1, Some(_2), vec![], Some(_3));
-println!("    *** PARSER production: primary -> kYIELD tLPAREN2 rparen");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kYIELD tLPAREN2 rparen");
 
 SV::_3(__)
 }
@@ -6769,9 +6157,7 @@ fn _handler309(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("yield", _1, None, vec![], None);
-println!("    *** PARSER production: primary -> kYIELD");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kYIELD");
 
 SV::_3(__)
 }
@@ -6785,9 +6171,7 @@ self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("defined?", _1, Some(_3), vec![_4], Some(_5));
-println!("    *** PARSER production: primary -> kDEFINED opt_nl tLPAREN2 expr rparen");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kDEFINED opt_nl tLPAREN2 expr rparen");
 
 SV::_3(__)
 }
@@ -6800,9 +6184,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::not_op(_1, Some(_2), Some(_3), Some(_4));
-println!("    *** PARSER production: primary -> kNOT tLPAREN2 expr rparen");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kNOT tLPAREN2 expr rparen");
 
 SV::_3(__)
 }
@@ -6814,9 +6196,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::not_op(_1, Some(_2), None, Some(_3));
-println!("    *** PARSER production: primary -> kNOT tLPAREN2 rparen");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kNOT tLPAREN2 rparen");
 
 SV::_3(__)
 }
@@ -6829,9 +6209,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 let method_call = node::call_method(None, None, Some(_1), None, vec![], None);
         let (begin_t, (args, body), end_t) = _2;
         let __ = node::block(method_call, begin_t, args, body, end_t);
-println!("    *** PARSER production: primary -> fcall brace_block");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> fcall brace_block");
 
 SV::_3(__)
 }
@@ -6841,9 +6219,7 @@ fn _handler314(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: primary -> method_call");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> method_call");
 
 __
 }
@@ -6855,9 +6231,7 @@ let mut _1 = pop!(self.values_stack, _3);
 
 let (begin_t, (args, body), end_t) = _2;
         let __ = node::block(_1, begin_t, args, body, end_t);
-println!("    *** PARSER production: primary -> method_call brace_block");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> method_call brace_block");
 
 SV::_3(__)
 }
@@ -6871,9 +6245,7 @@ let lambda_call = node::call_lambda(_1);
         let (args, ( begin_t, body, end_t )) = _2;
 
         let __ = node::block(lambda_call, begin_t, args, body, end_t);
-println!("    *** PARSER production: primary -> tLAMBDA lambda");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> tLAMBDA lambda");
 
 SV::_3(__)
 }
@@ -6889,9 +6261,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (else_t, else_) = unwrap_some_token_node!(_5);
         let __ = node::condition(_1, _2, _3, Some(_4), else_t, else_, Some(_6));
-println!("    *** PARSER production: primary -> kIF expr_value then compstmt if_tail kEND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kIF expr_value then compstmt if_tail kEND");
 
 SV::_3(__)
 }
@@ -6907,9 +6277,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (else_t, else_) = unwrap_some_token_node!(_5);
         let __ = node::condition(_1, _2, _3, else_, else_t, Some(_4), Some(_6));
-println!("    *** PARSER production: primary -> kUNLESS expr_value then compstmt opt_else kEND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kUNLESS expr_value then compstmt opt_else kEND");
 
 SV::_3(__)
 }
@@ -6923,9 +6291,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (expr_value_node, expr_value_token) = _2;
         let __ = node::build_loop("while", _1, expr_value_node, expr_value_token, _3, _4);
-println!("    *** PARSER production: primary -> kWHILE expr_value_do compstmt kEND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kWHILE expr_value_do compstmt kEND");
 
 SV::_3(__)
 }
@@ -6939,9 +6305,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (expr_value_node, expr_value_token) = _2;
         let __ = node::build_loop("until", _1, expr_value_node, expr_value_token, _3, _4);
-println!("    *** PARSER production: primary -> kUNTIL expr_value_do compstmt kEND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kUNTIL expr_value_do compstmt kEND");
 
 SV::_3(__)
 }
@@ -6960,9 +6324,7 @@ self.values_stack.pop();
         //                          when_bodies, else_t, else_body,
         //                          val[4])
         wip!(); let __ =Node::DUMMY;
-println!("    *** PARSER production: primary -> kCASE expr_value opt_terms case_body kEND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kCASE expr_value opt_terms case_body kEND");
 
 SV::_3(__)
 }
@@ -6980,9 +6342,7 @@ self.values_stack.pop();
         //                          when_bodies, else_t, else_body,
         //                          val[3])
         wip!(); let __ =Node::DUMMY;
-println!("    *** PARSER production: primary -> kCASE opt_terms case_body kEND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kCASE opt_terms case_body kEND");
 
 SV::_3(__)
 }
@@ -6998,9 +6358,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (expr_value_node, expr_value_token) = _4;
         let __ = node::build_for(_1, _2, _3, expr_value_node, expr_value_token, _5, _6);
-println!("    *** PARSER production: primary -> kFOR for_var kIN expr_value_do compstmt kEND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kFOR for_var kIN expr_value_do compstmt kEND");
 
 SV::_3(__)
 }
@@ -7028,9 +6386,7 @@ self.values_stack.pop();
         //   @static_env.unextend
         //   @context.pop
         wip!(); let __ =Node::DUMMY;
-println!("    *** PARSER production: primary -> kCLASS cpath superclass fake_embedded_action__primary__kCLASS_1 bodystmt kEND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kCLASS cpath superclass fake_embedded_action__primary__kCLASS_1 bodystmt kEND");
 
 SV::_3(__)
 }
@@ -7054,9 +6410,7 @@ self.values_stack.pop();
 
         //   @context.pop
         wip!(); let __ =Node::DUMMY;
-println!("    *** PARSER production: primary -> kCLASS tLSHFT expr term fake_embedded_action__primary__kCLASS_2 bodystmt kEND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kCLASS tLSHFT expr term fake_embedded_action__primary__kCLASS_2 bodystmt kEND");
 
 SV::_3(__)
 }
@@ -7079,9 +6433,7 @@ self.values_stack.pop();
         //   @lexer.pop_cmdarg
         //   @static_env.unextend
         wip!(); let __ =Node::DUMMY;
-println!("    *** PARSER production: primary -> kMODULE cpath fake_embedded_action__primary__kMODULE_1 bodystmt kEND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kMODULE cpath fake_embedded_action__primary__kMODULE_1 bodystmt kEND");
 
 SV::_3(__)
 }
@@ -7103,9 +6455,7 @@ self.values_stack.pop();
         //   @static_env.unextend
         //   @context.pop
         wip!(); let __ =Node::DUMMY;
-println!("    *** PARSER production: primary -> kDEF fname fake_embedded_action__primary__kDEF_1 f_arglist bodystmt kEND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kDEF fname fake_embedded_action__primary__kDEF_1 f_arglist bodystmt kEND");
 
 SV::_3(__)
 }
@@ -7130,9 +6480,7 @@ self.values_stack.pop();
         //   @static_env.unextend
         //   @context.pop
         wip!(); let __ =Node::DUMMY;
-println!("    *** PARSER production: primary -> kDEF singleton dot_or_colon fake_embedded_action__primary__kDEF_2 fname fake_embedded_action__primary__kDEF_3 f_arglist bodystmt kEND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kDEF singleton dot_or_colon fake_embedded_action__primary__kDEF_2 fname fake_embedded_action__primary__kDEF_3 f_arglist bodystmt kEND");
 
 SV::_3(__)
 }
@@ -7142,9 +6490,7 @@ fn _handler329(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("break", _1, None, vec![], None);
-println!("    *** PARSER production: primary -> kBREAK");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kBREAK");
 
 SV::_3(__)
 }
@@ -7154,9 +6500,7 @@ fn _handler330(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("next", _1, None, vec![], None);
-println!("    *** PARSER production: primary -> kNEXT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kNEXT");
 
 SV::_3(__)
 }
@@ -7166,9 +6510,7 @@ fn _handler331(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("redo", _1, None, vec![], None);
-println!("    *** PARSER production: primary -> kREDO");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kREDO");
 
 SV::_3(__)
 }
@@ -7178,9 +6520,7 @@ fn _handler332(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("retry", _1, None, vec![], None);
-println!("    *** PARSER production: primary -> kRETRY");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary -> kRETRY");
 
 SV::_3(__)
 }
@@ -7190,9 +6530,7 @@ fn _handler333(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: primary_value -> primary");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: primary_value -> primary");
 
 __
 }
@@ -7207,9 +6545,7 @@ let __ =Node::DUMMY;
         //   diagnostic :error, :invalid_return, nil, val[0]
         panic!("diagnostic error invalid_return");
     };
-println!("    *** PARSER production: k_return -> kRETURN");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: k_return -> kRETURN");
 
 SV::_3(__)
 }
@@ -7219,9 +6555,7 @@ fn _handler335(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: then -> term");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: then -> term");
 
 __
 }
@@ -7231,9 +6565,7 @@ fn _handler336(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: then -> kTHEN");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: then -> kTHEN");
 
 __
 }
@@ -7244,9 +6576,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 self.values_stack.pop();
 
 let __ = _2.wrap_as_token();
-println!("    *** PARSER production: then -> term kTHEN");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: then -> term kTHEN");
 
 SV::_0(__)
 }
@@ -7256,9 +6586,7 @@ fn _handler338(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: do -> term");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: do -> term");
 
 __
 }
@@ -7268,9 +6596,7 @@ fn _handler339(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: do -> kDO_COND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: do -> kDO_COND");
 
 __
 }
@@ -7280,9 +6606,7 @@ fn _handler340(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: if_tail -> opt_else");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: if_tail -> opt_else");
 
 __
 }
@@ -7301,9 +6625,7 @@ let k_elseif_clone = _1.clone();
             _1,
             node::condition(k_elseif_clone, _2, _3, Some(_4), else_t, else_, None)
         ));
-println!("    *** PARSER production: if_tail -> kELSIF expr_value then compstmt if_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: if_tail -> kELSIF expr_value then compstmt if_tail");
 
 SV::_5(__)
 }
@@ -7313,9 +6635,7 @@ fn _handler342(&mut self) -> SV {
 
 
 let __ = None;
-println!("    *** PARSER production: opt_else -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_else -> undefined");
 
 SV::_5(__)
 }
@@ -7326,9 +6646,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = Some((_1, _2));
-println!("    *** PARSER production: opt_else -> kELSE compstmt");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_else -> kELSE compstmt");
 
 SV::_5(__)
 }
@@ -7338,9 +6656,7 @@ fn _handler344(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: for_var -> lhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: for_var -> lhs");
 
 __
 }
@@ -7350,9 +6666,7 @@ fn _handler345(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: for_var -> mlhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: for_var -> mlhs");
 
 __
 }
@@ -7362,9 +6676,7 @@ fn _handler346(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::arg(_1);
-println!("    *** PARSER production: f_marg -> f_norm_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_marg -> f_norm_arg");
 
 SV::_3(__)
 }
@@ -7376,9 +6688,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::multi_lhs(Some(_1), _2, Some(_3));
-println!("    *** PARSER production: f_marg -> tLPAREN f_margs rparen");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_marg -> tLPAREN f_margs rparen");
 
 SV::_3(__)
 }
@@ -7388,9 +6698,7 @@ fn _handler348(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![_1];
-println!("    *** PARSER production: f_marg_list -> f_marg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_marg_list -> f_marg");
 
 SV::_1(__)
 }
@@ -7403,9 +6711,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
-println!("    *** PARSER production: f_marg_list -> f_marg_list tCOMMA f_marg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_marg_list -> f_marg_list tCOMMA f_marg");
 
 SV::_1(__)
 }
@@ -7415,9 +6721,7 @@ fn _handler350(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: f_margs -> f_marg_list");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_margs -> f_marg_list");
 
 __
 }
@@ -7431,9 +6735,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(node::restarg(_3, Some(_4) ));
         let __ = _1;
-println!("    *** PARSER production: f_margs -> f_marg_list tCOMMA tSTAR f_norm_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_margs -> f_marg_list tCOMMA tSTAR f_norm_arg");
 
 SV::_1(__)
 }
@@ -7450,9 +6752,7 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.push(node::restarg(_3, Some(_4) ));
         _1.append(&mut _6);
         let __ = _1;
-println!("    *** PARSER production: f_margs -> f_marg_list tCOMMA tSTAR f_norm_arg tCOMMA f_marg_list");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_margs -> f_marg_list tCOMMA tSTAR f_norm_arg tCOMMA f_marg_list");
 
 SV::_1(__)
 }
@@ -7465,9 +6765,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(node::restarg(_3, None ));
         let __ = _1;
-println!("    *** PARSER production: f_margs -> f_marg_list tCOMMA tSTAR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_margs -> f_marg_list tCOMMA tSTAR");
 
 SV::_1(__)
 }
@@ -7483,9 +6781,7 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.push(node::restarg(_3, None ));
         _1.append(&mut _5);
         let __ = _1;
-println!("    *** PARSER production: f_margs -> f_marg_list tCOMMA tSTAR tCOMMA f_marg_list");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_margs -> f_marg_list tCOMMA tSTAR tCOMMA f_marg_list");
 
 SV::_1(__)
 }
@@ -7496,9 +6792,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = vec![ node::restarg(_1, Some(_2)) ];
-println!("    *** PARSER production: f_margs -> tSTAR f_norm_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_margs -> tSTAR f_norm_arg");
 
 SV::_1(__)
 }
@@ -7513,9 +6807,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 let mut result = vec![ node::restarg( _1, Some(_2) ) ];
         result.append(&mut _4);
         let __ = result;
-println!("    *** PARSER production: f_margs -> tSTAR f_norm_arg tCOMMA f_marg_list");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_margs -> tSTAR f_norm_arg tCOMMA f_marg_list");
 
 SV::_1(__)
 }
@@ -7525,9 +6817,7 @@ fn _handler357(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = vec![ node::restarg(_1, None) ];
-println!("    *** PARSER production: f_margs -> tSTAR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_margs -> tSTAR");
 
 SV::_1(__)
 }
@@ -7541,9 +6831,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 let mut result = vec![ node::restarg(_1, None) ];
         result.append(&mut _3);
         let __ = result;
-println!("    *** PARSER production: f_margs -> tSTAR tCOMMA f_marg_list");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_margs -> tSTAR tCOMMA f_marg_list");
 
 SV::_1(__)
 }
@@ -7558,9 +6846,7 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-println!("    *** PARSER production: block_args_tail -> f_block_kwarg tCOMMA f_kwrest opt_f_block_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_args_tail -> f_block_kwarg tCOMMA f_kwrest opt_f_block_arg");
 
 SV::_1(__)
 }
@@ -7572,9 +6858,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
-println!("    *** PARSER production: block_args_tail -> f_block_kwarg opt_f_block_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_args_tail -> f_block_kwarg opt_f_block_arg");
 
 SV::_1(__)
 }
@@ -7586,9 +6870,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
-println!("    *** PARSER production: block_args_tail -> f_kwrest opt_f_block_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_args_tail -> f_kwrest opt_f_block_arg");
 
 SV::_1(__)
 }
@@ -7598,9 +6880,7 @@ fn _handler362(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![ _1 ];
-println!("    *** PARSER production: block_args_tail -> f_block_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_args_tail -> f_block_arg");
 
 SV::_1(__)
 }
@@ -7611,9 +6891,7 @@ let mut _2 = pop!(self.values_stack, _1);
 self.values_stack.pop();
 
 let __ = _2;
-println!("    *** PARSER production: opt_block_args_tail -> tCOMMA block_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_block_args_tail -> tCOMMA block_args_tail");
 
 SV::_1(__)
 }
@@ -7623,9 +6901,7 @@ fn _handler364(&mut self) -> SV {
 
 
 let __ = vec![];
-println!("    *** PARSER production: opt_block_args_tail -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_block_args_tail -> undefined");
 
 SV::_1(__)
 }
@@ -7643,9 +6919,7 @@ _1.append(&mut _3);
         _1.append(&mut _5);
         _1.append(&mut _6);
         let __ = _1;
-println!("    *** PARSER production: block_param -> f_arg tCOMMA f_block_optarg tCOMMA f_rest_arg opt_block_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_param -> f_arg tCOMMA f_block_optarg tCOMMA f_rest_arg opt_block_args_tail");
 
 SV::_1(__)
 }
@@ -7666,9 +6940,7 @@ _1.append(&mut _3);
         _1.append(&mut _7);
         _1.append(&mut _8);
         let __ = _1;
-println!("    *** PARSER production: block_param -> f_arg tCOMMA f_block_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_block_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_param -> f_arg tCOMMA f_block_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_block_args_tail");
 
 SV::_1(__)
 }
@@ -7683,9 +6955,7 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-println!("    *** PARSER production: block_param -> f_arg tCOMMA f_block_optarg opt_block_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_param -> f_arg tCOMMA f_block_optarg opt_block_args_tail");
 
 SV::_1(__)
 }
@@ -7703,9 +6973,7 @@ _1.append(&mut _3);
         _1.append(&mut _5);
         _1.append(&mut _6);
         let __ = _1;
-println!("    *** PARSER production: block_param -> f_arg tCOMMA f_block_optarg tCOMMA f_arg opt_block_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_param -> f_arg tCOMMA f_block_optarg tCOMMA f_arg opt_block_args_tail");
 
 SV::_1(__)
 }
@@ -7720,9 +6988,7 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-println!("    *** PARSER production: block_param -> f_arg tCOMMA f_rest_arg opt_block_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_param -> f_arg tCOMMA f_rest_arg opt_block_args_tail");
 
 SV::_1(__)
 }
@@ -7733,9 +6999,7 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 let __ = SV::Undefined;
-println!("    *** PARSER production: block_param -> f_arg tCOMMA");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_param -> f_arg tCOMMA");
 
 __
 }
@@ -7753,9 +7017,7 @@ _1.append(&mut _3);
         _1.append(&mut _5);
         _1.append(&mut _6);
         let __ = _1;
-println!("    *** PARSER production: block_param -> f_arg tCOMMA f_rest_arg tCOMMA f_arg opt_block_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_param -> f_arg tCOMMA f_rest_arg tCOMMA f_arg opt_block_args_tail");
 
 SV::_1(__)
 }
@@ -7774,9 +7036,7 @@ let __ = if ( _2.is_empty() && _1.len() == 1 ) {
             _1.append(&mut _2);
             _1
         };
-println!("    *** PARSER production: block_param -> f_arg opt_block_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_param -> f_arg opt_block_args_tail");
 
 SV::_1(__)
 }
@@ -7791,9 +7051,7 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-println!("    *** PARSER production: block_param -> f_block_optarg tCOMMA f_rest_arg opt_block_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_param -> f_block_optarg tCOMMA f_rest_arg opt_block_args_tail");
 
 SV::_1(__)
 }
@@ -7811,9 +7069,7 @@ _1.append(&mut _3);
         _1.append(&mut _5);
         _1.append(&mut _6);
         let __ = _1;
-println!("    *** PARSER production: block_param -> f_block_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_block_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_param -> f_block_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_block_args_tail");
 
 SV::_1(__)
 }
@@ -7825,9 +7081,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
-println!("    *** PARSER production: block_param -> f_block_optarg opt_block_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_param -> f_block_optarg opt_block_args_tail");
 
 SV::_1(__)
 }
@@ -7842,9 +7096,7 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-println!("    *** PARSER production: block_param -> f_block_optarg tCOMMA f_arg opt_block_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_param -> f_block_optarg tCOMMA f_arg opt_block_args_tail");
 
 SV::_1(__)
 }
@@ -7856,9 +7108,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
-println!("    *** PARSER production: block_param -> f_rest_arg opt_block_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_param -> f_rest_arg opt_block_args_tail");
 
 SV::_1(__)
 }
@@ -7873,9 +7123,7 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-println!("    *** PARSER production: block_param -> f_rest_arg tCOMMA f_arg opt_block_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_param -> f_rest_arg tCOMMA f_arg opt_block_args_tail");
 
 SV::_1(__)
 }
@@ -7885,9 +7133,7 @@ fn _handler379(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: block_param -> block_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_param -> block_args_tail");
 
 __
 }
@@ -7897,9 +7143,7 @@ fn _handler380(&mut self) -> SV {
 
 
 let __ = node::args(None, vec![], None);
-println!("    *** PARSER production: opt_block_param -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_block_param -> undefined");
 
 SV::_3(__)
 }
@@ -7910,9 +7154,7 @@ self.values_stack.pop();
 
 let __ =Node::DUMMY;
         self.tokenizer.interior_lexer.set_state("expr_value");
-println!("    *** PARSER production: opt_block_param -> block_param_def");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_block_param -> block_param_def");
 
 SV::_3(__)
 }
@@ -7924,9 +7166,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::args(Some(_1), _2, Some(_3));
-println!("    *** PARSER production: block_param_def -> tPIPE opt_bv_decl tPIPE");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_param_def -> tPIPE opt_bv_decl tPIPE");
 
 SV::_3(__)
 }
@@ -7937,9 +7177,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let _2 = _1.clone();
         let __ = node::args(Some(_1), vec![], Some(_2));
-println!("    *** PARSER production: block_param_def -> tOROP");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_param_def -> tOROP");
 
 SV::_3(__)
 }
@@ -7953,9 +7191,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 _2.append(&mut _3);
         let __ = node::args(Some(_1), _2, Some(_4));
-println!("    *** PARSER production: block_param_def -> tPIPE block_param opt_bv_decl tPIPE");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_param_def -> tPIPE block_param opt_bv_decl tPIPE");
 
 SV::_3(__)
 }
@@ -7965,9 +7201,7 @@ fn _handler385(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![ _1 ];
-println!("    *** PARSER production: opt_bv_decl -> opt_nl");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_bv_decl -> opt_nl");
 
 SV::_1(__)
 }
@@ -7980,9 +7214,7 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 let __ = _3;
-println!("    *** PARSER production: opt_bv_decl -> opt_nl tSEMI bv_decls opt_nl");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_bv_decl -> opt_nl tSEMI bv_decls opt_nl");
 
 SV::_1(__)
 }
@@ -7992,9 +7224,7 @@ fn _handler387(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![ _1 ];
-println!("    *** PARSER production: bv_decls -> bvar");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: bv_decls -> bvar");
 
 SV::_1(__)
 }
@@ -8007,9 +7237,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
-println!("    *** PARSER production: bv_decls -> bv_decls tCOMMA bvar");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: bv_decls -> bv_decls tCOMMA bvar");
 
 SV::_1(__)
 }
@@ -8023,9 +7251,7 @@ if let InteriorToken::T_IDENTIFIER(ref t_value) = _1 {
         } else { unreachable!(); }
 
         let __ = node::shadowarg(_1);
-println!("    *** PARSER production: bvar -> tIDENTIFIER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: bvar -> tIDENTIFIER");
 
 SV::_3(__)
 }
@@ -8035,9 +7261,7 @@ fn _handler390(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: bvar -> f_bad_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: bvar -> f_bad_arg");
 
 __
 }
@@ -8048,9 +7272,7 @@ fn _handler391(&mut self) -> SV {
 
 let __ =Node::DUMMY;
     self.tokenizer.static_env.extend_dynamic();
-println!("    *** PARSER production: fake_embedded_action_lambda_1 -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action_lambda_1 -> undefined");
 
 SV::_3(__)
 }
@@ -8062,9 +7284,7 @@ fn _handler392(&mut self) -> SV {
 let __ =Node::DUMMY;
 
     self.tokenizer.interior_lexer.cmdarg.push(false);
-println!("    *** PARSER production: fake_embedded_action_lambda_2 -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action_lambda_2 -> undefined");
 
 SV::_3(__)
 }
@@ -8081,9 +7301,7 @@ self.tokenizer.interior_lexer.cmdarg.pop();
     let __ = (_2, _4);
 
     self.tokenizer.static_env.unextend();
-println!("    *** PARSER production: lambda -> fake_embedded_action_lambda_1 f_larglist fake_embedded_action_lambda_2 lambda_body");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: lambda -> fake_embedded_action_lambda_1 f_larglist fake_embedded_action_lambda_2 lambda_body");
 
 SV::_11(__)
 }
@@ -8097,9 +7315,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 _2.append(&mut _3);
         let __ = node::args(Some(_1), _2, Some(_4));
-println!("    *** PARSER production: f_larglist -> tLPAREN2 f_args opt_bv_decl tRPAREN");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_larglist -> tLPAREN2 f_args opt_bv_decl tRPAREN");
 
 SV::_3(__)
 }
@@ -8109,9 +7325,7 @@ fn _handler395(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = node::args(None, _1, None);
-println!("    *** PARSER production: f_larglist -> f_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_larglist -> f_args");
 
 SV::_3(__)
 }
@@ -8122,9 +7336,7 @@ fn _handler396(&mut self) -> SV {
 
 let __ =Node::DUMMY;
     self.tokenizer.context.push("lambda");
-println!("    *** PARSER production: fake_embedded__lambda_body__1 -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded__lambda_body__1 -> undefined");
 
 SV::_3(__)
 }
@@ -8138,9 +7350,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = (_1, _3, _4);
         self.tokenizer.context.pop();
-println!("    *** PARSER production: lambda_body -> tLAMBEG fake_embedded__lambda_body__1 compstmt tRCURLY");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: lambda_body -> tLAMBEG fake_embedded__lambda_body__1 compstmt tRCURLY");
 
 SV::_12(__)
 }
@@ -8154,9 +7364,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = (_1, _3, _4);
         self.tokenizer.context.pop();
-println!("    *** PARSER production: lambda_body -> kDO_LAMBDA fake_embedded__lambda_body__1 bodystmt kEND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: lambda_body -> kDO_LAMBDA fake_embedded__lambda_body__1 bodystmt kEND");
 
 SV::_12(__)
 }
@@ -8167,9 +7375,7 @@ fn _handler399(&mut self) -> SV {
 
 let __ =Node::DUMMY;
     self.tokenizer.context.push("block");
-println!("    *** PARSER production: fake_embedded__do_block__1 -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded__do_block__1 -> undefined");
 
 SV::_3(__)
 }
@@ -8183,9 +7389,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = ( _1, _3, _4 );
     self.tokenizer.context.pop();
-println!("    *** PARSER production: do_block -> kDO_BLOCK fake_embedded__do_block__1 do_body kEND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: do_block -> kDO_BLOCK fake_embedded__do_block__1 do_body kEND");
 
 SV::_14(__)
 }
@@ -8197,9 +7401,7 @@ let mut _1 = pop!(self.values_stack, _3);
 
 let (begin_t, ( block_args, body), end_t) = _2;
         let __ = node::block(_1, begin_t, block_args, body, end_t);
-println!("    *** PARSER production: block_call -> command do_block");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_call -> command do_block");
 
 SV::_3(__)
 }
@@ -8213,9 +7415,7 @@ let mut _1 = pop!(self.values_stack, _3);
 
 let (lparen_t, args, rparen_t) = _4;
         let __ = node::call_method(Some(_1), Some(_2), Some(_3), lparen_t, args, rparen_t);
-println!("    *** PARSER production: block_call -> block_call dot_or_colon operation2 opt_paren_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_call -> block_call dot_or_colon operation2 opt_paren_args");
 
 SV::_3(__)
 }
@@ -8233,9 +7433,7 @@ let (lparen_t, args, rparen_t) = _4;
 
         let (begin_t, (args, body), end_t) = _5;
         let __ = node::block(method_call, begin_t, args, body, end_t);
-println!("    *** PARSER production: block_call -> block_call dot_or_colon operation2 opt_paren_args brace_block");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_call -> block_call dot_or_colon operation2 opt_paren_args brace_block");
 
 SV::_3(__)
 }
@@ -8252,9 +7450,7 @@ let method_call = node::call_method(Some(_1), Some(_2), Some(_3), None, _4, None
 
         let (begin_t, (args, body), end_t) = _5;
         let __ = node::block(method_call, begin_t, args, body, end_t);
-println!("    *** PARSER production: block_call -> block_call dot_or_colon operation2 command_args do_block");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: block_call -> block_call dot_or_colon operation2 command_args do_block");
 
 SV::_3(__)
 }
@@ -8266,9 +7462,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (lparen_t, args, rparen_t) = _2;
         let __ = node::call_method(None, None, Some(_1), lparen_t, args, rparen_t);
-println!("    *** PARSER production: method_call -> fcall paren_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: method_call -> fcall paren_args");
 
 SV::_3(__)
 }
@@ -8282,9 +7476,7 @@ let mut _1 = pop!(self.values_stack, _3);
 
 let (lparen_t, args, rparen_t) = _4;
         let __ = node::call_method(Some(_1), Some(_2), Some(_3), lparen_t, args, rparen_t);
-println!("    *** PARSER production: method_call -> primary_value call_op operation2 opt_paren_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: method_call -> primary_value call_op operation2 opt_paren_args");
 
 SV::_3(__)
 }
@@ -8298,9 +7490,7 @@ let mut _1 = pop!(self.values_stack, _3);
 
 let (lparen_t, args, rparen_t) = _4;
         let __ = node::call_method(Some(_1), Some(_2), Some(_3), lparen_t, args, rparen_t);
-println!("    *** PARSER production: method_call -> primary_value tCOLON2 operation2 paren_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: method_call -> primary_value tCOLON2 operation2 paren_args");
 
 SV::_3(__)
 }
@@ -8312,9 +7502,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None);
-println!("    *** PARSER production: method_call -> primary_value tCOLON2 operation3");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: method_call -> primary_value tCOLON2 operation3");
 
 SV::_3(__)
 }
@@ -8327,9 +7515,7 @@ let mut _1 = pop!(self.values_stack, _3);
 
 let (lparen_t, args, rparen_t) = _3;
         let __ = node::call_method(Some(_1), Some(_2), None, lparen_t, args, rparen_t);
-println!("    *** PARSER production: method_call -> primary_value call_op paren_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: method_call -> primary_value call_op paren_args");
 
 SV::_3(__)
 }
@@ -8342,9 +7528,7 @@ let mut _1 = pop!(self.values_stack, _3);
 
 let (lparen_t, args, rparen_t) = _3;
         let __ = node::call_method(Some(_1), Some(_2), None, lparen_t, args, rparen_t);
-println!("    *** PARSER production: method_call -> primary_value tCOLON2 paren_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: method_call -> primary_value tCOLON2 paren_args");
 
 SV::_3(__)
 }
@@ -8356,9 +7540,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (lparen_t, args, rparen_t) = _2;
         let __ = node::keyword_cmd("super", _1, lparen_t, args, rparen_t);
-println!("    *** PARSER production: method_call -> kSUPER paren_args");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: method_call -> kSUPER paren_args");
 
 SV::_3(__)
 }
@@ -8368,9 +7550,7 @@ fn _handler412(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::keyword_cmd("zsuper", _1, None, vec![], None);
-println!("    *** PARSER production: method_call -> kSUPER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: method_call -> kSUPER");
 
 SV::_3(__)
 }
@@ -8383,9 +7563,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::index(_1, _2, _3, _4);
-println!("    *** PARSER production: method_call -> primary_value tLBRACK2 opt_call_args rbracket");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: method_call -> primary_value tLBRACK2 opt_call_args rbracket");
 
 SV::_3(__)
 }
@@ -8397,9 +7575,7 @@ fn _handler414(&mut self) -> SV {
 let __ =Node::DUMMY;
 
     self.tokenizer.context.push("block");
-println!("    *** PARSER production: fake_embedded__brace_block__1 -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded__brace_block__1 -> undefined");
 
 SV::_3(__)
 }
@@ -8413,9 +7589,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = (_1, _3, _4);
         self.tokenizer.context.pop();
-println!("    *** PARSER production: brace_block -> tLCURLY fake_embedded__brace_block__1 brace_body tRCURLY");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: brace_block -> tLCURLY fake_embedded__brace_block__1 brace_body tRCURLY");
 
 SV::_8(__)
 }
@@ -8429,9 +7603,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = (_1, _3, _4);
         self.tokenizer.context.pop();
-println!("    *** PARSER production: brace_block -> kDO fake_embedded__brace_block__1 do_body kEND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: brace_block -> kDO fake_embedded__brace_block__1 do_body kEND");
 
 SV::_8(__)
 }
@@ -8442,9 +7614,7 @@ fn _handler417(&mut self) -> SV {
 
 let __ =Node::DUMMY;
     self.tokenizer.static_env.extend_dynamic();
-println!("    *** PARSER production: fake_embedded_action_brace_body_1 -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action_brace_body_1 -> undefined");
 
 SV::_3(__)
 }
@@ -8458,9 +7628,7 @@ self.values_stack.pop();
 let __ = (_2, _3);
 
     self.tokenizer.static_env.unextend();
-println!("    *** PARSER production: brace_body -> fake_embedded_action_brace_body_1 opt_block_param compstmt");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: brace_body -> fake_embedded_action_brace_body_1 opt_block_param compstmt");
 
 SV::_7(__)
 }
@@ -8472,9 +7640,7 @@ fn _handler419(&mut self) -> SV {
 let __ =Node::DUMMY;
 
     self.tokenizer.static_env.extend_dynamic();
-println!("    *** PARSER production: fake_embedded_action_do_body_1 -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action_do_body_1 -> undefined");
 
 SV::_3(__)
 }
@@ -8485,9 +7651,7 @@ fn _handler420(&mut self) -> SV {
 
 let __ = self.tokenizer.interior_lexer.cmdarg.clone();
     self.tokenizer.interior_lexer.cmdarg.clear();
-println!("    *** PARSER production: fake_embedded_action_do_body_2 -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action_do_body_2 -> undefined");
 
 SV::_10(__)
 }
@@ -8503,9 +7667,7 @@ let __ = ( _3, _4 );
     self.tokenizer.static_env.unextend();
 
     self.tokenizer.interior_lexer.cmdarg = _2;
-println!("    *** PARSER production: do_body -> fake_embedded_action_do_body_1 fake_embedded_action_do_body_2 opt_block_param bodystmt");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: do_body -> fake_embedded_action_do_body_1 fake_embedded_action_do_body_2 opt_block_param bodystmt");
 
 SV::_13(__)
 }
@@ -8521,9 +7683,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 let mut r = vec![ node::when(_1, _2, _3, _4) ];
     r.append(&mut _5);
     let __ = r;
-println!("    *** PARSER production: case_body -> kWHEN args then compstmt cases");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: case_body -> kWHEN args then compstmt cases");
 
 SV::_1(__)
 }
@@ -8533,9 +7693,7 @@ fn _handler423(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![_1];
-println!("    *** PARSER production: cases -> opt_else");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: cases -> opt_else");
 
 SV::_1(__)
 }
@@ -8545,9 +7703,7 @@ fn _handler424(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: cases -> case_body");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: cases -> case_body");
 
 __
 }
@@ -8581,9 +7737,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
         ];
         r.append(&mut _6);
         let __ = r;
-println!("    *** PARSER production: opt_rescue -> kRESCUE exc_list exc_var then compstmt opt_rescue");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_rescue -> kRESCUE exc_list exc_var then compstmt opt_rescue");
 
 SV::_1(__)
 }
@@ -8593,9 +7747,7 @@ fn _handler426(&mut self) -> SV {
 
 
 let __ = vec![];
-println!("    *** PARSER production: opt_rescue -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_rescue -> undefined");
 
 SV::_1(__)
 }
@@ -8605,9 +7757,7 @@ fn _handler427(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = Some( vec![ _1 ] );
-println!("    *** PARSER production: exc_list -> arg_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: exc_list -> arg_value");
 
 SV::_15(__)
 }
@@ -8617,9 +7767,7 @@ fn _handler428(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: exc_list -> mrhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: exc_list -> mrhs");
 
 __
 }
@@ -8629,9 +7777,7 @@ fn _handler429(&mut self) -> SV {
 
 
 let __ = None;
-println!("    *** PARSER production: exc_list -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: exc_list -> undefined");
 
 SV::_15(__)
 }
@@ -8642,9 +7788,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = Some((_1, _2));
-println!("    *** PARSER production: exc_var -> tASSOC lhs");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: exc_var -> tASSOC lhs");
 
 SV::_5(__)
 }
@@ -8654,9 +7798,7 @@ fn _handler431(&mut self) -> SV {
 
 
 let __ = None;
-println!("    *** PARSER production: exc_var -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: exc_var -> undefined");
 
 SV::_5(__)
 }
@@ -8667,9 +7809,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = Some((_1, _2));
-println!("    *** PARSER production: opt_ensure -> kENSURE compstmt");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_ensure -> kENSURE compstmt");
 
 SV::_5(__)
 }
@@ -8679,9 +7819,7 @@ fn _handler433(&mut self) -> SV {
 
 
 let __ = None;
-println!("    *** PARSER production: opt_ensure -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_ensure -> undefined");
 
 SV::_5(__)
 }
@@ -8691,9 +7829,7 @@ fn _handler434(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: literal -> numeric");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: literal -> numeric");
 
 __
 }
@@ -8703,9 +7839,7 @@ fn _handler435(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: literal -> symbol");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: literal -> symbol");
 
 __
 }
@@ -8715,9 +7849,7 @@ fn _handler436(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: literal -> dsym");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: literal -> dsym");
 
 __
 }
@@ -8727,9 +7859,7 @@ fn _handler437(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = node::string_compose(None, _1, None);
-println!("    *** PARSER production: strings -> string");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: strings -> string");
 
 SV::_3(__)
 }
@@ -8739,9 +7869,7 @@ fn _handler438(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![_1];
-println!("    *** PARSER production: string -> string1");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: string -> string1");
 
 SV::_1(__)
 }
@@ -8753,9 +7881,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_2);
         let __ = _1;
-println!("    *** PARSER production: string -> string string1");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: string -> string string1");
 
 SV::_1(__)
 }
@@ -8768,9 +7894,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let string = node::string_compose(Some(_1), _2, Some(_3));
         let __ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
-println!("    *** PARSER production: string1 -> tSTRING_BEG string_contents tSTRING_END");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: string1 -> tSTRING_BEG string_contents tSTRING_END");
 
 SV::_3(__)
 }
@@ -8781,9 +7905,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let string = node::string(_1);
         let __ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
-println!("    *** PARSER production: string1 -> tSTRING");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: string1 -> tSTRING");
 
 SV::_3(__)
 }
@@ -8793,9 +7915,7 @@ fn _handler442(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::character(_1);
-println!("    *** PARSER production: string1 -> tCHARACTER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: string1 -> tCHARACTER");
 
 SV::_3(__)
 }
@@ -8808,9 +7928,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let string = node::xstring_compose(_1, _2, _3);
     let __ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
-println!("    *** PARSER production: xstring -> tXSTRING_BEG xstring_contents tSTRING_END");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: xstring -> tXSTRING_BEG xstring_contents tSTRING_END");
 
 SV::_3(__)
 }
@@ -8825,9 +7943,7 @@ self.values_stack.pop();
 //   opts   = @builder.regexp_options(val[3])
     //   result = @builder.regexp_compose(val[0], val[1], val[2], opts)
     wip!(); let __ =Node::DUMMY;
-println!("    *** PARSER production: regexp -> tREGEXP_BEG regexp_contents tSTRING_END tREGEXP_OPT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: regexp -> tREGEXP_BEG regexp_contents tSTRING_END tREGEXP_OPT");
 
 SV::_3(__)
 }
@@ -8839,9 +7955,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::words_compose(_1, _2, _3);
-println!("    *** PARSER production: words -> tWORDS_BEG word_list tSTRING_END");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: words -> tWORDS_BEG word_list tSTRING_END");
 
 SV::_3(__)
 }
@@ -8851,9 +7965,7 @@ fn _handler446(&mut self) -> SV {
 
 
 let __ = vec![];
-println!("    *** PARSER production: word_list -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: word_list -> undefined");
 
 SV::_1(__)
 }
@@ -8866,9 +7978,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push( node::word(_2) );
         let __ = _1;
-println!("    *** PARSER production: word_list -> word_list word tSPACE");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: word_list -> word_list word tSPACE");
 
 SV::_1(__)
 }
@@ -8878,9 +7988,7 @@ fn _handler448(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![_1];
-println!("    *** PARSER production: word -> string_content");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: word -> string_content");
 
 SV::_1(__)
 }
@@ -8891,9 +7999,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_2); let __ = _1;
-println!("    *** PARSER production: word -> word string_content");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: word -> word string_content");
 
 SV::_1(__)
 }
@@ -8905,9 +8011,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::symbols_compose(_1, _2, _3);
-println!("    *** PARSER production: symbols -> tSYMBOLS_BEG symbol_list tSTRING_END");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: symbols -> tSYMBOLS_BEG symbol_list tSTRING_END");
 
 SV::_3(__)
 }
@@ -8917,9 +8021,7 @@ fn _handler451(&mut self) -> SV {
 
 
 let __ = vec![];
-println!("    *** PARSER production: symbol_list -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: symbol_list -> undefined");
 
 SV::_1(__)
 }
@@ -8932,9 +8034,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_2);
         let __ = _1;
-println!("    *** PARSER production: symbol_list -> symbol_list word tSPACE");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: symbol_list -> symbol_list word tSPACE");
 
 SV::_1(__)
 }
@@ -8946,9 +8046,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::words_compose(_1, _2, _3);
-println!("    *** PARSER production: qwords -> tQWORDS_BEG qword_list tSTRING_END");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: qwords -> tQWORDS_BEG qword_list tSTRING_END");
 
 SV::_3(__)
 }
@@ -8960,9 +8058,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::symbols_compose(_1, _2, _3);
-println!("    *** PARSER production: qsymbols -> tQSYMBOLS_BEG qsym_list tSTRING_END");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: qsymbols -> tQSYMBOLS_BEG qsym_list tSTRING_END");
 
 SV::_3(__)
 }
@@ -8972,9 +8068,7 @@ fn _handler455(&mut self) -> SV {
 
 
 let __ = vec![];
-println!("    *** PARSER production: qword_list -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: qword_list -> undefined");
 
 SV::_1(__)
 }
@@ -8987,9 +8081,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(node::string_internal(_2));
         let __ = _1;
-println!("    *** PARSER production: qword_list -> qword_list tSTRING_CONTENT tSPACE");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: qword_list -> qword_list tSTRING_CONTENT tSPACE");
 
 SV::_1(__)
 }
@@ -8999,9 +8091,7 @@ fn _handler457(&mut self) -> SV {
 
 
 let __ = vec![];
-println!("    *** PARSER production: qsym_list -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: qsym_list -> undefined");
 
 SV::_1(__)
 }
@@ -9014,9 +8104,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(node::symbol_internal(_2));
         let __ = _1;
-println!("    *** PARSER production: qsym_list -> qsym_list tSTRING_CONTENT tSPACE");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: qsym_list -> qsym_list tSTRING_CONTENT tSPACE");
 
 SV::_1(__)
 }
@@ -9026,9 +8114,7 @@ fn _handler459(&mut self) -> SV {
 
 
 let __ = vec![];
-println!("    *** PARSER production: string_contents -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: string_contents -> undefined");
 
 SV::_1(__)
 }
@@ -9040,9 +8126,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_2);
         let __ = _1;
-println!("    *** PARSER production: string_contents -> string_contents string_content");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: string_contents -> string_contents string_content");
 
 SV::_1(__)
 }
@@ -9052,9 +8136,7 @@ fn _handler461(&mut self) -> SV {
 
 
 let __ = vec![];
-println!("    *** PARSER production: xstring_contents -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: xstring_contents -> undefined");
 
 SV::_1(__)
 }
@@ -9066,9 +8148,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_2);
         let __ = _1;
-println!("    *** PARSER production: xstring_contents -> xstring_contents string_content");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: xstring_contents -> xstring_contents string_content");
 
 SV::_1(__)
 }
@@ -9078,9 +8158,7 @@ fn _handler463(&mut self) -> SV {
 
 
 let __ = vec![];
-println!("    *** PARSER production: regexp_contents -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: regexp_contents -> undefined");
 
 SV::_1(__)
 }
@@ -9091,9 +8169,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_2); let __ = _1;
-println!("    *** PARSER production: regexp_contents -> regexp_contents string_content");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: regexp_contents -> regexp_contents string_content");
 
 SV::_1(__)
 }
@@ -9106,9 +8182,7 @@ let __ =Node::DUMMY;
 
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
-println!("    *** PARSER production: fake_embedded_action__string_content__tSTRING_DBEG -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action__string_content__tSTRING_DBEG -> undefined");
 
 SV::_3(__)
 }
@@ -9118,9 +8192,7 @@ fn _handler466(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::string_internal(_1);
-println!("    *** PARSER production: string_content -> tSTRING_CONTENT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: string_content -> tSTRING_CONTENT");
 
 SV::_3(__)
 }
@@ -9131,9 +8203,7 @@ let mut _2 = pop!(self.values_stack, _3);
 self.values_stack.pop();
 
 let __ = _2;
-println!("    *** PARSER production: string_content -> tSTRING_DVAR string_dvar");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: string_content -> tSTRING_DVAR string_dvar");
 
 SV::_3(__)
 }
@@ -9149,9 +8219,7 @@ self.tokenizer.interior_lexer.pop_cmdarg();
         self.tokenizer.interior_lexer.pop_cond();
 
         let __ = node::begin(_1, Some(_3), _4);
-println!("    *** PARSER production: string_content -> tSTRING_DBEG fake_embedded_action__string_content__tSTRING_DBEG compstmt tSTRING_DEND");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: string_content -> tSTRING_DBEG fake_embedded_action__string_content__tSTRING_DBEG compstmt tSTRING_DEND");
 
 SV::_3(__)
 }
@@ -9161,9 +8229,7 @@ fn _handler469(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::gvar(_1);
-println!("    *** PARSER production: string_dvar -> tGVAR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: string_dvar -> tGVAR");
 
 SV::_3(__)
 }
@@ -9173,9 +8239,7 @@ fn _handler470(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::ivar(_1);
-println!("    *** PARSER production: string_dvar -> tIVAR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: string_dvar -> tIVAR");
 
 SV::_3(__)
 }
@@ -9185,9 +8249,7 @@ fn _handler471(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::cvar(_1);
-println!("    *** PARSER production: string_dvar -> tCVAR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: string_dvar -> tCVAR");
 
 SV::_3(__)
 }
@@ -9197,9 +8259,7 @@ fn _handler472(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: string_dvar -> backref");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: string_dvar -> backref");
 
 __
 }
@@ -9210,9 +8270,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_end");
     let __ = node::symbol(_1);
-println!("    *** PARSER production: symbol -> tSYMBOL");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: symbol -> tSYMBOL");
 
 SV::_3(__)
 }
@@ -9225,9 +8283,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_end");
     let __ = node::symbol_compose(_1, _2, _3);
-println!("    *** PARSER production: dsym -> tSYMBEG xstring_contents tSTRING_END");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: dsym -> tSYMBEG xstring_contents tSTRING_END");
 
 SV::_3(__)
 }
@@ -9237,9 +8293,7 @@ fn _handler475(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: numeric -> simple_numeric");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: numeric -> simple_numeric");
 
 __
 }
@@ -9256,9 +8310,7 @@ self.values_stack.pop();
         //     result = @builder.unary_num(val[0], val[1])
         //   end
         wip!(); let __ =Node::DUMMY;
-println!("    *** PARSER production: numeric -> tUNARY_NUM simple_numeric");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: numeric -> tUNARY_NUM simple_numeric");
 
 SV::_3(__)
 }
@@ -9267,13 +8319,9 @@ fn _handler477(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-println!("WTF:tINTEGER _1: {:?}", _1);
-
-        self.tokenizer.interior_lexer.set_state("expr_end");
+self.tokenizer.interior_lexer.set_state("expr_end");
         let __ = node::integer(_1);
-println!("    *** PARSER production: simple_numeric -> tINTEGER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: simple_numeric -> tINTEGER");
 
 SV::_3(__)
 }
@@ -9286,9 +8334,7 @@ self.tokenizer.interior_lexer.set_state("expr_end");
         // result = @builder.float(val[0])
         // let __ = node::float(_1);
         wip!(); let __ =Node::DUMMY;
-println!("    *** PARSER production: simple_numeric -> tFLOAT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: simple_numeric -> tFLOAT");
 
 SV::_3(__)
 }
@@ -9301,9 +8347,7 @@ self.tokenizer.interior_lexer.set_state("expr_end");
         // result = @builder.rational(val[0])
         // let __ = node::rational(_1);
         wip!(); let __ =Node::DUMMY;
-println!("    *** PARSER production: simple_numeric -> tRATIONAL");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: simple_numeric -> tRATIONAL");
 
 SV::_3(__)
 }
@@ -9315,9 +8359,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 self.tokenizer.interior_lexer.set_state("expr_end");
         // result = @builder.complex(val[0])
         wip!(); let __ =Node::DUMMY;
-println!("    *** PARSER production: simple_numeric -> tIMAGINARY");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: simple_numeric -> tIMAGINARY");
 
 SV::_3(__)
 }
@@ -9327,9 +8369,7 @@ fn _handler481(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::ident(_1);
-println!("    *** PARSER production: user_variable -> tIDENTIFIER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: user_variable -> tIDENTIFIER");
 
 SV::_3(__)
 }
@@ -9339,9 +8379,7 @@ fn _handler482(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::ivar(_1);
-println!("    *** PARSER production: user_variable -> tIVAR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: user_variable -> tIVAR");
 
 SV::_3(__)
 }
@@ -9351,9 +8389,7 @@ fn _handler483(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::gvar(_1);
-println!("    *** PARSER production: user_variable -> tGVAR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: user_variable -> tGVAR");
 
 SV::_3(__)
 }
@@ -9363,9 +8399,7 @@ fn _handler484(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::build_const(_1);
-println!("    *** PARSER production: user_variable -> tCONSTANT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: user_variable -> tCONSTANT");
 
 SV::_3(__)
 }
@@ -9375,9 +8409,7 @@ fn _handler485(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::cvar(_1);
-println!("    *** PARSER production: user_variable -> tCVAR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: user_variable -> tCVAR");
 
 SV::_3(__)
 }
@@ -9388,9 +8420,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = Node::Nil;
         // TODO @builder.nil;
-println!("    *** PARSER production: keyword_variable -> kNIL");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: keyword_variable -> kNIL");
 
 SV::_3(__)
 }
@@ -9401,9 +8431,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = Node::NSelf;
         // TODO @builder.self;
-println!("    *** PARSER production: keyword_variable -> kSELF");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: keyword_variable -> kSELF");
 
 SV::_3(__)
 }
@@ -9414,9 +8442,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = Node::True;
         // TODO @builder.true;
-println!("    *** PARSER production: keyword_variable -> kTRUE");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: keyword_variable -> kTRUE");
 
 SV::_3(__)
 }
@@ -9427,9 +8453,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = Node::False;
         // TODO @builder.false;
-println!("    *** PARSER production: keyword_variable -> kFALSE");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: keyword_variable -> kFALSE");
 
 SV::_3(__)
 }
@@ -9440,9 +8464,7 @@ self.values_stack.pop();
 
 //   result = @builder.__FILE__(val[0])
         wip!(); let __ =Node::DUMMY;
-println!("    *** PARSER production: keyword_variable -> k__FILE__");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: keyword_variable -> k__FILE__");
 
 SV::_3(__)
 }
@@ -9453,9 +8475,7 @@ self.values_stack.pop();
 
 //   result = @builder.__LINE__(val[0])
         wip!(); let __ =Node::DUMMY;
-println!("    *** PARSER production: keyword_variable -> k__LINE__");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: keyword_variable -> k__LINE__");
 
 SV::_3(__)
 }
@@ -9466,9 +8486,7 @@ self.values_stack.pop();
 
 //   result = @builder.__ENCODING__(val[0])
         wip!(); let __ =Node::DUMMY;
-println!("    *** PARSER production: keyword_variable -> k__ENCODING__");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: keyword_variable -> k__ENCODING__");
 
 SV::_3(__)
 }
@@ -9478,9 +8496,7 @@ fn _handler493(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::accessible(_1, &self.tokenizer.static_env);
-println!("    *** PARSER production: var_ref -> user_variable");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: var_ref -> user_variable");
 
 SV::_3(__)
 }
@@ -9490,9 +8506,7 @@ fn _handler494(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::accessible(_1, &self.tokenizer.static_env);
-println!("    *** PARSER production: var_ref -> keyword_variable");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: var_ref -> keyword_variable");
 
 SV::_3(__)
 }
@@ -9502,9 +8516,7 @@ fn _handler495(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::assignable(_1, &mut self.tokenizer.static_env);
-println!("    *** PARSER production: var_lhs -> user_variable");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: var_lhs -> user_variable");
 
 SV::_3(__)
 }
@@ -9514,9 +8526,7 @@ fn _handler496(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::assignable(_1, &mut self.tokenizer.static_env);
-println!("    *** PARSER production: var_lhs -> keyword_variable");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: var_lhs -> keyword_variable");
 
 SV::_3(__)
 }
@@ -9526,9 +8536,7 @@ fn _handler497(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::nth_ref(_1);
-println!("    *** PARSER production: backref -> tNTH_REF");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: backref -> tNTH_REF");
 
 SV::_3(__)
 }
@@ -9538,9 +8546,7 @@ fn _handler498(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::back_ref(_1);
-println!("    *** PARSER production: backref -> tBACK_REF");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: backref -> tBACK_REF");
 
 SV::_3(__)
 }
@@ -9551,9 +8557,7 @@ fn _handler499(&mut self) -> SV {
 
 let __ =Node::DUMMY;
     self.tokenizer.interior_lexer.set_state("expr_value");
-println!("    *** PARSER production: fake_embedded_action__superclass__tLT -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action__superclass__tLT -> undefined");
 
 SV::_3(__)
 }
@@ -9566,9 +8570,7 @@ self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = Some((_1, _3));
-println!("    *** PARSER production: superclass -> tLT fake_embedded_action__superclass__tLT expr_value term");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: superclass -> tLT fake_embedded_action__superclass__tLT expr_value term");
 
 SV::_5(__)
 }
@@ -9578,9 +8580,7 @@ fn _handler501(&mut self) -> SV {
 
 
 let __ = None;
-println!("    *** PARSER production: superclass -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: superclass -> undefined");
 
 SV::_5(__)
 }
@@ -9591,9 +8591,7 @@ fn _handler502(&mut self) -> SV {
 
 let __ = self.tokenizer.interior_lexer.in_kwarg;
     self.tokenizer.interior_lexer.in_kwarg = true;
-println!("    *** PARSER production: fake_embedded_action__f_arglist__episolon -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: fake_embedded_action__f_arglist__episolon -> undefined");
 
 SV::_16(__)
 }
@@ -9606,9 +8604,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::args(Some(_1), _2, Some(_3));
         self.tokenizer.interior_lexer.set_state("expr_value");
-println!("    *** PARSER production: f_arglist -> tLPAREN2 f_args rparen");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_arglist -> tLPAREN2 f_args rparen");
 
 SV::_3(__)
 }
@@ -9621,9 +8617,7 @@ let mut _1 = pop!(self.values_stack, _16);
 
 self.tokenizer.interior_lexer.in_kwarg = _1;
         let __ = node::args(None, _2, None);
-println!("    *** PARSER production: f_arglist -> fake_embedded_action__f_arglist__episolon f_args term");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_arglist -> fake_embedded_action__f_arglist__episolon f_args term");
 
 SV::_3(__)
 }
@@ -9638,9 +8632,7 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-println!("    *** PARSER production: args_tail -> f_kwarg tCOMMA f_kwrest opt_f_block_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: args_tail -> f_kwarg tCOMMA f_kwrest opt_f_block_arg");
 
 SV::_1(__)
 }
@@ -9652,9 +8644,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
-println!("    *** PARSER production: args_tail -> f_kwarg opt_f_block_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: args_tail -> f_kwarg opt_f_block_arg");
 
 SV::_1(__)
 }
@@ -9666,9 +8656,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
-println!("    *** PARSER production: args_tail -> f_kwrest opt_f_block_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: args_tail -> f_kwrest opt_f_block_arg");
 
 SV::_1(__)
 }
@@ -9678,9 +8666,7 @@ fn _handler508(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![_1];
-println!("    *** PARSER production: args_tail -> f_block_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: args_tail -> f_block_arg");
 
 SV::_1(__)
 }
@@ -9691,9 +8677,7 @@ let mut _2 = pop!(self.values_stack, _3);
 self.values_stack.pop();
 
 let __ = vec![_2];
-println!("    *** PARSER production: opt_args_tail -> tCOMMA args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_args_tail -> tCOMMA args_tail");
 
 SV::_1(__)
 }
@@ -9703,9 +8687,7 @@ fn _handler510(&mut self) -> SV {
 
 
 let __ = vec![];
-println!("    *** PARSER production: opt_args_tail -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_args_tail -> undefined");
 
 SV::_1(__)
 }
@@ -9723,9 +8705,7 @@ _1.append(&mut _3);
         _1.append(&mut _5);
         _1.append(&mut _6);
         let __ = _1;
-println!("    *** PARSER production: f_args -> f_arg tCOMMA f_optarg tCOMMA f_rest_arg opt_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_args -> f_arg tCOMMA f_optarg tCOMMA f_rest_arg opt_args_tail");
 
 SV::_1(__)
 }
@@ -9746,9 +8726,7 @@ _1.append(&mut _3);
         _1.append(&mut _7);
         _1.append(&mut _8);
         let __ = _1;
-println!("    *** PARSER production: f_args -> f_arg tCOMMA f_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_args -> f_arg tCOMMA f_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_args_tail");
 
 SV::_1(__)
 }
@@ -9763,9 +8741,7 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-println!("    *** PARSER production: f_args -> f_arg tCOMMA f_optarg opt_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_args -> f_arg tCOMMA f_optarg opt_args_tail");
 
 SV::_1(__)
 }
@@ -9783,9 +8759,7 @@ _1.append(&mut _3);
         _1.append(&mut _5);
         _1.append(&mut _6);
         let __ = _1;
-println!("    *** PARSER production: f_args -> f_arg tCOMMA f_optarg tCOMMA f_arg opt_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_args -> f_arg tCOMMA f_optarg tCOMMA f_arg opt_args_tail");
 
 SV::_1(__)
 }
@@ -9800,9 +8774,7 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-println!("    *** PARSER production: f_args -> f_arg tCOMMA f_rest_arg opt_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_args -> f_arg tCOMMA f_rest_arg opt_args_tail");
 
 SV::_1(__)
 }
@@ -9820,9 +8792,7 @@ _1.append(&mut _3);
         _1.append(&mut _5);
         _1.append(&mut _6);
         let __ = _1;
-println!("    *** PARSER production: f_args -> f_arg tCOMMA f_rest_arg tCOMMA f_arg opt_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_args -> f_arg tCOMMA f_rest_arg tCOMMA f_arg opt_args_tail");
 
 SV::_1(__)
 }
@@ -9834,9 +8804,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
-println!("    *** PARSER production: f_args -> f_arg opt_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_args -> f_arg opt_args_tail");
 
 SV::_1(__)
 }
@@ -9851,9 +8819,7 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-println!("    *** PARSER production: f_args -> f_optarg tCOMMA f_rest_arg opt_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_args -> f_optarg tCOMMA f_rest_arg opt_args_tail");
 
 SV::_1(__)
 }
@@ -9871,9 +8837,7 @@ _1.append(&mut _3);
         _1.append(&mut _5);
         _1.append(&mut _6);
         let __ = _1;
-println!("    *** PARSER production: f_args -> f_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_args -> f_optarg tCOMMA f_rest_arg tCOMMA f_arg opt_args_tail");
 
 SV::_1(__)
 }
@@ -9885,9 +8849,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
-println!("    *** PARSER production: f_args -> f_optarg opt_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_args -> f_optarg opt_args_tail");
 
 SV::_1(__)
 }
@@ -9902,9 +8864,7 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-println!("    *** PARSER production: f_args -> f_optarg tCOMMA f_arg opt_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_args -> f_optarg tCOMMA f_arg opt_args_tail");
 
 SV::_1(__)
 }
@@ -9916,9 +8876,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.append(&mut _2);
         let __ = _1;
-println!("    *** PARSER production: f_args -> f_rest_arg opt_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_args -> f_rest_arg opt_args_tail");
 
 SV::_1(__)
 }
@@ -9933,9 +8891,7 @@ let mut _1 = pop!(self.values_stack, _1);
 _1.append(&mut _3);
         _1.append(&mut _4);
         let __ = _1;
-println!("    *** PARSER production: f_args -> f_rest_arg tCOMMA f_arg opt_args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_args -> f_rest_arg tCOMMA f_arg opt_args_tail");
 
 SV::_1(__)
 }
@@ -9945,9 +8901,7 @@ fn _handler524(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _1);
 
 let __ = _1;
-println!("    *** PARSER production: f_args -> args_tail");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_args -> args_tail");
 
 SV::_1(__)
 }
@@ -9957,9 +8911,7 @@ fn _handler525(&mut self) -> SV {
 
 
 let __ = vec![];
-println!("    *** PARSER production: f_args -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_args -> undefined");
 
 SV::_1(__)
 }
@@ -9969,9 +8921,7 @@ fn _handler526(&mut self) -> SV {
 self.values_stack.pop();
 
 let __ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_const, nil, val[0];
-println!("    *** PARSER production: f_bad_arg -> tCONSTANT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_bad_arg -> tCONSTANT");
 
 SV::_3(__)
 }
@@ -9981,9 +8931,7 @@ fn _handler527(&mut self) -> SV {
 self.values_stack.pop();
 
 let __ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_ivar, nil, val[0];
-println!("    *** PARSER production: f_bad_arg -> tIVAR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_bad_arg -> tIVAR");
 
 SV::_3(__)
 }
@@ -9993,9 +8941,7 @@ fn _handler528(&mut self) -> SV {
 self.values_stack.pop();
 
 let __ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_gvar, nil, val[0];
-println!("    *** PARSER production: f_bad_arg -> tGVAR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_bad_arg -> tGVAR");
 
 SV::_3(__)
 }
@@ -10005,9 +8951,7 @@ fn _handler529(&mut self) -> SV {
 self.values_stack.pop();
 
 let __ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_cvar, nil, val[0];
-println!("    *** PARSER production: f_bad_arg -> tCVAR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_bad_arg -> tCVAR");
 
 SV::_3(__)
 }
@@ -10017,9 +8961,7 @@ fn _handler530(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: f_norm_arg -> f_bad_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_norm_arg -> f_bad_arg");
 
 __
 }
@@ -10033,9 +8975,7 @@ if let InteriorToken::T_IDENTIFIER(ref t_value) = _1 {
         } else { unreachable!(); }
 
         let __ = _1.wrap_as_token();
-println!("    *** PARSER production: f_norm_arg -> tIDENTIFIER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_norm_arg -> tIDENTIFIER");
 
 SV::_0(__)
 }
@@ -10045,9 +8985,7 @@ fn _handler532(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = _1;
-println!("    *** PARSER production: f_arg_asgn -> f_norm_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_arg_asgn -> f_norm_arg");
 
 SV::_3(__)
 }
@@ -10057,9 +8995,7 @@ fn _handler533(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::arg(_1);
-println!("    *** PARSER production: f_arg_item -> f_arg_asgn");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_arg_item -> f_arg_asgn");
 
 SV::_3(__)
 }
@@ -10071,9 +9007,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::multi_lhs(Some(_1), _2, Some(_3));
-println!("    *** PARSER production: f_arg_item -> tLPAREN f_margs rparen");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_arg_item -> tLPAREN f_margs rparen");
 
 SV::_3(__)
 }
@@ -10083,9 +9017,7 @@ fn _handler535(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![_1];
-println!("    *** PARSER production: f_arg -> f_arg_item");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_arg -> f_arg_item");
 
 SV::_1(__)
 }
@@ -10098,9 +9030,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
-println!("    *** PARSER production: f_arg -> f_arg tCOMMA f_arg_item");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_arg -> f_arg tCOMMA f_arg_item");
 
 SV::_1(__)
 }
@@ -10115,9 +9045,7 @@ self.values_stack.pop();
 
     //   result = val[0]
     wip!(); let __ =Node::DUMMY;
-println!("    *** PARSER production: f_label -> tLABEL");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_label -> tLABEL");
 
 SV::_3(__)
 }
@@ -10128,9 +9056,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::kwoptarg(_1, _2);
-println!("    *** PARSER production: f_kw -> f_label arg_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_kw -> f_label arg_value");
 
 SV::_3(__)
 }
@@ -10140,9 +9066,7 @@ fn _handler539(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::kwarg(_1);
-println!("    *** PARSER production: f_kw -> f_label");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_kw -> f_label");
 
 SV::_3(__)
 }
@@ -10153,9 +9077,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::kwoptarg(_1, _2);
-println!("    *** PARSER production: f_block_kw -> f_label primary_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_block_kw -> f_label primary_value");
 
 SV::_3(__)
 }
@@ -10165,9 +9087,7 @@ fn _handler541(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::kwarg(_1);
-println!("    *** PARSER production: f_block_kw -> f_label");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_block_kw -> f_label");
 
 SV::_3(__)
 }
@@ -10177,9 +9097,7 @@ fn _handler542(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![_1];
-println!("    *** PARSER production: f_block_kwarg -> f_block_kw");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_block_kwarg -> f_block_kw");
 
 SV::_1(__)
 }
@@ -10192,9 +9110,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
-println!("    *** PARSER production: f_block_kwarg -> f_block_kwarg tCOMMA f_block_kw");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_block_kwarg -> f_block_kwarg tCOMMA f_block_kw");
 
 SV::_1(__)
 }
@@ -10204,9 +9120,7 @@ fn _handler544(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![_1];
-println!("    *** PARSER production: f_kwarg -> f_kw");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_kwarg -> f_kw");
 
 SV::_1(__)
 }
@@ -10219,9 +9133,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
-println!("    *** PARSER production: f_kwarg -> f_kwarg tCOMMA f_kw");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_kwarg -> f_kwarg tCOMMA f_kw");
 
 SV::_1(__)
 }
@@ -10231,9 +9143,7 @@ fn _handler546(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: kwrest_mark -> tPOW");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: kwrest_mark -> tPOW");
 
 __
 }
@@ -10243,9 +9153,7 @@ fn _handler547(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: kwrest_mark -> tDSTAR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: kwrest_mark -> tDSTAR");
 
 __
 }
@@ -10260,9 +9168,7 @@ if let InteriorToken::T_IDENTIFIER(ref t_value) = _2 {
         } else { unreachable!(); }
 
         let __ = vec![ node::kwrestarg(_1, Some(_2)) ];
-println!("    *** PARSER production: f_kwrest -> kwrest_mark tIDENTIFIER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_kwrest -> kwrest_mark tIDENTIFIER");
 
 SV::_1(__)
 }
@@ -10272,9 +9178,7 @@ fn _handler549(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = vec![ node::kwrestarg(_1, None) ];
-println!("    *** PARSER production: f_kwrest -> kwrest_mark");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_kwrest -> kwrest_mark");
 
 SV::_1(__)
 }
@@ -10286,9 +9190,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::optarg(_1, _2, _3);
-println!("    *** PARSER production: f_opt -> f_arg_asgn tEQL arg_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_opt -> f_arg_asgn tEQL arg_value");
 
 SV::_3(__)
 }
@@ -10300,9 +9202,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::optarg(_1, _2, _3);
-println!("    *** PARSER production: f_block_opt -> f_arg_asgn tEQL primary_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_block_opt -> f_arg_asgn tEQL primary_value");
 
 SV::_3(__)
 }
@@ -10312,9 +9212,7 @@ fn _handler552(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![_1];
-println!("    *** PARSER production: f_block_optarg -> f_block_opt");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_block_optarg -> f_block_opt");
 
 SV::_1(__)
 }
@@ -10327,9 +9225,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
-println!("    *** PARSER production: f_block_optarg -> f_block_optarg tCOMMA f_block_opt");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_block_optarg -> f_block_optarg tCOMMA f_block_opt");
 
 SV::_1(__)
 }
@@ -10339,9 +9235,7 @@ fn _handler554(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![_1];
-println!("    *** PARSER production: f_optarg -> f_opt");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_optarg -> f_opt");
 
 SV::_1(__)
 }
@@ -10354,9 +9248,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
-println!("    *** PARSER production: f_optarg -> f_optarg tCOMMA f_opt");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_optarg -> f_optarg tCOMMA f_opt");
 
 SV::_1(__)
 }
@@ -10366,9 +9258,7 @@ fn _handler556(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: restarg_mark -> tSTAR2");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: restarg_mark -> tSTAR2");
 
 __
 }
@@ -10378,9 +9268,7 @@ fn _handler557(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: restarg_mark -> tSTAR");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: restarg_mark -> tSTAR");
 
 __
 }
@@ -10395,9 +9283,7 @@ if let InteriorToken::T_IDENTIFIER(ref t_value) = _2 {
         } else { unreachable!(); }
 
         let __ = vec![ node::restarg(_1, Some(_2)) ];
-println!("    *** PARSER production: f_rest_arg -> restarg_mark tIDENTIFIER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_rest_arg -> restarg_mark tIDENTIFIER");
 
 SV::_1(__)
 }
@@ -10407,9 +9293,7 @@ fn _handler559(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = vec![node::restarg(_1, None)];
-println!("    *** PARSER production: f_rest_arg -> restarg_mark");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_rest_arg -> restarg_mark");
 
 SV::_1(__)
 }
@@ -10419,9 +9303,7 @@ fn _handler560(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: blkarg_mark -> tAMPER2");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: blkarg_mark -> tAMPER2");
 
 __
 }
@@ -10431,9 +9313,7 @@ fn _handler561(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: blkarg_mark -> tAMPER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: blkarg_mark -> tAMPER");
 
 __
 }
@@ -10448,9 +9328,7 @@ if let InteriorToken::T_IDENTIFIER(ref t_value) = _2 {
     } else { unreachable!(); }
 
     let __ = vec![ node::blockarg(_1, _2) ];
-println!("    *** PARSER production: f_block_arg -> blkarg_mark tIDENTIFIER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: f_block_arg -> blkarg_mark tIDENTIFIER");
 
 SV::_1(__)
 }
@@ -10461,9 +9339,7 @@ let mut _2 = pop!(self.values_stack, _3);
 self.values_stack.pop();
 
 let __ = vec![_2];
-println!("    *** PARSER production: opt_f_block_arg -> tCOMMA f_block_arg");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_f_block_arg -> tCOMMA f_block_arg");
 
 SV::_1(__)
 }
@@ -10473,9 +9349,7 @@ fn _handler564(&mut self) -> SV {
 
 
 let __ = vec![];
-println!("    *** PARSER production: opt_f_block_arg -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_f_block_arg -> undefined");
 
 SV::_1(__)
 }
@@ -10485,9 +9359,7 @@ fn _handler565(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: singleton -> var_ref");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: singleton -> var_ref");
 
 __
 }
@@ -10499,9 +9371,7 @@ let mut _2 = pop!(self.values_stack, _3);
 self.values_stack.pop();
 
 let __ = vec![_2];
-println!("    *** PARSER production: singleton -> tLPAREN2 expr rparen");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: singleton -> tLPAREN2 expr rparen");
 
 SV::_1(__)
 }
@@ -10511,9 +9381,7 @@ fn _handler567(&mut self) -> SV {
 
 
 let __ = vec![];
-println!("    *** PARSER production: assoc_list -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: assoc_list -> undefined");
 
 SV::_1(__)
 }
@@ -10524,9 +9392,7 @@ self.values_stack.pop();
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: assoc_list -> assocs trailer");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: assoc_list -> assocs trailer");
 
 __
 }
@@ -10536,9 +9402,7 @@ fn _handler569(&mut self) -> SV {
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = vec![_1];
-println!("    *** PARSER production: assocs -> assoc");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: assocs -> assoc");
 
 SV::_1(__)
 }
@@ -10551,9 +9415,7 @@ let mut _1 = pop!(self.values_stack, _1);
 
 _1.push(_3);
         let __ = _1;
-println!("    *** PARSER production: assocs -> assocs tCOMMA assoc");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: assocs -> assocs tCOMMA assoc");
 
 SV::_1(__)
 }
@@ -10565,9 +9427,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let __ = node::pair(_1, _2, _3);
-println!("    *** PARSER production: assoc -> arg_value tASSOC arg_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: assoc -> arg_value tASSOC arg_value");
 
 SV::_3(__)
 }
@@ -10578,9 +9438,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::pair_keyword(_1, _2);
-println!("    *** PARSER production: assoc -> tLABEL arg_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: assoc -> tLABEL arg_value");
 
 SV::_3(__)
 }
@@ -10593,9 +9451,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::pair_quoted(_1, _2, _3, _4);
-println!("    *** PARSER production: assoc -> tSTRING_BEG string_contents tLABEL_END arg_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: assoc -> tSTRING_BEG string_contents tLABEL_END arg_value");
 
 SV::_3(__)
 }
@@ -10606,9 +9462,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let __ = node::kwsplat(_1, _2);
-println!("    *** PARSER production: assoc -> tDSTAR arg_value");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: assoc -> tDSTAR arg_value");
 
 SV::_3(__)
 }
@@ -10618,9 +9472,7 @@ fn _handler575(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: operation -> tIDENTIFIER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: operation -> tIDENTIFIER");
 
 __
 }
@@ -10630,9 +9482,7 @@ fn _handler576(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: operation -> tCONSTANT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: operation -> tCONSTANT");
 
 __
 }
@@ -10642,9 +9492,7 @@ fn _handler577(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: operation -> tFID");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: operation -> tFID");
 
 __
 }
@@ -10654,9 +9502,7 @@ fn _handler578(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: operation2 -> tIDENTIFIER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: operation2 -> tIDENTIFIER");
 
 __
 }
@@ -10666,9 +9512,7 @@ fn _handler579(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: operation2 -> tCONSTANT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: operation2 -> tCONSTANT");
 
 __
 }
@@ -10678,9 +9522,7 @@ fn _handler580(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: operation2 -> tFID");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: operation2 -> tFID");
 
 __
 }
@@ -10690,9 +9532,7 @@ fn _handler581(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: operation2 -> op");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: operation2 -> op");
 
 __
 }
@@ -10702,9 +9542,7 @@ fn _handler582(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: operation3 -> tIDENTIFIER");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: operation3 -> tIDENTIFIER");
 
 __
 }
@@ -10714,9 +9552,7 @@ fn _handler583(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: operation3 -> tFID");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: operation3 -> tFID");
 
 __
 }
@@ -10726,9 +9562,7 @@ fn _handler584(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: operation3 -> op");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: operation3 -> op");
 
 __
 }
@@ -10738,9 +9572,7 @@ fn _handler585(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: dot_or_colon -> call_op");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: dot_or_colon -> call_op");
 
 __
 }
@@ -10750,9 +9582,7 @@ fn _handler586(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: dot_or_colon -> tCOLON2");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: dot_or_colon -> tCOLON2");
 
 __
 }
@@ -10765,9 +9595,7 @@ let __ = InteriorToken::T_DOT.wrap_as_token();
 
                     //   result = [:dot, val[0][1]]
                     // TODO;
-println!("    *** PARSER production: call_op -> tDOT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: call_op -> tDOT");
 
 SV::_0(__)
 }
@@ -10780,9 +9608,7 @@ let __ = InteriorToken::T_ANDDOT.wrap_as_token();
 
                     //   result = [:anddot, val[0][1]]
                     // TODO;
-println!("    *** PARSER production: call_op -> tANDDOT");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: call_op -> tANDDOT");
 
 SV::_0(__)
 }
@@ -10792,9 +9618,7 @@ fn _handler589(&mut self) -> SV {
 
 
 let __ = SV::Undefined;
-println!("    *** PARSER production: opt_terms -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_terms -> undefined");
 
 __
 }
@@ -10804,9 +9628,7 @@ fn _handler590(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: opt_terms -> terms");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_terms -> terms");
 
 __
 }
@@ -10816,9 +9638,7 @@ fn _handler591(&mut self) -> SV {
 
 
 let __ = SV::Undefined;
-println!("    *** PARSER production: opt_nl -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_nl -> undefined");
 
 __
 }
@@ -10828,9 +9648,7 @@ fn _handler592(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: opt_nl -> tNL");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: opt_nl -> tNL");
 
 __
 }
@@ -10841,9 +9659,7 @@ let mut _2 = self.values_stack.pop().unwrap();
 self.values_stack.pop();
 
 let __ = _2;
-println!("    *** PARSER production: rparen -> opt_nl tRPAREN");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: rparen -> opt_nl tRPAREN");
 
 __
 }
@@ -10854,9 +9670,7 @@ let mut _2 = self.values_stack.pop().unwrap();
 self.values_stack.pop();
 
 let __ = _2;
-println!("    *** PARSER production: rbracket -> opt_nl tRBRACK");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: rbracket -> opt_nl tRBRACK");
 
 __
 }
@@ -10866,9 +9680,7 @@ fn _handler595(&mut self) -> SV {
 
 
 let __ = SV::Undefined;
-println!("    *** PARSER production: trailer -> undefined");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: trailer -> undefined");
 
 __
 }
@@ -10878,9 +9690,7 @@ fn _handler596(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: trailer -> tNL");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: trailer -> tNL");
 
 __
 }
@@ -10890,9 +9700,7 @@ fn _handler597(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: trailer -> tCOMMA");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: trailer -> tCOMMA");
 
 __
 }
@@ -10904,9 +9712,7 @@ let mut _1 = self.values_stack.pop().unwrap();
 // yyerrok
         // TODO
         let __ = _1;
-println!("    *** PARSER production: term -> tSEMI");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: term -> tSEMI");
 
 __
 }
@@ -10916,9 +9722,7 @@ fn _handler599(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: term -> tNL");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: term -> tNL");
 
 __
 }
@@ -10928,9 +9732,7 @@ fn _handler600(&mut self) -> SV {
 let mut _1 = self.values_stack.pop().unwrap();
 
 let __ = _1;
-println!("    *** PARSER production: terms -> term");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: terms -> term");
 
 __
 }
@@ -10941,9 +9743,7 @@ self.values_stack.pop();
 self.values_stack.pop();
 
 let __ = SV::Undefined;
-println!("    *** PARSER production: terms -> terms tSEMI");
-
-println!("    values_stack: {:?}", self.values_stack);
+explain!("action: terms -> terms tSEMI");
 
 __
 }

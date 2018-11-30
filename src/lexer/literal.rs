@@ -9,6 +9,16 @@ use std::rc::Rc;
 use std::cell::RefCell;
 use crate::lexer::lexer::*;
 use crate::token::token::Token;
+use crate::explainer;
+
+macro_rules! wip { () => { panic!("WIP"); }; }
+
+macro_rules! explain {
+    ( $ ( $ arg : tt ) * ) => {
+        let message = format!( $($arg)* );
+        explainer::explain("lexer", message);
+    };
+}
 
 // TODO impl Debug manually
 #[derive(Clone)]
@@ -62,7 +72,7 @@ impl Literal {
         label_allowed: bool,
         lexer_tokens: Rc<RefCell<Vec<Token>>>,
     ) -> Literal {
-        println!("creating new literal with: str_type: {:?}", str_type);
+        explain!("literal#new: creating new literal with: str_type: {:?}", str_type);
 
         // TODO
         //       # DELIMITERS and TYPES are hashes with keys encoded in binary.
@@ -187,7 +197,7 @@ impl Literal {
             lexer_tokens,
         };
 
-        // println!("creating new literal: {:?}", literal.clone());
+        // explain!("literal: creating new: {:?}", literal.clone());
 
         // emit_start_tok unless @monolithic
         if !monolithic { literal.emit_start_tok(); }
@@ -276,8 +286,8 @@ impl Literal {
         // Some("") -> None
         let lookahead = if (lookahead.is_some() && !lookahead.clone().unwrap().is_empty()) { lookahead } else { None };
 
-        println!("### literal:nest_and_try_closing: invoking, delimiter: {:?}", delimiter);
-        println!("### literal:nest_and_try_closing: lookahead: {:?}", lookahead);
+        explain!("literal:nest_and_try_closing: invoking, delimiter: {:?}", delimiter);
+        explain!("literal:nest_and_try_closing: lookahead: {:?}", lookahead);
 
         if self.start_delim.is_some() && self.start_delim.clone().unwrap() == *delimiter {
             self.nesting += 1;
@@ -286,8 +296,6 @@ impl Literal {
                 self.nesting -= 1;
             }
         }
-
-        println!("### literal:nest_and_try_closing: self.nesting: {}", self.nesting);
 
         if self.nesting == 0 {
             if self.is_words {
@@ -313,7 +321,8 @@ impl Literal {
             if  lookahead.is_some() &&
                 self.label_allowed &&
                 ( lookahead.clone().unwrap().chars().nth(0).unwrap() == ':' ) && // TODO there must be a better way
-                ( lookahead.clone().unwrap().chars().nth(1).unwrap() != ':' ) {
+                ( lookahead.clone().unwrap().chars().nth(1).unwrap() != ':' ) &&
+                self.start_tok == Token::T_STRING_BEG {
                     //   # This is a quoted label.
                     self.flush_string();
 
@@ -362,7 +371,7 @@ impl Literal {
     //       @interp_braces += 1
     //     end
     pub fn start_interp_brace(&mut self) {
-        println!("literal.start_interp_brace invoked");
+        explain!("literal.start_interp_brace invoked");
 
         self.interp_braces += 1;
     }
@@ -373,7 +382,7 @@ impl Literal {
     //       (@interp_braces == 0)
     //     end
     pub fn end_interp_brace_and_try_closing(&mut self) -> bool {
-        println!("literal:end_interp_brace_and_try_closing. self.interp_braces: {}", self.interp_braces);
+        explain!("literal#end_interp_brace_and_try_closing. self.interp_braces: {}", self.interp_braces);
 
         self.interp_braces -= 1;
         self.interp_braces == 0
@@ -386,14 +395,14 @@ impl Literal {
     //       @buffer << string
     //     end
     pub fn extend_string(&mut self, string: &String, ts: i32, te: i32) {
-        println!("### literal: invoking literal.extend_string, string: {:?}, buffer: {:?}", string, self.buffer);
+        explain!("literal#extend_string, string: {:?}, buffer: {:?}", string, self.buffer);
 
         if self.buffer_s.is_none() { self.buffer_s = Some(ts); }
         self.buffer_e = Some(te);
 
         self.buffer += string;
 
-        println!("### literal: invoked literal.extend_string, now buffer: {:?}", self.buffer);
+        explain!("literal#extend_string, now buffer: {:?}", self.buffer);
     }
 
     //     def flush_string
@@ -410,7 +419,7 @@ impl Literal {
     //       end
     //     end
     pub fn flush_string(&mut self) {
-        println!("literal.flush_string invoking...");
+        explain!("literal#flush_string");
 
         if self.monolithic {
             self.emit_start_tok();
@@ -489,7 +498,7 @@ impl Literal {
     //       @buffer_e = nil
     //     end
     fn clear_buffer(&mut self) {
-        println!("literal.clear_buffer invoking...");
+        explain!("literal#clear_buffer");
 
         self.buffer = String::from("");
 
@@ -514,6 +523,8 @@ impl Literal {
     //       @lexer.send(:emit, token, type, s, e)
     //     end
     fn emit(&mut self, token: Token) -> Token {
+        explain!("literal:emit, token: {:?}", token);
+
         self.lexer_tokens.borrow_mut().push(token.clone());
         token
     }
@@ -527,12 +538,11 @@ impl Lexer {
     //   end
     // NOTE returns next_state_for_literal
     pub fn push_literal(&mut self, literal: Literal) -> i32 {
-        // println!("### literal: push_literal: invoked. literal: {:?}", literal);
         // TODO DEBUG INFO
-        print!("push_literal invoking");
+        // explain!("literal: push_literal: invoked. literal: {:?}", literal);
+        explain!("litearl#push_literal");
 
         let next_state = self.next_state_for_literal(&literal);
-        print!("push_literal: next_state: {}", next_state);
 
         self.literal_stack.push(RefCell::new(literal));
 
@@ -623,13 +633,13 @@ impl Lexer {
     //   end
     // TODO DUMMY
     pub fn pop_literal(&mut self) -> i32 {
-        println!("### literal: pop_literal: invoked");
+        explain!("literal#pop_literal");
 
         // let old_literal = self.literal_stack.pop().unwrap();
         // self.dedent_level = old_literal.dedent_level;
 
-        // println!("### literal: literal_stack: {:?}", self.literal_stack);
+        // explain!("literal: literal_stack: {:?}", self.literal_stack);
 
-        lexer_en_expr_endarg
+        lexer_en_expr_end
     }
 }
