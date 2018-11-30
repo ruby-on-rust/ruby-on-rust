@@ -3378,108 +3378,120 @@ pub fn send_plain() {
 //   end
 
 //   def test_send_binary_op
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :+, s(:int, 1)),
-//       %q{foo + 1},
-//       %q{    ~ selector
-//         |~~~~~~~ expression})
+#[test]
+fn send_binary_op() {
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :+, s(:int, 1)),
+    //       %q{foo + 1},
+    //       %q{    ~ selector
+    //         |~~~~~~~ expression})
+    assert_parses!(
+        "foo + 1",
+        n_send!(
+            Some(Box::new(n_lvar!("foo"))),
+            "+",
+            vec![ n_int!(1) ]
+        )
+    );
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :-, s(:int, 1)),
-//       %q{foo - 1})
+    // TODO
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :-, s(:int, 1)),
+    //       %q{foo - 1})
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :*, s(:int, 1)),
-//       %q{foo * 1})
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :*, s(:int, 1)),
+    //       %q{foo * 1})
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :/, s(:int, 1)),
-//       %q{foo / 1})
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :/, s(:int, 1)),
+    //       %q{foo / 1})
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :%, s(:int, 1)),
-//       %q{foo % 1})
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :%, s(:int, 1)),
+    //       %q{foo % 1})
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :**, s(:int, 1)),
-//       %q{foo ** 1})
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :**, s(:int, 1)),
+    //       %q{foo ** 1})
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :|, s(:int, 1)),
-//       %q{foo | 1})
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :|, s(:int, 1)),
+    //       %q{foo | 1})
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :^, s(:int, 1)),
-//       %q{foo ^ 1})
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :^, s(:int, 1)),
+    //       %q{foo ^ 1})
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :&, s(:int, 1)),
-//       %q{foo & 1})
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :&, s(:int, 1)),
+    //       %q{foo & 1})
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :<=>, s(:int, 1)),
-//       %q{foo <=> 1})
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :<=>, s(:int, 1)),
+    //       %q{foo <=> 1})
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :<, s(:int, 1)),
-//       %q{foo < 1})
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :<, s(:int, 1)),
+    //       %q{foo < 1})
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :<=, s(:int, 1)),
-//       %q{foo <= 1})
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :<=, s(:int, 1)),
+    //       %q{foo <= 1})
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :>, s(:int, 1)),
-//       %q{foo > 1})
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :>, s(:int, 1)),
+    //       %q{foo > 1})
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :>=, s(:int, 1)),
-//       %q{foo >= 1})
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :>=, s(:int, 1)),
+    //       %q{foo >= 1})
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :==, s(:int, 1)),
-//       %q{foo == 1})
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :==, s(:int, 1)),
+    //       %q{foo == 1})
 
-//     assert_parses(
-//       s(:not, s(:send, s(:lvar, :foo), :==, s(:int, 1))),
-//       %q{foo != 1},
-//       %q{},
-//       %w(1.8))
+    //     assert_parses(
+    //       s(:not, s(:send, s(:lvar, :foo), :==, s(:int, 1))),
+    //       %q{foo != 1},
+    //       %q{},
+    //       %w(1.8))
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :'!=', s(:int, 1)),
-//       %q{foo != 1},
-//       %q{},
-//       SINCE_1_9)
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :'!=', s(:int, 1)),
+    //       %q{foo != 1},
+    //       %q{},
+    //       SINCE_1_9)
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :===, s(:int, 1)),
-//       %q{foo === 1})
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :===, s(:int, 1)),
+    //       %q{foo === 1})
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :=~, s(:int, 1)),
-//       %q{foo =~ 1})
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :=~, s(:int, 1)),
+    //       %q{foo =~ 1})
 
-//     assert_parses(
-//       s(:not, s(:send, s(:lvar, :foo), :=~, s(:int, 1))),
-//       %q{foo !~ 1},
-//       %q{},
-//       %w(1.8))
+    //     assert_parses(
+    //       s(:not, s(:send, s(:lvar, :foo), :=~, s(:int, 1))),
+    //       %q{foo !~ 1},
+    //       %q{},
+    //       %w(1.8))
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :'!~', s(:int, 1)),
-//       %q{foo !~ 1},
-//       %q{},
-//       SINCE_1_9)
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :'!~', s(:int, 1)),
+    //       %q{foo !~ 1},
+    //       %q{},
+    //       SINCE_1_9)
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :<<, s(:int, 1)),
-//       %q{foo << 1})
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :<<, s(:int, 1)),
+    //       %q{foo << 1})
 
-//     assert_parses(
-//       s(:send, s(:lvar, :foo), :>>, s(:int, 1)),
-//       %q{foo >> 1})
-//   end
+    //     assert_parses(
+    //       s(:send, s(:lvar, :foo), :>>, s(:int, 1)),
+    //       %q{foo >> 1})
+    //   end
+    }
 
 //   def test_send_unary_op
 //     assert_parses(

@@ -1386,7 +1386,13 @@ pub fn index_asgn(receiver: Node, lbrack_t: Token, indexes: Nodes, rbrack_t: Tok
 //     source_map)
 // end
 pub fn binary_op(receiver: Node, operator_t: Token, arg: Node) -> Node {
-    wip!();
+    // TODO after we give every token a value
+    let token_value = match operator_t {
+        T_PLUS => "+",
+        _ => {wip!();}
+    };
+
+    n_send!(Some(Box::new(receiver)), token_value, vec![arg])
 }
 
 // def match_op(receiver, match_t, arg)
