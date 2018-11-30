@@ -12,12 +12,18 @@ use crate::{
         literal::Literal,
         stack_state::StackState,
         dedenter::Dedenter,
-    }
+    },
+    explainer
 };
 
 macro_rules! wip { () => { panic!("WIP"); }; }
 
-macro_rules! explain { ($s:expr) => { println!("{: <24} | {}", "", $s); }; }
+macro_rules! explain {
+    ( $ ( $ arg : tt ) * ) => {
+        let message = format!( $($arg)* );
+        explainer::explain("lexer", message);
+    };
+}
 
 // TODO VENDOR using a static str as return value will cause ragel to run forever.
 // https://github.com/ruby-on-rust/ruby-on-rust/issues/3
@@ -231,7 +237,7 @@ impl Lexer {
     // return a Token
     #[allow(unused_parens, unused_assignments, unused_variables)]
     pub fn advance(&mut self) -> Option<Token> {
-        explain!(format!("lexer:advance: current_state: {}", state_name_from_id(self.cs)));
+        explain!("lexer:advance: current_state: {}", state_name_from_id(self.cs));
 
         if !self.tokens.borrow().is_empty() { return Some(self.tokens.borrow_mut().remove(0)); }
 
@@ -272,7 +278,7 @@ impl Lexer {
         self.stack = stack;
         self.top = top;
 
-        explain!(format!("lexer:advance:advanced current state: {}", state_name_from_id(self.cs)));
+        explain!("lexer:advance:advanced current state: {}", state_name_from_id(self.cs));
 
         if self.tokens.borrow().is_empty() {
             return None;
@@ -294,7 +300,7 @@ impl Lexer {
     }
 
     fn emit(&mut self, token: Token) {
-        explain!(format!("lexer.emit: {:?}", token));
+        explain!("lexer.emit: {:?}", token);
         self.tokens.borrow_mut().push(token);
     }
 
@@ -304,7 +310,7 @@ impl Lexer {
     }
 
     pub fn set_state(&mut self, state_name: &str) {
-        explain!(format!("lexer.set_state: {}", state_name));
+        explain!("lexer.set_state: {}", state_name);
 
         self.cs = state_id_from_name(state_name);
     }
