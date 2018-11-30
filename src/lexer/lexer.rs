@@ -141,9 +141,8 @@ pub struct Lexer {
 	
 	pub cond: StackState,
 	pub cmdarg: StackState,
-	// TODO
-	// @cond_stack   = []
-	// @cmdarg_stack = []
+	pub cond_stack: Vec<StackState>,
+	pub cmdarg_stack: Vec<StackState>,
 	
 	// # Lexer state:
 	// @token_queue   = []
@@ -224,6 +223,8 @@ impl Lexer {
 			
 			cond: StackState::new(),
 			cmdarg: StackState::new(),
+			cond_stack: vec![],
+			cmdarg_stack: vec![],
 			
 			tokens: Rc::new(RefCell::new(vec![])),
 			literal_stack: vec![],

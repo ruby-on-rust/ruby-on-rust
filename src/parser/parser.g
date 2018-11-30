@@ -1006,8 +1006,19 @@ command_args: fake_embedded_action__command_args call_args {
     //   else
     //     @lexer.cmdarg.pop
     //   end
-    // TODO
-    wip!();
+
+    if let Some(last_token) = &self.tokenizer.last_token {
+        match *last_token.interior_token {
+            InteriorToken::T_LPAREN_ARG => {
+                let top = self.tokenizer.interior_lexer.cmdarg.pop();
+                self.tokenizer.interior_lexer.cmdarg.pop();
+                self.tokenizer.interior_lexer.cmdarg.push(top);
+            },
+            _ => {
+                self.tokenizer.interior_lexer.cmdarg.pop();
+            }
+        }
+    } else { panic!("no last token"); }
 
     $$ = $2;
 };
@@ -1015,7 +1026,6 @@ command_args: fake_embedded_action__command_args call_args {
 fake_embedded_action__command_args: {
     ||->Node; $$ = Node::DUMMY;
 
-    wip!();
     // # When branch gets invoked by RACC's lookahead
     // # and command args start with '[' or '('
     // # we need to put `true` to the cmdarg stack
@@ -1038,6 +1048,19 @@ fake_embedded_action__command_args: {
     // else
     //   @lexer.cmdarg.push(true)
     // end
+
+    if let Some(last_token) = &self.tokenizer.last_token {
+        match *last_token.interior_token {
+            InteriorToken::T_LBRACK | InteriorToken::T_LPAREN_ARG => {
+                let top = self.tokenizer.interior_lexer.cmdarg.pop();
+                self.tokenizer.interior_lexer.cmdarg.push(true);
+                self.tokenizer.interior_lexer.cmdarg.push(top);
+            },
+            _ => {
+                self.tokenizer.interior_lexer.cmdarg.push(true);
+            }
+        }
+    } else { panic!("no last token"); }
 };
 
 block_arg
@@ -1318,9 +1341,9 @@ primary
         $$ = node::build_for($1, $2, $3, expr_value_node, expr_value_token, $5, $6);
     }
     | kCLASS cpath superclass fake_embedded_action__primary__kCLASS_1 bodystmt kEND {
-        |$1:Token, $2:Node, $3:TSomeTokenNode, $5:Node, $6:Token| -> Node;
+        |$1:Token, $2:Node, $3:TSomeTokenNode, $5:TSomeNode, $6:Token| -> Node;
 
-        if !self.context.is_class_definition_allowed() {
+        if !self.tokenizer.context.is_class_definition_allowed() {
             wip!();
             //     diagnostic :error, :class_in_def, nil, val[0]
         }
@@ -1329,7 +1352,7 @@ primary
         //   result = @builder.def_class(val[0], val[1],
         //                               lt_t, superclass,
         //                               val[4], val[5])
-        $$ = node::def_class($1, $2, lt_t, superclass, $5, $6);
+        $$ = node::def_class($1, $2, lt_t.unwrap(), superclass, $5, $6);
 
         self.tokenizer.interior_lexer.pop_cmdarg();
         self.tokenizer.interior_lexer.pop_cond();

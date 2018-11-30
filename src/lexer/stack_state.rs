@@ -84,14 +84,12 @@ impl Lexer {
     //     @cmdarg = StackState.new("cmdarg.#{@cmdarg_stack.count}")
     //   end
     pub fn push_cmdarg(&mut self) {
-        panic!("wip");
+        self.cmdarg_stack.push(self.cmdarg.clone()); // TODO PERFORMANCE is this clone necessary
+        self.cmdarg = StackState::new();
     }
 
-    //   def pop_cmdarg
-    //     @cmdarg = @cmdarg_stack.pop
-    //   end
     pub fn pop_cmdarg(&mut self) {
-        panic!("wip");
+        self.cmdarg = self.cmdarg_stack.pop().expect("unexpected empty cmdarg_stack");
     }
 
     //   def push_cond
@@ -99,13 +97,11 @@ impl Lexer {
     //     @cond = StackState.new("cond.#{@cond_stack.count}")
     //   end
     pub fn push_cond(&mut self) {
-        panic!("wip");
+        self.cond_stack.push(self.cond.clone()); // TODO PERFORMANCE is this clone necessary
+        self.cond = StackState::new();
     }
 
-    //   def pop_cond
-    //     @cond = @cond_stack.pop
-    //   end
     pub fn pop_cond(&mut self) {
-        panic!("wip");
+        self.cond = self.cond_stack.pop().expect("unexpected empty cond_stack");
     }
 }

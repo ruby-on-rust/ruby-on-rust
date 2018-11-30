@@ -5611,8 +5611,19 @@ self.values_stack.pop();
     //   else
     //     @lexer.cmdarg.pop
     //   end
-    // TODO
-    wip!();
+
+    if let Some(last_token) = &self.tokenizer.last_token {
+        match *last_token.interior_token {
+            InteriorToken::T_LPAREN_ARG => {
+                let top = self.tokenizer.interior_lexer.cmdarg.pop();
+                self.tokenizer.interior_lexer.cmdarg.pop();
+                self.tokenizer.interior_lexer.cmdarg.push(top);
+            },
+            _ => {
+                self.tokenizer.interior_lexer.cmdarg.pop();
+            }
+        }
+    } else { panic!("no last token"); }
 
     let __ = _2;
 explain!("action: command_args -> fake_embedded_action__command_args call_args");
@@ -5626,7 +5637,6 @@ fn _handler265(&mut self) -> SV {
 
 let __ = Node::DUMMY;
 
-    wip!();
     // # When branch gets invoked by RACC's lookahead
     // # and command args start with '[' or '('
     // # we need to put `true` to the cmdarg stack
@@ -5648,7 +5658,20 @@ let __ = Node::DUMMY;
     //   @lexer.cmdarg.push(top)
     // else
     //   @lexer.cmdarg.push(true)
-    // end;
+    // end
+
+    if let Some(last_token) = &self.tokenizer.last_token {
+        match *last_token.interior_token {
+            InteriorToken::T_LBRACK | InteriorToken::T_LPAREN_ARG => {
+                let top = self.tokenizer.interior_lexer.cmdarg.pop();
+                self.tokenizer.interior_lexer.cmdarg.push(true);
+                self.tokenizer.interior_lexer.cmdarg.push(top);
+            },
+            _ => {
+                self.tokenizer.interior_lexer.cmdarg.push(true);
+            }
+        }
+    } else { panic!("no last token"); };
 explain!("action: fake_embedded_action__command_args -> undefined");
 
 SV::_3(__)
@@ -6365,27 +6388,28 @@ SV::_3(__)
 
 fn _handler324(&mut self) -> SV {
 // Semantic values prologue.
+let mut _6 = interior_token!(pop!(self.values_stack, _0));
+let mut _5 = pop!(self.values_stack, _2);
 self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _3 = pop!(self.values_stack, _5);
+let mut _2 = pop!(self.values_stack, _3);
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-//   unless @context.class_definition_allowed?
-        //     diagnostic :error, :class_in_def, nil, val[0]
-        //   end
+if !self.tokenizer.context.is_class_definition_allowed() {
+            wip!();
+            //     diagnostic :error, :class_in_def, nil, val[0]
+        }
 
-        //   lt_t, superclass = val[2]
+        let (lt_t, superclass) = unwrap_some_token_node!(_3);
         //   result = @builder.def_class(val[0], val[1],
         //                               lt_t, superclass,
         //                               val[4], val[5])
+        let __ = node::def_class(_1, _2, lt_t.unwrap(), superclass, _5, _6);
 
-        //   @lexer.pop_cmdarg
-        //   @lexer.pop_cond
-        //   @static_env.unextend
-        //   @context.pop
-        wip!(); let __ =Node::DUMMY;
+        self.tokenizer.interior_lexer.pop_cmdarg();
+        self.tokenizer.interior_lexer.pop_cond();
+        self.tokenizer.static_env.unextend();
+        self.tokenizer.context.pop();
 explain!("action: primary -> kCLASS cpath superclass fake_embedded_action__primary__kCLASS_1 bodystmt kEND");
 
 SV::_3(__)
