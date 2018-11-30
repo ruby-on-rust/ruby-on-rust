@@ -2,8 +2,8 @@
 #[macro_use] extern crate maplit;
 #[macro_use] extern crate strum_macros;
 
+pub mod explainer;
 pub mod token;
 pub mod ast;
 pub mod lexer;
 pub mod parser;
-pub mod explainer;
