@@ -56,6 +56,7 @@ use crate::{
     parser::static_env::StaticEnv,
     ast::node,
     ast::node::{ Node, Nodes },
+    explainer,
 };
 
 type TSomeNode = Option<Node>;
@@ -83,6 +84,13 @@ macro_rules! unwrap_some_token_node {
             None => (None, None),
         }
     }
+}
+
+macro_rules! explain {
+    ( $ ( $ arg : tt ) * ) => {
+        let message = format!( $($arg)* );
+        explainer::explain("parser", message);
+    };
 }
 
 %}

@@ -1774,6 +1774,7 @@ use crate::{
     parser::static_env::StaticEnv,
     ast::node,
     ast::node::{ Node, Nodes },
+    explainer,
 };
 
 type TSomeNode = Option<Node>;
@@ -1801,6 +1802,13 @@ macro_rules! unwrap_some_token_node {
             None => (None, None),
         }
     }
+}
+
+macro_rules! explain {
+    ( $ ( $ arg : tt ) * ) => {
+        let message = format!( $($arg)* );
+        explainer::explain("parser", message);
+    };
 }
 
 // ---  end of Module include ---------
@@ -2471,6 +2479,8 @@ impl Parser {
 
         let mut token = self.tokenizer.get_next_token();
         let mut shifted_token = token.clone();
+
+        explain!("got first token: {:?}", token.interior_token);
 
         loop {
             let state = *self.states_stack.last().unwrap();
