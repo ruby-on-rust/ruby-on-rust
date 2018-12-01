@@ -6407,11 +6407,12 @@ if !self.tokenizer.context.is_class_definition_allowed() {
             wip!();
         }
 
+        // TODO RENAMING what's a lt?
         let (lt_t, superclass) = unwrap_some_token_node!(_3);
         //   result = @builder.def_class(val[0], val[1],
         //                               lt_t, superclass,
         //                               val[4], val[5])
-        let __ = node::def_class(_1, _2, lt_t.unwrap(), superclass, _5, _6);
+        let __ = node::def_class(_1, _2, lt_t, superclass, _5, _6);
 
         self.tokenizer.interior_lexer.pop_cmdarg();
         self.tokenizer.interior_lexer.pop_cond();

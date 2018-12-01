@@ -979,7 +979,7 @@ pub fn multi_assign(lhs: Node, eql_t: Token, rhs: Node) -> Node {
 //   n(:class, [ name, superclass, body ],
 //     module_definition_map(class_t, name, lt_t, end_t))
 // end
-pub fn def_class(class_t: Token, name: Node, lt_t: Token, superclass: Option<Node>, body: Option<Node>, end_t: Token) -> Node {
+pub fn def_class(class_t: Token, name: Node, lt_t: Option<Token>, superclass: Option<Node>, body: Option<Node>, end_t: Token) -> Node {
     n_class!(name, superclass, body)
 }
 

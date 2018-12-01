@@ -1357,11 +1357,12 @@ primary
             wip!();
         }
 
+        // TODO RENAMING what's a lt?
         let (lt_t, superclass) = unwrap_some_token_node!($3);
         //   result = @builder.def_class(val[0], val[1],
         //                               lt_t, superclass,
         //                               val[4], val[5])
-        $$ = node::def_class($1, $2, lt_t.unwrap(), superclass, $5, $6);
+        $$ = node::def_class($1, $2, lt_t, superclass, $5, $6);
 
         self.tokenizer.interior_lexer.pop_cmdarg();
         self.tokenizer.interior_lexer.pop_cond();
