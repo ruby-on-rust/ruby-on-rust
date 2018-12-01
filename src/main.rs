@@ -9,17 +9,22 @@ mod token;
 mod ast;
 mod lexer;
 mod parser;
-mod evaluator;
+mod interpreter;
+
+use crate::{
+    parser::parser::Parser,
+    interpreter::interpreter::Interpreter,
+};
 
 fn main() {
     let code = fs::read_to_string("./tmp/a.rb").expect("Unable to read file");
 
-    let mut parser = parser::parser::Parser::new();
+    let mut parser = Parser::new();
     let node = parser.parse(&code);
 
     println!("parsed: {:?}", node);
 
-    let mut evaluator = evaluator::evaluator::Evaluator::new();
+    let mut interpreter = Interpreter::new();
 
-    evaluator.eval(node);
+    interpreter.eval(node);
 }
