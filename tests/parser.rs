@@ -1893,16 +1893,23 @@ fn asgn_cmd() {
 //   # Class and module definitions
 //   #
 
-//   def test_module
-//     assert_parses(
-//       s(:module,
-//         s(:const, nil, :Foo),
-//         nil),
-//       %q{module Foo; end},
-//       %q{~~~~~~ keyword
-//         |       ~~~ name
-//         |            ~~~ end})
-//   end
+#[test] fn module() {
+    //     assert_parses(
+    //       s(:module,
+    //         s(:const, nil, :Foo),
+    //         nil),
+    //       %q{module Foo; end},
+    //       %q{~~~~~~ keyword
+    //         |       ~~~ name
+    //         |            ~~~ end})
+    assert_parses!(
+        "module Foo; end",
+        n_module!(
+            n_const!(None, String::from("Foo")),
+            None
+        )
+    );
+}
 
 //   def test_module_invalid
 //     assert_diagnoses(
@@ -1917,7 +1924,7 @@ fn asgn_cmd() {
 //         s(:const, s(:cbase), :Foo),
 //         nil),
 //       %q{module ::Foo; end})
-
+// 
 //     assert_parses(
 //       s(:module,
 //         s(:const, s(:const, nil, :Bar), :Foo),

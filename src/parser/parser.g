@@ -59,6 +59,8 @@ use crate::{
     explainer,
 };
 
+type TDummy = ();
+
 type TSomeNode = Option<Node>;
 type TSomeNodes = Option<Nodes>;
 type TTokenNode = ( InteriorToken, Node );
@@ -179,15 +181,16 @@ stmts
     }
     // | error stmt {
     //     // result = [ val[1] ]
-    //     ||->Node;
-    // wip!(); $$=Node::DUMMY;
+    //     ||->TDummy;
+    //     wip!();
+    //     $$=();
     // }
 ;
 
 stmt_or_begin
     : stmt
     | klBEGIN begin_block {
-        || -> Node; $$ = Node::DUMMY;
+        || -> TDummy; $$ = ();
 
         // diagnostic :error, :begin_in_method, nil, val[0]
         panic!("diagnostic error");
@@ -195,7 +198,7 @@ stmt_or_begin
 ;
 
 fake_embedded_action__stmt__1: {
-    || -> Node; $$ = Node::DUMMY;
+    || -> TDummy; $$ = ();
 
     self.tokenizer.interior_lexer.set_state("expr_fname");
 };
@@ -220,7 +223,7 @@ stmt
                 node::back_ref($3));
     }
     | kALIAS tGVAR tNTH_REF {
-        ||->Node; $$=Node::DUMMY;
+        ||->TDummy; $$=();
         // diagnostic :error, :nth_ref_alias, nil, val[2]
         panic!("diagnostic error");
     }
@@ -356,7 +359,7 @@ expr
 expr_value: expr;
 
 fake_embedded__expr_value_do: {
-    ||->Node;$$=Node::DUMMY;
+    ||->TDummy;$$=();
     self.tokenizer.interior_lexer.cond.push(true);
 };
 
@@ -381,7 +384,7 @@ block_command
 ;
 
 fake_embedded_action__cmd_brace_block: {
-    || -> Node; $$ = Node::DUMMY;
+    || -> TDummy; $$ = ();
     self.tokenizer.context.push("block");
 };
 
@@ -636,7 +639,7 @@ lhs
 
 cname
     : tIDENTIFIER {
-        ||->Node; $$=Node::DUMMY;
+        ||->TDummy; $$=();
 
         //   diagnostic :error, :module_name_const, nil, val[0]
         panic!("diagnostic error");
@@ -686,7 +689,7 @@ undef_list
 ;
 
 fake_embedded_action_undef_list: {
-    ||->Node; $$=Node::DUMMY;
+    ||->TDummy; $$=();
     self.tokenizer.interior_lexer.set_state("expr_fname");
 };
 
@@ -1024,7 +1027,7 @@ command_args: fake_embedded_action__command_args call_args {
 };
 
 fake_embedded_action__command_args: {
-    ||->Node; $$ = Node::DUMMY;
+    ||->TDummy;$$=();
 
     // # When branch gets invoked by RACC's lookahead
     // # and command args start with '[' or '('
@@ -1133,17 +1136,17 @@ fake_embedded_action_primary_kBEGIN: {
 };
 
 fake_embedded_action_primary_tLPAREN_ARG_stmt: {
-    ||->Node; $$=Node::DUMMY;
+    ||->TDummy; $$=();
     self.tokenizer.interior_lexer.set_state("expr_endarg");
 };
 
 fake_embedded_action_primary_tLPAREN_ARG_2: {
-    ||->Node; $$=Node::DUMMY;
+    ||->TDummy; $$=();
     self.tokenizer.interior_lexer.set_state("expr_endarg");
 };
 
 fake_embedded_action__primary__kCLASS_1: {
-    ||->Node; $$=Node::DUMMY;
+    ||->TDummy; $$=();
 
     self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
@@ -1152,7 +1155,7 @@ fake_embedded_action__primary__kCLASS_1: {
 };
 
 fake_embedded_action__primary__kCLASS_2: {
-    ||->Node; $$=Node::DUMMY;
+    ||->TDummy; $$=();
 
     self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
@@ -1161,14 +1164,14 @@ fake_embedded_action__primary__kCLASS_2: {
 };
 
 fake_embedded_action__primary__kMODULE_1: {
-    ||->Node; $$=Node::DUMMY;
+    ||->TDummy; $$=();
 
     self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
 };
 
 fake_embedded_action__primary__kDEF_1: {
-    ||->Node; $$=Node::DUMMY;
+    ||->TDummy; $$=();
 
     self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
@@ -1177,12 +1180,12 @@ fake_embedded_action__primary__kDEF_1: {
 };
 
 fake_embedded_action__primary__kDEF_2: {
-    ||->Node; $$=Node::DUMMY;
+    ||->TDummy; $$=();
     self.tokenizer.interior_lexer.set_state("expr_fname");
 };
 
 fake_embedded_action__primary__kDEF_3: {
-    ||->Node; $$=Node::DUMMY;
+    ||->TDummy; $$=();
 
     self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
@@ -1318,22 +1321,28 @@ primary
         $$ = node::build_loop("until", $1, expr_value_node, expr_value_token, $3, $4);
     }
     | kCASE expr_value opt_terms case_body kEND {
+        |$1:Token, $2:Node| -> TDummy;
+
         //   *when_bodies, (else_t, else_body) = *val[3]
 
         //   result = @builder.case(val[0], val[1],
         //                          when_bodies, else_t, else_body,
         //                          val[4])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+
+        $$=();
+        wip!();
     }
     | kCASE            opt_terms case_body kEND {
+        || -> TDummy;
+
         //   *when_bodies, (else_t, else_body) = *val[2]
 
         //   result = @builder.case(val[0], nil,
         //                          when_bodies, else_t, else_body,
         //                          val[3])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+
+        $$=();
+        wip!();
     }
     | kFOR for_var kIN expr_value_do compstmt kEND {
         |$1:Token, $2:Node, $3:Token, $4:TNodeToken, $5:Node, $6:Token| -> Node;
@@ -1344,15 +1353,16 @@ primary
         |$1:Token, $2:Node, $3:TSomeTokenNode, $5:TSomeNode, $6:Token| -> Node;
 
         if !self.tokenizer.context.is_class_definition_allowed() {
-            wip!();
             //     diagnostic :error, :class_in_def, nil, val[0]
+            wip!();
         }
 
+        // TODO RENAMING what's a lt?
         let (lt_t, superclass) = unwrap_some_token_node!($3);
         //   result = @builder.def_class(val[0], val[1],
         //                               lt_t, superclass,
         //                               val[4], val[5])
-        $$ = node::def_class($1, $2, lt_t.unwrap(), superclass, $5, $6);
+        $$ = node::def_class($1, $2, lt_t, superclass, $5, $6);
 
         self.tokenizer.interior_lexer.pop_cmdarg();
         self.tokenizer.interior_lexer.pop_cond();
@@ -1360,6 +1370,8 @@ primary
         self.tokenizer.context.pop();
     }
     | kCLASS tLSHFT expr term fake_embedded_action__primary__kCLASS_2 bodystmt kEND {
+        || -> TDummy;
+
         //   result = @builder.def_sclass(val[0], val[1], val[2],
         //                                val[5], val[6])
 
@@ -1368,23 +1380,28 @@ primary
         //   @static_env.unextend
 
         //   @context.pop
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+
+        $$=();
+        wip!();
     }
     | kMODULE cpath fake_embedded_action__primary__kMODULE_1 bodystmt kEND {
-        //   unless @context.class_definition_allowed?
-        //     diagnostic :error, :module_in_def, nil, val[0]
-        //   end
+        |$1:Token, $2:Node, $4:TSomeNode, $5:Token| -> Node;
+
+        if !self.tokenizer.context.is_class_definition_allowed() {
+            //     diagnostic :error, :module_in_def, nil, val[0]
+            wip!();
+        }
 
         //   result = @builder.def_module(val[0], val[1],
         //                                val[3], val[4])
+        $$ = node::def_module($1, $2, $4, $5);
 
-        //   @lexer.pop_cmdarg
-        //   @static_env.unextend
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+        self.tokenizer.interior_lexer.pop_cmdarg();
+        self.tokenizer.static_env.unextend();
     }
     | kDEF fname fake_embedded_action__primary__kDEF_1 f_arglist bodystmt kEND {
+        ||->TDummy;
+
         //   result = @builder.def_method(val[0], val[1],
         //               val[3], val[4], val[5])
 
@@ -1392,10 +1409,13 @@ primary
         //   @lexer.pop_cond
         //   @static_env.unextend
         //   @context.pop
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+
+        $$=();
+        wip!();
     }
     | kDEF singleton dot_or_colon fake_embedded_action__primary__kDEF_2 fname fake_embedded_action__primary__kDEF_3 f_arglist bodystmt kEND {
+        ||->TDummy;
+
         //   result = @builder.def_singleton(val[0], val[1], val[2],
         //               val[4], val[6], val[7], val[8])
 
@@ -1403,8 +1423,9 @@ primary
         //   @lexer.pop_cond
         //   @static_env.unextend
         //   @context.pop
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+
+        $$=();
+        wip!();
     }
     | kBREAK {
         |$1:Token| -> Node; $$ = node::keyword_cmd("break", $1, None, vec![], None);
@@ -1423,7 +1444,7 @@ primary
 primary_value: primary;
 
 k_return: kRETURN {
-    ||->Node; $$=Node::DUMMY;
+    ||->TDummy; $$=();
 
     if self.tokenizer.context.is_in_class() {
         //   diagnostic :error, :invalid_return, nil, val[0]
@@ -1685,7 +1706,7 @@ opt_block_param
         || -> Node; $$ = node::args(None, vec![], None);
     }
     | block_param_def {
-        ||->Node;$$=Node::DUMMY;
+        ||->TDummy;$$=();
         self.tokenizer.interior_lexer.set_state("expr_value");
     }
 ;
@@ -1742,12 +1763,12 @@ bvar
 ;
 
 fake_embedded_action_lambda_1: {
-    ||->Node; $$=Node::DUMMY;
+    ||->TDummy; $$=();
     self.tokenizer.static_env.extend_dynamic();
 };
 
 fake_embedded_action_lambda_2: {
-    ||->Node; $$=Node::DUMMY;
+    ||->TDummy; $$=();
 
     self.tokenizer.interior_lexer.cmdarg.push(false);
 };
@@ -1774,7 +1795,7 @@ f_larglist
 ;
 
 fake_embedded__lambda_body__1: {
-    ||->Node; $$=Node::DUMMY;
+    ||->TDummy; $$=();
     self.tokenizer.context.push("lambda");
 };
 
@@ -1792,7 +1813,7 @@ lambda_body
 ;
 
 fake_embedded__do_block__1: {
-    ||->Node; $$=Node::DUMMY;
+    ||->TDummy; $$=();
     self.tokenizer.context.push("block");
 };
 
@@ -1888,7 +1909,7 @@ method_call
 ;
 
 fake_embedded__brace_block__1: {
-    ||->Node; $$=Node::DUMMY;
+    ||->TDummy; $$=();
 
     self.tokenizer.context.push("block");
 };
@@ -1907,7 +1928,7 @@ brace_block
 ;
 
 fake_embedded_action_brace_body_1: {
-    ||->Node;$$=Node::DUMMY;
+    ||->TDummy;$$=();
     self.tokenizer.static_env.extend_dynamic();
 };
 
@@ -1919,7 +1940,7 @@ brace_body: fake_embedded_action_brace_body_1 opt_block_param compstmt {
 };
 
 fake_embedded_action_do_body_1: {
-    ||->Node; $$=Node::DUMMY;
+    ||->TDummy; $$=();
 
     self.tokenizer.static_env.extend_dynamic();
 };
@@ -2065,10 +2086,13 @@ xstring: tXSTRING_BEG xstring_contents tSTRING_END {
 };
 
 regexp: tREGEXP_BEG regexp_contents tSTRING_END tREGEXP_OPT {
+    ||->TDummy;
+
     //   opts   = @builder.regexp_options(val[3])
     //   result = @builder.regexp_compose(val[0], val[1], val[2], opts)
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+
+    $$=();
+    wip!();
 };
 
 words: tWORDS_BEG word_list tSTRING_END {
@@ -2185,7 +2209,7 @@ regexp_contents
 ;
 
 fake_embedded_action__string_content__tSTRING_DBEG: {
-    ||->Node; $$=Node::DUMMY;
+    ||->TDummy; $$=();
 
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
@@ -2244,8 +2268,10 @@ numeric
         //   else
         //     result = @builder.unary_num(val[0], val[1])
         //   end
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
+
+        ||->TDummy;
+        $$=();
+        wip!();
     }
 ;
 
@@ -2259,22 +2285,17 @@ simple_numeric
     | tFLOAT {
         |$1: Token| -> Node;
         self.tokenizer.interior_lexer.set_state("expr_end");
-        // result = @builder.float(val[0])
-        // $$ = node::float($1);
-        wip!(); $$=Node::DUMMY;
+        $$ = node::float($1);
     }
     | tRATIONAL {
         |$1: Token| -> Node;
         self.tokenizer.interior_lexer.set_state("expr_end");
-        // result = @builder.rational(val[0])
-        // $$ = node::rational($1);
-        wip!(); $$=Node::DUMMY;
+        $$ = node::rational($1);
     }
     | tIMAGINARY {
         |$1: Token| -> Node;
         self.tokenizer.interior_lexer.set_state("expr_end");
-        // result = @builder.complex(val[0])
-        wip!(); $$=Node::DUMMY;
+        $$ = node::complex($1);
     }
 ;
 
@@ -2313,24 +2334,27 @@ keyword_variable
         |$1: Token| -> Node; $$ = Node::False;
         // TODO @builder.false
     }
-    | k__FILE__
-        {
+    | k__FILE__ {
         //   result = @builder.__FILE__(val[0])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
-    | k__LINE__
-        {
+
+        ||->TDummy;
+        $$=();
+        wip!();
+    }
+    | k__LINE__ {
         //   result = @builder.__LINE__(val[0])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
-    | k__ENCODING__
-        {
+
+        ||->TDummy;
+        $$=();
+        wip!();
+    }
+    | k__ENCODING__ {
         //   result = @builder.__ENCODING__(val[0])
-        ||->Node;
-        wip!(); $$=Node::DUMMY;
-        }
+
+        ||->TDummy;
+        $$=();
+        wip!();
+    }
 ;
 
 var_ref
@@ -2363,7 +2387,7 @@ backref
 ;
 
 fake_embedded_action__superclass__tLT: {
-    ||->Node; $$=Node::DUMMY;
+    ||->TDummy; $$=();
     self.tokenizer.interior_lexer.set_state("expr_value");
 };
 
@@ -2535,16 +2559,16 @@ f_args
 
 f_bad_arg
     : tCONSTANT {
-        ||->Node; $$ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_const, nil, val[0]
+        ||->TDummy;$$=(); panic!("diagnostic error"); //   diagnostic :error, :argument_const, nil, val[0]
     }
     | tIVAR {
-        ||->Node; $$ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_ivar, nil, val[0]
+        ||->TDummy;$$=(); panic!("diagnostic error"); //   diagnostic :error, :argument_ivar, nil, val[0]
     }
     | tGVAR {
-        ||->Node; $$ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_gvar, nil, val[0]
+        ||->TDummy;$$=(); panic!("diagnostic error"); //   diagnostic :error, :argument_gvar, nil, val[0]
     }
     | tCVAR {
-        ||->Node; $$ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_cvar, nil, val[0]
+        ||->TDummy;$$=(); panic!("diagnostic error"); //   diagnostic :error, :argument_cvar, nil, val[0]
     }
 ;
 
@@ -2592,8 +2616,10 @@ f_label: tLABEL {
     //   @static_env.declare val[0][0]
 
     //   result = val[0]
-    ||->Node;
-    wip!(); $$=Node::DUMMY;
+
+    ||->TDummy;
+    $$=();
+    wip!();
 };
 
 f_kw

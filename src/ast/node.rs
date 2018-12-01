@@ -115,14 +115,6 @@ macro_rules! wip { () => { panic!("WIP"); }; }
 // TODO refine order, maybe via ruby-parser/AST_FORMAT
 #[derive(Debug, PartialEq, Clone)]
 pub enum Node {
-    // TODO CLEANUP
-    // for migrating rules in grammar
-    DUMMY,
-
-    // for rules which may returns a result being `nil`, and the rule is acutally applied so we cannot return a None, i guess.
-    // TODO still not sure about this.
-    Null,
-
     // 
     // primitive values
     // 
@@ -182,8 +174,7 @@ pub enum Node {
 
     MLhs(Nodes),
 
-    Module,
-
+    Module { name: Box<Node>, body: Box<Option<Node>> },
     Class { name: Box<Node>, superclass: Box<Option<Node>>, body: Box<Option<Node>> },
     // node->nd_cpath, node->nd_super, node->nd_body
 
@@ -208,6 +199,7 @@ pub type Nodes = Vec<Node>;
 #[macro_export] macro_rules! n_csend { ($receiver:expr, $selector:expr, $args:expr) => { Node::CSend { receiver: $receiver, selector: String::from($selector), args: $args } }; }
 #[macro_export] macro_rules! n_int { ($v:expr) => { Node::Int($v) }; }
 #[macro_export] macro_rules! n_const { ($scope:expr, $name:expr) => { Node::Const { scope: $scope, name: $name } }; }
+#[macro_export] macro_rules! n_module { ($name:expr, $body:expr) => { Node::Module { name: Box::new($name), body: Box::new($body) } }; }
 #[macro_export] macro_rules! n_class { ($name:expr, $superclass:expr, $body:expr) => { Node::Class { name: Box::new($name), superclass: Box::new($superclass), body: Box::new($body) } }; }
 #[macro_export] macro_rules! n_if { ($condition:expr, $then_body:expr, $else_body:expr) => { Node::If { condition: Box::new($condition), then_body: Box::new($then_body), else_body: Box::new($else_body) } }; }
 
@@ -246,24 +238,21 @@ impl Node {
 
 // # Numerics
 
-// def integer(integer_t)
-//   numeric(:int, integer_t)
-// end
 pub fn integer(integer_t: Token) -> Node {
     numeric(integer_t)
 }
 
-// def float(float_t)
-//   numeric(:float, float_t)
-// end
+pub fn float(float_t: Token) -> Node {
+    numeric(float_t)
+}
 
-// def rational(rational_t)
-//   numeric(:rational, rational_t)
-// end
+pub fn rational(rational_t: Token) -> Node {
+    numeric(rational_t)
+}
 
-// def complex(complex_t)
-//   numeric(:complex, complex_t)
-// end
+pub fn complex(complex_t: Token) -> Node {
+    numeric(complex_t)
+}
 
 // def numeric(kind, token)
 //   n(kind, [ value(token) ],
@@ -272,6 +261,9 @@ pub fn integer(integer_t: Token) -> Node {
 pub fn numeric(token: Token) -> Node {
     match token {
         Token::T_INTEGER(value) => Node::Int(value),
+        Token::T_FLOAT(value) => { wip!(); },
+        Token::T_RATIONAL(value) => { wip!(); },
+        Token::T_COMPLEX(value) => { wip!(); },
         _ => { panic!("unknown numeric token") }
     }
 }
@@ -987,7 +979,7 @@ pub fn multi_assign(lhs: Node, eql_t: Token, rhs: Node) -> Node {
 //   n(:class, [ name, superclass, body ],
 //     module_definition_map(class_t, name, lt_t, end_t))
 // end
-pub fn def_class(class_t: Token, name: Node, lt_t: Token, superclass: Option<Node>, body: Option<Node>, end_t: Token) -> Node {
+pub fn def_class(class_t: Token, name: Node, lt_t: Option<Token>, superclass: Option<Node>, body: Option<Node>, end_t: Token) -> Node {
     n_class!(name, superclass, body)
 }
 
@@ -1002,6 +994,9 @@ pub fn def_class(class_t: Token, name: Node, lt_t: Token, superclass: Option<Nod
 //   n(:module, [ name, body ],
 //     module_definition_map(module_t, name, nil, end_t))
 // end
+pub fn def_module(module_t: Token, name: Node, body: Option<Node>, end_t: Token) -> Node {
+    n_module!(name, body)
+}
 
 // #
 // # Method (un)definition

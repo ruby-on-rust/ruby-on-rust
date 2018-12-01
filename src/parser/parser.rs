@@ -22,17 +22,18 @@ enum SV {
     _3(Node),
     _4(TBeginBlock),
     _5(TSomeTokenNode),
-    _6(TNodeToken),
-    _7(TBraceBody),
-    _8(TBraceBlock),
-    _9(TParenArgs),
-    _10(StackState),
-    _11(TLambda),
-    _12(TLambdaBody),
-    _13(TDoBody),
-    _14(TDoBlock),
-    _15(TSomeNodes),
-    _16(bool)
+    _6(TDummy),
+    _7(TNodeToken),
+    _8(TBraceBody),
+    _9(TBraceBlock),
+    _10(TParenArgs),
+    _11(StackState),
+    _12(TLambda),
+    _13(TLambdaBody),
+    _14(TDoBody),
+    _15(TDoBlock),
+    _16(TSomeNodes),
+    _17(bool)
 }
 
 /**
@@ -1777,6 +1778,8 @@ use crate::{
     explainer,
 };
 
+type TDummy = ();
+
 type TSomeNode = Option<Node>;
 type TSomeNodes = Option<Nodes>;
 type TTokenNode = ( InteriorToken, Node );
@@ -2760,25 +2763,25 @@ fn _handler15(&mut self) -> SV {
 self.values_stack.pop();
 self.values_stack.pop();
 
-let __ = Node::DUMMY;
+let __ = ();
 
         // diagnostic :error, :begin_in_method, nil, val[0]
         panic!("diagnostic error");
 explain!("action: stmt_or_begin -> klBEGIN begin_block");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler16(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ = Node::DUMMY;
+let __ = ();
 
     self.tokenizer.interior_lexer.set_state("expr_fname");
 explain!("action: fake_embedded_action__stmt__1 -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler17(&mut self) -> SV {
@@ -2830,12 +2833,12 @@ self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
 
-let __ =Node::DUMMY;
+let __ =();
         // diagnostic :error, :nth_ref_alias, nil, val[2]
         panic!("diagnostic error");
 explain!("action: stmt -> kALIAS tGVAR tNTH_REF");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler21(&mut self) -> SV {
@@ -3215,11 +3218,11 @@ fn _handler51(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ =Node::DUMMY;
+let __ =();
     self.tokenizer.interior_lexer.cond.push(true);
 explain!("action: fake_embedded__expr_value_do -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler52(&mut self) -> SV {
@@ -3232,7 +3235,7 @@ self.tokenizer.interior_lexer.cond.pop();
     let __ = (_2, _3);
 explain!("action: expr_value_do -> fake_embedded__expr_value_do expr_value do");
 
-SV::_6(__)
+SV::_7(__)
 }
 
 fn _handler53(&mut self) -> SV {
@@ -3282,17 +3285,17 @@ fn _handler57(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ = Node::DUMMY;
+let __ = ();
     self.tokenizer.context.push("block");
 explain!("action: fake_embedded_action__cmd_brace_block -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler58(&mut self) -> SV {
 // Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
-let mut _3 = pop!(self.values_stack, _7);
+let mut _3 = pop!(self.values_stack, _8);
 self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
@@ -3300,7 +3303,7 @@ let __ = (_1, _3, _4);
     self.tokenizer.context.pop();
 explain!("action: cmd_brace_block -> tLBRACE_ARG fake_embedded_action__cmd_brace_block brace_body tRCURLY");
 
-SV::_8(__)
+SV::_9(__)
 }
 
 fn _handler59(&mut self) -> SV {
@@ -3326,7 +3329,7 @@ SV::_3(__)
 
 fn _handler61(&mut self) -> SV {
 // Semantic values prologue.
-let mut _3 = pop!(self.values_stack, _8);
+let mut _3 = pop!(self.values_stack, _9);
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
@@ -3353,7 +3356,7 @@ SV::_3(__)
 
 fn _handler63(&mut self) -> SV {
 // Semantic values prologue.
-let mut _5 = pop!(self.values_stack, _8);
+let mut _5 = pop!(self.values_stack, _9);
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
@@ -3382,7 +3385,7 @@ SV::_3(__)
 
 fn _handler65(&mut self) -> SV {
 // Semantic values prologue.
-let mut _5 = pop!(self.values_stack, _8);
+let mut _5 = pop!(self.values_stack, _9);
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
@@ -3900,13 +3903,13 @@ fn _handler109(&mut self) -> SV {
 // Semantic values prologue.
 self.values_stack.pop();
 
-let __ =Node::DUMMY;
+let __ =();
 
         //   diagnostic :error, :module_name_const, nil, val[0]
         panic!("diagnostic error");
 explain!("action: cname -> tIDENTIFIER");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler110(&mut self) -> SV {
@@ -4070,11 +4073,11 @@ fn _handler125(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ =Node::DUMMY;
+let __ =();
     self.tokenizer.interior_lexer.set_state("expr_fname");
 explain!("action: fake_embedded_action_undef_list -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler126(&mut self) -> SV {
@@ -5452,7 +5455,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 let __ = (Some(_1), _2, Some(_3));
 explain!("action: paren_args -> tLPAREN2 opt_call_args rparen");
 
-SV::_9(__)
+SV::_10(__)
 }
 
 fn _handler252(&mut self) -> SV {
@@ -5462,7 +5465,7 @@ fn _handler252(&mut self) -> SV {
 let __ = (None, vec![], None);
 explain!("action: opt_paren_args -> undefined");
 
-SV::_9(__)
+SV::_10(__)
 }
 
 fn _handler253(&mut self) -> SV {
@@ -5635,7 +5638,7 @@ fn _handler265(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ = Node::DUMMY;
+let __ =();
 
     // # When branch gets invoked by RACC's lookahead
     // # and command args start with '[' or '('
@@ -5674,7 +5677,7 @@ let __ = Node::DUMMY;
     } else { panic!("no last token"); };
 explain!("action: fake_embedded_action__command_args -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler266(&mut self) -> SV {
@@ -5821,36 +5824,36 @@ let __ = self.tokenizer.interior_lexer.cmdarg.clone();
     self.tokenizer.interior_lexer.cmdarg.clear();
 explain!("action: fake_embedded_action_primary_kBEGIN -> undefined");
 
-SV::_10(__)
+SV::_11(__)
 }
 
 fn _handler279(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ =Node::DUMMY;
+let __ =();
     self.tokenizer.interior_lexer.set_state("expr_endarg");
 explain!("action: fake_embedded_action_primary_tLPAREN_ARG_stmt -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler280(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ =Node::DUMMY;
+let __ =();
     self.tokenizer.interior_lexer.set_state("expr_endarg");
 explain!("action: fake_embedded_action_primary_tLPAREN_ARG_2 -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler281(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ =Node::DUMMY;
+let __ =();
 
     self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
@@ -5858,14 +5861,14 @@ let __ =Node::DUMMY;
     self.tokenizer.context.push("class");
 explain!("action: fake_embedded_action__primary__kCLASS_1 -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler282(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ =Node::DUMMY;
+let __ =();
 
     self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
@@ -5873,27 +5876,27 @@ let __ =Node::DUMMY;
     self.tokenizer.context.push("sclass");
 explain!("action: fake_embedded_action__primary__kCLASS_2 -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler283(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ =Node::DUMMY;
+let __ =();
 
     self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
 explain!("action: fake_embedded_action__primary__kMODULE_1 -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler284(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ =Node::DUMMY;
+let __ =();
 
     self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
@@ -5901,25 +5904,25 @@ let __ =Node::DUMMY;
     self.tokenizer.context.push("def");
 explain!("action: fake_embedded_action__primary__kDEF_1 -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler285(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ =Node::DUMMY;
+let __ =();
     self.tokenizer.interior_lexer.set_state("expr_fname");
 explain!("action: fake_embedded_action__primary__kDEF_2 -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler286(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ =Node::DUMMY;
+let __ =();
 
     self.tokenizer.static_env.extend_static();
     self.tokenizer.interior_lexer.push_cmdarg();
@@ -5927,7 +5930,7 @@ let __ =Node::DUMMY;
     self.tokenizer.context.push("defs");
 explain!("action: fake_embedded_action__primary__kDEF_3 -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler287(&mut self) -> SV {
@@ -6044,7 +6047,7 @@ fn _handler298(&mut self) -> SV {
 // Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = pop!(self.values_stack, _2);
-let mut _2 = pop!(self.values_stack, _10);
+let mut _2 = pop!(self.values_stack, _11);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.cmdarg = _2;
@@ -6226,7 +6229,7 @@ SV::_3(__)
 
 fn _handler313(&mut self) -> SV {
 // Semantic values prologue.
-let mut _2 = pop!(self.values_stack, _8);
+let mut _2 = pop!(self.values_stack, _9);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let method_call = node::call_method(None, None, Some(_1), None, vec![], None);
@@ -6249,7 +6252,7 @@ __
 
 fn _handler315(&mut self) -> SV {
 // Semantic values prologue.
-let mut _2 = pop!(self.values_stack, _8);
+let mut _2 = pop!(self.values_stack, _9);
 let mut _1 = pop!(self.values_stack, _3);
 
 let (begin_t, (args, body), end_t) = _2;
@@ -6261,7 +6264,7 @@ SV::_3(__)
 
 fn _handler316(&mut self) -> SV {
 // Semantic values prologue.
-let mut _2 = pop!(self.values_stack, _11);
+let mut _2 = pop!(self.values_stack, _12);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let lambda_call = node::call_lambda(_1);
@@ -6309,7 +6312,7 @@ fn _handler319(&mut self) -> SV {
 // Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = pop!(self.values_stack, _3);
-let mut _2 = pop!(self.values_stack, _6);
+let mut _2 = pop!(self.values_stack, _7);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (expr_value_node, expr_value_token) = _2;
@@ -6323,7 +6326,7 @@ fn _handler320(&mut self) -> SV {
 // Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = pop!(self.values_stack, _3);
-let mut _2 = pop!(self.values_stack, _6);
+let mut _2 = pop!(self.values_stack, _7);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (expr_value_node, expr_value_token) = _2;
@@ -6338,18 +6341,20 @@ fn _handler321(&mut self) -> SV {
 self.values_stack.pop();
 self.values_stack.pop();
 self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _2 = pop!(self.values_stack, _3);
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 //   *when_bodies, (else_t, else_body) = *val[3]
 
         //   result = @builder.case(val[0], val[1],
         //                          when_bodies, else_t, else_body,
         //                          val[4])
-        wip!(); let __ =Node::DUMMY;
+
+        let __ =();
+        wip!();
 explain!("action: primary -> kCASE expr_value opt_terms case_body kEND");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler322(&mut self) -> SV {
@@ -6364,17 +6369,19 @@ self.values_stack.pop();
         //   result = @builder.case(val[0], nil,
         //                          when_bodies, else_t, else_body,
         //                          val[3])
-        wip!(); let __ =Node::DUMMY;
+
+        let __ =();
+        wip!();
 explain!("action: primary -> kCASE opt_terms case_body kEND");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler323(&mut self) -> SV {
 // Semantic values prologue.
 let mut _6 = interior_token!(pop!(self.values_stack, _0));
 let mut _5 = pop!(self.values_stack, _3);
-let mut _4 = pop!(self.values_stack, _6);
+let mut _4 = pop!(self.values_stack, _7);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
@@ -6396,15 +6403,16 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 if !self.tokenizer.context.is_class_definition_allowed() {
-            wip!();
             //     diagnostic :error, :class_in_def, nil, val[0]
+            wip!();
         }
 
+        // TODO RENAMING what's a lt?
         let (lt_t, superclass) = unwrap_some_token_node!(_3);
         //   result = @builder.def_class(val[0], val[1],
         //                               lt_t, superclass,
         //                               val[4], val[5])
-        let __ = node::def_class(_1, _2, lt_t.unwrap(), superclass, _5, _6);
+        let __ = node::def_class(_1, _2, lt_t, superclass, _5, _6);
 
         self.tokenizer.interior_lexer.pop_cmdarg();
         self.tokenizer.interior_lexer.pop_cond();
@@ -6433,30 +6441,33 @@ self.values_stack.pop();
         //   @static_env.unextend
 
         //   @context.pop
-        wip!(); let __ =Node::DUMMY;
+
+        let __ =();
+        wip!();
 explain!("action: primary -> kCLASS tLSHFT expr term fake_embedded_action__primary__kCLASS_2 bodystmt kEND");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler326(&mut self) -> SV {
 // Semantic values prologue.
+let mut _5 = interior_token!(pop!(self.values_stack, _0));
+let mut _4 = pop!(self.values_stack, _2);
 self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _2 = pop!(self.values_stack, _3);
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-//   unless @context.class_definition_allowed?
-        //     diagnostic :error, :module_in_def, nil, val[0]
-        //   end
+if !self.tokenizer.context.is_class_definition_allowed() {
+            //     diagnostic :error, :module_in_def, nil, val[0]
+            wip!();
+        }
 
         //   result = @builder.def_module(val[0], val[1],
         //                                val[3], val[4])
+        let __ = node::def_module(_1, _2, _4, _5);
 
-        //   @lexer.pop_cmdarg
-        //   @static_env.unextend
-        wip!(); let __ =Node::DUMMY;
+        self.tokenizer.interior_lexer.pop_cmdarg();
+        self.tokenizer.static_env.unextend();
 explain!("action: primary -> kMODULE cpath fake_embedded_action__primary__kMODULE_1 bodystmt kEND");
 
 SV::_3(__)
@@ -6478,10 +6489,12 @@ self.values_stack.pop();
         //   @lexer.pop_cond
         //   @static_env.unextend
         //   @context.pop
-        wip!(); let __ =Node::DUMMY;
+
+        let __ =();
+        wip!();
 explain!("action: primary -> kDEF fname fake_embedded_action__primary__kDEF_1 f_arglist bodystmt kEND");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler328(&mut self) -> SV {
@@ -6503,10 +6516,12 @@ self.values_stack.pop();
         //   @lexer.pop_cond
         //   @static_env.unextend
         //   @context.pop
-        wip!(); let __ =Node::DUMMY;
+
+        let __ =();
+        wip!();
 explain!("action: primary -> kDEF singleton dot_or_colon fake_embedded_action__primary__kDEF_2 fname fake_embedded_action__primary__kDEF_3 f_arglist bodystmt kEND");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler329(&mut self) -> SV {
@@ -6563,7 +6578,7 @@ fn _handler334(&mut self) -> SV {
 // Semantic values prologue.
 self.values_stack.pop();
 
-let __ =Node::DUMMY;
+let __ =();
 
     if self.tokenizer.context.is_in_class() {
         //   diagnostic :error, :invalid_return, nil, val[0]
@@ -6571,7 +6586,7 @@ let __ =Node::DUMMY;
     };
 explain!("action: k_return -> kRETURN");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler335(&mut self) -> SV {
@@ -7176,11 +7191,11 @@ fn _handler381(&mut self) -> SV {
 // Semantic values prologue.
 self.values_stack.pop();
 
-let __ =Node::DUMMY;
+let __ =();
         self.tokenizer.interior_lexer.set_state("expr_value");
 explain!("action: opt_block_param -> block_param_def");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler382(&mut self) -> SV {
@@ -7294,28 +7309,28 @@ fn _handler391(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ =Node::DUMMY;
+let __ =();
     self.tokenizer.static_env.extend_dynamic();
 explain!("action: fake_embedded_action_lambda_1 -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler392(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ =Node::DUMMY;
+let __ =();
 
     self.tokenizer.interior_lexer.cmdarg.push(false);
 explain!("action: fake_embedded_action_lambda_2 -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler393(&mut self) -> SV {
 // Semantic values prologue.
-let mut _4 = pop!(self.values_stack, _12);
+let mut _4 = pop!(self.values_stack, _13);
 self.values_stack.pop();
 let mut _2 = pop!(self.values_stack, _3);
 self.values_stack.pop();
@@ -7327,7 +7342,7 @@ self.tokenizer.interior_lexer.cmdarg.pop();
     self.tokenizer.static_env.unextend();
 explain!("action: lambda -> fake_embedded_action_lambda_1 f_larglist fake_embedded_action_lambda_2 lambda_body");
 
-SV::_11(__)
+SV::_12(__)
 }
 
 fn _handler394(&mut self) -> SV {
@@ -7358,11 +7373,11 @@ fn _handler396(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ =Node::DUMMY;
+let __ =();
     self.tokenizer.context.push("lambda");
 explain!("action: fake_embedded__lambda_body__1 -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler397(&mut self) -> SV {
@@ -7376,7 +7391,7 @@ let __ = (_1, _3, _4);
         self.tokenizer.context.pop();
 explain!("action: lambda_body -> tLAMBEG fake_embedded__lambda_body__1 compstmt tRCURLY");
 
-SV::_12(__)
+SV::_13(__)
 }
 
 fn _handler398(&mut self) -> SV {
@@ -7390,24 +7405,24 @@ let __ = (_1, _3, _4);
         self.tokenizer.context.pop();
 explain!("action: lambda_body -> kDO_LAMBDA fake_embedded__lambda_body__1 bodystmt kEND");
 
-SV::_12(__)
+SV::_13(__)
 }
 
 fn _handler399(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ =Node::DUMMY;
+let __ =();
     self.tokenizer.context.push("block");
 explain!("action: fake_embedded__do_block__1 -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler400(&mut self) -> SV {
 // Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
-let mut _3 = pop!(self.values_stack, _13);
+let mut _3 = pop!(self.values_stack, _14);
 self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
@@ -7415,12 +7430,12 @@ let __ = ( _1, _3, _4 );
     self.tokenizer.context.pop();
 explain!("action: do_block -> kDO_BLOCK fake_embedded__do_block__1 do_body kEND");
 
-SV::_14(__)
+SV::_15(__)
 }
 
 fn _handler401(&mut self) -> SV {
 // Semantic values prologue.
-let mut _2 = pop!(self.values_stack, _14);
+let mut _2 = pop!(self.values_stack, _15);
 let mut _1 = pop!(self.values_stack, _3);
 
 let (begin_t, ( block_args, body), end_t) = _2;
@@ -7432,7 +7447,7 @@ SV::_3(__)
 
 fn _handler402(&mut self) -> SV {
 // Semantic values prologue.
-let mut _4 = pop!(self.values_stack, _9);
+let mut _4 = pop!(self.values_stack, _10);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
@@ -7446,8 +7461,8 @@ SV::_3(__)
 
 fn _handler403(&mut self) -> SV {
 // Semantic values prologue.
-let mut _5 = pop!(self.values_stack, _8);
-let mut _4 = pop!(self.values_stack, _9);
+let mut _5 = pop!(self.values_stack, _9);
+let mut _4 = pop!(self.values_stack, _10);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
@@ -7464,7 +7479,7 @@ SV::_3(__)
 
 fn _handler404(&mut self) -> SV {
 // Semantic values prologue.
-let mut _5 = pop!(self.values_stack, _14);
+let mut _5 = pop!(self.values_stack, _15);
 let mut _4 = pop!(self.values_stack, _1);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
@@ -7481,7 +7496,7 @@ SV::_3(__)
 
 fn _handler405(&mut self) -> SV {
 // Semantic values prologue.
-let mut _2 = pop!(self.values_stack, _9);
+let mut _2 = pop!(self.values_stack, _10);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (lparen_t, args, rparen_t) = _2;
@@ -7493,7 +7508,7 @@ SV::_3(__)
 
 fn _handler406(&mut self) -> SV {
 // Semantic values prologue.
-let mut _4 = pop!(self.values_stack, _9);
+let mut _4 = pop!(self.values_stack, _10);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
@@ -7507,7 +7522,7 @@ SV::_3(__)
 
 fn _handler407(&mut self) -> SV {
 // Semantic values prologue.
-let mut _4 = pop!(self.values_stack, _9);
+let mut _4 = pop!(self.values_stack, _10);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
@@ -7533,7 +7548,7 @@ SV::_3(__)
 
 fn _handler409(&mut self) -> SV {
 // Semantic values prologue.
-let mut _3 = pop!(self.values_stack, _9);
+let mut _3 = pop!(self.values_stack, _10);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
@@ -7546,7 +7561,7 @@ SV::_3(__)
 
 fn _handler410(&mut self) -> SV {
 // Semantic values prologue.
-let mut _3 = pop!(self.values_stack, _9);
+let mut _3 = pop!(self.values_stack, _10);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
@@ -7559,7 +7574,7 @@ SV::_3(__)
 
 fn _handler411(&mut self) -> SV {
 // Semantic values prologue.
-let mut _2 = pop!(self.values_stack, _9);
+let mut _2 = pop!(self.values_stack, _10);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (lparen_t, args, rparen_t) = _2;
@@ -7596,18 +7611,18 @@ fn _handler414(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ =Node::DUMMY;
+let __ =();
 
     self.tokenizer.context.push("block");
 explain!("action: fake_embedded__brace_block__1 -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler415(&mut self) -> SV {
 // Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
-let mut _3 = pop!(self.values_stack, _7);
+let mut _3 = pop!(self.values_stack, _8);
 self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
@@ -7615,13 +7630,13 @@ let __ = (_1, _3, _4);
         self.tokenizer.context.pop();
 explain!("action: brace_block -> tLCURLY fake_embedded__brace_block__1 brace_body tRCURLY");
 
-SV::_8(__)
+SV::_9(__)
 }
 
 fn _handler416(&mut self) -> SV {
 // Semantic values prologue.
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
-let mut _3 = pop!(self.values_stack, _13);
+let mut _3 = pop!(self.values_stack, _14);
 self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
@@ -7629,18 +7644,18 @@ let __ = (_1, _3, _4);
         self.tokenizer.context.pop();
 explain!("action: brace_block -> kDO fake_embedded__brace_block__1 do_body kEND");
 
-SV::_8(__)
+SV::_9(__)
 }
 
 fn _handler417(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ =Node::DUMMY;
+let __ =();
     self.tokenizer.static_env.extend_dynamic();
 explain!("action: fake_embedded_action_brace_body_1 -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler418(&mut self) -> SV {
@@ -7654,19 +7669,19 @@ let __ = (_2, _3);
     self.tokenizer.static_env.unextend();
 explain!("action: brace_body -> fake_embedded_action_brace_body_1 opt_block_param compstmt");
 
-SV::_7(__)
+SV::_8(__)
 }
 
 fn _handler419(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ =Node::DUMMY;
+let __ =();
 
     self.tokenizer.static_env.extend_dynamic();
 explain!("action: fake_embedded_action_do_body_1 -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler420(&mut self) -> SV {
@@ -7677,14 +7692,14 @@ let __ = self.tokenizer.interior_lexer.cmdarg.clone();
     self.tokenizer.interior_lexer.cmdarg.clear();
 explain!("action: fake_embedded_action_do_body_2 -> undefined");
 
-SV::_10(__)
+SV::_11(__)
 }
 
 fn _handler421(&mut self) -> SV {
 // Semantic values prologue.
 let mut _4 = pop!(self.values_stack, _3);
 let mut _3 = pop!(self.values_stack, _3);
-let mut _2 = pop!(self.values_stack, _10);
+let mut _2 = pop!(self.values_stack, _11);
 self.values_stack.pop();
 
 let __ = ( _3, _4 );
@@ -7693,7 +7708,7 @@ let __ = ( _3, _4 );
     self.tokenizer.interior_lexer.cmdarg = _2;
 explain!("action: do_body -> fake_embedded_action_do_body_1 fake_embedded_action_do_body_2 opt_block_param bodystmt");
 
-SV::_13(__)
+SV::_14(__)
 }
 
 fn _handler422(&mut self) -> SV {
@@ -7738,7 +7753,7 @@ let mut _6 = pop!(self.values_stack, _1);
 let mut _5 = pop!(self.values_stack, _3);
 let mut _4 = interior_token!(pop!(self.values_stack, _0));
 let mut _3 = pop!(self.values_stack, _5);
-let mut _2 = pop!(self.values_stack, _15);
+let mut _2 = pop!(self.values_stack, _16);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 //   assoc_t, exc_var = val[2]
@@ -7783,7 +7798,7 @@ let mut _1 = pop!(self.values_stack, _3);
 let __ = Some( vec![ _1 ] );
 explain!("action: exc_list -> arg_value");
 
-SV::_15(__)
+SV::_16(__)
 }
 
 fn _handler428(&mut self) -> SV {
@@ -7803,7 +7818,7 @@ fn _handler429(&mut self) -> SV {
 let __ = None;
 explain!("action: exc_list -> undefined");
 
-SV::_15(__)
+SV::_16(__)
 }
 
 fn _handler430(&mut self) -> SV {
@@ -7966,10 +7981,12 @@ self.values_stack.pop();
 
 //   opts   = @builder.regexp_options(val[3])
     //   result = @builder.regexp_compose(val[0], val[1], val[2], opts)
-    wip!(); let __ =Node::DUMMY;
+
+    let __ =();
+    wip!();
 explain!("action: regexp -> tREGEXP_BEG regexp_contents tSTRING_END tREGEXP_OPT");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler445(&mut self) -> SV {
@@ -8202,13 +8219,13 @@ fn _handler465(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ =Node::DUMMY;
+let __ =();
 
     self.tokenizer.interior_lexer.push_cmdarg();
     self.tokenizer.interior_lexer.push_cond();
 explain!("action: fake_embedded_action__string_content__tSTRING_DBEG -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler466(&mut self) -> SV {
@@ -8333,10 +8350,11 @@ self.values_stack.pop();
         //   else
         //     result = @builder.unary_num(val[0], val[1])
         //   end
-        wip!(); let __ =Node::DUMMY;
+        let __ =();
+        wip!();
 explain!("action: numeric -> tUNARY_NUM simple_numeric");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler477(&mut self) -> SV {
@@ -8355,9 +8373,7 @@ fn _handler478(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_end");
-        // result = @builder.float(val[0])
-        // let __ = node::float(_1);
-        wip!(); let __ =Node::DUMMY;
+        let __ = node::float(_1);
 explain!("action: simple_numeric -> tFLOAT");
 
 SV::_3(__)
@@ -8368,9 +8384,7 @@ fn _handler479(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_end");
-        // result = @builder.rational(val[0])
-        // let __ = node::rational(_1);
-        wip!(); let __ =Node::DUMMY;
+        let __ = node::rational(_1);
 explain!("action: simple_numeric -> tRATIONAL");
 
 SV::_3(__)
@@ -8381,8 +8395,7 @@ fn _handler480(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_end");
-        // result = @builder.complex(val[0])
-        wip!(); let __ =Node::DUMMY;
+        let __ = node::complex(_1);
 explain!("action: simple_numeric -> tIMAGINARY");
 
 SV::_3(__)
@@ -8487,10 +8500,11 @@ fn _handler490(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.__FILE__(val[0])
-        wip!(); let __ =Node::DUMMY;
+        let __ =();
+        wip!();
 explain!("action: keyword_variable -> k__FILE__");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler491(&mut self) -> SV {
@@ -8498,10 +8512,11 @@ fn _handler491(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.__LINE__(val[0])
-        wip!(); let __ =Node::DUMMY;
+        let __ =();
+        wip!();
 explain!("action: keyword_variable -> k__LINE__");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler492(&mut self) -> SV {
@@ -8509,10 +8524,11 @@ fn _handler492(&mut self) -> SV {
 self.values_stack.pop();
 
 //   result = @builder.__ENCODING__(val[0])
-        wip!(); let __ =Node::DUMMY;
+        let __ =();
+        wip!();
 explain!("action: keyword_variable -> k__ENCODING__");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler493(&mut self) -> SV {
@@ -8579,11 +8595,11 @@ fn _handler499(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ =Node::DUMMY;
+let __ =();
     self.tokenizer.interior_lexer.set_state("expr_value");
 explain!("action: fake_embedded_action__superclass__tLT -> undefined");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler500(&mut self) -> SV {
@@ -8617,7 +8633,7 @@ let __ = self.tokenizer.interior_lexer.in_kwarg;
     self.tokenizer.interior_lexer.in_kwarg = true;
 explain!("action: fake_embedded_action__f_arglist__episolon -> undefined");
 
-SV::_16(__)
+SV::_17(__)
 }
 
 fn _handler503(&mut self) -> SV {
@@ -8637,7 +8653,7 @@ fn _handler504(&mut self) -> SV {
 // Semantic values prologue.
 self.values_stack.pop();
 let mut _2 = pop!(self.values_stack, _1);
-let mut _1 = pop!(self.values_stack, _16);
+let mut _1 = pop!(self.values_stack, _17);
 
 self.tokenizer.interior_lexer.in_kwarg = _1;
         let __ = node::args(None, _2, None);
@@ -8944,40 +8960,40 @@ fn _handler526(&mut self) -> SV {
 // Semantic values prologue.
 self.values_stack.pop();
 
-let __ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_const, nil, val[0];
+let __ =(); panic!("diagnostic error"); //   diagnostic :error, :argument_const, nil, val[0];
 explain!("action: f_bad_arg -> tCONSTANT");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler527(&mut self) -> SV {
 // Semantic values prologue.
 self.values_stack.pop();
 
-let __ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_ivar, nil, val[0];
+let __ =(); panic!("diagnostic error"); //   diagnostic :error, :argument_ivar, nil, val[0];
 explain!("action: f_bad_arg -> tIVAR");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler528(&mut self) -> SV {
 // Semantic values prologue.
 self.values_stack.pop();
 
-let __ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_gvar, nil, val[0];
+let __ =(); panic!("diagnostic error"); //   diagnostic :error, :argument_gvar, nil, val[0];
 explain!("action: f_bad_arg -> tGVAR");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler529(&mut self) -> SV {
 // Semantic values prologue.
 self.values_stack.pop();
 
-let __ = Node::DUMMY; panic!("diagnostic error"); //   diagnostic :error, :argument_cvar, nil, val[0];
+let __ =(); panic!("diagnostic error"); //   diagnostic :error, :argument_cvar, nil, val[0];
 explain!("action: f_bad_arg -> tCVAR");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler530(&mut self) -> SV {
@@ -9068,10 +9084,11 @@ self.values_stack.pop();
     //   @static_env.declare val[0][0]
 
     //   result = val[0]
-    wip!(); let __ =Node::DUMMY;
+    let __ =();
+    wip!();
 explain!("action: f_label -> tLABEL");
 
-SV::_3(__)
+SV::_6(__)
 }
 
 fn _handler538(&mut self) -> SV {

@@ -3,6 +3,9 @@
 #[allow(non_camel_case_types)]
 pub enum Token {
     T_INTEGER(isize),
+    T_FLOAT(String),
+    T_RATIONAL(String),
+    T_COMPLEX(String),
 
     T_GVAR(String),
     T_CVAR(String),
