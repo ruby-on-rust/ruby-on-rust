@@ -1767,15 +1767,15 @@ lazy_static! {
 //
 
 use crate::{
+    explainer,
     token::token::Token as InteriorToken,
     lexer::stack_state::StackState,
     parser::context::Context,
     parser::token::Token,
     parser::tokenizer::Tokenizer,
     parser::static_env::StaticEnv,
-    ast::node,
     ast::node::{ Node, Nodes },
-    explainer,
+    ast::builders,
 };
 
 type TDummy = ();
@@ -2606,7 +2606,7 @@ fn _handler2(&mut self) -> SV {
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
-let __ = node::compstmt(_1);
+let __ = builders::compstmt(_1);
 explain!("action: top_compstmt -> top_stmts opt_terms");
 
 SV::_2(__)
@@ -2661,7 +2661,7 @@ let mut _2 = pop!(self.values_stack, _4);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (begin_block_t_lcurly, begin_block_top_compstmt, begin_block_t_rcurly) = _2;
-        let __ = node::preexe(_1, begin_block_t_lcurly, begin_block_top_compstmt, begin_block_t_rcurly);
+        let __ = builders::preexe(_1, begin_block_t_lcurly, begin_block_top_compstmt, begin_block_t_rcurly);
 explain!("action: top_stmt -> klBEGIN begin_block");
 
 SV::_3(__)
@@ -2698,7 +2698,7 @@ let rescue_bodies = _2;
             panic!("diagnostic error");
         }
 
-        let __ = node::begin_body(_1, rescue_bodies, else_t, else_, ensure_t, ensure_);
+        let __ = builders::begin_body(_1, rescue_bodies, else_t, else_, ensure_t, ensure_);
 explain!("action: bodystmt -> compstmt opt_rescue opt_else opt_ensure");
 
 SV::_2(__)
@@ -2709,7 +2709,7 @@ fn _handler10(&mut self) -> SV {
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
-let __ = node::compstmt(_1);
+let __ = builders::compstmt(_1);
 explain!("action: compstmt -> stmts opt_terms");
 
 SV::_2(__)
@@ -2791,7 +2791,7 @@ self.values_stack.pop();
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::alias(_1, _2, _4);
+let __ = builders::alias(_1, _2, _4);
 explain!("action: stmt -> kALIAS fitem fake_embedded_action__stmt__1 fitem");
 
 SV::_3(__)
@@ -2803,10 +2803,10 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::alias(
+let __ = builders::alias(
                 _1,
-                node::gvar(_2),
-                node::gvar(_3));
+                builders::gvar(_2),
+                builders::gvar(_3));
 explain!("action: stmt -> kALIAS tGVAR tGVAR");
 
 SV::_3(__)
@@ -2818,10 +2818,10 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::alias(
+let __ = builders::alias(
                 _1,
-                node::gvar(_2),
-                node::back_ref(_3));
+                builders::gvar(_2),
+                builders::back_ref(_3));
 explain!("action: stmt -> kALIAS tGVAR tBACK_REF");
 
 SV::_3(__)
@@ -2846,7 +2846,7 @@ fn _handler21(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::undef_method(_1, _2);
+let __ = builders::undef_method(_1, _2);
 explain!("action: stmt -> kUNDEF undef_list");
 
 SV::_3(__)
@@ -2858,7 +2858,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::condition_mod(Some(_1), None, _2, _3);
+let __ = builders::condition_mod(Some(_1), None, _2, _3);
 explain!("action: stmt -> stmt kIF_MOD expr_value");
 
 SV::_3(__)
@@ -2870,7 +2870,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::condition_mod(None, Some(_1), _2, _3);
+let __ = builders::condition_mod(None, Some(_1), _2, _3);
 explain!("action: stmt -> stmt kUNLESS_MOD expr_value");
 
 SV::_3(__)
@@ -2882,7 +2882,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::loop_mod("while", _1, _2, _3);
+let __ = builders::loop_mod("while", _1, _2, _3);
 explain!("action: stmt -> stmt kWHILE_MOD expr_value");
 
 SV::_3(__)
@@ -2894,7 +2894,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::loop_mod("until", _1, _2, _3);
+let __ = builders::loop_mod("until", _1, _2, _3);
 explain!("action: stmt -> stmt kUNTIL_MOD expr_value");
 
 SV::_3(__)
@@ -2906,9 +2906,9 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let rescue_body = node::rescue_body(_2, None, None, None, None, _3);
+let rescue_body = builders::rescue_body(_2, None, None, None, None, _3);
 
-        let __ = node::begin_body(Some(_1), vec![ rescue_body ], None, None, None, None).expect("unexpected None");
+        let __ = builders::begin_body(Some(_1), vec![ rescue_body ], None, None, None, None).expect("unexpected None");
 explain!("action: stmt -> stmt kRESCUE_MOD stmt");
 
 SV::_3(__)
@@ -2921,7 +2921,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::postexe(_1, _2, _3, _4);
+let __ = builders::postexe(_1, _2, _3, _4);
 explain!("action: stmt -> klEND tLCURLY compstmt tRCURLY");
 
 SV::_3(__)
@@ -2943,7 +2943,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::multi_assign(_1, _2, _3);
+let __ = builders::multi_assign(_1, _2, _3);
 explain!("action: stmt -> mlhs tEQL command_call");
 
 SV::_3(__)
@@ -2955,7 +2955,7 @@ let mut _3 = pop!(self.values_stack, _1);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assign(_1, _2, node::array(None, _3, None) );
+let __ = builders::assign(_1, _2, builders::array(None, _3, None) );
 explain!("action: stmt -> lhs tEQL mrhs");
 
 SV::_3(__)
@@ -2967,7 +2967,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::multi_assign(_1, _2, _3);
+let __ = builders::multi_assign(_1, _2, _3);
 explain!("action: stmt -> mlhs tEQL mrhs_arg");
 
 SV::_3(__)
@@ -2989,7 +2989,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assign(_1, _2, _3);
+let __ = builders::assign(_1, _2, _3);
 explain!("action: command_asgn -> lhs tEQL command_rhs");
 
 SV::_3(__)
@@ -3001,7 +3001,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::op_assign(_1, _2, _3);
+let __ = builders::op_assign(_1, _2, _3);
 explain!("action: command_asgn -> var_lhs tOP_ASGN command_rhs");
 
 SV::_3(__)
@@ -3016,8 +3016,8 @@ let mut _3 = pop!(self.values_stack, _1);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::op_assign(
-            node::index(_1, _2, _3, _4),
+let __ = builders::op_assign(
+            builders::index(_1, _2, _3, _4),
             _5, _6
         );
 explain!("action: command_asgn -> primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN command_rhs");
@@ -3033,8 +3033,8 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::op_assign(
-            node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
+let __ = builders::op_assign(
+            builders::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
             _4, _5
         );
 explain!("action: command_asgn -> primary_value call_op tIDENTIFIER tOP_ASGN command_rhs");
@@ -3050,8 +3050,8 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::op_assign(
-            node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
+let __ = builders::op_assign(
+            builders::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
             _4, _5
         );
 explain!("action: command_asgn -> primary_value call_op tCONSTANT tOP_ASGN command_rhs");
@@ -3067,8 +3067,8 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let const_node = node::const_op_assignable(node::const_fetch(_1, _2, _3));
-        let __ = node::op_assign(const_node, _4, _5);
+let const_node = builders::const_op_assignable(builders::const_fetch(_1, _2, _3));
+        let __ = builders::op_assign(const_node, _4, _5);
 explain!("action: command_asgn -> primary_value tCOLON2 tCONSTANT tOP_ASGN command_rhs");
 
 SV::_3(__)
@@ -3082,8 +3082,8 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::op_assign(
-            node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
+let __ = builders::op_assign(
+            builders::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
             _4, _5
         );
 explain!("action: command_asgn -> primary_value tCOLON2 tIDENTIFIER tOP_ASGN command_rhs");
@@ -3097,7 +3097,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::op_assign(_1, _2, _3);
+let __ = builders::op_assign(_1, _2, _3);
 explain!("action: command_asgn -> backref tOP_ASGN command_rhs");
 
 SV::_3(__)
@@ -3119,9 +3119,9 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let rescue_body = node::rescue_body(_2, None, None, None, None, _3);
+let rescue_body = builders::rescue_body(_2, None, None, None, None, _3);
 
-        let __ = node::begin_body(Some(_1), vec![ rescue_body ], None, None, None, None);
+        let __ = builders::begin_body(Some(_1), vec![ rescue_body ], None, None, None, None);
 explain!("action: command_rhs -> command_call kRESCUE_MOD stmt");
 
 SV::_2(__)
@@ -3153,7 +3153,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::logical_op("and", _1, _2, _3);
+let __ = builders::logical_op("and", _1, _2, _3);
 explain!("action: expr -> expr kAND expr");
 
 SV::_3(__)
@@ -3165,7 +3165,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::logical_op("or", _1, _2, _3);
+let __ = builders::logical_op("or", _1, _2, _3);
 explain!("action: expr -> expr kOR expr");
 
 SV::_3(__)
@@ -3177,7 +3177,7 @@ let mut _3 = pop!(self.values_stack, _3);
 self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::not_op(_1, None, Some(_3), None);
+let __ = builders::not_op(_1, None, Some(_3), None);
 explain!("action: expr -> kNOT opt_nl expr");
 
 SV::_3(__)
@@ -3188,7 +3188,7 @@ fn _handler48(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::not_op(_1, None, Some(_2), None);
+let __ = builders::not_op(_1, None, Some(_2), None);
 explain!("action: expr -> tBANG command_call");
 
 SV::_3(__)
@@ -3275,7 +3275,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
+let __ = builders::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
 explain!("action: block_command -> block_call dot_or_colon operation2 command_args");
 
 SV::_3(__)
@@ -3321,7 +3321,7 @@ fn _handler60(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::call_method(None, None, Some(_1), None, _2, None);
+let __ = builders::call_method(None, None, Some(_1), None, _2, None);
 explain!("action: command -> fcall command_args");
 
 SV::_3(__)
@@ -3333,9 +3333,9 @@ let mut _3 = pop!(self.values_stack, _9);
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let method_call = node::call_method(None, None, Some(_1), None, _2, None);
+let method_call = builders::call_method(None, None, Some(_1), None, _2, None);
         let (begin_t, (args, body), end_t) = _3;
-        let __ = node::block(method_call, begin_t, args, body, end_t);
+        let __ = builders::block(method_call, begin_t, args, body, end_t);
 explain!("action: command -> fcall command_args cmd_brace_block");
 
 SV::_3(__)
@@ -3348,7 +3348,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
+let __ = builders::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
 explain!("action: command -> primary_value call_op operation2 command_args");
 
 SV::_3(__)
@@ -3362,9 +3362,9 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let method_call = node::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
+let method_call = builders::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
         let (begin_t, (args, body), end_t) = _5;
-        let __ = node::block(method_call, begin_t, args, body, end_t);
+        let __ = builders::block(method_call, begin_t, args, body, end_t);
 explain!("action: command -> primary_value call_op operation2 command_args cmd_brace_block");
 
 SV::_3(__)
@@ -3377,7 +3377,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
+let __ = builders::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
 explain!("action: command -> primary_value tCOLON2 operation2 command_args");
 
 SV::_3(__)
@@ -3391,9 +3391,9 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let method_call = node::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
+let method_call = builders::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
         let (begin_t, (args, body), end_t) = _5;
-        let __ = node::block(method_call, begin_t, args, body, end_t);
+        let __ = builders::block(method_call, begin_t, args, body, end_t);
 explain!("action: command -> primary_value tCOLON2 operation2 command_args cmd_brace_block");
 
 SV::_3(__)
@@ -3404,7 +3404,7 @@ fn _handler66(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::keyword_cmd("super", _1, None, _2, None);
+let __ = builders::keyword_cmd("super", _1, None, _2, None);
 explain!("action: command -> kSUPER command_args");
 
 SV::_3(__)
@@ -3415,7 +3415,7 @@ fn _handler67(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::keyword_cmd("yield", _1, None, _2, None);
+let __ = builders::keyword_cmd("yield", _1, None, _2, None);
 explain!("action: command -> kYIELD command_args");
 
 SV::_3(__)
@@ -3426,7 +3426,7 @@ fn _handler68(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::keyword_cmd("return", _1, None, _2, None);
+let __ = builders::keyword_cmd("return", _1, None, _2, None);
 explain!("action: command -> k_return call_args");
 
 SV::_3(__)
@@ -3437,7 +3437,7 @@ fn _handler69(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::keyword_cmd("break", _1, None, _2, None);
+let __ = builders::keyword_cmd("break", _1, None, _2, None);
 explain!("action: command -> kBREAK call_args");
 
 SV::_3(__)
@@ -3448,7 +3448,7 @@ fn _handler70(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::keyword_cmd("next", _1, None, _2, None);
+let __ = builders::keyword_cmd("next", _1, None, _2, None);
 explain!("action: command -> kNEXT call_args");
 
 SV::_3(__)
@@ -3458,7 +3458,7 @@ fn _handler71(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _1);
 
-let __ = node::multi_lhs(None, _1, None);
+let __ = builders::multi_lhs(None, _1, None);
 explain!("action: mlhs -> mlhs_basic");
 
 SV::_3(__)
@@ -3470,7 +3470,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::begin(_1, Some(_2), _3);
+let __ = builders::begin(_1, Some(_2), _3);
 explain!("action: mlhs -> tLPAREN mlhs_inner rparen");
 
 SV::_3(__)
@@ -3480,7 +3480,7 @@ fn _handler73(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _1);
 
-let __ = node::multi_lhs(None, _1, None);
+let __ = builders::multi_lhs(None, _1, None);
 explain!("action: mlhs_inner -> mlhs_basic");
 
 SV::_3(__)
@@ -3492,7 +3492,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::multi_lhs(Some(_1), _2, Some(_3));
+let __ = builders::multi_lhs(Some(_1), _2, Some(_3));
 explain!("action: mlhs_inner -> tLPAREN mlhs_inner rparen");
 
 SV::_3(__)
@@ -3526,7 +3526,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _1);
 
-_1.push( node::splat(_2, Some(_3)) );
+_1.push( builders::splat(_2, Some(_3)) );
         let __ = _1;
 explain!("action: mlhs_basic -> mlhs_head tSTAR mlhs_node");
 
@@ -3541,7 +3541,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _1);
 
-_1.push( node::splat(_2, Some(_3)) );
+_1.push( builders::splat(_2, Some(_3)) );
         _1.append(&mut _5);
         let __ = _1;
 explain!("action: mlhs_basic -> mlhs_head tSTAR mlhs_node tCOMMA mlhs_post");
@@ -3554,7 +3554,7 @@ fn _handler79(&mut self) -> SV {
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _1);
 
-_1.push( node::splat(_2, None) );
+_1.push( builders::splat(_2, None) );
         let __ = _1;
 explain!("action: mlhs_basic -> mlhs_head tSTAR");
 
@@ -3568,7 +3568,7 @@ self.values_stack.pop();
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _1);
 
-_1.push( node::splat(_2, None) );
+_1.push( builders::splat(_2, None) );
         _1.append(&mut _4);
         let __ = _1;
 explain!("action: mlhs_basic -> mlhs_head tSTAR tCOMMA mlhs_post");
@@ -3581,7 +3581,7 @@ fn _handler81(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = vec![ node::splat(_1, Some(_2)) ];
+let __ = vec![ builders::splat(_1, Some(_2)) ];
 explain!("action: mlhs_basic -> tSTAR mlhs_node");
 
 SV::_1(__)
@@ -3594,7 +3594,7 @@ self.values_stack.pop();
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let mut r = vec![ node::splat(_1, Some(_2)) ];
+let mut r = vec![ builders::splat(_1, Some(_2)) ];
         r.append(&mut _4);
         let __ = r;
 explain!("action: mlhs_basic -> tSTAR mlhs_node tCOMMA mlhs_post");
@@ -3606,7 +3606,7 @@ fn _handler83(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = vec![ node::splat(_1, None) ];
+let __ = vec![ builders::splat(_1, None) ];
 explain!("action: mlhs_basic -> tSTAR");
 
 SV::_1(__)
@@ -3618,7 +3618,7 @@ let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let mut r = vec![ node::splat(_1, None) ];
+let mut r = vec![ builders::splat(_1, None) ];
         r.append(&mut _3);
         let __ = r;
 explain!("action: mlhs_basic -> tSTAR tCOMMA mlhs_post");
@@ -3642,7 +3642,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::begin(_1, Some(_2), _3);
+let __ = builders::begin(_1, Some(_2), _3);
 explain!("action: mlhs_item -> tLPAREN mlhs_inner rparen");
 
 SV::_3(__)
@@ -3699,7 +3699,7 @@ fn _handler91(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(_1, &mut self.tokenizer.static_env);
+let __ = builders::assignable(_1, &mut self.tokenizer.static_env);
 explain!("action: mlhs_node -> user_variable");
 
 SV::_3(__)
@@ -3709,7 +3709,7 @@ fn _handler92(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(_1, &mut self.tokenizer.static_env);
+let __ = builders::assignable(_1, &mut self.tokenizer.static_env);
 explain!("action: mlhs_node -> keyword_variable");
 
 SV::_3(__)
@@ -3722,7 +3722,7 @@ let mut _3 = pop!(self.values_stack, _1);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::index_asgn(_1, _2, _3, _4);
+let __ = builders::index_asgn(_1, _2, _3, _4);
 explain!("action: mlhs_node -> primary_value tLBRACK2 opt_call_args rbracket");
 
 SV::_3(__)
@@ -3734,7 +3734,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::attr_asgn(_1, _2, _3);
+let __ = builders::attr_asgn(_1, _2, _3);
 explain!("action: mlhs_node -> primary_value call_op tIDENTIFIER");
 
 SV::_3(__)
@@ -3746,7 +3746,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::attr_asgn(_1, _2, _3);
+let __ = builders::attr_asgn(_1, _2, _3);
 explain!("action: mlhs_node -> primary_value tCOLON2 tIDENTIFIER");
 
 SV::_3(__)
@@ -3758,7 +3758,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::attr_asgn(_1, _2, _3);
+let __ = builders::attr_asgn(_1, _2, _3);
 explain!("action: mlhs_node -> primary_value call_op tCONSTANT");
 
 SV::_3(__)
@@ -3770,7 +3770,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(node::const_fetch(_1, _2, _3), &mut self.tokenizer.static_env);
+let __ = builders::assignable(builders::const_fetch(_1, _2, _3), &mut self.tokenizer.static_env);
 explain!("action: mlhs_node -> primary_value tCOLON2 tCONSTANT");
 
 SV::_3(__)
@@ -3781,7 +3781,7 @@ fn _handler98(&mut self) -> SV {
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::assignable(node::const_global(_1, _2), &mut self.tokenizer.static_env);
+let __ = builders::assignable(builders::const_global(_1, _2), &mut self.tokenizer.static_env);
 explain!("action: mlhs_node -> tCOLON3 tCONSTANT");
 
 SV::_3(__)
@@ -3791,7 +3791,7 @@ fn _handler99(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(_1, &mut self.tokenizer.static_env);
+let __ = builders::assignable(_1, &mut self.tokenizer.static_env);
 explain!("action: mlhs_node -> backref");
 
 SV::_3(__)
@@ -3801,7 +3801,7 @@ fn _handler100(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(_1, &mut self.tokenizer.static_env);
+let __ = builders::assignable(_1, &mut self.tokenizer.static_env);
 explain!("action: lhs -> user_variable");
 
 SV::_3(__)
@@ -3811,7 +3811,7 @@ fn _handler101(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(_1, &mut self.tokenizer.static_env);
+let __ = builders::assignable(_1, &mut self.tokenizer.static_env);
 explain!("action: lhs -> keyword_variable");
 
 SV::_3(__)
@@ -3824,7 +3824,7 @@ let mut _3 = pop!(self.values_stack, _1);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::index_asgn(_1, _2, _3, _4);
+let __ = builders::index_asgn(_1, _2, _3, _4);
 explain!("action: lhs -> primary_value tLBRACK2 opt_call_args rbracket");
 
 SV::_3(__)
@@ -3836,7 +3836,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::attr_asgn(_1, _2, _3);
+let __ = builders::attr_asgn(_1, _2, _3);
 explain!("action: lhs -> primary_value call_op tIDENTIFIER");
 
 SV::_3(__)
@@ -3848,7 +3848,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::attr_asgn(_1, _2, _3);
+let __ = builders::attr_asgn(_1, _2, _3);
 explain!("action: lhs -> primary_value tCOLON2 tIDENTIFIER");
 
 SV::_3(__)
@@ -3860,7 +3860,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::attr_asgn(_1, _2, _3);
+let __ = builders::attr_asgn(_1, _2, _3);
 explain!("action: lhs -> primary_value call_op tCONSTANT");
 
 SV::_3(__)
@@ -3872,7 +3872,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(node::const_fetch(_1, _2, _3), &mut self.tokenizer.static_env);
+let __ = builders::assignable(builders::const_fetch(_1, _2, _3), &mut self.tokenizer.static_env);
 explain!("action: lhs -> primary_value tCOLON2 tCONSTANT");
 
 SV::_3(__)
@@ -3883,7 +3883,7 @@ fn _handler107(&mut self) -> SV {
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::assignable(node::const_global(_1, _2), &mut self.tokenizer.static_env);
+let __ = builders::assignable(builders::const_global(_1, _2), &mut self.tokenizer.static_env);
 explain!("action: lhs -> tCOLON3 tCONSTANT");
 
 SV::_3(__)
@@ -3893,7 +3893,7 @@ fn _handler108(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(_1, &mut self.tokenizer.static_env);
+let __ = builders::assignable(_1, &mut self.tokenizer.static_env);
 explain!("action: lhs -> backref");
 
 SV::_3(__)
@@ -3927,7 +3927,7 @@ fn _handler111(&mut self) -> SV {
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::const_global(_1, _2);
+let __ = builders::const_global(_1, _2);
 explain!("action: cpath -> tCOLON3 cname");
 
 SV::_3(__)
@@ -3937,7 +3937,7 @@ fn _handler112(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::build_const(_1);
+let __ = builders::build_const(_1);
 explain!("action: cpath -> cname");
 
 SV::_3(__)
@@ -3949,7 +3949,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::const_fetch(_1, _2, _3);
+let __ = builders::const_fetch(_1, _2, _3);
 explain!("action: cpath -> primary_value tCOLON2 cname");
 
 SV::_3(__)
@@ -4009,7 +4009,7 @@ fn _handler119(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::symbol(_1);
+let __ = builders::symbol(_1);
 explain!("action: fsym -> fname");
 
 SV::_3(__)
@@ -4796,7 +4796,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assign(_1, _2, _3);
+let __ = builders::assign(_1, _2, _3);
 explain!("action: arg -> lhs tEQL arg_rhs");
 
 SV::_3(__)
@@ -4808,7 +4808,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::op_assign(_1, _2, _3);
+let __ = builders::op_assign(_1, _2, _3);
 explain!("action: arg -> var_lhs tOP_ASGN arg_rhs");
 
 SV::_3(__)
@@ -4823,8 +4823,8 @@ let mut _3 = pop!(self.values_stack, _1);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::op_assign(
-            node::index(_1, _2, _3, _4),
+let __ = builders::op_assign(
+            builders::index(_1, _2, _3, _4),
             _5, _6
         );
 explain!("action: arg -> primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN arg_rhs");
@@ -4840,8 +4840,8 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::op_assign(
-            node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
+let __ = builders::op_assign(
+            builders::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
             _4, _5
         );
 explain!("action: arg -> primary_value call_op tIDENTIFIER tOP_ASGN arg_rhs");
@@ -4857,8 +4857,8 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::op_assign(
-            node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
+let __ = builders::op_assign(
+            builders::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
             _4, _5
         );
 explain!("action: arg -> primary_value call_op tCONSTANT tOP_ASGN arg_rhs");
@@ -4874,8 +4874,8 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::op_assign(
-            node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
+let __ = builders::op_assign(
+            builders::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None),
             _4, _5
         );
 explain!("action: arg -> primary_value tCOLON2 tIDENTIFIER tOP_ASGN arg_rhs");
@@ -4891,8 +4891,8 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let const_node = node::const_op_assignable(node::const_fetch(_1, _2, _3));
-        let __ = node::op_assign(const_node, _4, _5);
+let const_node = builders::const_op_assignable(builders::const_fetch(_1, _2, _3));
+        let __ = builders::op_assign(const_node, _4, _5);
 explain!("action: arg -> primary_value tCOLON2 tCONSTANT tOP_ASGN arg_rhs");
 
 SV::_3(__)
@@ -4905,8 +4905,8 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let const_node = node::const_op_assignable(node::const_global(_1, _2));
-        let __ = node::op_assign(const_node, _3, _4);
+let const_node = builders::const_op_assignable(builders::const_global(_1, _2));
+        let __ = builders::op_assign(const_node, _3, _4);
 explain!("action: arg -> tCOLON3 tCONSTANT tOP_ASGN arg_rhs");
 
 SV::_3(__)
@@ -4918,7 +4918,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::op_assign(_1, _2, _3);
+let __ = builders::op_assign(_1, _2, _3);
 explain!("action: arg -> backref tOP_ASGN arg_rhs");
 
 SV::_3(__)
@@ -4930,7 +4930,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::range_inclusive(_1, _2, Some(_3));
+let __ = builders::range_inclusive(_1, _2, Some(_3));
 explain!("action: arg -> arg tDOT2 arg");
 
 SV::_3(__)
@@ -4942,7 +4942,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::range_exclusive(_1, _2, Some(_3));
+let __ = builders::range_exclusive(_1, _2, Some(_3));
 explain!("action: arg -> arg tDOT3 arg");
 
 SV::_3(__)
@@ -4953,7 +4953,7 @@ fn _handler208(&mut self) -> SV {
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::range_inclusive(_1, _2, None);
+let __ = builders::range_inclusive(_1, _2, None);
 explain!("action: arg -> arg tDOT2");
 
 SV::_3(__)
@@ -4964,7 +4964,7 @@ fn _handler209(&mut self) -> SV {
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::range_exclusive(_1, _2, None);
+let __ = builders::range_exclusive(_1, _2, None);
 explain!("action: arg -> arg tDOT3");
 
 SV::_3(__)
@@ -4976,7 +4976,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::binary_op(_1, _2, _3);
+let __ = builders::binary_op(_1, _2, _3);
 explain!("action: arg -> arg tPLUS arg");
 
 SV::_3(__)
@@ -4988,7 +4988,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::binary_op(_1, _2, _3);
+let __ = builders::binary_op(_1, _2, _3);
 explain!("action: arg -> arg tMINUS arg");
 
 SV::_3(__)
@@ -5000,7 +5000,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::binary_op(_1, _2, _3);
+let __ = builders::binary_op(_1, _2, _3);
 explain!("action: arg -> arg tSTAR2 arg");
 
 SV::_3(__)
@@ -5012,7 +5012,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::binary_op(_1, _2, _3);
+let __ = builders::binary_op(_1, _2, _3);
 explain!("action: arg -> arg tDIVIDE arg");
 
 SV::_3(__)
@@ -5024,7 +5024,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::binary_op(_1, _2, _3);
+let __ = builders::binary_op(_1, _2, _3);
 explain!("action: arg -> arg tPERCENT arg");
 
 SV::_3(__)
@@ -5036,7 +5036,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::binary_op(_1, _2, _3);
+let __ = builders::binary_op(_1, _2, _3);
 explain!("action: arg -> arg tPOW arg");
 
 SV::_3(__)
@@ -5049,7 +5049,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::unary_op(_1, node::binary_op(_2, _3, _4));
+let __ = builders::unary_op(_1, builders::binary_op(_2, _3, _4));
 explain!("action: arg -> tUNARY_NUM simple_numeric tPOW arg");
 
 SV::_3(__)
@@ -5060,7 +5060,7 @@ fn _handler217(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::unary_op(_1, _2);
+let __ = builders::unary_op(_1, _2);
 explain!("action: arg -> tUPLUS arg");
 
 SV::_3(__)
@@ -5071,7 +5071,7 @@ fn _handler218(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::unary_op(_1, _2);
+let __ = builders::unary_op(_1, _2);
 explain!("action: arg -> tUMINUS arg");
 
 SV::_3(__)
@@ -5083,7 +5083,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::binary_op(_1, _2, _3);
+let __ = builders::binary_op(_1, _2, _3);
 explain!("action: arg -> arg tPIPE arg");
 
 SV::_3(__)
@@ -5095,7 +5095,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::binary_op(_1, _2, _3);
+let __ = builders::binary_op(_1, _2, _3);
 explain!("action: arg -> arg tCARET arg");
 
 SV::_3(__)
@@ -5107,7 +5107,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::binary_op(_1, _2, _3);
+let __ = builders::binary_op(_1, _2, _3);
 explain!("action: arg -> arg tAMPER2 arg");
 
 SV::_3(__)
@@ -5119,7 +5119,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::binary_op(_1, _2, _3);
+let __ = builders::binary_op(_1, _2, _3);
 explain!("action: arg -> arg tCMP arg");
 
 SV::_3(__)
@@ -5141,7 +5141,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::binary_op(_1, _2, _3);
+let __ = builders::binary_op(_1, _2, _3);
 explain!("action: arg -> arg tEQ arg");
 
 SV::_3(__)
@@ -5153,7 +5153,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::binary_op(_1, _2, _3);
+let __ = builders::binary_op(_1, _2, _3);
 explain!("action: arg -> arg tEQQ arg");
 
 SV::_3(__)
@@ -5165,7 +5165,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::binary_op(_1, _2, _3);
+let __ = builders::binary_op(_1, _2, _3);
 explain!("action: arg -> arg tNEQ arg");
 
 SV::_3(__)
@@ -5177,7 +5177,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::match_op(_1, _2, _3);
+let __ = builders::match_op(_1, _2, _3);
 explain!("action: arg -> arg tMATCH arg");
 
 SV::_3(__)
@@ -5189,7 +5189,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::binary_op(_1, _2, _3);
+let __ = builders::binary_op(_1, _2, _3);
 explain!("action: arg -> arg tNMATCH arg");
 
 SV::_3(__)
@@ -5200,7 +5200,7 @@ fn _handler229(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::not_op(_1, None, Some(_2), None);
+let __ = builders::not_op(_1, None, Some(_2), None);
 explain!("action: arg -> tBANG arg");
 
 SV::_3(__)
@@ -5211,7 +5211,7 @@ fn _handler230(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::unary_op(_1, _2);
+let __ = builders::unary_op(_1, _2);
 explain!("action: arg -> tTILDE arg");
 
 SV::_3(__)
@@ -5223,7 +5223,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::binary_op(_1, _2, _3);
+let __ = builders::binary_op(_1, _2, _3);
 explain!("action: arg -> arg tLSHFT arg");
 
 SV::_3(__)
@@ -5235,7 +5235,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::binary_op(_1, _2, _3);
+let __ = builders::binary_op(_1, _2, _3);
 explain!("action: arg -> arg tRSHFT arg");
 
 SV::_3(__)
@@ -5247,7 +5247,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::logical_op("and", _1, _2, _3);
+let __ = builders::logical_op("and", _1, _2, _3);
 explain!("action: arg -> arg tANDOP arg");
 
 SV::_3(__)
@@ -5259,7 +5259,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::logical_op("or", _1, _2, _3);
+let __ = builders::logical_op("or", _1, _2, _3);
 explain!("action: arg -> arg tOROP arg");
 
 SV::_3(__)
@@ -5271,7 +5271,7 @@ let mut _3 = pop!(self.values_stack, _3);
 self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::keyword_cmd("defined?", _1, None, vec![_3], None);
+let __ = builders::keyword_cmd("defined?", _1, None, vec![_3], None);
 explain!("action: arg -> kDEFINED opt_nl arg");
 
 SV::_3(__)
@@ -5286,7 +5286,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::ternary(_1, _2, _3, _5, _6);
+let __ = builders::ternary(_1, _2, _3, _5, _6);
 explain!("action: arg -> arg tEH arg opt_nl tCOLON arg");
 
 SV::_3(__)
@@ -5348,7 +5348,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::binary_op(_1, _2, _3);
+let __ = builders::binary_op(_1, _2, _3);
 explain!("action: rel_expr -> arg relop arg");
 
 SV::_3(__)
@@ -5360,7 +5360,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::binary_op(_1, _2, _3);
+let __ = builders::binary_op(_1, _2, _3);
 explain!("action: rel_expr -> rel_expr relop arg");
 
 SV::_3(__)
@@ -5404,7 +5404,7 @@ let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
-_1.push(node::associate(None, _3, None));
+_1.push(builders::associate(None, _3, None));
         let __ = _1;
 explain!("action: aref_args -> args tCOMMA assocs trailer");
 
@@ -5416,7 +5416,7 @@ fn _handler248(&mut self) -> SV {
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
-let __ = vec![ node::associate(None, _1, None) ];
+let __ = vec![ builders::associate(None, _1, None) ];
 explain!("action: aref_args -> assocs trailer");
 
 SV::_1(__)
@@ -5438,9 +5438,9 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let rescue_body = node::rescue_body(_2, None, None, None, None, _3);
+let rescue_body = builders::rescue_body(_2, None, None, None, None, _3);
 
-        let __ = node::begin_body(Some(_1), vec![ rescue_body ], None, None, None, None);
+        let __ = builders::begin_body(Some(_1), vec![ rescue_body ], None, None, None, None);
 explain!("action: arg_rhs -> arg kRESCUE_MOD arg");
 
 SV::_2(__)
@@ -5516,7 +5516,7 @@ let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
-_1.push(node::associate(None, _3, None));
+_1.push(builders::associate(None, _3, None));
         let __ = _1;
 explain!("action: opt_call_args -> args tCOMMA assocs tCOMMA");
 
@@ -5528,7 +5528,7 @@ fn _handler258(&mut self) -> SV {
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
-let __ = vec![ node::associate(None, _1, None) ];
+let __ = vec![ builders::associate(None, _1, None) ];
 explain!("action: opt_call_args -> assocs tCOMMA");
 
 SV::_1(__)
@@ -5561,7 +5561,7 @@ fn _handler261(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _1);
 
-let mut result = vec![node::associate(None, _1, None)];
+let mut result = vec![builders::associate(None, _1, None)];
         result.append(&mut _2);
         let __ = result;
 explain!("action: call_args -> assocs opt_block_arg");
@@ -5576,7 +5576,7 @@ let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
-let mut assocs = node::associate(None, _3, None);
+let mut assocs = builders::associate(None, _3, None);
         _1.push(assocs);
         _1.append(&mut _4);
         let __ = _1;
@@ -5685,7 +5685,7 @@ fn _handler266(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::block_pass(_1, _2);
+let __ = builders::block_pass(_1, _2);
 explain!("action: block_arg -> tAMPER arg_value");
 
 SV::_3(__)
@@ -5727,7 +5727,7 @@ fn _handler270(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = vec![ node::splat(_1, Some(_2)) ];
+let __ = vec![ builders::splat(_1, Some(_2)) ];
 explain!("action: args -> tSTAR arg_value");
 
 SV::_1(__)
@@ -5752,7 +5752,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
-_1.push(node::splat(_3, Some(_4)));
+_1.push(builders::splat(_3, Some(_4)));
         let __ = _1;
 explain!("action: args -> args tCOMMA tSTAR arg_value");
 
@@ -5763,7 +5763,7 @@ fn _handler273(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _1);
 
-let __ = node::array(None, _1, None);
+let __ = builders::array(None, _1, None);
 explain!("action: mrhs_arg -> mrhs");
 
 SV::_3(__)
@@ -5798,7 +5798,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
-_1.push(node::splat(_3, Some(_4)));
+_1.push(builders::splat(_3, Some(_4)));
         let __ = _1;
 explain!("action: mrhs -> args tCOMMA tSTAR arg_value");
 
@@ -5810,7 +5810,7 @@ fn _handler277(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = vec![ node::splat(_1, Some(_2)) ];
+let __ = vec![ builders::splat(_1, Some(_2)) ];
 explain!("action: mrhs -> tSTAR arg_value");
 
 SV::_1(__)
@@ -6037,7 +6037,7 @@ fn _handler297(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::call_method(None, None, Some(_1), None, vec![], None);
+let __ = builders::call_method(None, None, Some(_1), None, vec![], None);
 explain!("action: primary -> tFID");
 
 SV::_3(__)
@@ -6052,7 +6052,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.cmdarg = _2;
 
-        let __ = node::begin_keyword(_1, _3, _4);
+        let __ = builders::begin_keyword(_1, _3, _4);
 explain!("action: primary -> kBEGIN fake_embedded_action_primary_kBEGIN bodystmt kEND");
 
 SV::_3(__)
@@ -6065,7 +6065,7 @@ self.values_stack.pop();
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::begin(_1, Some(_2), _4);
+let __ = builders::begin(_1, Some(_2), _4);
 explain!("action: primary -> tLPAREN_ARG stmt fake_embedded_action_primary_tLPAREN_ARG_stmt rparen");
 
 SV::_3(__)
@@ -6078,7 +6078,7 @@ self.values_stack.pop();
 self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::begin(_1, None, _4);
+let __ = builders::begin(_1, None, _4);
 explain!("action: primary -> tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG_2 opt_nl tRPAREN");
 
 SV::_3(__)
@@ -6090,7 +6090,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::begin(_1, _2, _3);
+let __ = builders::begin(_1, _2, _3);
 explain!("action: primary -> tLPAREN compstmt tRPAREN");
 
 SV::_3(__)
@@ -6102,7 +6102,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::const_fetch(_1, _2, _3);
+let __ = builders::const_fetch(_1, _2, _3);
 explain!("action: primary -> primary_value tCOLON2 tCONSTANT");
 
 SV::_3(__)
@@ -6113,7 +6113,7 @@ fn _handler303(&mut self) -> SV {
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::const_global(_1, _2);
+let __ = builders::const_global(_1, _2);
 explain!("action: primary -> tCOLON3 tCONSTANT");
 
 SV::_3(__)
@@ -6125,7 +6125,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::array( Some(_1), _2, Some(_3) );
+let __ = builders::array( Some(_1), _2, Some(_3) );
 explain!("action: primary -> tLBRACK aref_args tRBRACK");
 
 SV::_3(__)
@@ -6137,7 +6137,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::associate( Some(_1), _2, Some(_3) );
+let __ = builders::associate( Some(_1), _2, Some(_3) );
 explain!("action: primary -> tLBRACE assoc_list tRCURLY");
 
 SV::_3(__)
@@ -6147,7 +6147,7 @@ fn _handler306(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::keyword_cmd("return", _1, None, vec![], None);
+let __ = builders::keyword_cmd("return", _1, None, vec![], None);
 explain!("action: primary -> k_return");
 
 SV::_3(__)
@@ -6160,7 +6160,7 @@ let mut _3 = pop!(self.values_stack, _1);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::keyword_cmd("yield", _1, Some(_2), _3, Some(_4));
+let __ = builders::keyword_cmd("yield", _1, Some(_2), _3, Some(_4));
 explain!("action: primary -> kYIELD tLPAREN2 call_args rparen");
 
 SV::_3(__)
@@ -6172,7 +6172,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::keyword_cmd("yield", _1, Some(_2), vec![], Some(_3));
+let __ = builders::keyword_cmd("yield", _1, Some(_2), vec![], Some(_3));
 explain!("action: primary -> kYIELD tLPAREN2 rparen");
 
 SV::_3(__)
@@ -6182,7 +6182,7 @@ fn _handler309(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::keyword_cmd("yield", _1, None, vec![], None);
+let __ = builders::keyword_cmd("yield", _1, None, vec![], None);
 explain!("action: primary -> kYIELD");
 
 SV::_3(__)
@@ -6196,7 +6196,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::keyword_cmd("defined?", _1, Some(_3), vec![_4], Some(_5));
+let __ = builders::keyword_cmd("defined?", _1, Some(_3), vec![_4], Some(_5));
 explain!("action: primary -> kDEFINED opt_nl tLPAREN2 expr rparen");
 
 SV::_3(__)
@@ -6209,7 +6209,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::not_op(_1, Some(_2), Some(_3), Some(_4));
+let __ = builders::not_op(_1, Some(_2), Some(_3), Some(_4));
 explain!("action: primary -> kNOT tLPAREN2 expr rparen");
 
 SV::_3(__)
@@ -6221,7 +6221,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::not_op(_1, Some(_2), None, Some(_3));
+let __ = builders::not_op(_1, Some(_2), None, Some(_3));
 explain!("action: primary -> kNOT tLPAREN2 rparen");
 
 SV::_3(__)
@@ -6232,9 +6232,9 @@ fn _handler313(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _9);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let method_call = node::call_method(None, None, Some(_1), None, vec![], None);
+let method_call = builders::call_method(None, None, Some(_1), None, vec![], None);
         let (begin_t, (args, body), end_t) = _2;
-        let __ = node::block(method_call, begin_t, args, body, end_t);
+        let __ = builders::block(method_call, begin_t, args, body, end_t);
 explain!("action: primary -> fcall brace_block");
 
 SV::_3(__)
@@ -6256,7 +6256,7 @@ let mut _2 = pop!(self.values_stack, _9);
 let mut _1 = pop!(self.values_stack, _3);
 
 let (begin_t, (args, body), end_t) = _2;
-        let __ = node::block(_1, begin_t, args, body, end_t);
+        let __ = builders::block(_1, begin_t, args, body, end_t);
 explain!("action: primary -> method_call brace_block");
 
 SV::_3(__)
@@ -6267,10 +6267,10 @@ fn _handler316(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _12);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let lambda_call = node::call_lambda(_1);
+let lambda_call = builders::call_lambda(_1);
         let (args, ( begin_t, body, end_t )) = _2;
 
-        let __ = node::block(lambda_call, begin_t, args, body, end_t);
+        let __ = builders::block(lambda_call, begin_t, args, body, end_t);
 explain!("action: primary -> tLAMBDA lambda");
 
 SV::_3(__)
@@ -6286,7 +6286,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (else_t, else_) = unwrap_some_token_node!(_5);
-        let __ = node::condition(_1, _2, _3, _4, else_t, else_, Some(_6));
+        let __ = builders::condition(_1, _2, _3, _4, else_t, else_, Some(_6));
 explain!("action: primary -> kIF expr_value then compstmt if_tail kEND");
 
 SV::_3(__)
@@ -6302,7 +6302,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (else_t, else_) = unwrap_some_token_node!(_5);
-        let __ = node::condition(_1, _2, _3, else_, else_t, Some(_4), Some(_6));
+        let __ = builders::condition(_1, _2, _3, else_, else_t, Some(_4), Some(_6));
 explain!("action: primary -> kUNLESS expr_value then compstmt opt_else kEND");
 
 SV::_3(__)
@@ -6316,7 +6316,7 @@ let mut _2 = pop!(self.values_stack, _7);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (expr_value_node, expr_value_token) = _2;
-        let __ = node::build_loop("while", _1, expr_value_node, expr_value_token, _3, _4);
+        let __ = builders::build_loop("while", _1, expr_value_node, expr_value_token, _3, _4);
 explain!("action: primary -> kWHILE expr_value_do compstmt kEND");
 
 SV::_3(__)
@@ -6330,7 +6330,7 @@ let mut _2 = pop!(self.values_stack, _7);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (expr_value_node, expr_value_token) = _2;
-        let __ = node::build_loop("until", _1, expr_value_node, expr_value_token, _3, _4);
+        let __ = builders::build_loop("until", _1, expr_value_node, expr_value_token, _3, _4);
 explain!("action: primary -> kUNTIL expr_value_do compstmt kEND");
 
 SV::_3(__)
@@ -6387,7 +6387,7 @@ let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (expr_value_node, expr_value_token) = _4;
-        let __ = node::build_for(_1, _2, _3, expr_value_node, expr_value_token, _5, _6);
+        let __ = builders::build_for(_1, _2, _3, expr_value_node, expr_value_token, _5, _6);
 explain!("action: primary -> kFOR for_var kIN expr_value_do compstmt kEND");
 
 SV::_3(__)
@@ -6412,7 +6412,7 @@ if !self.tokenizer.context.is_class_definition_allowed() {
         //   result = @builder.def_class(val[0], val[1],
         //                               lt_t, superclass,
         //                               val[4], val[5])
-        let __ = node::def_class(_1, _2, lt_t, superclass, _5, _6);
+        let __ = builders::def_class(_1, _2, lt_t, superclass, _5, _6);
 
         self.tokenizer.interior_lexer.pop_cmdarg();
         self.tokenizer.interior_lexer.pop_cond();
@@ -6464,7 +6464,7 @@ if !self.tokenizer.context.is_class_definition_allowed() {
 
         //   result = @builder.def_module(val[0], val[1],
         //                                val[3], val[4])
-        let __ = node::def_module(_1, _2, _4, _5);
+        let __ = builders::def_module(_1, _2, _4, _5);
 
         self.tokenizer.interior_lexer.pop_cmdarg();
         self.tokenizer.static_env.unextend();
@@ -6528,7 +6528,7 @@ fn _handler329(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::keyword_cmd("break", _1, None, vec![], None);
+let __ = builders::keyword_cmd("break", _1, None, vec![], None);
 explain!("action: primary -> kBREAK");
 
 SV::_3(__)
@@ -6538,7 +6538,7 @@ fn _handler330(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::keyword_cmd("next", _1, None, vec![], None);
+let __ = builders::keyword_cmd("next", _1, None, vec![], None);
 explain!("action: primary -> kNEXT");
 
 SV::_3(__)
@@ -6548,7 +6548,7 @@ fn _handler331(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::keyword_cmd("redo", _1, None, vec![], None);
+let __ = builders::keyword_cmd("redo", _1, None, vec![], None);
 explain!("action: primary -> kREDO");
 
 SV::_3(__)
@@ -6558,7 +6558,7 @@ fn _handler332(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::keyword_cmd("retry", _1, None, vec![], None);
+let __ = builders::keyword_cmd("retry", _1, None, vec![], None);
 explain!("action: primary -> kRETRY");
 
 SV::_3(__)
@@ -6662,7 +6662,7 @@ let k_elseif_clone = _1.clone();
         let (else_t, else_) = unwrap_some_token_node!(_5);
         let __ = Some((
             _1,
-            node::condition(k_elseif_clone, _2, _3, Some(_4), else_t, else_, None)
+            builders::condition(k_elseif_clone, _2, _3, Some(_4), else_t, else_, None)
         ));
 explain!("action: if_tail -> kELSIF expr_value then compstmt if_tail");
 
@@ -6714,7 +6714,7 @@ fn _handler346(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::arg(_1);
+let __ = builders::arg(_1);
 explain!("action: f_marg -> f_norm_arg");
 
 SV::_3(__)
@@ -6726,7 +6726,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::multi_lhs(Some(_1), _2, Some(_3));
+let __ = builders::multi_lhs(Some(_1), _2, Some(_3));
 explain!("action: f_marg -> tLPAREN f_margs rparen");
 
 SV::_3(__)
@@ -6772,7 +6772,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
-_1.push(node::restarg(_3, Some(_4) ));
+_1.push(builders::restarg(_3, Some(_4) ));
         let __ = _1;
 explain!("action: f_margs -> f_marg_list tCOMMA tSTAR f_norm_arg");
 
@@ -6788,7 +6788,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
-_1.push(node::restarg(_3, Some(_4) ));
+_1.push(builders::restarg(_3, Some(_4) ));
         _1.append(&mut _6);
         let __ = _1;
 explain!("action: f_margs -> f_marg_list tCOMMA tSTAR f_norm_arg tCOMMA f_marg_list");
@@ -6802,7 +6802,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
-_1.push(node::restarg(_3, None ));
+_1.push(builders::restarg(_3, None ));
         let __ = _1;
 explain!("action: f_margs -> f_marg_list tCOMMA tSTAR");
 
@@ -6817,7 +6817,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 self.values_stack.pop();
 let mut _1 = pop!(self.values_stack, _1);
 
-_1.push(node::restarg(_3, None ));
+_1.push(builders::restarg(_3, None ));
         _1.append(&mut _5);
         let __ = _1;
 explain!("action: f_margs -> f_marg_list tCOMMA tSTAR tCOMMA f_marg_list");
@@ -6830,7 +6830,7 @@ fn _handler355(&mut self) -> SV {
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = vec![ node::restarg(_1, Some(_2)) ];
+let __ = vec![ builders::restarg(_1, Some(_2)) ];
 explain!("action: f_margs -> tSTAR f_norm_arg");
 
 SV::_1(__)
@@ -6843,7 +6843,7 @@ self.values_stack.pop();
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let mut result = vec![ node::restarg( _1, Some(_2) ) ];
+let mut result = vec![ builders::restarg( _1, Some(_2) ) ];
         result.append(&mut _4);
         let __ = result;
 explain!("action: f_margs -> tSTAR f_norm_arg tCOMMA f_marg_list");
@@ -6855,7 +6855,7 @@ fn _handler357(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = vec![ node::restarg(_1, None) ];
+let __ = vec![ builders::restarg(_1, None) ];
 explain!("action: f_margs -> tSTAR");
 
 SV::_1(__)
@@ -6867,7 +6867,7 @@ let mut _3 = pop!(self.values_stack, _1);
 self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let mut result = vec![ node::restarg(_1, None) ];
+let mut result = vec![ builders::restarg(_1, None) ];
         result.append(&mut _3);
         let __ = result;
 explain!("action: f_margs -> tSTAR tCOMMA f_marg_list");
@@ -7181,7 +7181,7 @@ fn _handler380(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ = node::args(None, vec![], None);
+let __ = builders::args(None, vec![], None);
 explain!("action: opt_block_param -> undefined");
 
 SV::_3(__)
@@ -7204,7 +7204,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::args(Some(_1), _2, Some(_3));
+let __ = builders::args(Some(_1), _2, Some(_3));
 explain!("action: block_param_def -> tPIPE opt_bv_decl tPIPE");
 
 SV::_3(__)
@@ -7215,7 +7215,7 @@ fn _handler383(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let _2 = _1.clone();
-        let __ = node::args(Some(_1), vec![], Some(_2));
+        let __ = builders::args(Some(_1), vec![], Some(_2));
 explain!("action: block_param_def -> tOROP");
 
 SV::_3(__)
@@ -7229,7 +7229,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 _2.append(&mut _3);
-        let __ = node::args(Some(_1), _2, Some(_4));
+        let __ = builders::args(Some(_1), _2, Some(_4));
 explain!("action: block_param_def -> tPIPE block_param opt_bv_decl tPIPE");
 
 SV::_3(__)
@@ -7289,7 +7289,7 @@ if let InteriorToken::T_IDENTIFIER(ref t_value) = _1 {
             self.tokenizer.static_env.declare(t_value.clone());
         } else { unreachable!(); }
 
-        let __ = node::shadowarg(_1);
+        let __ = builders::shadowarg(_1);
 explain!("action: bvar -> tIDENTIFIER");
 
 SV::_3(__)
@@ -7353,7 +7353,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 _2.append(&mut _3);
-        let __ = node::args(Some(_1), _2, Some(_4));
+        let __ = builders::args(Some(_1), _2, Some(_4));
 explain!("action: f_larglist -> tLPAREN2 f_args opt_bv_decl tRPAREN");
 
 SV::_3(__)
@@ -7363,7 +7363,7 @@ fn _handler395(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _1);
 
-let __ = node::args(None, _1, None);
+let __ = builders::args(None, _1, None);
 explain!("action: f_larglist -> f_args");
 
 SV::_3(__)
@@ -7439,7 +7439,7 @@ let mut _2 = pop!(self.values_stack, _15);
 let mut _1 = pop!(self.values_stack, _3);
 
 let (begin_t, ( block_args, body), end_t) = _2;
-        let __ = node::block(_1, begin_t, block_args, body, end_t);
+        let __ = builders::block(_1, begin_t, block_args, body, end_t);
 explain!("action: block_call -> command do_block");
 
 SV::_3(__)
@@ -7453,7 +7453,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let (lparen_t, args, rparen_t) = _4;
-        let __ = node::call_method(Some(_1), Some(_2), Some(_3), lparen_t, args, rparen_t);
+        let __ = builders::call_method(Some(_1), Some(_2), Some(_3), lparen_t, args, rparen_t);
 explain!("action: block_call -> block_call dot_or_colon operation2 opt_paren_args");
 
 SV::_3(__)
@@ -7468,10 +7468,10 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let (lparen_t, args, rparen_t) = _4;
-        let method_call = node::call_method(Some(_1), Some(_2), Some(_3), lparen_t, args, rparen_t);
+        let method_call = builders::call_method(Some(_1), Some(_2), Some(_3), lparen_t, args, rparen_t);
 
         let (begin_t, (args, body), end_t) = _5;
-        let __ = node::block(method_call, begin_t, args, body, end_t);
+        let __ = builders::block(method_call, begin_t, args, body, end_t);
 explain!("action: block_call -> block_call dot_or_colon operation2 opt_paren_args brace_block");
 
 SV::_3(__)
@@ -7485,10 +7485,10 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let method_call = node::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
+let method_call = builders::call_method(Some(_1), Some(_2), Some(_3), None, _4, None);
 
         let (begin_t, (args, body), end_t) = _5;
-        let __ = node::block(method_call, begin_t, args, body, end_t);
+        let __ = builders::block(method_call, begin_t, args, body, end_t);
 explain!("action: block_call -> block_call dot_or_colon operation2 command_args do_block");
 
 SV::_3(__)
@@ -7500,7 +7500,7 @@ let mut _2 = pop!(self.values_stack, _10);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (lparen_t, args, rparen_t) = _2;
-        let __ = node::call_method(None, None, Some(_1), lparen_t, args, rparen_t);
+        let __ = builders::call_method(None, None, Some(_1), lparen_t, args, rparen_t);
 explain!("action: method_call -> fcall paren_args");
 
 SV::_3(__)
@@ -7514,7 +7514,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let (lparen_t, args, rparen_t) = _4;
-        let __ = node::call_method(Some(_1), Some(_2), Some(_3), lparen_t, args, rparen_t);
+        let __ = builders::call_method(Some(_1), Some(_2), Some(_3), lparen_t, args, rparen_t);
 explain!("action: method_call -> primary_value call_op operation2 opt_paren_args");
 
 SV::_3(__)
@@ -7528,7 +7528,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let (lparen_t, args, rparen_t) = _4;
-        let __ = node::call_method(Some(_1), Some(_2), Some(_3), lparen_t, args, rparen_t);
+        let __ = builders::call_method(Some(_1), Some(_2), Some(_3), lparen_t, args, rparen_t);
 explain!("action: method_call -> primary_value tCOLON2 operation2 paren_args");
 
 SV::_3(__)
@@ -7540,7 +7540,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None);
+let __ = builders::call_method(Some(_1), Some(_2), Some(_3), None, vec![], None);
 explain!("action: method_call -> primary_value tCOLON2 operation3");
 
 SV::_3(__)
@@ -7553,7 +7553,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let (lparen_t, args, rparen_t) = _3;
-        let __ = node::call_method(Some(_1), Some(_2), None, lparen_t, args, rparen_t);
+        let __ = builders::call_method(Some(_1), Some(_2), None, lparen_t, args, rparen_t);
 explain!("action: method_call -> primary_value call_op paren_args");
 
 SV::_3(__)
@@ -7566,7 +7566,7 @@ let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
 let (lparen_t, args, rparen_t) = _3;
-        let __ = node::call_method(Some(_1), Some(_2), None, lparen_t, args, rparen_t);
+        let __ = builders::call_method(Some(_1), Some(_2), None, lparen_t, args, rparen_t);
 explain!("action: method_call -> primary_value tCOLON2 paren_args");
 
 SV::_3(__)
@@ -7578,7 +7578,7 @@ let mut _2 = pop!(self.values_stack, _10);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (lparen_t, args, rparen_t) = _2;
-        let __ = node::keyword_cmd("super", _1, lparen_t, args, rparen_t);
+        let __ = builders::keyword_cmd("super", _1, lparen_t, args, rparen_t);
 explain!("action: method_call -> kSUPER paren_args");
 
 SV::_3(__)
@@ -7588,7 +7588,7 @@ fn _handler412(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::keyword_cmd("zsuper", _1, None, vec![], None);
+let __ = builders::keyword_cmd("zsuper", _1, None, vec![], None);
 explain!("action: method_call -> kSUPER");
 
 SV::_3(__)
@@ -7601,7 +7601,7 @@ let mut _3 = pop!(self.values_stack, _1);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::index(_1, _2, _3, _4);
+let __ = builders::index(_1, _2, _3, _4);
 explain!("action: method_call -> primary_value tLBRACK2 opt_call_args rbracket");
 
 SV::_3(__)
@@ -7719,7 +7719,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let mut r = vec![ node::when(_1, _2, _3, _4) ];
+let mut r = vec![ builders::when(_1, _2, _3, _4) ];
     r.append(&mut _5);
     let __ = r;
 explain!("action: case_body -> kWHEN args then compstmt cases");
@@ -7763,7 +7763,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
         //     exc_list = @builder.array(nil, val[1], nil)
         //   end
         let exc_list = match _2 {
-            Some(exc_list_nodes) => Some(node::array(None, exc_list_nodes, None)),
+            Some(exc_list_nodes) => Some(builders::array(None, exc_list_nodes, None)),
             None => None
         };
 
@@ -7772,7 +7772,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
         //                   val[3], val[4]),
         //              *val[5] ]
         let mut r = vec![
-            node::rescue_body(_1, exc_list, assoc_t, exc_var, Some(_4), _5)
+            builders::rescue_body(_1, exc_list, assoc_t, exc_var, Some(_4), _5)
         ];
         r.append(&mut _6);
         let __ = r;
@@ -7897,7 +7897,7 @@ fn _handler437(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _1);
 
-let __ = node::string_compose(None, _1, None);
+let __ = builders::string_compose(None, _1, None);
 explain!("action: strings -> string");
 
 SV::_3(__)
@@ -7931,8 +7931,8 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let string = node::string_compose(Some(_1), _2, Some(_3));
-        let __ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
+let string = builders::string_compose(Some(_1), _2, Some(_3));
+        let __ = builders::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
 explain!("action: string1 -> tSTRING_BEG string_contents tSTRING_END");
 
 SV::_3(__)
@@ -7942,8 +7942,8 @@ fn _handler441(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let string = node::string(_1);
-        let __ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
+let string = builders::string(_1);
+        let __ = builders::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
 explain!("action: string1 -> tSTRING");
 
 SV::_3(__)
@@ -7953,7 +7953,7 @@ fn _handler442(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::character(_1);
+let __ = builders::character(_1);
 explain!("action: string1 -> tCHARACTER");
 
 SV::_3(__)
@@ -7965,8 +7965,8 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let string = node::xstring_compose(_1, _2, _3);
-    let __ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
+let string = builders::xstring_compose(_1, _2, _3);
+    let __ = builders::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
 explain!("action: xstring -> tXSTRING_BEG xstring_contents tSTRING_END");
 
 SV::_3(__)
@@ -7995,7 +7995,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::words_compose(_1, _2, _3);
+let __ = builders::words_compose(_1, _2, _3);
 explain!("action: words -> tWORDS_BEG word_list tSTRING_END");
 
 SV::_3(__)
@@ -8017,7 +8017,7 @@ self.values_stack.pop();
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _1);
 
-_1.push( node::word(_2) );
+_1.push( builders::word(_2) );
         let __ = _1;
 explain!("action: word_list -> word_list word tSPACE");
 
@@ -8051,7 +8051,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::symbols_compose(_1, _2, _3);
+let __ = builders::symbols_compose(_1, _2, _3);
 explain!("action: symbols -> tSYMBOLS_BEG symbol_list tSTRING_END");
 
 SV::_3(__)
@@ -8086,7 +8086,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::words_compose(_1, _2, _3);
+let __ = builders::words_compose(_1, _2, _3);
 explain!("action: qwords -> tQWORDS_BEG qword_list tSTRING_END");
 
 SV::_3(__)
@@ -8098,7 +8098,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::symbols_compose(_1, _2, _3);
+let __ = builders::symbols_compose(_1, _2, _3);
 explain!("action: qsymbols -> tQSYMBOLS_BEG qsym_list tSTRING_END");
 
 SV::_3(__)
@@ -8120,7 +8120,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _1);
 
-_1.push(node::string_internal(_2));
+_1.push(builders::string_internal(_2));
         let __ = _1;
 explain!("action: qword_list -> qword_list tSTRING_CONTENT tSPACE");
 
@@ -8143,7 +8143,7 @@ self.values_stack.pop();
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _1);
 
-_1.push(node::symbol_internal(_2));
+_1.push(builders::symbol_internal(_2));
         let __ = _1;
 explain!("action: qsym_list -> qsym_list tSTRING_CONTENT tSPACE");
 
@@ -8232,7 +8232,7 @@ fn _handler466(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::string_internal(_1);
+let __ = builders::string_internal(_1);
 explain!("action: string_content -> tSTRING_CONTENT");
 
 SV::_3(__)
@@ -8259,7 +8259,7 @@ let mut _1 = interior_token!(pop!(self.values_stack, _0));
 self.tokenizer.interior_lexer.pop_cmdarg();
         self.tokenizer.interior_lexer.pop_cond();
 
-        let __ = node::begin(_1, Some(_3), _4);
+        let __ = builders::begin(_1, Some(_3), _4);
 explain!("action: string_content -> tSTRING_DBEG fake_embedded_action__string_content__tSTRING_DBEG compstmt tSTRING_DEND");
 
 SV::_3(__)
@@ -8269,7 +8269,7 @@ fn _handler469(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::gvar(_1);
+let __ = builders::gvar(_1);
 explain!("action: string_dvar -> tGVAR");
 
 SV::_3(__)
@@ -8279,7 +8279,7 @@ fn _handler470(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::ivar(_1);
+let __ = builders::ivar(_1);
 explain!("action: string_dvar -> tIVAR");
 
 SV::_3(__)
@@ -8289,7 +8289,7 @@ fn _handler471(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::cvar(_1);
+let __ = builders::cvar(_1);
 explain!("action: string_dvar -> tCVAR");
 
 SV::_3(__)
@@ -8310,7 +8310,7 @@ fn _handler473(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_end");
-    let __ = node::symbol(_1);
+    let __ = builders::symbol(_1);
 explain!("action: symbol -> tSYMBOL");
 
 SV::_3(__)
@@ -8323,7 +8323,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_end");
-    let __ = node::symbol_compose(_1, _2, _3);
+    let __ = builders::symbol_compose(_1, _2, _3);
 explain!("action: dsym -> tSYMBEG xstring_contents tSTRING_END");
 
 SV::_3(__)
@@ -8362,7 +8362,7 @@ fn _handler477(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_end");
-        let __ = node::integer(_1);
+        let __ = builders::integer(_1);
 explain!("action: simple_numeric -> tINTEGER");
 
 SV::_3(__)
@@ -8373,7 +8373,7 @@ fn _handler478(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_end");
-        let __ = node::float(_1);
+        let __ = builders::float(_1);
 explain!("action: simple_numeric -> tFLOAT");
 
 SV::_3(__)
@@ -8384,7 +8384,7 @@ fn _handler479(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_end");
-        let __ = node::rational(_1);
+        let __ = builders::rational(_1);
 explain!("action: simple_numeric -> tRATIONAL");
 
 SV::_3(__)
@@ -8395,7 +8395,7 @@ fn _handler480(&mut self) -> SV {
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 self.tokenizer.interior_lexer.set_state("expr_end");
-        let __ = node::complex(_1);
+        let __ = builders::complex(_1);
 explain!("action: simple_numeric -> tIMAGINARY");
 
 SV::_3(__)
@@ -8405,7 +8405,7 @@ fn _handler481(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::ident(_1);
+let __ = builders::ident(_1);
 explain!("action: user_variable -> tIDENTIFIER");
 
 SV::_3(__)
@@ -8415,7 +8415,7 @@ fn _handler482(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::ivar(_1);
+let __ = builders::ivar(_1);
 explain!("action: user_variable -> tIVAR");
 
 SV::_3(__)
@@ -8425,7 +8425,7 @@ fn _handler483(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::gvar(_1);
+let __ = builders::gvar(_1);
 explain!("action: user_variable -> tGVAR");
 
 SV::_3(__)
@@ -8435,7 +8435,7 @@ fn _handler484(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::build_const(_1);
+let __ = builders::build_const(_1);
 explain!("action: user_variable -> tCONSTANT");
 
 SV::_3(__)
@@ -8445,7 +8445,7 @@ fn _handler485(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::cvar(_1);
+let __ = builders::cvar(_1);
 explain!("action: user_variable -> tCVAR");
 
 SV::_3(__)
@@ -8535,7 +8535,7 @@ fn _handler493(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::accessible(_1, &self.tokenizer.static_env);
+let __ = builders::accessible(_1, &self.tokenizer.static_env);
 explain!("action: var_ref -> user_variable");
 
 SV::_3(__)
@@ -8545,7 +8545,7 @@ fn _handler494(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::accessible(_1, &self.tokenizer.static_env);
+let __ = builders::accessible(_1, &self.tokenizer.static_env);
 explain!("action: var_ref -> keyword_variable");
 
 SV::_3(__)
@@ -8555,7 +8555,7 @@ fn _handler495(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(_1, &mut self.tokenizer.static_env);
+let __ = builders::assignable(_1, &mut self.tokenizer.static_env);
 explain!("action: var_lhs -> user_variable");
 
 SV::_3(__)
@@ -8565,7 +8565,7 @@ fn _handler496(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::assignable(_1, &mut self.tokenizer.static_env);
+let __ = builders::assignable(_1, &mut self.tokenizer.static_env);
 explain!("action: var_lhs -> keyword_variable");
 
 SV::_3(__)
@@ -8575,7 +8575,7 @@ fn _handler497(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::nth_ref(_1);
+let __ = builders::nth_ref(_1);
 explain!("action: backref -> tNTH_REF");
 
 SV::_3(__)
@@ -8585,7 +8585,7 @@ fn _handler498(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::back_ref(_1);
+let __ = builders::back_ref(_1);
 explain!("action: backref -> tBACK_REF");
 
 SV::_3(__)
@@ -8642,7 +8642,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::args(Some(_1), _2, Some(_3));
+let __ = builders::args(Some(_1), _2, Some(_3));
         self.tokenizer.interior_lexer.set_state("expr_value");
 explain!("action: f_arglist -> tLPAREN2 f_args rparen");
 
@@ -8656,7 +8656,7 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _17);
 
 self.tokenizer.interior_lexer.in_kwarg = _1;
-        let __ = node::args(None, _2, None);
+        let __ = builders::args(None, _2, None);
 explain!("action: f_arglist -> fake_embedded_action__f_arglist__episolon f_args term");
 
 SV::_3(__)
@@ -9034,7 +9034,7 @@ fn _handler533(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::arg(_1);
+let __ = builders::arg(_1);
 explain!("action: f_arg_item -> f_arg_asgn");
 
 SV::_3(__)
@@ -9046,7 +9046,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::multi_lhs(Some(_1), _2, Some(_3));
+let __ = builders::multi_lhs(Some(_1), _2, Some(_3));
 explain!("action: f_arg_item -> tLPAREN f_margs rparen");
 
 SV::_3(__)
@@ -9096,7 +9096,7 @@ fn _handler538(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::kwoptarg(_1, _2);
+let __ = builders::kwoptarg(_1, _2);
 explain!("action: f_kw -> f_label arg_value");
 
 SV::_3(__)
@@ -9106,7 +9106,7 @@ fn _handler539(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::kwarg(_1);
+let __ = builders::kwarg(_1);
 explain!("action: f_kw -> f_label");
 
 SV::_3(__)
@@ -9117,7 +9117,7 @@ fn _handler540(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::kwoptarg(_1, _2);
+let __ = builders::kwoptarg(_1, _2);
 explain!("action: f_block_kw -> f_label primary_value");
 
 SV::_3(__)
@@ -9127,7 +9127,7 @@ fn _handler541(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::kwarg(_1);
+let __ = builders::kwarg(_1);
 explain!("action: f_block_kw -> f_label");
 
 SV::_3(__)
@@ -9208,7 +9208,7 @@ if let InteriorToken::T_IDENTIFIER(ref t_value) = _2 {
             self.tokenizer.static_env.declare(t_value.clone());
         } else { unreachable!(); }
 
-        let __ = vec![ node::kwrestarg(_1, Some(_2)) ];
+        let __ = vec![ builders::kwrestarg(_1, Some(_2)) ];
 explain!("action: f_kwrest -> kwrest_mark tIDENTIFIER");
 
 SV::_1(__)
@@ -9218,7 +9218,7 @@ fn _handler549(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = vec![ node::kwrestarg(_1, None) ];
+let __ = vec![ builders::kwrestarg(_1, None) ];
 explain!("action: f_kwrest -> kwrest_mark");
 
 SV::_1(__)
@@ -9230,7 +9230,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::optarg(_1, _2, _3);
+let __ = builders::optarg(_1, _2, _3);
 explain!("action: f_opt -> f_arg_asgn tEQL arg_value");
 
 SV::_3(__)
@@ -9242,7 +9242,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::optarg(_1, _2, _3);
+let __ = builders::optarg(_1, _2, _3);
 explain!("action: f_block_opt -> f_arg_asgn tEQL primary_value");
 
 SV::_3(__)
@@ -9323,7 +9323,7 @@ if let InteriorToken::T_IDENTIFIER(ref t_value) = _2 {
             self.tokenizer.static_env.declare(t_value.clone());
         } else { unreachable!(); }
 
-        let __ = vec![ node::restarg(_1, Some(_2)) ];
+        let __ = vec![ builders::restarg(_1, Some(_2)) ];
 explain!("action: f_rest_arg -> restarg_mark tIDENTIFIER");
 
 SV::_1(__)
@@ -9333,7 +9333,7 @@ fn _handler559(&mut self) -> SV {
 // Semantic values prologue.
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = vec![node::restarg(_1, None)];
+let __ = vec![builders::restarg(_1, None)];
 explain!("action: f_rest_arg -> restarg_mark");
 
 SV::_1(__)
@@ -9368,7 +9368,7 @@ if let InteriorToken::T_IDENTIFIER(ref t_value) = _2 {
         self.tokenizer.static_env.declare(t_value.clone());
     } else { unreachable!(); }
 
-    let __ = vec![ node::blockarg(_1, _2) ];
+    let __ = vec![ builders::blockarg(_1, _2) ];
 explain!("action: f_block_arg -> blkarg_mark tIDENTIFIER");
 
 SV::_1(__)
@@ -9467,7 +9467,7 @@ let mut _3 = pop!(self.values_stack, _3);
 let mut _2 = interior_token!(pop!(self.values_stack, _0));
 let mut _1 = pop!(self.values_stack, _3);
 
-let __ = node::pair(_1, _2, _3);
+let __ = builders::pair(_1, _2, _3);
 explain!("action: assoc -> arg_value tASSOC arg_value");
 
 SV::_3(__)
@@ -9478,7 +9478,7 @@ fn _handler572(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::pair_keyword(_1, _2);
+let __ = builders::pair_keyword(_1, _2);
 explain!("action: assoc -> tLABEL arg_value");
 
 SV::_3(__)
@@ -9491,7 +9491,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::pair_quoted(_1, _2, _3, _4);
+let __ = builders::pair_quoted(_1, _2, _3, _4);
 explain!("action: assoc -> tSTRING_BEG string_contents tLABEL_END arg_value");
 
 SV::_3(__)
@@ -9502,7 +9502,7 @@ fn _handler574(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = node::kwsplat(_1, _2);
+let __ = builders::kwsplat(_1, _2);
 explain!("action: assoc -> tDSTAR arg_value");
 
 SV::_3(__)

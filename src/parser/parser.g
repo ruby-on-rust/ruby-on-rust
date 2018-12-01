@@ -4,7 +4,7 @@
 //     : keyword_variable {
 //         |$1:Node| -> Node;
 // 
-//         $$ = node::accessible($1);
+//         $$ = builders::accessible($1);
 //     }
 // ;
 // 
@@ -48,15 +48,15 @@
 %{
 
 use crate::{
+    explainer,
     token::token::Token as InteriorToken,
     lexer::stack_state::StackState,
     parser::context::Context,
     parser::token::Token,
     parser::tokenizer::Tokenizer,
     parser::static_env::StaticEnv,
-    ast::node,
     ast::node::{ Node, Nodes },
-    explainer,
+    ast::builders,
 };
 
 type TDummy = ();
@@ -104,7 +104,7 @@ program: top_compstmt;
 top_compstmt
     : top_stmts opt_terms {
         |$1: Nodes| -> TSomeNode;
-        $$ = node::compstmt($1);
+        $$ = builders::compstmt($1);
     }
 ;
 
@@ -132,7 +132,7 @@ top_stmt
     | klBEGIN begin_block {
         |$1:Token, $2:TBeginBlock| -> Node;
         let (begin_block_t_lcurly, begin_block_top_compstmt, begin_block_t_rcurly) = $2;
-        $$ = node::preexe($1, begin_block_t_lcurly, begin_block_top_compstmt, begin_block_t_rcurly);
+        $$ = builders::preexe($1, begin_block_t_lcurly, begin_block_top_compstmt, begin_block_t_rcurly);
     }
 ;
 
@@ -158,13 +158,13 @@ bodystmt
             panic!("diagnostic error");
         }
 
-        $$ = node::begin_body($1, rescue_bodies, else_t, else_, ensure_t, ensure_);
+        $$ = builders::begin_body($1, rescue_bodies, else_t, else_, ensure_t, ensure_);
     }
 ;
 
 compstmt: stmts opt_terms {
     |$1:Nodes| -> TSomeNode;
-    $$ = node::compstmt($1);
+    $$ = builders::compstmt($1);
 };
 
 stmts
@@ -206,21 +206,21 @@ fake_embedded_action__stmt__1: {
 stmt
     : kALIAS fitem fake_embedded_action__stmt__1 fitem {
         |$1: Token, $2: Node, $4: Node| -> Node;
-        $$ = node::alias($1, $2, $4);
+        $$ = builders::alias($1, $2, $4);
     }
     | kALIAS tGVAR tGVAR {
         |$1: Token, $2: Token, $3: Token| -> Node;
-        $$ = node::alias(
+        $$ = builders::alias(
                 $1,
-                node::gvar($2),
-                node::gvar($3));
+                builders::gvar($2),
+                builders::gvar($3));
     }
     | kALIAS tGVAR tBACK_REF {
         |$1: Token, $2: Token, $3: Token| -> Node;
-        $$ = node::alias(
+        $$ = builders::alias(
                 $1,
-                node::gvar($2),
-                node::back_ref($3));
+                builders::gvar($2),
+                builders::back_ref($3));
     }
     | kALIAS tGVAR tNTH_REF {
         ||->TDummy; $$=();
@@ -229,98 +229,98 @@ stmt
     }
     | kUNDEF undef_list {
         |$1:Token, $2:Nodes| -> Node;
-        $$ = node::undef_method($1, $2);
+        $$ = builders::undef_method($1, $2);
     }
     | stmt kIF_MOD expr_value {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::condition_mod(Some($1), None, $2, $3);
+        $$ = builders::condition_mod(Some($1), None, $2, $3);
     }
     | stmt kUNLESS_MOD expr_value {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::condition_mod(None, Some($1), $2, $3);
+        $$ = builders::condition_mod(None, Some($1), $2, $3);
     }
     | stmt kWHILE_MOD expr_value {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::loop_mod("while", $1, $2, $3);
+        $$ = builders::loop_mod("while", $1, $2, $3);
     }
     | stmt kUNTIL_MOD expr_value {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::loop_mod("until", $1, $2, $3);
+        $$ = builders::loop_mod("until", $1, $2, $3);
     }
     | stmt kRESCUE_MOD stmt {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        let rescue_body = node::rescue_body($2, None, None, None, None, $3);
+        let rescue_body = builders::rescue_body($2, None, None, None, None, $3);
 
-        $$ = node::begin_body(Some($1), vec![ rescue_body ], None, None, None, None).expect("unexpected None");
+        $$ = builders::begin_body(Some($1), vec![ rescue_body ], None, None, None, None).expect("unexpected None");
     }
     | klEND tLCURLY compstmt tRCURLY {
         |$1:Token, $2:Token, $3:Node, $4:Token| -> Node;
-        $$ = node::postexe($1, $2, $3, $4);
+        $$ = builders::postexe($1, $2, $3, $4);
     }
     | command_asgn
     | mlhs tEQL command_call {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::multi_assign($1, $2, $3);
+        $$ = builders::multi_assign($1, $2, $3);
     }
     | lhs tEQL mrhs {
         |$1:Node, $2:Token, $3:Nodes| -> Node;
-        $$ = node::assign($1, $2, node::array(None, $3, None) );
+        $$ = builders::assign($1, $2, builders::array(None, $3, None) );
     }
     | mlhs tEQL mrhs_arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::multi_assign($1, $2, $3);
+        $$ = builders::multi_assign($1, $2, $3);
     }
     | expr
 ;
 
 command_asgn
     : lhs tEQL command_rhs {
-        |$1: Node, $2: Token, $3: Node| -> Node; $$ = node::assign($1, $2, $3);
+        |$1: Node, $2: Token, $3: Node| -> Node; $$ = builders::assign($1, $2, $3);
     }
     | var_lhs tOP_ASGN command_rhs {
-        |$1: Node, $2: Token, $3: Node| -> Node; $$ = node::op_assign($1, $2, $3);
+        |$1: Node, $2: Token, $3: Node| -> Node; $$ = builders::op_assign($1, $2, $3);
     }
     | primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN command_rhs {
         |$1: Node, $2: Token, $3: Nodes, $4:Token, $5:Token, $6:Node| -> Node;
 
-        $$ = node::op_assign(
-            node::index($1, $2, $3, $4),
+        $$ = builders::op_assign(
+            builders::index($1, $2, $3, $4),
             $5, $6
         );
     }
     | primary_value call_op tIDENTIFIER tOP_ASGN command_rhs {
         |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
 
-        $$ = node::op_assign(
-            node::call_method(Some($1), Some($2), Some($3), None, vec![], None),
+        $$ = builders::op_assign(
+            builders::call_method(Some($1), Some($2), Some($3), None, vec![], None),
             $4, $5
         );
     }
     | primary_value call_op tCONSTANT tOP_ASGN command_rhs {
         |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
 
-        $$ = node::op_assign(
-            node::call_method(Some($1), Some($2), Some($3), None, vec![], None),
+        $$ = builders::op_assign(
+            builders::call_method(Some($1), Some($2), Some($3), None, vec![], None),
             $4, $5
         );
     }
     | primary_value tCOLON2 tCONSTANT tOP_ASGN command_rhs {
         |$1:Node, $2:Token, $3:Token, $4:Token, $5:Node| -> Node;
 
-        let const_node = node::const_op_assignable(node::const_fetch($1, $2, $3));
-        $$ = node::op_assign(const_node, $4, $5);
+        let const_node = builders::const_op_assignable(builders::const_fetch($1, $2, $3));
+        $$ = builders::op_assign(const_node, $4, $5);
     }
     | primary_value tCOLON2 tIDENTIFIER tOP_ASGN command_rhs {
         |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
 
-        $$ = node::op_assign(
-            node::call_method(Some($1), Some($2), Some($3), None, vec![], None),
+        $$ = builders::op_assign(
+            builders::call_method(Some($1), Some($2), Some($3), None, vec![], None),
             $4, $5
         );
     }
     | backref tOP_ASGN command_rhs {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::op_assign($1, $2, $3);
+        $$ = builders::op_assign($1, $2, $3);
     }
 ;
 
@@ -328,9 +328,9 @@ command_rhs
     : command_call %prec tOP_ASGN
     | command_call kRESCUE_MOD stmt {
         |$1:Node, $2:Token, $3:Node| -> TSomeNode;
-        let rescue_body = node::rescue_body($2, None, None, None, None, $3);
+        let rescue_body = builders::rescue_body($2, None, None, None, None, $3);
 
-        $$ = node::begin_body(Some($1), vec![ rescue_body ], None, None, None, None);
+        $$ = builders::begin_body(Some($1), vec![ rescue_body ], None, None, None, None);
     }
     | command_asgn
 ;
@@ -339,19 +339,19 @@ expr
     : command_call
     | expr kAND expr {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::logical_op("and", $1, $2, $3);
+        $$ = builders::logical_op("and", $1, $2, $3);
     }
     | expr kOR expr {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::logical_op("or", $1, $2, $3);
+        $$ = builders::logical_op("or", $1, $2, $3);
     }
     | kNOT opt_nl expr {
         |$1:Token, $3:Node| -> Node;
-        $$ = node::not_op($1, None, Some($3), None);
+        $$ = builders::not_op($1, None, Some($3), None);
     }
     | tBANG command_call {
         |$1:Token, $2:Node| -> Node;
-        $$ = node::not_op($1, None, Some($2), None);
+        $$ = builders::not_op($1, None, Some($2), None);
     }
     | arg
 ;
@@ -379,7 +379,7 @@ block_command
     : block_call
     | block_call dot_or_colon operation2 command_args {
         |$1:Node, $2:Token, $3:Token, $4:Nodes| -> Node;
-        $$ = node::call_method(Some($1), Some($2), Some($3), None, $4, None);
+        $$ = builders::call_method(Some($1), Some($2), Some($3), None, $4, None);
     }
 ;
 
@@ -401,74 +401,74 @@ command
     : fcall command_args %prec tLOWEST {
         |$1: Token, $2: Nodes| -> Node;
 
-        $$ = node::call_method(None, None, Some($1), None, $2, None);
+        $$ = builders::call_method(None, None, Some($1), None, $2, None);
     }
     | fcall command_args cmd_brace_block {
         |$1:Token, $2:Nodes, $3:TBraceBlock| -> Node;
 
-        let method_call = node::call_method(None, None, Some($1), None, $2, None);
+        let method_call = builders::call_method(None, None, Some($1), None, $2, None);
         let (begin_t, (args, body), end_t) = $3;
-        $$ = node::block(method_call, begin_t, args, body, end_t);
+        $$ = builders::block(method_call, begin_t, args, body, end_t);
     }
     | primary_value call_op operation2 command_args %prec tLOWEST {
         |$1:Node, $2:Token, $3:Token, $4:Nodes| -> Node;
-        $$ = node::call_method(Some($1), Some($2), Some($3), None, $4, None);
+        $$ = builders::call_method(Some($1), Some($2), Some($3), None, $4, None);
     }
     | primary_value call_op operation2 command_args cmd_brace_block {
         |$1:Node, $2:Token, $3:Token, $4:Nodes, $5:TBraceBlock| -> Node;
 
-        let method_call = node::call_method(Some($1), Some($2), Some($3), None, $4, None);
+        let method_call = builders::call_method(Some($1), Some($2), Some($3), None, $4, None);
         let (begin_t, (args, body), end_t) = $5;
-        $$ = node::block(method_call, begin_t, args, body, end_t);
+        $$ = builders::block(method_call, begin_t, args, body, end_t);
     }
     | primary_value tCOLON2 operation2 command_args %prec tLOWEST {
         |$1:Node, $2:Token, $3:Token, $4:Nodes| -> Node;
-        $$ = node::call_method(Some($1), Some($2), Some($3), None, $4, None);
+        $$ = builders::call_method(Some($1), Some($2), Some($3), None, $4, None);
     }
     | primary_value tCOLON2 operation2 command_args cmd_brace_block {
         |$1:Node, $2:Token, $3:Token, $4:Nodes, $5:TBraceBlock| -> Node;
 
-        let method_call = node::call_method(Some($1), Some($2), Some($3), None, $4, None);
+        let method_call = builders::call_method(Some($1), Some($2), Some($3), None, $4, None);
         let (begin_t, (args, body), end_t) = $5;
-        $$ = node::block(method_call, begin_t, args, body, end_t);
+        $$ = builders::block(method_call, begin_t, args, body, end_t);
     }
     | kSUPER command_args {
         |$1:Token, $2:Nodes| -> Node;
-        $$ = node::keyword_cmd("super", $1, None, $2, None);
+        $$ = builders::keyword_cmd("super", $1, None, $2, None);
     }
     | kYIELD command_args {
         |$1:Token, $2:Nodes| -> Node;
-        $$ = node::keyword_cmd("yield", $1, None, $2, None);
+        $$ = builders::keyword_cmd("yield", $1, None, $2, None);
     }
     | k_return call_args {
         |$1:Token, $2:Nodes| -> Node;
-        $$ = node::keyword_cmd("return", $1, None, $2, None);
+        $$ = builders::keyword_cmd("return", $1, None, $2, None);
     }
     | kBREAK call_args {
         |$1:Token, $2:Nodes| -> Node;
-        $$ = node::keyword_cmd("break", $1, None, $2, None);
+        $$ = builders::keyword_cmd("break", $1, None, $2, None);
     }
     | kNEXT call_args {
         |$1:Token, $2:Nodes| -> Node;
-        $$ = node::keyword_cmd("next", $1, None, $2, None);
+        $$ = builders::keyword_cmd("next", $1, None, $2, None);
     }
 ;
 
 mlhs
     : mlhs_basic {
-        |$1: Nodes| -> Node; $$ = node::multi_lhs(None, $1, None);
+        |$1: Nodes| -> Node; $$ = builders::multi_lhs(None, $1, None);
     }
     | tLPAREN mlhs_inner rparen {
-        |$1: Token, $2: Node, $3: Token| -> Node; $$ = node::begin($1, Some($2), $3);
+        |$1: Token, $2: Node, $3: Token| -> Node; $$ = builders::begin($1, Some($2), $3);
     }
 ;
 
 mlhs_inner
     : mlhs_basic {
-        |$1: Nodes| -> Node; $$ = node::multi_lhs(None, $1, None);
+        |$1: Nodes| -> Node; $$ = builders::multi_lhs(None, $1, None);
     }
     | tLPAREN mlhs_inner rparen {
-        |$1: Token, $2: Nodes, $3: Token| -> Node; $$ = node::multi_lhs(Some($1), $2, Some($3));
+        |$1: Token, $2: Nodes, $3: Token| -> Node; $$ = builders::multi_lhs(Some($1), $2, Some($3));
     }
 ;
 
@@ -481,47 +481,47 @@ mlhs_basic
     }
     | mlhs_head tSTAR mlhs_node {
         |$1:Nodes, $2:Token, $3:Node| -> Nodes;
-        $1.push( node::splat($2, Some($3)) );
+        $1.push( builders::splat($2, Some($3)) );
         $$ = $1;
     }
     | mlhs_head tSTAR mlhs_node tCOMMA mlhs_post {
         |$1:Nodes, $2:Token, $3:Node, $5:Nodes| -> Nodes;
 
-        $1.push( node::splat($2, Some($3)) );
+        $1.push( builders::splat($2, Some($3)) );
         $1.append(&mut $5);
         $$ = $1;
     }
     | mlhs_head tSTAR {
         |$1:Nodes, $2:Token| -> Nodes;
-        $1.push( node::splat($2, None) );
+        $1.push( builders::splat($2, None) );
         $$ = $1;
     }
     | mlhs_head tSTAR tCOMMA mlhs_post {
         |$1:Nodes, $2:Token, $4:Nodes| -> Nodes;
 
-        $1.push( node::splat($2, None) );
+        $1.push( builders::splat($2, None) );
         $1.append(&mut $4);
         $$ = $1;
     }
     | tSTAR mlhs_node {
         |$1:Token, $2:Node| -> Nodes;
-        $$ = vec![ node::splat($1, Some($2)) ];
+        $$ = vec![ builders::splat($1, Some($2)) ];
     }
     | tSTAR mlhs_node tCOMMA mlhs_post {
         |$1:Token, $2:Node, $4:Nodes| -> Nodes;
 
-        let mut r = vec![ node::splat($1, Some($2)) ];
+        let mut r = vec![ builders::splat($1, Some($2)) ];
         r.append(&mut $4);
         $$ = r;
     }
     | tSTAR {
         |$1:Token| -> Nodes;
-        $$ = vec![ node::splat($1, None) ];
+        $$ = vec![ builders::splat($1, None) ];
     }
     | tSTAR tCOMMA mlhs_post {
         |$1:Token, $3:Nodes| -> Nodes;
 
-        let mut r = vec![ node::splat($1, None) ];
+        let mut r = vec![ builders::splat($1, None) ];
         r.append(&mut $3);
         $$ = r;
     }
@@ -531,7 +531,7 @@ mlhs_item
     : mlhs_node
     | tLPAREN mlhs_inner rparen {
         |$1: Token, $2: Node, $3: Token| -> Node;
-        $$ = node::begin($1, Some($2), $3);
+        $$ = builders::begin($1, Some($2), $3);
     }
 ;
 
@@ -560,80 +560,80 @@ mlhs_post
 mlhs_node
     : user_variable {
         |$1:Node| -> Node;
-        $$ = node::assignable($1, &mut self.tokenizer.static_env);
+        $$ = builders::assignable($1, &mut self.tokenizer.static_env);
     }
     | keyword_variable {
         |$1:Node| -> Node;
-        $$ = node::assignable($1, &mut self.tokenizer.static_env);
+        $$ = builders::assignable($1, &mut self.tokenizer.static_env);
     }
     | primary_value tLBRACK2 opt_call_args rbracket {
         |$1: Node, $2: Token, $3: Nodes, $4:Token| -> Node;
 
-        $$ = node::index_asgn($1, $2, $3, $4);
+        $$ = builders::index_asgn($1, $2, $3, $4);
     }
     | primary_value call_op tIDENTIFIER {
         |$1:Node, $2:Token, $3:Token| -> Node;
-        $$ = node::attr_asgn($1, $2, $3)
+        $$ = builders::attr_asgn($1, $2, $3)
     }
     | primary_value tCOLON2 tIDENTIFIER {
         |$1:Node, $2:Token, $3:Token| -> Node;
-        $$ = node::attr_asgn($1, $2, $3)
+        $$ = builders::attr_asgn($1, $2, $3)
     }
     | primary_value call_op tCONSTANT {
         |$1:Node, $2:Token, $3:Token| -> Node;
-        $$ = node::attr_asgn($1, $2, $3)
+        $$ = builders::attr_asgn($1, $2, $3)
     }
     | primary_value tCOLON2 tCONSTANT {
         |$1:Node, $2:Token, $3:Token| -> Node;
-        $$ = node::assignable(node::const_fetch($1, $2, $3), &mut self.tokenizer.static_env);
+        $$ = builders::assignable(builders::const_fetch($1, $2, $3), &mut self.tokenizer.static_env);
     }
     | tCOLON3 tCONSTANT {
         |$1:Token, $2:Token| -> Node;
-        $$ = node::assignable(node::const_global($1, $2), &mut self.tokenizer.static_env);
+        $$ = builders::assignable(builders::const_global($1, $2), &mut self.tokenizer.static_env);
     }
     | backref {
         |$1:Node| -> Node;
-        $$ = node::assignable($1, &mut self.tokenizer.static_env);
+        $$ = builders::assignable($1, &mut self.tokenizer.static_env);
     }
 ;
 
 lhs
     : user_variable {
         |$1:Node| -> Node;
-        $$ = node::assignable($1, &mut self.tokenizer.static_env);
+        $$ = builders::assignable($1, &mut self.tokenizer.static_env);
     }
     | keyword_variable {
         |$1:Node| -> Node;
-        $$ = node::assignable($1, &mut self.tokenizer.static_env);
+        $$ = builders::assignable($1, &mut self.tokenizer.static_env);
     }
     | primary_value tLBRACK2 opt_call_args rbracket {
         |$1: Node, $2: Token, $3: Nodes, $4:Token| -> Node;
 
-        $$ = node::index_asgn($1, $2, $3, $4);
+        $$ = builders::index_asgn($1, $2, $3, $4);
     }
     | primary_value call_op tIDENTIFIER {
         |$1:Node, $2:Token, $3:Token| -> Node;
-        $$ = node::attr_asgn($1, $2, $3)
+        $$ = builders::attr_asgn($1, $2, $3)
     }
     | primary_value tCOLON2 tIDENTIFIER {
         |$1:Node, $2:Token, $3:Token| -> Node;
-        $$ = node::attr_asgn($1, $2, $3)
+        $$ = builders::attr_asgn($1, $2, $3)
     }
     | primary_value call_op tCONSTANT {
         |$1:Node, $2:Token, $3:Token| -> Node;
-        $$ = node::attr_asgn($1, $2, $3)
+        $$ = builders::attr_asgn($1, $2, $3)
     }
     | primary_value tCOLON2 tCONSTANT {
         |$1:Node, $2:Token, $3:Token| -> Node;
-        $$ = node::assignable(node::const_fetch($1, $2, $3), &mut self.tokenizer.static_env);
+        $$ = builders::assignable(builders::const_fetch($1, $2, $3), &mut self.tokenizer.static_env);
     }
     | tCOLON3 tCONSTANT {
         |$1:Token, $2:Token| -> Node;
-        $$ = node::assignable(node::const_global($1, $2), &mut self.tokenizer.static_env);
+        $$ = builders::assignable(builders::const_global($1, $2), &mut self.tokenizer.static_env);
     }
     | backref {
         |$1:Node| -> Node;
-        $$ = node::assignable($1, &mut self.tokenizer.static_env);
+        $$ = builders::assignable($1, &mut self.tokenizer.static_env);
     }
 ;
 
@@ -649,13 +649,13 @@ cname
 
 cpath
     : tCOLON3 cname {
-        |$1:Token, $2:Token| -> Node; $$ = node::const_global($1, $2);
+        |$1:Token, $2:Token| -> Node; $$ = builders::const_global($1, $2);
     }
     | cname {
-        |$1:Token| -> Node; $$ = node::build_const($1);
+        |$1:Token| -> Node; $$ = builders::build_const($1);
     }
     | primary_value tCOLON2 cname {
-        |$1:Node, $2:Token, $3:Token| -> Node; $$ = node::const_fetch($1, $2, $3);
+        |$1:Node, $2:Token, $3:Token| -> Node; $$ = builders::const_fetch($1, $2, $3);
     }
 ;
 
@@ -667,7 +667,7 @@ fname
 
 fsym
     : fname {
-        |$1:Token| -> Node; $$ = node::symbol($1);
+        |$1:Token| -> Node; $$ = builders::symbol($1);
     }
     | symbol
 ;
@@ -714,180 +714,180 @@ fake_embedded_action_undef_list: {
 arg
     : lhs tEQL arg_rhs {
         |$1: Node; $2: Token, $3: Node| -> Node;
-        $$ = node::assign($1, $2, $3)
+        $$ = builders::assign($1, $2, $3)
     }
     | var_lhs tOP_ASGN arg_rhs {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::op_assign($1, $2, $3);
+        $$ = builders::op_assign($1, $2, $3);
     }
     | primary_value tLBRACK2 opt_call_args rbracket tOP_ASGN arg_rhs {
         |$1: Node, $2: Token, $3: Nodes, $4:Token, $5:Token, $6:Node| -> Node;
 
-        $$ = node::op_assign(
-            node::index($1, $2, $3, $4),
+        $$ = builders::op_assign(
+            builders::index($1, $2, $3, $4),
             $5, $6
         );
     }
     | primary_value call_op tIDENTIFIER tOP_ASGN arg_rhs {
         |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
 
-        $$ = node::op_assign(
-            node::call_method(Some($1), Some($2), Some($3), None, vec![], None),
+        $$ = builders::op_assign(
+            builders::call_method(Some($1), Some($2), Some($3), None, vec![], None),
             $4, $5
         );
     }
     | primary_value call_op tCONSTANT tOP_ASGN arg_rhs {
         |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
 
-        $$ = node::op_assign(
-            node::call_method(Some($1), Some($2), Some($3), None, vec![], None),
+        $$ = builders::op_assign(
+            builders::call_method(Some($1), Some($2), Some($3), None, vec![], None),
             $4, $5
         );
     }
     | primary_value tCOLON2 tIDENTIFIER tOP_ASGN arg_rhs {
         |$1: Node, $2: Token, $3: Token, $4:Token, $5:Node| -> Node;
 
-        $$ = node::op_assign(
-            node::call_method(Some($1), Some($2), Some($3), None, vec![], None),
+        $$ = builders::op_assign(
+            builders::call_method(Some($1), Some($2), Some($3), None, vec![], None),
             $4, $5
         );
     }
     | primary_value tCOLON2 tCONSTANT tOP_ASGN arg_rhs {
         |$1:Node, $2:Token, $3:Token, $4:Token, $5:Node| -> Node;
 
-        let const_node = node::const_op_assignable(node::const_fetch($1, $2, $3));
-        $$ = node::op_assign(const_node, $4, $5);
+        let const_node = builders::const_op_assignable(builders::const_fetch($1, $2, $3));
+        $$ = builders::op_assign(const_node, $4, $5);
     }
     | tCOLON3 tCONSTANT tOP_ASGN arg_rhs {
         |$1:Token, $2:Token, $3:Token, $4:Node| -> Node;
 
-        let const_node = node::const_op_assignable(node::const_global($1, $2));
-        $$ = node::op_assign(const_node, $3, $4);
+        let const_node = builders::const_op_assignable(builders::const_global($1, $2));
+        $$ = builders::op_assign(const_node, $3, $4);
     }
     | backref tOP_ASGN arg_rhs {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::op_assign($1, $2, $3);
+        $$ = builders::op_assign($1, $2, $3);
     }
     | arg tDOT2 arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::range_inclusive($1, $2, Some($3));
+        $$ = builders::range_inclusive($1, $2, Some($3));
     }
     | arg tDOT3 arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::range_exclusive($1, $2, Some($3));
+        $$ = builders::range_exclusive($1, $2, Some($3));
     }
     | arg tDOT2 {
         |$1:Node, $2:Token| -> Node;
-        $$ = node::range_inclusive($1, $2, None);
+        $$ = builders::range_inclusive($1, $2, None);
     }
     | arg tDOT3 {
         |$1:Node, $2:Token| -> Node;
-        $$ = node::range_exclusive($1, $2, None);
+        $$ = builders::range_exclusive($1, $2, None);
     }
     | arg tPLUS arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::binary_op($1, $2, $3);
+        $$ = builders::binary_op($1, $2, $3);
     }
     | arg tMINUS arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::binary_op($1, $2, $3);
+        $$ = builders::binary_op($1, $2, $3);
     }
     | arg tSTAR2 arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::binary_op($1, $2, $3);
+        $$ = builders::binary_op($1, $2, $3);
     }
     | arg tDIVIDE arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::binary_op($1, $2, $3);
+        $$ = builders::binary_op($1, $2, $3);
     }
     | arg tPERCENT arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::binary_op($1, $2, $3);
+        $$ = builders::binary_op($1, $2, $3);
     }
     | arg tPOW arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::binary_op($1, $2, $3);
+        $$ = builders::binary_op($1, $2, $3);
     }
     | tUNARY_NUM simple_numeric tPOW arg {
         |$1:Token, $2:Node, $3:Token, $4:Node| -> Node;
-        $$ = node::unary_op($1, node::binary_op($2, $3, $4));
+        $$ = builders::unary_op($1, builders::binary_op($2, $3, $4));
     }
     | tUPLUS arg {
         |$1:Token, $2:Node| -> Node;
-        $$ = node::unary_op($1, $2);
+        $$ = builders::unary_op($1, $2);
     }
     | tUMINUS arg {
         |$1:Token, $2:Node| -> Node;
-        $$ = node::unary_op($1, $2);
+        $$ = builders::unary_op($1, $2);
     }
     | arg tPIPE arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::binary_op($1, $2, $3);
+        $$ = builders::binary_op($1, $2, $3);
     }
     | arg tCARET arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::binary_op($1, $2, $3);
+        $$ = builders::binary_op($1, $2, $3);
     }
     | arg tAMPER2 arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::binary_op($1, $2, $3);
+        $$ = builders::binary_op($1, $2, $3);
     }
     | arg tCMP arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::binary_op($1, $2, $3);
+        $$ = builders::binary_op($1, $2, $3);
     }
     | rel_expr %prec tCMP
     | arg tEQ arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::binary_op($1, $2, $3);
+        $$ = builders::binary_op($1, $2, $3);
     }
     | arg tEQQ arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::binary_op($1, $2, $3);
+        $$ = builders::binary_op($1, $2, $3);
     }
     | arg tNEQ arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::binary_op($1, $2, $3);
+        $$ = builders::binary_op($1, $2, $3);
     }
     | arg tMATCH arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::match_op($1, $2, $3);
+        $$ = builders::match_op($1, $2, $3);
     }
     | arg tNMATCH arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::binary_op($1, $2, $3);
+        $$ = builders::binary_op($1, $2, $3);
     }
     | tBANG arg {
         |$1:Token, $2:Node| -> Node;
-        $$ = node::not_op($1, None, Some($2), None);
+        $$ = builders::not_op($1, None, Some($2), None);
     }
     | tTILDE arg {
         |$1:Token, $2:Node| -> Node;
-        $$ = node::unary_op($1, $2);
+        $$ = builders::unary_op($1, $2);
     }
     | arg tLSHFT arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::binary_op($1, $2, $3);
+        $$ = builders::binary_op($1, $2, $3);
     }
     | arg tRSHFT arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::binary_op($1, $2, $3);
+        $$ = builders::binary_op($1, $2, $3);
     }
     | arg tANDOP arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::logical_op("and", $1, $2, $3);
+        $$ = builders::logical_op("and", $1, $2, $3);
     }
     | arg tOROP arg {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::logical_op("or", $1, $2, $3);
+        $$ = builders::logical_op("or", $1, $2, $3);
     }
     | kDEFINED opt_nl arg {
         |$1:Token, $3:Node| -> Node;
-        $$ = node::keyword_cmd("defined?", $1, None, vec![$3], None);
+        $$ = builders::keyword_cmd("defined?", $1, None, vec![$3], None);
     }
     | arg tEH arg opt_nl tCOLON arg {
         |$1:Node, $2:Token, $3:Node, $5:Token, $6:Node| -> Node;
-        $$ = node::ternary($1, $2, $3, $5, $6);
+        $$ = builders::ternary($1, $2, $3, $5, $6);
     }
     | primary
 ;
@@ -897,11 +897,11 @@ relop: tGT | tLT | tGEQ | tLEQ;
 rel_expr
     : arg relop arg %prec tGT {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::binary_op($1, $2, $3);
+        $$ = builders::binary_op($1, $2, $3);
     }
     | rel_expr relop arg %prec tGT {
         |$1:Node, $2:Token, $3:Node| -> Node;
-        $$ = node::binary_op($1, $2, $3);
+        $$ = builders::binary_op($1, $2, $3);
     }
 ;
 
@@ -914,11 +914,11 @@ aref_args
     | args trailer { $$ = $1; }
     | args tCOMMA assocs trailer {
         |$1: Nodes, $3: Nodes| -> Nodes;
-        $1.push(node::associate(None, $3, None));
+        $1.push(builders::associate(None, $3, None));
         $$ = $1;
     }
     | assocs trailer {
-        |$1: Nodes|->Nodes; $$ = vec![ node::associate(None, $1, None) ];
+        |$1: Nodes|->Nodes; $$ = vec![ builders::associate(None, $1, None) ];
     }
 ;
 
@@ -926,9 +926,9 @@ arg_rhs
     : arg %prec tOP_ASGN
     | arg kRESCUE_MOD arg {
         |$1:Node, $2:Token, $3:Node| -> TSomeNode;
-        let rescue_body = node::rescue_body($2, None, None, None, None, $3);
+        let rescue_body = builders::rescue_body($2, None, None, None, None, $3);
 
-        $$ = node::begin_body(Some($1), vec![ rescue_body ], None, None, None, None);
+        $$ = builders::begin_body(Some($1), vec![ rescue_body ], None, None, None, None);
     }
 ;
 
@@ -952,13 +952,13 @@ opt_call_args
     | args tCOMMA assocs tCOMMA {
         |$1:Nodes, $3:Nodes| -> Nodes;
 
-        $1.push(node::associate(None, $3, None));
+        $1.push(builders::associate(None, $3, None));
         $$ = $1;
     }
     | assocs tCOMMA {
         |$1:Nodes| -> Nodes;
 
-        $$ = vec![ node::associate(None, $1, None) ];
+        $$ = vec![ builders::associate(None, $1, None) ];
     }
 ;
 
@@ -975,14 +975,14 @@ call_args
     | assocs opt_block_arg {
         |$1:Nodes, $2:Nodes| -> Nodes;
 
-        let mut result = vec![node::associate(None, $1, None)];
+        let mut result = vec![builders::associate(None, $1, None)];
         result.append(&mut $2);
         $$ = result;
     }
     | args tCOMMA assocs opt_block_arg {
         |$1:Nodes, $3:Nodes, $4:Nodes| -> Nodes;
 
-        let mut assocs = node::associate(None, $3, None);
+        let mut assocs = builders::associate(None, $3, None);
         $1.push(assocs);
         $1.append(&mut $4);
         $$ = $1;
@@ -1069,7 +1069,7 @@ fake_embedded_action__command_args: {
 block_arg
     : tAMPER arg_value {
         |$1:Token, $2:Node| -> Node;
-        $$ = node::block_pass($1, $2);
+        $$ = builders::block_pass($1, $2);
     }
 ;
 
@@ -1088,7 +1088,7 @@ args
     }
     | tSTAR arg_value {
         |$1:Token, $2:Node| -> Nodes;
-        $$ = vec![ node::splat($1, Some($2)) ];
+        $$ = vec![ builders::splat($1, Some($2)) ];
     }
     | args tCOMMA arg_value {
         |$1:Nodes, $2:Token, $3:Node| -> Nodes;
@@ -1098,7 +1098,7 @@ args
     | args tCOMMA tSTAR arg_value {
         |$1:Nodes, $3:Token, $4:Node| -> Nodes;
 
-        $1.push(node::splat($3, Some($4)));
+        $1.push(builders::splat($3, Some($4)));
         $$ = $1;
     }
 ;
@@ -1106,7 +1106,7 @@ args
 mrhs_arg
     : mrhs {
         |$1: Nodes| -> Node;
-        $$ = node::array(None, $1, None);
+        $$ = builders::array(None, $1, None);
     }
     | arg_value
 ;
@@ -1119,12 +1119,12 @@ mrhs
     }
     | args tCOMMA tSTAR arg_value {
         |$1:Nodes, $3:Token, $4: Node| -> Nodes;
-        $1.push(node::splat($3, Some($4)));
+        $1.push(builders::splat($3, Some($4)));
         $$ = $1;
     }
     | tSTAR arg_value {
         |$1:Token, $2:Node|->Nodes;
-        $$ = vec![ node::splat($1, Some($2)) ];
+        $$ = vec![ builders::splat($1, Some($2)) ];
     }
 ;
 
@@ -1206,119 +1206,119 @@ primary
     | backref
     | tFID {
         |$1: Token| -> Node;
-        $$ = node::call_method(None, None, Some($1), None, vec![], None);
+        $$ = builders::call_method(None, None, Some($1), None, vec![], None);
     }
     | kBEGIN fake_embedded_action_primary_kBEGIN bodystmt kEND {
         |$1: Token, $2: StackState, $3: TSomeNode, $4: Token| -> Node;
 
         self.tokenizer.interior_lexer.cmdarg = $2;
 
-        $$ = node::begin_keyword($1, $3, $4);
+        $$ = builders::begin_keyword($1, $3, $4);
     }
     | tLPAREN_ARG stmt fake_embedded_action_primary_tLPAREN_ARG_stmt rparen {
         |$1: Token, $2: Node, $4: Token| -> Node;
 
-        $$ = node::begin($1, Some($2), $4);
+        $$ = builders::begin($1, Some($2), $4);
     }
     | tLPAREN_ARG fake_embedded_action_primary_tLPAREN_ARG_2 opt_nl tRPAREN {
         |$1: Token, $4: Token| -> Node;
 
-        $$ = node::begin($1, None, $4);
+        $$ = builders::begin($1, None, $4);
     }
     | tLPAREN compstmt tRPAREN {
         |$1: Token, $2: TSomeNode, $3: Token| -> Node;
 
-        $$ = node::begin($1, $2, $3);
+        $$ = builders::begin($1, $2, $3);
     }
     | primary_value tCOLON2 tCONSTANT {
         |$1:Node; $2:Token, $3:Token| -> Node;
 
-        $$ = node::const_fetch($1, $2, $3);
+        $$ = builders::const_fetch($1, $2, $3);
     }
     | tCOLON3 tCONSTANT {
         |$1:Token, $2:Token| -> Node;
 
-        $$ = node::const_global($1, $2);
+        $$ = builders::const_global($1, $2);
     }
     | tLBRACK aref_args tRBRACK {
         |$1:Token; $2:Nodes; $3:Token| -> Node;
 
-        $$ = node::array( Some($1), $2, Some($3) );
+        $$ = builders::array( Some($1), $2, Some($3) );
     }
     | tLBRACE assoc_list tRCURLY {
         |$1:Token; $2:Nodes; $3:Token| -> Node;
 
-        $$ = node::associate( Some($1), $2, Some($3) );
+        $$ = builders::associate( Some($1), $2, Some($3) );
     }
     | k_return {
-        |$1:Token| -> Node; $$ = node::keyword_cmd("return", $1, None, vec![], None);
+        |$1:Token| -> Node; $$ = builders::keyword_cmd("return", $1, None, vec![], None);
     }
     | kYIELD tLPAREN2 call_args rparen {
         |$1:Token, $2:Token, $3:Nodes, $4:Token| -> Node;
-        $$ = node::keyword_cmd("yield", $1, Some($2), $3, Some($4));
+        $$ = builders::keyword_cmd("yield", $1, Some($2), $3, Some($4));
     }
     | kYIELD tLPAREN2 rparen {
         |$1:Token, $2:Token, $3:Token| -> Node;
-        $$ = node::keyword_cmd("yield", $1, Some($2), vec![], Some($3));
+        $$ = builders::keyword_cmd("yield", $1, Some($2), vec![], Some($3));
     }
     | kYIELD {
-        |$1:Token| -> Node; $$ = node::keyword_cmd("yield", $1, None, vec![], None);
+        |$1:Token| -> Node; $$ = builders::keyword_cmd("yield", $1, None, vec![], None);
     }
     | kDEFINED opt_nl tLPAREN2 expr rparen {
         |$1:Token, $3:Token, $4:Node, $5:Token| -> Node;
-        $$ = node::keyword_cmd("defined?", $1, Some($3), vec![$4], Some($5));
+        $$ = builders::keyword_cmd("defined?", $1, Some($3), vec![$4], Some($5));
     }
     | kNOT tLPAREN2 expr rparen {
         |$1:Token, $2:Token, $3:Node, $4:Token| -> Node;
-        $$ = node::not_op($1, Some($2), Some($3), Some($4));
+        $$ = builders::not_op($1, Some($2), Some($3), Some($4));
     }
     | kNOT tLPAREN2 rparen {
         |$1:Token, $2:Token, $3:Token| -> Node;
-        $$ = node::not_op($1, Some($2), None, Some($3));
+        $$ = builders::not_op($1, Some($2), None, Some($3));
     }
     | fcall brace_block {
         |$1:Token, $2:TBraceBlock| -> Node;
 
-        let method_call = node::call_method(None, None, Some($1), None, vec![], None);
+        let method_call = builders::call_method(None, None, Some($1), None, vec![], None);
         let (begin_t, (args, body), end_t) = $2;
-        $$ = node::block(method_call, begin_t, args, body, end_t);
+        $$ = builders::block(method_call, begin_t, args, body, end_t);
     }
     | method_call
     | method_call brace_block {
         |$1:Node, $2:TBraceBlock| -> Node;
 
         let (begin_t, (args, body), end_t) = $2;
-        $$ = node::block($1, begin_t, args, body, end_t);
+        $$ = builders::block($1, begin_t, args, body, end_t);
     }
     | tLAMBDA lambda {
         |$1:Token, $2:TLambda| -> Node;
 
-        let lambda_call = node::call_lambda($1);
+        let lambda_call = builders::call_lambda($1);
         let (args, ( begin_t, body, end_t )) = $2;
 
-        $$ = node::block(lambda_call, begin_t, args, body, end_t);
+        $$ = builders::block(lambda_call, begin_t, args, body, end_t);
     }
     | kIF expr_value then compstmt if_tail kEND {
         |$1:Token, $2:Node, $3:Token, $4:TSomeNode, $5:TSomeTokenNode, $6:Token| -> Node;
 
         let (else_t, else_) = unwrap_some_token_node!($5);
-        $$ = node::condition($1, $2, $3, $4, else_t, else_, Some($6));
+        $$ = builders::condition($1, $2, $3, $4, else_t, else_, Some($6));
     }
     | kUNLESS expr_value then compstmt opt_else kEND {
         |$1:Token, $2:Node, $3:Token, $4:Node, $5:TSomeTokenNode, $6:Token| -> Node;
 
         let (else_t, else_) = unwrap_some_token_node!($5);
-        $$ = node::condition($1, $2, $3, else_, else_t, Some($4), Some($6));
+        $$ = builders::condition($1, $2, $3, else_, else_t, Some($4), Some($6));
     }
     | kWHILE expr_value_do compstmt kEND {
         |$1:Token, $2:TNodeToken, $3:Node, $4:Token| -> Node;
         let (expr_value_node, expr_value_token) = $2;
-        $$ = node::build_loop("while", $1, expr_value_node, expr_value_token, $3, $4);
+        $$ = builders::build_loop("while", $1, expr_value_node, expr_value_token, $3, $4);
     }
     | kUNTIL expr_value_do compstmt kEND {
         |$1:Token, $2:TNodeToken, $3:Node, $4:Token| -> Node;
         let (expr_value_node, expr_value_token) = $2;
-        $$ = node::build_loop("until", $1, expr_value_node, expr_value_token, $3, $4);
+        $$ = builders::build_loop("until", $1, expr_value_node, expr_value_token, $3, $4);
     }
     | kCASE expr_value opt_terms case_body kEND {
         |$1:Token, $2:Node| -> TDummy;
@@ -1347,7 +1347,7 @@ primary
     | kFOR for_var kIN expr_value_do compstmt kEND {
         |$1:Token, $2:Node, $3:Token, $4:TNodeToken, $5:Node, $6:Token| -> Node;
         let (expr_value_node, expr_value_token) = $4;
-        $$ = node::build_for($1, $2, $3, expr_value_node, expr_value_token, $5, $6);
+        $$ = builders::build_for($1, $2, $3, expr_value_node, expr_value_token, $5, $6);
     }
     | kCLASS cpath superclass fake_embedded_action__primary__kCLASS_1 bodystmt kEND {
         |$1:Token, $2:Node, $3:TSomeTokenNode, $5:TSomeNode, $6:Token| -> Node;
@@ -1362,7 +1362,7 @@ primary
         //   result = @builder.def_class(val[0], val[1],
         //                               lt_t, superclass,
         //                               val[4], val[5])
-        $$ = node::def_class($1, $2, lt_t, superclass, $5, $6);
+        $$ = builders::def_class($1, $2, lt_t, superclass, $5, $6);
 
         self.tokenizer.interior_lexer.pop_cmdarg();
         self.tokenizer.interior_lexer.pop_cond();
@@ -1394,7 +1394,7 @@ primary
 
         //   result = @builder.def_module(val[0], val[1],
         //                                val[3], val[4])
-        $$ = node::def_module($1, $2, $4, $5);
+        $$ = builders::def_module($1, $2, $4, $5);
 
         self.tokenizer.interior_lexer.pop_cmdarg();
         self.tokenizer.static_env.unextend();
@@ -1428,16 +1428,16 @@ primary
         wip!();
     }
     | kBREAK {
-        |$1:Token| -> Node; $$ = node::keyword_cmd("break", $1, None, vec![], None);
+        |$1:Token| -> Node; $$ = builders::keyword_cmd("break", $1, None, vec![], None);
     }
     | kNEXT {
-        |$1:Token| -> Node; $$ = node::keyword_cmd("next", $1, None, vec![], None);
+        |$1:Token| -> Node; $$ = builders::keyword_cmd("next", $1, None, vec![], None);
     }
     | kREDO {
-        |$1:Token| -> Node; $$ = node::keyword_cmd("redo", $1, None, vec![], None);
+        |$1:Token| -> Node; $$ = builders::keyword_cmd("redo", $1, None, vec![], None);
     }
     | kRETRY {
-        |$1:Token| -> Node; $$ = node::keyword_cmd("retry", $1, None, vec![], None);
+        |$1:Token| -> Node; $$ = builders::keyword_cmd("retry", $1, None, vec![], None);
     }
 ;
 
@@ -1474,7 +1474,7 @@ if_tail
         let (else_t, else_) = unwrap_some_token_node!($5);
         $$ = Some((
             $1,
-            node::condition(k_elseif_clone, $2, $3, Some($4), else_t, else_, None)
+            builders::condition(k_elseif_clone, $2, $3, Some($4), else_t, else_, None)
         ));
     }
 ;
@@ -1496,10 +1496,10 @@ for_var
 
 f_marg
     : f_norm_arg {
-        |$1:Token| -> Node; $$ = node::arg($1);
+        |$1:Token| -> Node; $$ = builders::arg($1);
     }
     | tLPAREN f_margs rparen {
-        |$1: Token, $2: Nodes, $3: Token| -> Node; $$ = node::multi_lhs(Some($1), $2, Some($3));
+        |$1: Token, $2: Nodes, $3: Token| -> Node; $$ = builders::multi_lhs(Some($1), $2, Some($3));
     }
 ;
 
@@ -1518,45 +1518,45 @@ f_margs
     : f_marg_list
     | f_marg_list tCOMMA tSTAR f_norm_arg {
         |$1: Nodes, $3: Token, $4: Token| -> Nodes;
-        $1.push(node::restarg($3, Some($4) ));
+        $1.push(builders::restarg($3, Some($4) ));
         $$ = $1;
     }
     | f_marg_list tCOMMA tSTAR f_norm_arg tCOMMA f_marg_list {
         |$1: Nodes, $3: Token, $4: Token, $6: Nodes| -> Nodes;
-        $1.push(node::restarg($3, Some($4) ));
+        $1.push(builders::restarg($3, Some($4) ));
         $1.append(&mut $6);
         $$ = $1;
     }
     | f_marg_list tCOMMA tSTAR {
         |$1: Nodes, $3: Token| -> Nodes;
 
-        $1.push(node::restarg($3, None ));
+        $1.push(builders::restarg($3, None ));
         $$ = $1;
     }
     | f_marg_list tCOMMA tSTAR            tCOMMA f_marg_list {
         |$1: Nodes, $3: Token, $5: Nodes| -> Nodes;
 
-        $1.push(node::restarg($3, None ));
+        $1.push(builders::restarg($3, None ));
         $1.append(&mut $5);
         $$ = $1;
     }
     |                    tSTAR f_norm_arg {
         |$1: Token, $2: Token| -> Nodes;
-        $$ = vec![ node::restarg($1, Some($2)) ];
+        $$ = vec![ builders::restarg($1, Some($2)) ];
     }
     |                    tSTAR f_norm_arg tCOMMA f_marg_list {
         |$1: Token, $2: Token, $4: Nodes| -> Nodes;
-        let mut result = vec![ node::restarg( $1, Some($2) ) ];
+        let mut result = vec![ builders::restarg( $1, Some($2) ) ];
         result.append(&mut $4);
         $$ = result;
     }
     |                    tSTAR {
         |$1: Token| -> Nodes;
-        $$ = vec![ node::restarg($1, None) ];
+        $$ = vec![ builders::restarg($1, None) ];
     }
     |                    tSTAR tCOMMA f_marg_list {
         |$1: Token, $3: Nodes| -> Nodes;
-        let mut result = vec![ node::restarg($1, None) ];
+        let mut result = vec![ builders::restarg($1, None) ];
         result.append(&mut $3);
         $$ = result;
     }
@@ -1703,7 +1703,7 @@ block_param
 
 opt_block_param
     : {
-        || -> Node; $$ = node::args(None, vec![], None);
+        || -> Node; $$ = builders::args(None, vec![], None);
     }
     | block_param_def {
         ||->TDummy;$$=();
@@ -1714,17 +1714,17 @@ opt_block_param
 block_param_def
     : tPIPE opt_bv_decl tPIPE {
         |$1: Token, $2: Nodes, $3: Token| -> Node;
-        $$ = node::args(Some($1), $2, Some($3));
+        $$ = builders::args(Some($1), $2, Some($3));
     }
     | tOROP {
         |$1: Token| -> Node;
         let _2 = $1.clone();
-        $$ = node::args(Some($1), vec![], Some(_2));
+        $$ = builders::args(Some($1), vec![], Some(_2));
     }
     | tPIPE block_param opt_bv_decl tPIPE {
         |$1: Token, $2: Nodes, $3: Nodes, $4: Token| -> Node;
         $2.append(&mut $3);
-        $$ = node::args(Some($1), $2, Some($4));
+        $$ = builders::args(Some($1), $2, Some($4));
     }
 ;
 
@@ -1757,7 +1757,7 @@ bvar
             self.tokenizer.static_env.declare(t_value.clone());
         } else { unreachable!(); }
 
-        $$ = node::shadowarg($1);
+        $$ = builders::shadowarg($1);
     }
     | f_bad_arg
 ;
@@ -1787,10 +1787,10 @@ f_larglist
     : tLPAREN2 f_args opt_bv_decl tRPAREN {
         |$1: Token, $2: Nodes, $3: Nodes, $4: Token| -> Node;
         $2.append(&mut $3);
-        $$ = node::args(Some($1), $2, Some($4));
+        $$ = builders::args(Some($1), $2, Some($4));
     }
     | f_args {
-        |$1: Nodes| -> Node; $$ = node::args(None, $1, None);
+        |$1: Nodes| -> Node; $$ = builders::args(None, $1, None);
     }
 ;
 
@@ -1828,30 +1828,30 @@ block_call
         |$1:Node, $2:TDoBlock| -> Node;
 
         let (begin_t, ( block_args, body), end_t) = $2;
-        $$ = node::block($1, begin_t, block_args, body, end_t);
+        $$ = builders::block($1, begin_t, block_args, body, end_t);
     }
     | block_call dot_or_colon operation2 opt_paren_args {
         |$1:Node, $2:Token, $3:Token, $4:TParenArgs| -> Node;
 
         let (lparen_t, args, rparen_t) = $4;
-        $$ = node::call_method(Some($1), Some($2), Some($3), lparen_t, args, rparen_t);
+        $$ = builders::call_method(Some($1), Some($2), Some($3), lparen_t, args, rparen_t);
     }
     | block_call dot_or_colon operation2 opt_paren_args brace_block {
         |$1:Node, $2:Token, $3:Token, $4:TParenArgs, $5:TBraceBlock| -> Node;
 
         let (lparen_t, args, rparen_t) = $4;
-        let method_call = node::call_method(Some($1), Some($2), Some($3), lparen_t, args, rparen_t);
+        let method_call = builders::call_method(Some($1), Some($2), Some($3), lparen_t, args, rparen_t);
 
         let (begin_t, (args, body), end_t) = $5;
-        $$ = node::block(method_call, begin_t, args, body, end_t);
+        $$ = builders::block(method_call, begin_t, args, body, end_t);
     }
     | block_call dot_or_colon operation2 command_args do_block {
         |$1:Node, $2:Token, $3:Token, $4:Nodes, $5:TDoBlock| -> Node;
 
-        let method_call = node::call_method(Some($1), Some($2), Some($3), None, $4, None);
+        let method_call = builders::call_method(Some($1), Some($2), Some($3), None, $4, None);
 
         let (begin_t, (args, body), end_t) = $5;
-        $$ = node::block(method_call, begin_t, args, body, end_t);
+        $$ = builders::block(method_call, begin_t, args, body, end_t);
     }
 ;
 
@@ -1860,51 +1860,51 @@ method_call
         |$1:Token, $2:TParenArgs| -> Node;
 
         let (lparen_t, args, rparen_t) = $2;
-        $$ = node::call_method(None, None, Some($1), lparen_t, args, rparen_t);
+        $$ = builders::call_method(None, None, Some($1), lparen_t, args, rparen_t);
     }
     | primary_value call_op operation2 opt_paren_args {
         |$1:Node, $2:Token, $3:Token, $4:TParenArgs| -> Node;
 
         let (lparen_t, args, rparen_t) = $4;
-        $$ = node::call_method(Some($1), Some($2), Some($3), lparen_t, args, rparen_t);
+        $$ = builders::call_method(Some($1), Some($2), Some($3), lparen_t, args, rparen_t);
     }
     | primary_value tCOLON2 operation2 paren_args {
         |$1:Node, $2:Token, $3:Token, $4:TParenArgs| -> Node;
 
         let (lparen_t, args, rparen_t) = $4;
-        $$ = node::call_method(Some($1), Some($2), Some($3), lparen_t, args, rparen_t);
+        $$ = builders::call_method(Some($1), Some($2), Some($3), lparen_t, args, rparen_t);
     }
     | primary_value tCOLON2 operation3 {
         |$1:Node, $2:Token, $3:Token| -> Node;
 
-        $$ = node::call_method(Some($1), Some($2), Some($3), None, vec![], None);
+        $$ = builders::call_method(Some($1), Some($2), Some($3), None, vec![], None);
     }
     | primary_value call_op paren_args {
         |$1:Node, $2:Token, $3:TParenArgs| -> Node;
 
         let (lparen_t, args, rparen_t) = $3;
-        $$ = node::call_method(Some($1), Some($2), None, lparen_t, args, rparen_t);
+        $$ = builders::call_method(Some($1), Some($2), None, lparen_t, args, rparen_t);
     }
     | primary_value tCOLON2 paren_args {
         |$1:Node, $2:Token, $3:TParenArgs| -> Node;
 
         let (lparen_t, args, rparen_t) = $3;
-        $$ = node::call_method(Some($1), Some($2), None, lparen_t, args, rparen_t);
+        $$ = builders::call_method(Some($1), Some($2), None, lparen_t, args, rparen_t);
     }
     | kSUPER paren_args {
         |$1:Token, $2:TParenArgs| -> Node;
 
         let (lparen_t, args, rparen_t) = $2;
-        $$ = node::keyword_cmd("super", $1, lparen_t, args, rparen_t);
+        $$ = builders::keyword_cmd("super", $1, lparen_t, args, rparen_t);
     }
     | kSUPER {
         |$1:Token| -> Node;
-        $$ = node::keyword_cmd("zsuper", $1, None, vec![], None);
+        $$ = builders::keyword_cmd("zsuper", $1, None, vec![], None);
     }
     | primary_value tLBRACK2 opt_call_args rbracket {
         |$1: Node, $2: Token, $3: Nodes, $4:Token| -> Node;
 
-        $$ = node::index($1, $2, $3, $4);
+        $$ = builders::index($1, $2, $3, $4);
     }
 ;
 
@@ -1962,7 +1962,7 @@ do_body: fake_embedded_action_do_body_1 fake_embedded_action_do_body_2 opt_block
 
 case_body: kWHEN args then compstmt cases {
     |$1:Token, $2:Nodes, $3:Token, $4:Node, $5:Nodes| -> Nodes;
-    let mut r = vec![ node::when($1, $2, $3, $4) ];
+    let mut r = vec![ builders::when($1, $2, $3, $4) ];
     r.append(&mut $5);
     $$ = r;
 };
@@ -1987,7 +1987,7 @@ opt_rescue
         //     exc_list = @builder.array(nil, val[1], nil)
         //   end
         let exc_list = match $2 {
-            Some(exc_list_nodes) => Some(node::array(None, exc_list_nodes, None)),
+            Some(exc_list_nodes) => Some(builders::array(None, exc_list_nodes, None)),
             None => None
         };
 
@@ -1996,7 +1996,7 @@ opt_rescue
         //                   val[3], val[4]),
         //              *val[5] ]
         let mut r = vec![
-            node::rescue_body($1, exc_list, assoc_t, exc_var, Some($4), $5)
+            builders::rescue_body($1, exc_list, assoc_t, exc_var, Some($4), $5)
         ];
         r.append(&mut $6);
         $$ = r;
@@ -2046,7 +2046,7 @@ literal
 strings: string {
     |$1:Nodes| -> Node;
 
-    $$ = node::string_compose(None, $1, None);
+    $$ = builders::string_compose(None, $1, None);
 };
 
 string
@@ -2064,25 +2064,25 @@ string1
     : tSTRING_BEG string_contents tSTRING_END {
         |$1:Token, $2:Nodes, $3:Token| -> Node;
 
-        let string = node::string_compose(Some($1), $2, Some($3));
-        $$ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
+        let string = builders::string_compose(Some($1), $2, Some($3));
+        $$ = builders::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
     }
     | tSTRING {
         |$1:Token| -> Node;
 
-        let string = node::string($1);
-        $$ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
+        let string = builders::string($1);
+        $$ = builders::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
     }
     | tCHARACTER {
-        |$1:Token| -> Node; $$ = node::character($1);
+        |$1:Token| -> Node; $$ = builders::character($1);
     }
 ;
 
 xstring: tXSTRING_BEG xstring_contents tSTRING_END {
     |$1:Token, $2:Nodes, $3:Token| -> Node;
 
-    let string = node::xstring_compose($1, $2, $3);
-    $$ = node::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
+    let string = builders::xstring_compose($1, $2, $3);
+    $$ = builders::dedent_string(string, self.tokenizer.interior_lexer.dedent_level);
 };
 
 regexp: tREGEXP_BEG regexp_contents tSTRING_END tREGEXP_OPT {
@@ -2097,7 +2097,7 @@ regexp: tREGEXP_BEG regexp_contents tSTRING_END tREGEXP_OPT {
 
 words: tWORDS_BEG word_list tSTRING_END {
     |$1:Token, $2:Nodes, $3:Token| -> Node;
-    $$ = node::words_compose($1, $2, $3);
+    $$ = builders::words_compose($1, $2, $3);
 };
 
 word_list
@@ -2107,7 +2107,7 @@ word_list
     | word_list word tSPACE {
         |$1:Nodes, $2:Nodes| -> Nodes;
 
-        $1.push( node::word($2) );
+        $1.push( builders::word($2) );
         $$ = $1;
     }
 ;
@@ -2124,7 +2124,7 @@ word
 
 symbols: tSYMBOLS_BEG symbol_list tSTRING_END {
     |$1:Token, $2:Nodes, $3:Token| -> Node;
-    $$ = node::symbols_compose($1, $2, $3);
+    $$ = builders::symbols_compose($1, $2, $3);
 };
 
 symbol_list
@@ -2142,13 +2142,13 @@ symbol_list
 qwords: tQWORDS_BEG qword_list tSTRING_END {
     |$1: Token, $2: Nodes, $3: Token| -> Node;
 
-    $$ = node::words_compose($1, $2, $3);
+    $$ = builders::words_compose($1, $2, $3);
 };
 
 qsymbols
     : tQSYMBOLS_BEG qsym_list tSTRING_END {
         |$1:Token, $2:Nodes, $3:Token| -> Node;
-        $$ = node::symbols_compose($1, $2, $3);
+        $$ = builders::symbols_compose($1, $2, $3);
     }
 ;
 
@@ -2159,7 +2159,7 @@ qword_list
     | qword_list tSTRING_CONTENT tSPACE {
         |$1:Nodes, $2:Token, $3:Token| -> Nodes;
 
-        $1.push(node::string_internal($2));
+        $1.push(builders::string_internal($2));
         $$ = $1;
     }
 ;
@@ -2170,7 +2170,7 @@ qsym_list
     }
     | qsym_list tSTRING_CONTENT tSPACE {
         |$1:Nodes, $2:Token| -> Nodes;
-        $1.push(node::symbol_internal($2));
+        $1.push(builders::symbol_internal($2));
         $$ = $1;
     }
 ;
@@ -2217,7 +2217,7 @@ fake_embedded_action__string_content__tSTRING_DBEG: {
 
 string_content
     : tSTRING_CONTENT {
-        |$1:Token| -> Node; $$ = node::string_internal($1);
+        |$1:Token| -> Node; $$ = builders::string_internal($1);
     }
     | tSTRING_DVAR string_dvar {
         |$2: Node| -> Node; $$ = $2;
@@ -2228,19 +2228,19 @@ string_content
         self.tokenizer.interior_lexer.pop_cmdarg();
         self.tokenizer.interior_lexer.pop_cond();
 
-        $$ = node::begin($1, Some($3), $4);
+        $$ = builders::begin($1, Some($3), $4);
     }
 ;
 
 string_dvar
     : tGVAR {
-        |$1: Token| -> Node; $$ = node::gvar($1);
+        |$1: Token| -> Node; $$ = builders::gvar($1);
     }
     | tIVAR {
-        |$1: Token| -> Node; $$ = node::ivar($1);
+        |$1: Token| -> Node; $$ = builders::ivar($1);
     }
     | tCVAR {
-        |$1: Token| -> Node; $$ = node::cvar($1);
+        |$1: Token| -> Node; $$ = builders::cvar($1);
     }
     | backref
 ;
@@ -2249,14 +2249,14 @@ symbol: tSYMBOL {
     |$1:Token| -> Node;
 
     self.tokenizer.interior_lexer.set_state("expr_end");
-    $$ = node::symbol($1);
+    $$ = builders::symbol($1);
 };
 
 dsym: tSYMBEG xstring_contents tSTRING_END {
     |$1:Token, $2:Nodes, $3:Token| -> Node;
 
     self.tokenizer.interior_lexer.set_state("expr_end");
-    $$ = node::symbol_compose($1, $2, $3);
+    $$ = builders::symbol_compose($1, $2, $3);
 };
 
 numeric
@@ -2280,40 +2280,40 @@ simple_numeric
         |$1: Token| -> Node;
 
         self.tokenizer.interior_lexer.set_state("expr_end");
-        $$ = node::integer($1);
+        $$ = builders::integer($1);
     }
     | tFLOAT {
         |$1: Token| -> Node;
         self.tokenizer.interior_lexer.set_state("expr_end");
-        $$ = node::float($1);
+        $$ = builders::float($1);
     }
     | tRATIONAL {
         |$1: Token| -> Node;
         self.tokenizer.interior_lexer.set_state("expr_end");
-        $$ = node::rational($1);
+        $$ = builders::rational($1);
     }
     | tIMAGINARY {
         |$1: Token| -> Node;
         self.tokenizer.interior_lexer.set_state("expr_end");
-        $$ = node::complex($1);
+        $$ = builders::complex($1);
     }
 ;
 
 user_variable
     : tIDENTIFIER {
-        |$1:Token| -> Node; $$ = node::ident($1);
+        |$1:Token| -> Node; $$ = builders::ident($1);
     }
     | tIVAR {
-        |$1:Token| -> Node; $$ = node::ivar($1);
+        |$1:Token| -> Node; $$ = builders::ivar($1);
     }
     | tGVAR {
-        |$1:Token| -> Node; $$ = node::gvar($1);
+        |$1:Token| -> Node; $$ = builders::gvar($1);
     }
     | tCONSTANT {
-        |$1:Token| -> Node; $$ = node::build_const($1);
+        |$1:Token| -> Node; $$ = builders::build_const($1);
     }
     | tCVAR {
-        |$1:Token| -> Node; $$ = node::cvar($1);
+        |$1:Token| -> Node; $$ = builders::cvar($1);
     }
 ;
 
@@ -2360,29 +2360,29 @@ keyword_variable
 var_ref
     : user_variable {
         |$1:Node| -> Node;
-        $$ = node::accessible($1, &self.tokenizer.static_env);
+        $$ = builders::accessible($1, &self.tokenizer.static_env);
     }
     | keyword_variable {
         |$1:Node| -> Node;
-        $$ = node::accessible($1, &self.tokenizer.static_env);
+        $$ = builders::accessible($1, &self.tokenizer.static_env);
     }
 ;
 
 var_lhs
     : user_variable {
-        |$1:Node| -> Node; $$ = node::assignable($1, &mut self.tokenizer.static_env);
+        |$1:Node| -> Node; $$ = builders::assignable($1, &mut self.tokenizer.static_env);
     }
     | keyword_variable {
-        |$1:Node| -> Node; $$ = node::assignable($1, &mut self.tokenizer.static_env);
+        |$1:Node| -> Node; $$ = builders::assignable($1, &mut self.tokenizer.static_env);
     }
 ;
 
 backref
     : tNTH_REF {
-        |$1:Token| -> Node; $$ = node::nth_ref($1);
+        |$1:Token| -> Node; $$ = builders::nth_ref($1);
     }
     | tBACK_REF {
-        |$1:Token| -> Node; $$ = node::back_ref($1);
+        |$1:Token| -> Node; $$ = builders::back_ref($1);
     }
 ;
 
@@ -2412,14 +2412,14 @@ fake_embedded_action__f_arglist__episolon: {
 f_arglist
     : tLPAREN2 f_args rparen {
         |$1:Token, $2:Nodes, $3:Token| -> Node;
-        $$ = node::args(Some($1), $2, Some($3));
+        $$ = builders::args(Some($1), $2, Some($3));
         self.tokenizer.interior_lexer.set_state("expr_value");
     }
     | fake_embedded_action__f_arglist__episolon f_args term {
         |$1: bool, $2: Nodes| -> Node;
 
         self.tokenizer.interior_lexer.in_kwarg = $1;
-        $$ = node::args(None, $2, None);
+        $$ = builders::args(None, $2, None);
     }
 ;
 
@@ -2592,10 +2592,10 @@ f_arg_asgn: f_norm_arg {
 f_arg_item
     : f_arg_asgn {
         |$1: Token| -> Node;
-        $$ = node::arg($1);
+        $$ = builders::arg($1);
     }
     | tLPAREN f_margs rparen {
-        |$1: Token, $2: Nodes, $3: Token| -> Node; $$ = node::multi_lhs(Some($1), $2, Some($3));
+        |$1: Token, $2: Nodes, $3: Token| -> Node; $$ = builders::multi_lhs(Some($1), $2, Some($3));
     }
 ;
 
@@ -2624,19 +2624,19 @@ f_label: tLABEL {
 
 f_kw
     : f_label arg_value {
-        |$1: Token, $2: Node| -> Node; $$ = node::kwoptarg($1, $2);
+        |$1: Token, $2: Node| -> Node; $$ = builders::kwoptarg($1, $2);
     }
     | f_label {
-        |$1: Token| -> Node; $$ = node::kwarg($1);
+        |$1: Token| -> Node; $$ = builders::kwarg($1);
     }
 ;
 
 f_block_kw
     : f_label primary_value {
-        |$1: Token, $2: Node| -> Node; $$ = node::kwoptarg($1, $2);
+        |$1: Token, $2: Node| -> Node; $$ = builders::kwoptarg($1, $2);
     }
     | f_label {
-        |$1: Token| -> Node; $$ = node::kwarg($1);
+        |$1: Token| -> Node; $$ = builders::kwarg($1);
     }
 ;
 
@@ -2672,21 +2672,21 @@ f_kwrest
             self.tokenizer.static_env.declare(t_value.clone());
         } else { unreachable!(); }
 
-        $$ = vec![ node::kwrestarg($1, Some($2)) ];
+        $$ = vec![ builders::kwrestarg($1, Some($2)) ];
     }
     | kwrest_mark {
-        |$1: Token| -> Nodes; $$ = vec![ node::kwrestarg($1, None) ];
+        |$1: Token| -> Nodes; $$ = vec![ builders::kwrestarg($1, None) ];
     }
 ;
 
 f_opt: f_arg_asgn tEQL arg_value {
     |$1: Token, $2: Token, $3: Node| -> Node;
-    $$ = node::optarg($1, $2, $3);
+    $$ = builders::optarg($1, $2, $3);
 };
 
 f_block_opt: f_arg_asgn tEQL primary_value {
     |$1: Token, $2: Token, $3: Node| -> Node;
-    $$ = node::optarg($1, $2, $3);
+    $$ = builders::optarg($1, $2, $3);
 };
 
 f_block_optarg
@@ -2721,10 +2721,10 @@ f_rest_arg
             self.tokenizer.static_env.declare(t_value.clone());
         } else { unreachable!(); }
 
-        $$ = vec![ node::restarg($1, Some($2)) ];
+        $$ = vec![ builders::restarg($1, Some($2)) ];
     }
     | restarg_mark {
-        |$1: Token| -> Nodes; $$ = vec![node::restarg($1, None)];
+        |$1: Token| -> Nodes; $$ = vec![builders::restarg($1, None)];
     }
 ;
 
@@ -2737,7 +2737,7 @@ f_block_arg: blkarg_mark tIDENTIFIER {
         self.tokenizer.static_env.declare(t_value.clone());
     } else { unreachable!(); }
 
-    $$ = vec![ node::blockarg($1, $2) ];
+    $$ = vec![ builders::blockarg($1, $2) ];
 };
 
  opt_f_block_arg
@@ -2780,19 +2780,19 @@ assocs
 assoc
     : arg_value tASSOC arg_value {
         |$1: Node; $2: Token; $3: Node| -> Node;
-        $$ = node::pair($1, $2, $3);
+        $$ = builders::pair($1, $2, $3);
     }
     | tLABEL arg_value {
         |$1: Token; $2: Node| -> Node;
-        $$ = node::pair_keyword($1, $2);
+        $$ = builders::pair_keyword($1, $2);
     }
     | tSTRING_BEG string_contents tLABEL_END arg_value {
         |$1: Token; $2: Nodes, $3: Token, $4: Node| -> Node;
-        $$ = node::pair_quoted($1, $2, $3, $4);
+        $$ = builders::pair_quoted($1, $2, $3, $4);
     }
     | tDSTAR arg_value {
         |$1: Token, $2: Node| -> Node;
-        $$ = node::kwsplat($1, $2);
+        $$ = builders::kwsplat($1, $2);
     }
 ;
 
