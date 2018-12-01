@@ -1038,7 +1038,7 @@ fn hash_label_end() {
 fn const_toplevel() {
     assert_parses!(
         r"::Foo",
-        Node::Const { scope: Some(Box::new(Node::CBase)), name: String::from("Foo") }
+        n_const!(Some(n_cbase!()), "Foo")
     );
 }
 
@@ -1054,10 +1054,10 @@ fn const_toplevel() {
 fn const_scoped() {
     assert_parses!(
         r"Bar::Foo",
-        Node::Const {
-            scope: Some(Box::new(Node::Const { scope: None, name: String::from("Bar") } )),
-            name: String::from("Foo")
-        }
+        n_const!(
+            Some(n_const!(None, "Bar")),
+            "Foo"
+        )
     );
 }
 
@@ -1072,10 +1072,7 @@ fn const_scoped() {
 fn const_unscoped() {
     assert_parses!(
         r"Foo",
-        Node::Const {
-            scope: None,
-            name: String::from("Foo")
-        }
+        n_const!(None, "Foo")
     );
 }
 
@@ -3183,7 +3180,7 @@ pub fn send_plain() {
     //         |~~~~~~~ expression})
     assert_parses!(
         "foo.fun",
-        n_send!( Some(Box::new(n_lvar!("foo"))), "fun", vec![] )
+        n_send!( Some(n_lvar!("foo")), "fun", vec![] )
     );
 
     //     assert_parses(
@@ -3194,7 +3191,7 @@ pub fn send_plain() {
     //         |~~~~~~~~ expression})
     assert_parses!(
         "foo::fun",
-        n_send!( Some(Box::new(n_lvar!("foo"))), "fun", vec![] )
+        n_send!( Some(n_lvar!("foo")), "fun", vec![] )
     );
 
     //     assert_parses(
@@ -3205,7 +3202,7 @@ pub fn send_plain() {
     //         |~~~~~~~~~~ expression})
     assert_parses!(
         "foo::Fun()",
-        n_send!( Some(Box::new(n_lvar!("foo"))), "Fun", vec![] )
+        n_send!( Some(n_lvar!("foo")), "Fun", vec![] )
     );
 }
 
@@ -3388,7 +3385,7 @@ fn send_binary_op() {
     assert_parses!(
         "foo + 1",
         n_send!(
-            Some(Box::new(n_lvar!("foo"))),
+            Some(n_lvar!("foo")),
             "+",
             vec![ n_int!(1) ]
         )

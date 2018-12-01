@@ -105,9 +105,6 @@
 // TODO refine order, maybe via ruby-parser/AST_FORMAT
 #[derive(Debug, PartialEq, Clone)]
 pub enum Node {
-    // 
-    // primitive values
-    // 
     Nil,
 
     True,
@@ -124,7 +121,7 @@ pub enum Node {
 
     Array(Nodes),
 
-    Pair { key: Box<Node>, value: Box<Node> },
+    Pair{ key: NNode, value: NNode },
     Hash(Nodes), // NOTE Hash(Vec<Node::Pair>) 
 
     NSelf,
@@ -134,13 +131,13 @@ pub enum Node {
     GVar(String),
     CVar(String),
 
-    Const { scope: Option<Box<Node>>, name: String },
-    //                        ^ CBase/Lvar
-    //             ^ None means unscoped
+    Const{ scope: NSNode, name: String },
+    //            ^ CBase/Lvar
+    //            ^ None means unscoped
     CBase, // :: in ::Foo
 
     // Const -> CAsgn
-    CAsgn { scope: Option<Box<Node>>, name: String },
+    CAsgn { scope: NSNode, name: String },
 
     Ident(String),
 
@@ -155,22 +152,26 @@ pub enum Node {
 
     Arg(String),
 
-    Send { receiver: Option<Box<Node>>, selector: String, args: Nodes },
+    Send{ receiver: NSNode, selector: String, args: Nodes },
     // https://github.com/whitequark/parser/blob/master/doc/AST_FORMAT.md#send
     // NOTE
     //     receiver being None means sending to self
     // TODO note about selector and such
-    CSend { receiver: Option<Box<Node>>, selector: String, args: Nodes },
+    CSend{ receiver: NSNode, selector: String, args: Nodes },
 
     MLhs(Nodes),
 
-    Module { name: Box<Node>, body: Box<Option<Node>> },
-    Class { name: Box<Node>, superclass: Box<Option<Node>>, body: Box<Option<Node>> },
+    Module{ name: NNode, body: NSNode },
+    Class{ name: NNode, superclass: NSNode, body: NSNode },
     // node->nd_cpath, node->nd_super, node->nd_body
 
-    If { condition: Box<Node>, then_body: Box<Option<Node>>, else_body: Box<Option<Node>> },
+    If{ condition: NNode, then_body: NSNode, else_body: NSNode },
     // node->nd_cond, node->nd_body, node->nd_else);
 }
+
+type SomeNode = Option<Node>;
+type NNode = Box<Node>; // NestedNode
+type NSNode = Box<SomeNode>; // NestedSomeNode
 
 pub type Nodes = Vec<Node>;
 
@@ -185,10 +186,11 @@ pub type Nodes = Vec<Node>;
 #[macro_export] macro_rules! n_dstr { ( $( $x:expr ),* ) => { { Node::DStr(vec![ $($x),* ]) } }; }
 #[macro_export] macro_rules! n_hash { ( $( $x:expr ),* ) => { { Node::Hash(vec![ $($x),* ]) } }; }
 #[macro_export] macro_rules! n_pair { ($key:expr, $value:expr) => { Node::Pair { key: Box::new($key), value: Box::new($value) }; } }
-#[macro_export] macro_rules! n_send { ($receiver:expr, $selector:expr, $args:expr) => { Node::Send { receiver: $receiver, selector: String::from($selector), args: $args } }; }
-#[macro_export] macro_rules! n_csend { ($receiver:expr, $selector:expr, $args:expr) => { Node::CSend { receiver: $receiver, selector: String::from($selector), args: $args } }; }
+#[macro_export] macro_rules! n_send { ($receiver:expr, $selector:expr, $args:expr) => { Node::Send { receiver: Box::new($receiver), selector: String::from($selector), args: $args } }; }
+#[macro_export] macro_rules! n_csend { ($receiver:expr, $selector:expr, $args:expr) => { Node::CSend { receiver: Box::new($receiver), selector: String::from($selector), args: $args } }; }
 #[macro_export] macro_rules! n_int { ($v:expr) => { Node::Int($v) }; }
-#[macro_export] macro_rules! n_const { ($scope:expr, $name:expr) => { Node::Const { scope: $scope, name: $name } }; }
+#[macro_export] macro_rules! n_cbase { () => { Node::CBase }; }
+#[macro_export] macro_rules! n_const { ($scope:expr, $name:expr) => { Node::Const { scope: Box::new($scope), name: String::from($name) } }; }
 #[macro_export] macro_rules! n_module { ($name:expr, $body:expr) => { Node::Module { name: Box::new($name), body: Box::new($body) } }; }
 #[macro_export] macro_rules! n_class { ($name:expr, $superclass:expr, $body:expr) => { Node::Class { name: Box::new($name), superclass: Box::new($superclass), body: Box::new($body) } }; }
 #[macro_export] macro_rules! n_if { ($condition:expr, $then_body:expr, $else_body:expr) => { Node::If { condition: Box::new($condition), then_body: Box::new($then_body), else_body: Box::new($else_body) } }; }

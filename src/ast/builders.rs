@@ -2,7 +2,7 @@ use crate::{
     token::token::Token,
     lexer::dedenter::Dedenter,
     parser::static_env::StaticEnv,
-    ast::node::{ Node, Nodes, * },
+    ast::node::{ Node, Nodes },
 };
 
 macro_rules! wip { () => { panic!("WIP"); }; }
@@ -574,10 +574,10 @@ pub fn accessible(node: Node, static_env: &StaticEnv) -> Node {
 // NOTE unscoped (scope being None) const
 pub fn build_const(name_t: Token) -> Node {
     if let Token::T_CONSTANT(const_name) = name_t {
-        return Node::Const {
-            scope: None,
-            name: const_name
-        }
+        return n_const!(
+            None,
+            const_name
+        );
     }
     unreachable!();
 }
@@ -591,10 +591,10 @@ pub fn build_const(name_t: Token) -> Node {
 // NOTE top level const like ::Foo
 pub fn const_global(t_colon3: Token, name_t: Token) -> Node {
     if let Token::T_CONSTANT(const_name) = name_t {
-        return Node::Const {
-            scope: Some(Box::new(Node::CBase)),
-            name: const_name
-        }
+        return n_const!(
+            Some(Node::CBase),
+            const_name
+        )
     }
     unreachable!();
 }
@@ -605,10 +605,7 @@ pub fn const_global(t_colon3: Token, name_t: Token) -> Node {
 // end
 pub fn const_fetch(scope: Node, t_colon2: Token, name_t: Token) -> Node {
     if let Token::T_CONSTANT(name_str) = name_t {
-        return Node::Const {
-            scope: Some(Box::new(scope)),
-            name: name_str
-        };
+        return n_const!(Some(scope), name_str)
     }
     unreachable!();
 }
@@ -1035,12 +1032,6 @@ pub fn call_method(receiver: Option<Node>, dot_t: Option<Token>, selector_t: Opt
 
     let r#type = call_type_for_dot(dot_t);
 
-    // unwrap from Option, wrap again with Option<Box<>>>
-    let receiver = match receiver {
-        Some(node) => Some(Box::new(node)),
-        None => None
-    };
-
     if let Some(selector_t) = selector_t {
         // TODO refine this after we make every token has a value
         let selector_t_value = match selector_t {
@@ -1049,14 +1040,14 @@ pub fn call_method(receiver: Option<Node>, dot_t: Option<Token>, selector_t: Opt
         };
 
         match r#type {
-            // TODO what is this ":call"? when selector is empty
+            // TODO why put this ":call" when selector is empty
             "csend" => n_csend!(receiver, selector_t_value, args),
             "send" => n_send!(receiver, selector_t_value, args),
             _ => { panic!("invalid type"); }
         }
     } else {
         match r#type {
-            // TODO what is this ":call"? when selector is empty
+            // TODO why put this ":call" when selector is empty
             "csend" => n_csend!(receiver, "call", args),
             "send" => n_send!(receiver, "call", args),
             _ => { panic!("invalid type"); }
@@ -1188,10 +1179,10 @@ pub fn binary_op(receiver: Node, operator_t: Token, arg: Node) -> Node {
     // TODO after we give every token a value
     let token_value = match operator_t {
         T_PLUS => "+",
-        _ => {wip!();}
+        _ => { wip!(); }
     };
 
-    n_send!(Some(Box::new(receiver)), token_value, vec![arg])
+    n_send!(Some(receiver), token_value, vec![arg])
 }
 
 // def match_op(receiver, match_t, arg)
