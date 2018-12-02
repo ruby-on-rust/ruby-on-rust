@@ -150,8 +150,6 @@ pub enum Node {
 
     Begin(Nodes),
 
-    Arg(String),
-
     Send{ receiver: NSNode, selector: String, args: Nodes },
     // https://github.com/whitequark/parser/blob/master/doc/AST_FORMAT.md#send
     // NOTE
@@ -167,6 +165,11 @@ pub enum Node {
 
     If{ condition: NNode, then_body: NSNode, else_body: NSNode },
     // node->nd_cond, node->nd_body, node->nd_else);
+
+    Arg(String),
+    Args(Nodes),
+
+    Def{ name: String, args: NNode, body: NSNode },
 }
 
 type SomeNode = Option<Node>;
@@ -194,6 +197,10 @@ pub type Nodes = Vec<Node>;
 #[macro_export] macro_rules! n_module { ($name:expr, $body:expr) => { Node::Module { name: Box::new($name), body: Box::new($body) } }; }
 #[macro_export] macro_rules! n_class { ($name:expr, $superclass:expr, $body:expr) => { Node::Class { name: Box::new($name), superclass: Box::new($superclass), body: Box::new($body) } }; }
 #[macro_export] macro_rules! n_if { ($condition:expr, $then_body:expr, $else_body:expr) => { Node::If { condition: Box::new($condition), then_body: Box::new($then_body), else_body: Box::new($else_body) } }; }
+#[macro_export] macro_rules! n_args { ( $( $x:expr ),* ) => { { Node::Args(vec![ $($x),* ]) } }; }
+#[macro_export] macro_rules! n_arg { ($string:expr) => { Node::Arg(String::from($string)) }; }
+#[macro_export] macro_rules! n_def { ($name:expr, $args:expr, $body:expr) => { Node::Def { name: String::from($name), args: Box::new($args), body: Box::new($body) } }; }
+
 
 // TODO use a procedure derive for this
 impl Node {

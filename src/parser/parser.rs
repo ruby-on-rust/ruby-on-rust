@@ -6409,9 +6409,6 @@ if !self.tokenizer.context.is_class_definition_allowed() {
 
         // TODO RENAMING what's a lt?
         let (lt_t, superclass) = unwrap_some_token_node!(_3);
-        //   result = @builder.def_class(val[0], val[1],
-        //                               lt_t, superclass,
-        //                               val[4], val[5])
         let __ = builders::def_class(_1, _2, lt_t, superclass, _5, _6);
 
         self.tokenizer.interior_lexer.pop_cmdarg();
@@ -6425,13 +6422,13 @@ SV::_3(__)
 
 fn _handler325(&mut self) -> SV {
 // Semantic values prologue.
+let mut _7 = interior_token!(pop!(self.values_stack, _0));
+let mut _6 = pop!(self.values_stack, _2);
 self.values_stack.pop();
 self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _3 = pop!(self.values_stack, _3);
+let mut _2 = interior_token!(pop!(self.values_stack, _0));
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 //   result = @builder.def_sclass(val[0], val[1], val[2],
         //                                val[5], val[6])
@@ -6462,8 +6459,6 @@ if !self.tokenizer.context.is_class_definition_allowed() {
             wip!();
         }
 
-        //   result = @builder.def_module(val[0], val[1],
-        //                                val[3], val[4])
         let __ = builders::def_module(_1, _2, _4, _5);
 
         self.tokenizer.interior_lexer.pop_cmdarg();
@@ -6475,26 +6470,22 @@ SV::_3(__)
 
 fn _handler327(&mut self) -> SV {
 // Semantic values prologue.
+let mut _6 = interior_token!(pop!(self.values_stack, _0));
+let mut _5 = pop!(self.values_stack, _2);
+let mut _4 = pop!(self.values_stack, _3);
 self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _2 = interior_token!(pop!(self.values_stack, _0));
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-//   result = @builder.def_method(val[0], val[1],
-        //               val[3], val[4], val[5])
+let __ = builders::def_method(_1, _2, _4, _5, _6);
 
-        //   @lexer.pop_cmdarg
-        //   @lexer.pop_cond
-        //   @static_env.unextend
-        //   @context.pop
-
-        let __ =();
-        wip!();
+        self.tokenizer.interior_lexer.pop_cmdarg();
+        self.tokenizer.interior_lexer.pop_cond();
+        self.tokenizer.static_env.unextend();
+        self.tokenizer.context.pop();
 explain!("action: primary -> kDEF fname fake_embedded_action__primary__kDEF_1 f_arglist bodystmt kEND");
 
-SV::_6(__)
+SV::_3(__)
 }
 
 fn _handler328(&mut self) -> SV {
@@ -7756,24 +7747,14 @@ let mut _3 = pop!(self.values_stack, _5);
 let mut _2 = pop!(self.values_stack, _16);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-//   assoc_t, exc_var = val[2]
-        let (assoc_t, exc_var) = unwrap_some_token_node!(_3);
+let (assoc_t, exc_var) = unwrap_some_token_node!(_3);
 
-        //   if val[1]
-        //     exc_list = @builder.array(nil, val[1], nil)
-        //   end
         let exc_list = match _2 {
             Some(exc_list_nodes) => Some(builders::array(None, exc_list_nodes, None)),
             None => None
         };
 
-        //   result = [ @builder.rescue_body(val[0],
-        //                   exc_list, assoc_t, exc_var,
-        //                   val[3], val[4]),
-        //              *val[5] ]
-        let mut r = vec![
-            builders::rescue_body(_1, exc_list, assoc_t, exc_var, Some(_4), _5)
-        ];
+        let mut r = vec![ builders::rescue_body(_1, exc_list, assoc_t, exc_var, Some(_4), _5) ];
         r.append(&mut _6);
         let __ = r;
 explain!("action: opt_rescue -> kRESCUE exc_list exc_var then compstmt opt_rescue");
@@ -9022,12 +9003,12 @@ SV::_0(__)
 
 fn _handler532(&mut self) -> SV {
 // Semantic values prologue.
-let mut _1 = pop!(self.values_stack, _3);
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = _1;
+let __ = _1.wrap_as_token();
 explain!("action: f_arg_asgn -> f_norm_arg");
 
-SV::_3(__)
+SV::_0(__)
 }
 
 fn _handler533(&mut self) -> SV {

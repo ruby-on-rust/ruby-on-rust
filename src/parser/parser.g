@@ -1359,9 +1359,6 @@ primary
 
         // TODO RENAMING what's a lt?
         let (lt_t, superclass) = unwrap_some_token_node!($3);
-        //   result = @builder.def_class(val[0], val[1],
-        //                               lt_t, superclass,
-        //                               val[4], val[5])
         $$ = builders::def_class($1, $2, lt_t, superclass, $5, $6);
 
         self.tokenizer.interior_lexer.pop_cmdarg();
@@ -1370,7 +1367,7 @@ primary
         self.tokenizer.context.pop();
     }
     | kCLASS tLSHFT expr term fake_embedded_action__primary__kCLASS_2 bodystmt kEND {
-        || -> TDummy;
+        |$1:Token, $2:Token, $3:Node, $6:TSomeNode, $7:Token| -> TDummy;
 
         //   result = @builder.def_sclass(val[0], val[1], val[2],
         //                                val[5], val[6])
@@ -1392,26 +1389,20 @@ primary
             wip!();
         }
 
-        //   result = @builder.def_module(val[0], val[1],
-        //                                val[3], val[4])
         $$ = builders::def_module($1, $2, $4, $5);
 
         self.tokenizer.interior_lexer.pop_cmdarg();
         self.tokenizer.static_env.unextend();
     }
     | kDEF fname fake_embedded_action__primary__kDEF_1 f_arglist bodystmt kEND {
-        ||->TDummy;
+        |$1:Token, $2:Token, $4:Node, $5:TSomeNode, $6:Token| -> Node;
 
-        //   result = @builder.def_method(val[0], val[1],
-        //               val[3], val[4], val[5])
+        $$ = builders::def_method($1, $2, $4, $5, $6);
 
-        //   @lexer.pop_cmdarg
-        //   @lexer.pop_cond
-        //   @static_env.unextend
-        //   @context.pop
-
-        $$=();
-        wip!();
+        self.tokenizer.interior_lexer.pop_cmdarg();
+        self.tokenizer.interior_lexer.pop_cond();
+        self.tokenizer.static_env.unextend();
+        self.tokenizer.context.pop();
     }
     | kDEF singleton dot_or_colon fake_embedded_action__primary__kDEF_2 fname fake_embedded_action__primary__kDEF_3 f_arglist bodystmt kEND {
         ||->TDummy;
@@ -1976,28 +1967,17 @@ cases
 ;
 
 opt_rescue
-    // TODO CLEANUP
     : kRESCUE exc_list exc_var then compstmt opt_rescue {
         |$1:Token, $2:TSomeNodes, $3:TSomeTokenNode, $4:Token, $5:Node, $6:Nodes| -> Nodes;
 
-        //   assoc_t, exc_var = val[2]
         let (assoc_t, exc_var) = unwrap_some_token_node!($3);
 
-        //   if val[1]
-        //     exc_list = @builder.array(nil, val[1], nil)
-        //   end
         let exc_list = match $2 {
             Some(exc_list_nodes) => Some(builders::array(None, exc_list_nodes, None)),
             None => None
         };
 
-        //   result = [ @builder.rescue_body(val[0],
-        //                   exc_list, assoc_t, exc_var,
-        //                   val[3], val[4]),
-        //              *val[5] ]
-        let mut r = vec![
-            builders::rescue_body($1, exc_list, assoc_t, exc_var, Some($4), $5)
-        ];
+        let mut r = vec![ builders::rescue_body($1, exc_list, assoc_t, exc_var, Some($4), $5) ];
         r.append(&mut $6);
         $$ = r;
     }
@@ -2586,7 +2566,7 @@ f_norm_arg
 ;
 
 f_arg_asgn: f_norm_arg {
-    |$1: Node| -> Node; $$ = $1;
+    |$1: Token| -> Token; $$ = $1.wrap_as_token();
 };
 
 f_arg_item

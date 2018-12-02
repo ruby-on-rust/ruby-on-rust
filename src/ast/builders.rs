@@ -796,6 +796,15 @@ pub fn def_module(module_t: Token, name: Node, body: Option<Node>, end_t: Token)
 //   n(:def, [ value(name_t).to_sym, args, body ],
 //     definition_map(def_t, nil, name_t, end_t))
 // end
+pub fn def_method(def_t: Token, name_t: Token, args: Node, body: Option<Node>, end_t: Token) -> Node {
+    // TODO macro/fn to extract single string value from token
+    match name_t {
+        Token::T_IDENTIFIER(name) | Token::T_CONSTANT(name) => {
+            return n_def!(name, args, body)
+        },
+        _ => { panic!("unimpl handler for token {:?}", name_t); }
+    }
+}
 
 // def def_singleton(def_t, definee, dot_t,
 //                   name_t, args,
@@ -838,7 +847,8 @@ pub fn alias(alias_t: Token, to: Node, from: Node) -> Node {
 //     collection_map(begin_t, args, end_t))
 // end
 pub fn args(begin_t: Option<Token>, args: Nodes, name_t: Option<Token>) -> Node {
-    wip!();
+    check_duplicate_args(&args);
+    Node::Args(args)
 }
 
 // def arg(name_t)
@@ -846,8 +856,12 @@ pub fn args(begin_t: Option<Token>, args: Nodes, name_t: Option<Token>) -> Node 
 //     variable_map(name_t))
 // end
 pub fn arg(name_t: Token) -> Node {
-    // Node::Arg()
-    wip!();
+    // TODO macros to extract value from token
+    if let Token::T_IDENTIFIER(name) = name_t {
+        return n_arg!(name)
+    } else {
+        panic!("builder:arg: token: {:?}", name_t);
+    }
 }
 
 // def optarg(name_t, eql_t, value)
@@ -1580,6 +1594,9 @@ fn check_condition(cond: Node) -> Node {
 //     end
 //   end
 // end
+fn check_duplicate_args(args: &Nodes) {
+    // TODO
+}
 
 // def arg_name_collides?(this_name, that_name)
 //   case @parser.version

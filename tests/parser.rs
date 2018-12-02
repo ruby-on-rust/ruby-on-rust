@@ -1042,16 +1042,14 @@ fn const_toplevel() {
     );
 }
 
-//   def test_const_scoped
-//     assert_parses(
-//       s(:const, s(:const, nil, :Bar), :Foo),
-//       %q{Bar::Foo},
-//       %q{     ~~~ name
-//         |   ~~ double_colon
-//         |~~~~~~~~ expression})
-//   end
 #[test]
 fn const_scoped() {
+    //     assert_parses(
+    //       s(:const, s(:const, nil, :Bar), :Foo),
+    //       %q{Bar::Foo},
+    //       %q{     ~~~ name
+    //         |   ~~ double_colon
+    //         |~~~~~~~~ expression})    assert_parses!(
     assert_parses!(
         r"Bar::Foo",
         n_const!(
@@ -1061,15 +1059,13 @@ fn const_scoped() {
     );
 }
 
-//   def test_const_unscoped
-//     assert_parses(
-//       s(:const, nil, :Foo),
-//       %q{Foo},
-//       %q{~~~ name
-//         |~~~ expression})
-//   end
 #[test]
 fn const_unscoped() {
+    //     assert_parses(
+    //       s(:const, nil, :Foo),
+    //       %q{Foo},
+    //       %q{~~~ name
+    //         |~~~ expression})
     assert_parses!(
         r"Foo",
         n_const!(None, "Foo")
@@ -1123,19 +1119,17 @@ fn const_unscoped() {
 
 //   # Variables
 
-//   def test_lvasgn
-//     assert_parses(
-//       s(:begin,
-//         s(:lvasgn, :var, s(:int, 10)),
-//         s(:lvar, :var)),
-//       %q{var = 10; var},
-//       %q{~~~ name (lvasgn)
-//         |    ^ operator (lvasgn)
-//         |~~~~~~~~ expression (lvasgn)
-//         })
-//   end
 #[test]
 fn lvasgn() {
+    //     assert_parses(
+    //       s(:begin,
+    //         s(:lvasgn, :var, s(:int, 10)),
+    //         s(:lvar, :var)),
+    //       %q{var = 10; var},
+    //       %q{~~~ name (lvasgn)
+    //         |    ^ operator (lvasgn)
+    //         |~~~~~~~~ expression (lvasgn)
+    //         })
     assert_parses!(
         "var = 10; var",
         Node::Begin(vec![
@@ -1145,51 +1139,45 @@ fn lvasgn() {
     );
 }
 
-//   def test_ivasgn
-//     assert_parses(
-//       s(:ivasgn, :@var, s(:int, 10)),
-//       %q{@var = 10},
-//       %q{~~~~ name
-//         |     ^ operator
-//         |~~~~~~~~~ expression
-//         })
-//   end
 #[test]
 fn ivasgn() {
+    //     assert_parses(
+    //       s(:ivasgn, :@var, s(:int, 10)),
+    //       %q{@var = 10},
+    //       %q{~~~~ name
+    //         |     ^ operator
+    //         |~~~~~~~~~ expression
+    //         })
     assert_parses!(
         "@var = 10",
         Node::IVasgn(String::from("@var"), vec![Node::Int(10)] )
     );
 }
 
-//   def test_cvasgn
-//     assert_parses(
-//       s(:cvasgn, :@@var, s(:int, 10)),
-//       %q{@@var = 10},
-//       %q{~~~~~ name
-//         |      ^ operator
-//         |~~~~~~~~~~ expression
-//         })
-//   end
 #[test]
 fn cvasgn() {
+    //     assert_parses(
+    //       s(:cvasgn, :@@var, s(:int, 10)),
+    //       %q{@@var = 10},
+    //       %q{~~~~~ name
+    //         |      ^ operator
+    //         |~~~~~~~~~~ expression
+    //         })
     assert_parses!(
         "@@var = 10",
         Node::CVasgn(String::from("@@var"), vec![n_int!(10)] )
     );
 }
 
-//   def test_gvasgn
-//     assert_parses(
-//       s(:gvasgn, :$var, s(:int, 10)),
-//       %q{$var = 10},
-//       %q{~~~~ name
-//         |     ^ operator
-//         |~~~~~~~~~ expression
-//         })
-//   end
 #[test]
 fn gvasgn() {
+    //     assert_parses(
+    //       s(:gvasgn, :$var, s(:int, 10)),
+    //       %q{$var = 10},
+    //       %q{~~~~ name
+    //         |     ^ operator
+    //         |~~~~~~~~~ expression
+    //         })    assert_parses!(
     assert_parses!(
         "$var = 10",
         Node::GVasgn(String::from("$var"), vec![n_int!(10)] )
@@ -1955,7 +1943,6 @@ fn class() {
         )
     );
 
-    // TODO
     //     assert_parses(
     //       s(:class,
     //         s(:const, nil, :Foo),
@@ -1964,6 +1951,14 @@ fn class() {
     //       %q{class Foo end},
     //       %q{},
     //       SINCE_2_3)
+    assert_parses!(
+        "class Foo; end",
+        n_class!(
+            n_const!(None, String::from("Foo")),
+            None,
+            None
+        )
+    );
 }
 
 //   def test_class_super
@@ -2017,34 +2012,51 @@ fn class() {
 //   # Method (un)definition
 //   #
 
-//   def test_def
-//     assert_parses(
-//       s(:def, :foo, s(:args), nil),
-//       %q{def foo; end},
-//       %q{~~~ keyword
-//         |    ~~~ name
-//         |         ~~~ end})
+#[test] fn def() {
+    //     assert_parses(
+    //       s(:def, :foo, s(:args), nil),
+    //       %q{def foo; end},
+    //       %q{~~~ keyword
+    //         |    ~~~ name
+    //         |         ~~~ end})
+    assert_parses!(
+        "def foo; end",
+        n_def!("foo", Node::Args(vec![]), None)
+    );
 
-//     assert_parses(
-//       s(:def, :String, s(:args), nil),
-//       %q{def String; end})
+    //     assert_parses(
+    //       s(:def, :String, s(:args), nil),
+    //       %q{def String; end})
+    assert_parses!(
+        "def String; end",
+        n_def!("String", Node::Args(vec![]), None)
+    );
 
-//     assert_parses(
-//       s(:def, :String=, s(:args), nil),
-//       %q{def String=; end})
+    //     assert_parses(
+    //       s(:def, :String=, s(:args), nil),
+    //       %q{def String=; end})
+    assert_parses!(
+        "def String=; end",
+        n_def!("String=", Node::Args(vec![]), None)
+    );
 
-//     assert_parses(
-//       s(:def, :until, s(:args), nil),
-//       %q{def until; end})
+    //     assert_parses(
+    //       s(:def, :until, s(:args), nil),
+    //       %q{def until; end})
+    assert_parses!(
+        "def until; end",
+        n_def!("until", Node::Args(vec![]), None)
+    );
 
-//     assert_parses(
-//       s(:def, :BEGIN, s(:args), nil),
-//       %q{def BEGIN; end})
+    // TODO
+    //     assert_parses(
+    //       s(:def, :BEGIN, s(:args), nil),
+    //       %q{def BEGIN; end})
 
-//     assert_parses(
-//       s(:def, :END, s(:args), nil),
-//       %q{def END; end})
-//   end
+    //     assert_parses(
+    //       s(:def, :END, s(:args), nil),
+    //       %q{def END; end})
+}
 
 //   def test_defs
 //     assert_parses(
@@ -2170,24 +2182,41 @@ fn class() {
 //   # Formal arguments
 //   #
 
-//   def test_arg
-//     assert_parses(
-//       s(:def, :f,
-//         s(:args, s(:arg, :foo)),
-//         nil),
-//       %q{def f(foo); end},
-//       %q{      ~~~ name (args.arg)
-//         |      ~~~ expression (args.arg)
-//         |     ^ begin (args)
-//         |         ^ end (args)
-//         |     ~~~~~ expression (args)})
+#[test]
+fn arg() {
+    //     assert_parses(
+    //       s(:def, :f,
+    //         s(:args, s(:arg, :foo)),
+    //         nil),
+    //       %q{def f(foo); end},
+    //       %q{      ~~~ name (args.arg)
+    //         |      ~~~ expression (args.arg)
+    //         |     ^ begin (args)
+    //         |         ^ end (args)
+    //         |     ~~~~~ expression (args)})
+    assert_parses!(
+        "def f(foo); end",
+        n_def!(
+            "f",
+            n_args![ n_arg!("foo") ],
+            None
+        )
+    );
 
-//     assert_parses(
-//       s(:def, :f,
-//         s(:args, s(:arg, :foo), s(:arg, :bar)),
-//         nil),
-//       %q{def f(foo, bar); end})
-//   end
+    //     assert_parses(
+    //       s(:def, :f,
+    //         s(:args, s(:arg, :foo), s(:arg, :bar)),
+    //         nil),
+    //       %q{def f(foo, bar); end})
+    assert_parses!(
+        "def f(foo, bar); end",
+        n_def!(
+            "f",
+            n_args![ n_arg!("foo"), n_arg!("bar") ],
+            None
+        )
+    );
+}
 
 //   def test_optarg
 //     assert_parses(
