@@ -6296,13 +6296,13 @@ fn _handler318(&mut self) -> SV {
 // Semantic values prologue.
 let mut _6 = interior_token!(pop!(self.values_stack, _0));
 let mut _5 = pop!(self.values_stack, _5);
-let mut _4 = pop!(self.values_stack, _3);
+let mut _4 = pop!(self.values_stack, _2);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let (else_t, else_) = unwrap_some_token_node!(_5);
-        let __ = builders::condition(_1, _2, _3, else_, else_t, Some(_4), Some(_6));
+        let __ = builders::condition(_1, _2, _3, else_, else_t, _4, Some(_6));
 explain!("action: primary -> kUNLESS expr_value then compstmt opt_else kEND");
 
 SV::_3(__)

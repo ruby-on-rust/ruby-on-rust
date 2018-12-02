@@ -4518,8 +4518,7 @@ fn send_binary_op() {
 
 //   # Branching
 
-#[test]
-fn r#if() {
+#[test] fn r#if() {
     //     assert_parses(
     //       s(:if, s(:lvar, :foo), s(:lvar, :bar), nil),
     //       %q{if foo then bar; end},
@@ -4544,37 +4543,53 @@ fn r#if() {
     );
 }
 
-//   def test_if_nl_then
-//     assert_parses(
-//       s(:if, s(:lvar, :foo), s(:lvar, :bar), nil),
-//       %Q{if foo\nthen bar end},
-//        %q{       ~~~~ begin})
-//   end
+#[test] fn if_nl_then() {
+    //     assert_parses(
+    //       s(:if, s(:lvar, :foo), s(:lvar, :bar), nil),
+    //       %Q{if foo\nthen bar end},
+    //        %q{       ~~~~ begin})
+    assert_parses!(
+        "if foo\nthen bar end",
+        n_if!(n_lvar!("foo"), Some(n_lvar!("bar")), None)
+    );
+}
 
-//   def test_if_mod
-//     assert_parses(
-//       s(:if, s(:lvar, :foo), s(:lvar, :bar), nil),
-//       %q{bar if foo},
-//       %q{    ~~ keyword
-//         |~~~~~~~~~~ expression})
-//   end
+#[test] fn if_mod() {
+    //     assert_parses(
+    //       s(:if, s(:lvar, :foo), s(:lvar, :bar), nil),
+    //       %q{bar if foo},
+    //       %q{    ~~ keyword
+    //         |~~~~~~~~~~ expression})
+    assert_parses!(
+        "bar if foo",
+        n_if!(n_lvar!("foo"), Some(n_lvar!("bar")), None)
+    );
+}
 
-//   def test_unless
-//     assert_parses(
-//       s(:if, s(:lvar, :foo), nil, s(:lvar, :bar)),
-//       %q{unless foo then bar; end},
-//       %q{~~~~~~ keyword
-//         |           ~~~~ begin
-//         |                     ~~~ end
-//         |~~~~~~~~~~~~~~~~~~~~~~~~ expression})
+#[test] fn unless() {
+    //     assert_parses(
+    //       s(:if, s(:lvar, :foo), nil, s(:lvar, :bar)),
+    //       %q{unless foo then bar; end},
+    //       %q{~~~~~~ keyword
+    //         |           ~~~~ begin
+    //         |                     ~~~ end
+    //         |~~~~~~~~~~~~~~~~~~~~~~~~ expression})
+    assert_parses!(
+        "unless foo then bar; end",
+        n_if!(n_lvar!("foo"), None, Some(n_lvar!("bar")))
+    );
 
-//     assert_parses(
-//       s(:if, s(:lvar, :foo), nil, s(:lvar, :bar)),
-//       %q{unless foo; bar; end},
-//       %q{~~~~~~ keyword
-//         |                 ~~~ end
-//         |~~~~~~~~~~~~~~~~~~~~ expression})
-//   end
+    //     assert_parses(
+    //       s(:if, s(:lvar, :foo), nil, s(:lvar, :bar)),
+    //       %q{unless foo; bar; end},
+    //       %q{~~~~~~ keyword
+    //         |                 ~~~ end
+    //         |~~~~~~~~~~~~~~~~~~~~ expression})
+    assert_parses!(
+        "unless foo; bar; end",
+        n_if!(n_lvar!("foo"), None, Some(n_lvar!("bar")))
+    );
+}
 
 //   def test_unless_mod
 //     assert_parses(

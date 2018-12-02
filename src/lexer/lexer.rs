@@ -154,6 +154,7 @@ pub struct Lexer {
 	// @sharp_s       = nil # location of last encountered #
 	
 	// @newline_s     = nil # location of last encountered newline
+	newline_s: Option<i32>, // TODO do we need an Option here
 	
 	// @num_base      = nil # last numeric base
 	// @num_digits_s  = nil # starting position of numeric digits
@@ -169,6 +170,7 @@ pub struct Lexer {
 	
 	// @herebody_s    = nil # starting position of current heredoc line
 	
+	// TODO are these 2 values ruby19 only?
 	// # Ruby 1.9 ->() lambdas emit a distinct token if do/{ is
 	// # encountered after a matching closing parenthesis.
 	// @paren_nest    = 0
@@ -228,6 +230,8 @@ impl Lexer {
 			
 			tokens: Rc::new(RefCell::new(vec![])),
 			literal_stack: vec![],
+			
+			newline_s: None,
 			
 			num_base: 0,
 			num_digits_s: 0,
@@ -503,13 +507,7 @@ impl Lexer {
 											match ( _lexer_actions[(_acts ) as usize]
 											) {
 												0  => {
-													{panic!("UNIMPL");
-														// # Record position of a newline for precise location reporting on tNL
-														// # tokens.
-														// #
-														// # This action is embedded directly into c_nl, as it is idempotent and
-														// # there are no cases when we need to skip it.
-														// @newline_s = p
+													{self.newline_s = Some(p);
 													}
 													
 												}

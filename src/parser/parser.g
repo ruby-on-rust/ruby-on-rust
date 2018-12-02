@@ -1305,10 +1305,10 @@ primary
         $$ = builders::condition($1, $2, $3, $4, else_t, else_, Some($6));
     }
     | kUNLESS expr_value then compstmt opt_else kEND {
-        |$1:Token, $2:Node, $3:Token, $4:Node, $5:TSomeTokenNode, $6:Token| -> Node;
+        |$1:Token, $2:Node, $3:Token, $4:TSomeNode, $5:TSomeTokenNode, $6:Token| -> Node;
 
         let (else_t, else_) = unwrap_some_token_node!($5);
-        $$ = builders::condition($1, $2, $3, else_, else_t, Some($4), Some($6));
+        $$ = builders::condition($1, $2, $3, else_, else_t, $4, Some($6));
     }
     | kWHILE expr_value_do compstmt kEND {
         |$1:Token, $2:TNodeToken, $3:Node, $4:Token| -> Node;

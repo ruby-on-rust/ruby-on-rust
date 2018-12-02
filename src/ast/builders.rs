@@ -1284,7 +1284,7 @@ pub fn condition(cond_t: Token, cond: Node, then_t: Token, if_true: Option<Node>
 //     keyword_mod_map(if_true || if_false, cond_t, cond))
 // end
 pub fn condition_mod(if_true: Option<Node>, if_false: Option<Node>, cond_t: Token, cond: Node) -> Node {
-    wip!();
+    n_if!( check_condition(cond), if_true, if_false )
 }
 
 // def ternary(cond, question_t, if_true, colon_t, if_false)
