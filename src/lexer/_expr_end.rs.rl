@@ -1,9 +1,9 @@
 %%{
 expr_end := |*
 
-#
-# STABBY LAMBDA
-#
+    #
+    # STABBY LAMBDA
+    #
 
     '->'
     => {

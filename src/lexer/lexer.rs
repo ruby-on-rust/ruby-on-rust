@@ -169,6 +169,7 @@ pub struct Lexer {
 	// @escape        = nil # last escaped sequence, as string
 	
 	// @herebody_s    = nil # starting position of current heredoc line
+	herebody_s: Option<i32>,
 	
 	// TODO are these 2 values ruby19 only?
 	// # Ruby 1.9 ->() lambdas emit a distinct token if do/{ is
@@ -236,6 +237,8 @@ impl Lexer {
 			num_base: 0,
 			num_digits_s: 0,
 			num_suffix_s: 0,
+			
+			herebody_s: None,
 			
 			paren_nest: 0,
 			lambda_stack: vec![],
@@ -608,13 +611,9 @@ impl Lexer {
 													
 												}
 												25  => {
-													{wip!();
-														// # After every heredoc was parsed, @herebody_s contains the
-														// # position of next token after all heredocs.
-														// if @herebody_s
-														//   p = @herebody_s
-														//   @herebody_s = nil
-														// end
+													{if let Some(herebody_s) = self.herebody_s {
+															wip!();
+														}
 													}
 													
 												}

@@ -35,13 +35,15 @@
 
 %%{
 e_heredoc_nl = c_nl % {
-    wip!();
-  // # After every heredoc was parsed, @herebody_s contains the
-  // # position of next token after all heredocs.
-  // if @herebody_s
-  //   p = @herebody_s
-  //   @herebody_s = nil
-  // end
+    // # After every heredoc was parsed, @herebody_s contains the
+    // # position of next token after all heredocs.
+    // if @herebody_s
+    //   p = @herebody_s
+    //   @herebody_s = nil
+    // end
+    if let Some(herebody_s) = self.herebody_s {
+        wip!();
+    }
 };
 
 # action extend_string {
