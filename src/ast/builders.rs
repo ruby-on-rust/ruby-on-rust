@@ -426,7 +426,7 @@ pub fn associate(begin_t: Option<Token>, pairs: Nodes, end_t: Option<Token>) -> 
 //     range_map(lhs, dot2_t, rhs))
 // end
 pub fn range_inclusive(lhs: Node, dot2_t: Token, rhs: Option<Node>) -> Node {
-    wip!();
+    n_irange!(Some(lhs), rhs)
 }
 
 // def range_exclusive(lhs, dot3_t, rhs)
@@ -434,7 +434,7 @@ pub fn range_inclusive(lhs: Node, dot2_t: Token, rhs: Option<Node>) -> Node {
 //     range_map(lhs, dot3_t, rhs))
 // end
 pub fn range_exclusive(lhs: Node, dot3_t: Token, rhs: Option<Node>) -> Node {
-    wip!();
+    n_erange!(Some(lhs), rhs)
 }
 
 // #

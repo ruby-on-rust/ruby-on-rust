@@ -131,7 +131,7 @@ pub enum Node {
     GVar(String),
     CVar(String),
 
-    Const{ scope: NSNode, name: String },
+    Const { scope: NSNode, name: String },
     //            ^ CBase/Lvar
     //            ^ None means unscoped
     CBase, // :: in ::Foo
@@ -150,26 +150,29 @@ pub enum Node {
 
     Begin(Nodes),
 
-    Send{ receiver: NSNode, selector: String, args: Nodes },
+    Send { receiver: NSNode, selector: String, args: Nodes },
     // https://github.com/whitequark/parser/blob/master/doc/AST_FORMAT.md#send
     // NOTE
     //     receiver being None means sending to self
     // TODO note about selector and such
-    CSend{ receiver: NSNode, selector: String, args: Nodes },
+    CSend { receiver: NSNode, selector: String, args: Nodes },
 
     MLhs(Nodes),
 
-    Module{ name: NNode, body: NSNode },
-    Class{ name: NNode, superclass: NSNode, body: NSNode },
+    Module { name: NNode, body: NSNode },
+    Class { name: NNode, superclass: NSNode, body: NSNode },
     // node->nd_cpath, node->nd_super, node->nd_body
 
-    If{ condition: NNode, then_body: NSNode, else_body: NSNode },
+    If { condition: NNode, then_body: NSNode, else_body: NSNode },
     // node->nd_cond, node->nd_body, node->nd_else);
 
     Arg(String),
     Args(Nodes),
 
-    Def{ name: String, args: NNode, body: NSNode },
+    Def { name: String, args: NNode, body: NSNode },
+
+    IRange { start: NSNode, end: NSNode }, // I as inclusive
+    ERange { start: NSNode, end: NSNode }, // E as exclusive
 }
 
 type SomeNode = Option<Node>;
@@ -179,6 +182,7 @@ type NSNode = Box<SomeNode>; // NestedSomeNode
 pub type Nodes = Vec<Node>;
 
 // TODO generate macros via procedure and macro, like in strum
+// TODO macro to wrap value in Some, unless it's None
 #[macro_export] macro_rules! n_str { ($string:expr) => { Node::Str(String::from($string)) }; }
 #[macro_export] macro_rules! n_sym { ($string:expr) => { Node::Sym(String::from($string)) }; }
 #[macro_export] macro_rules! n_lvar { ($string:expr) => { Node::LVar(String::from($string)) }; }
@@ -187,6 +191,7 @@ pub type Nodes = Vec<Node>;
 #[macro_export] macro_rules! n_gvar { ($string:expr) => { Node::GVar(String::from($string)) }; }
 #[macro_export] macro_rules! n_begin { ( $( $x:expr ),* ) => { { Node::Begin(vec![ $($x),* ]) } }; }
 #[macro_export] macro_rules! n_dstr { ( $( $x:expr ),* ) => { { Node::DStr(vec![ $($x),* ]) } }; }
+#[macro_export] macro_rules! n_array { ( $( $x:expr ),* ) => { { Node::Array(vec![ $($x),* ]) } }; }
 #[macro_export] macro_rules! n_hash { ( $( $x:expr ),* ) => { { Node::Hash(vec![ $($x),* ]) } }; }
 #[macro_export] macro_rules! n_pair { ($key:expr, $value:expr) => { Node::Pair { key: Box::new($key), value: Box::new($value) }; } }
 #[macro_export] macro_rules! n_send { ($receiver:expr, $selector:expr, $args:expr) => { Node::Send { receiver: Box::new($receiver), selector: String::from($selector), args: $args } }; }
@@ -200,6 +205,8 @@ pub type Nodes = Vec<Node>;
 #[macro_export] macro_rules! n_args { ( $( $x:expr ),* ) => { { Node::Args(vec![ $($x),* ]) } }; }
 #[macro_export] macro_rules! n_arg { ($string:expr) => { Node::Arg(String::from($string)) }; }
 #[macro_export] macro_rules! n_def { ($name:expr, $args:expr, $body:expr) => { Node::Def { name: String::from($name), args: Box::new($args), body: Box::new($body) } }; }
+#[macro_export] macro_rules! n_irange { ($start:expr, $end:expr) => { Node::IRange { start: Box::new($start), end: Box::new($end) }; } }
+#[macro_export] macro_rules! n_erange { ($start:expr, $end:expr) => { Node::ERange { start: Box::new($start), end: Box::new($end) }; } }
 
 
 // TODO use a procedure derive for this

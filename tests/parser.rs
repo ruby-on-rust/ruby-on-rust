@@ -722,16 +722,20 @@ fn array_words_empty() {
     );
 }
 
-//   def test_array_symbols
-//     assert_parses(
-//       s(:array, s(:sym, :foo), s(:sym, :bar)),
-//       %q{%i[foo bar]},
-//       %q{^^^ begin
-//         |          ^ end
-//         |   ~~~ expression (sym)
-//         |~~~~~~~~~~~ expression},
-//       SINCE_2_0)
-//   end
+#[test] fn array_symbols() {
+    //     assert_parses(
+    //       s(:array, s(:sym, :foo), s(:sym, :bar)),
+    //       %q{%i[foo bar]},
+    //       %q{^^^ begin
+    //         |          ^ end
+    //         |   ~~~ expression (sym)
+    //         |~~~~~~~~~~~ expression},
+    //       SINCE_2_0)
+    assert_parses!(
+        "%i[foo bar]",
+        n_array![ n_sym!("foo"), n_sym!("bar") ]
+    );
+}
 
 //   def test_array_symbols_interp
 //     assert_parses(
@@ -759,28 +763,25 @@ fn array_words_empty() {
 //       SINCE_2_0)
 //   end
 
-//   def test_array_symbols_empty
-//     assert_parses(
-//       s(:array),
-//       %q{%i[]},
-//       %q{^^^ begin
-//         |   ^ end
-//         |~~~~ expression},
-//       SINCE_2_0)
-// 
-//     assert_parses(
-//       s(:array),
-//       %q{%I()},
-//       %q{},
-//       SINCE_2_0)
-//   end
 #[test]
 pub fn array_symbols_empty() {
+    //     assert_parses(
+    //       s(:array),
+    //       %q{%i[]},
+    //       %q{^^^ begin
+    //         |   ^ end
+    //         |~~~~ expression},
+    //       SINCE_2_0)
     assert_parses!(
         r"%i[]",
         Node::Array(vec![])
     );
 
+    //     assert_parses(
+    //       s(:array),
+    //       %q{%I()},
+    //       %q{},
+    //       SINCE_2_0)
     assert_parses!(
         r"%I[]",
         Node::Array(vec![])
@@ -789,40 +790,30 @@ pub fn array_symbols_empty() {
 
 //   # Hashes
 
-//   def test_hash_empty
-//     assert_parses(
-//       s(:hash),
-//       %q[{ }],
-//       %q{^ begin
-//         |  ^ end
-//         |~~~ expression})
-//   end
 #[test]
 fn hash_empty() {
+    //     assert_parses(
+    //       s(:hash),
+    //       %q[{ }],
+    //       %q{^ begin
+    //         |  ^ end
+    //         |~~~ expression})
     assert_parses!(
         "{ }",
         Node::Hash(vec![])
     );
 }
 
-//   def test_hash_hashrocket
-//     assert_parses(
-//       s(:hash, s(:pair, s(:int, 1), s(:int, 2))),
-//       %q[{ 1 => 2 }],
-//       %q{^ begin
-//         |         ^ end
-//         |    ^^ operator (pair)
-//         |  ~~~~~~ expression (pair)
-//         |~~~~~~~~~~ expression})
-// 
-//     assert_parses(
-//       s(:hash,
-//         s(:pair, s(:int, 1), s(:int, 2)),
-//         s(:pair, s(:sym, :foo), s(:str, 'bar'))),
-//       %q[{ 1 => 2, :foo => "bar" }])
-//   end
 #[test]
 fn hash_hashrocket() {
+    //     assert_parses(
+    //       s(:hash, s(:pair, s(:int, 1), s(:int, 2))),
+    //       %q[{ 1 => 2 }],
+    //       %q{^ begin
+    //         |         ^ end
+    //         |    ^^ operator (pair)
+    //         |  ~~~~~~ expression (pair)
+    //         |~~~~~~~~~~ expression})    assert_parses!(
     assert_parses!(
         "{ 1 => 2 }",
         Node::Hash(vec![
@@ -830,6 +821,11 @@ fn hash_hashrocket() {
         ])
     );
 
+    //     assert_parses(
+    //       s(:hash,
+    //         s(:pair, s(:int, 1), s(:int, 2)),
+    //         s(:pair, s(:sym, :foo), s(:str, 'bar'))),
+    //       %q[{ 1 => 2, :foo => "bar" }])
     assert_parses!(
         r#"{ 1 => 2, :foo => "bar" }"#,
         Node::Hash(vec![
@@ -922,39 +918,55 @@ fn hash_label_end() {
 
 //   # Range
 
-//   def test_range_inclusive
-//     assert_parses(
-//       s(:irange, s(:int, 1), s(:int, 2)),
-//       %q{1..2},
-//       %q{ ~~ operator
-//         |~~~~ expression})
-//   end
+#[test] fn range_inclusive() {
+    //     assert_parses(
+    //       s(:irange, s(:int, 1), s(:int, 2)),
+    //       %q{1..2},
+    //       %q{ ~~ operator
+    //         |~~~~ expression})
+    assert_parses!(
+        "1..2",
+        n_irange!(Some(n_int!(1)), Some(n_int!(2)))
+    );
+}
 
-//   def test_range_exclusive
-//     assert_parses(
-//       s(:erange, s(:int, 1), s(:int, 2)),
-//       %q{1...2},
-//       %q{ ~~~ operator
-//         |~~~~~ expression})
-//   end
+#[test] fn range_exclusive() {
+    //     assert_parses(
+    //       s(:erange, s(:int, 1), s(:int, 2)),
+    //       %q{1...2},
+    //       %q{ ~~~ operator
+    //         |~~~~~ expression})
+    assert_parses!(
+        "1...2",
+        n_erange!(Some(n_int!(1)), Some(n_int!(2)))
+    );
+}
 
-//   def test_range_endless
-//     assert_parses(
-//       s(:irange,
-//         s(:int, 1), nil),
-//       %q{1..},
-//       %q{~~~ expression
-//         | ~~ operator},
-//       SINCE_2_6)
-// 
-//     assert_parses(
-//       s(:erange,
-//         s(:int, 1), nil),
-//       %q{1...},
-//       %q{~~~~ expression
-//         | ~~~ operator},
-//       SINCE_2_6)
-//   end
+#[test] fn range_endless() {
+    //     assert_parses(
+    //       s(:irange,
+    //         s(:int, 1), nil),
+    //       %q{1..},
+    //       %q{~~~ expression
+    //         | ~~ operator},
+    //       SINCE_2_6)
+    assert_parses!(
+        "1..",
+        n_irange!(Some(n_int!(1)), None)
+    );
+
+    //     assert_parses(
+    //       s(:erange,
+    //         s(:int, 1), nil),
+    //       %q{1...},
+    //       %q{~~~~ expression
+    //         | ~~~ operator},
+    //       SINCE_2_6)
+    assert_parses!(
+        "1...",
+        n_erange!(Some(n_int!(1)), None)
+    );
+}
 
 //   #
 //   # Access

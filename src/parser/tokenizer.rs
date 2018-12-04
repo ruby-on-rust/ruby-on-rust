@@ -324,7 +324,7 @@ pub struct Tokenizer {
 
 impl Tokenizer {
     pub fn new() -> Tokenizer {
-        let mut tokenizer = Tokenizer {
+        Tokenizer {
             // string: "",
 
             yytext: "",
@@ -337,9 +337,7 @@ impl Tokenizer {
             static_env: StaticEnv::new(),
             context: Context::new(),
             last_token: None,
-        };
-
-        tokenizer
+        }
     }
 
     pub fn init_string(&mut self, string: &str) -> &mut Tokenizer {
