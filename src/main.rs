@@ -26,5 +26,7 @@ fn main() {
 
     let mut interpreter = Interpreter::new();
 
-    interpreter.eval(node);
+    let result = interpreter.eval(node);
+
+    println!("evaluated result: {:?}", result);
 }

@@ -10,3 +10,4 @@ lazy_static = "1.1.0"
 maplit = "1.0.1"
 strum = "0.10.0"
 strum_macros = "0.10.0"
+uuid = { version = "0.7", features = ["v4"] }
