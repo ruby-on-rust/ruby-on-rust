@@ -40,4 +40,11 @@ impl Object {
             value
         }
     }
+
+    pub fn test_bool(&self) -> bool {
+        match self.value {
+            Value::Nil | Value::False => false,
+            _ => true
+        }
+    }
 }

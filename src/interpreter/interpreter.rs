@@ -70,7 +70,7 @@ impl Interpreter {
             Node::False => { self.objects.get_primitive_false() },
 
             Node::If {condition, then_body, else_body} => {
-                if self.eval_and_test_bool(Some(*condition)) { 
+                if self.eval(Some(*condition)).test_bool() { 
                     self.eval(*then_body)
                 } else {
                     self.eval(*else_body)
@@ -78,13 +78,6 @@ impl Interpreter {
             },
 
             _ => { panic!("eval: don't know how to handle node: {:?}", node); }
-        }
-    }
-
-    fn eval_and_test_bool(&mut self, node: Option<Node>) -> bool {
-        match self.eval(node).value {
-            Value::Nil | Value::False => false,
-            _ => true
         }
     }
 }
