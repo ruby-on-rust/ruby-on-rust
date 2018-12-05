@@ -55,17 +55,16 @@ use crate::{
     parser::token::Token,
     parser::tokenizer::Tokenizer,
     parser::static_env::StaticEnv,
-    ast::node::{ Node, Nodes },
+    ast::node::{ Node, Nodes, SomeNode },
     ast::builders,
 };
 
 type TDummy = ();
 
-type TSomeNode = Option<Node>;
 type TSomeNodes = Option<Nodes>;
 type TTokenNode = ( InteriorToken, Node );
 type TNodeToken = ( Node, InteriorToken );
-type TSomeTokenNode = Option<(InteriorToken, Node)>;
+type TSomeTokenNode = (Option<InteriorToken>, Option<Node>);
 type TParenArgs = ( Option<InteriorToken>, Nodes, Option<InteriorToken> );
 type TLambdaBody = ( InteriorToken, Node, InteriorToken );
 type TLambda = ( Node, TLambdaBody );
@@ -75,18 +74,10 @@ type TBraceBody = ( Node, Node ); // opt_block_param, compstmt
 type TBraceBlock = ( InteriorToken, TBraceBody, InteriorToken );
 type TBeginBlock = ( InteriorToken, Node, InteriorToken );
 
-pub type TResult = TSomeNode;
+pub type TResult = SomeNode;
 
 macro_rules! wip { () => { panic!("WIP"); }; }
 macro_rules! interior_token { ($token:expr) => { *$token.interior_token }; }
-macro_rules! unwrap_some_token_node {
-    ($some_token_node:expr) => {
-        match $some_token_node {
-            Some((token, node)) => (Some(token), Some(node)),
-            None => (None, None),
-        }
-    }
-}
 
 macro_rules! explain {
     ( $ ( $ arg : tt ) * ) => {
@@ -103,7 +94,7 @@ program: top_compstmt;
 
 top_compstmt
     : top_stmts opt_terms {
-        |$1: Nodes| -> TSomeNode;
+        |$1: Nodes| -> SomeNode;
         $$ = builders::compstmt($1);
     }
 ;
@@ -144,11 +135,11 @@ begin_block: tLCURLY top_compstmt tRCURLY {
 
 bodystmt
     : compstmt opt_rescue opt_else opt_ensure {
-        |$1:TSomeNode, $2:Nodes, $3:TSomeTokenNode, $4:TSomeTokenNode| -> TSomeNode;
+        |$1:SomeNode, $2:Nodes, $3:TSomeTokenNode, $4:TSomeTokenNode| -> SomeNode;
 
         let rescue_bodies = $2;
-        let (else_t, else_) = unwrap_some_token_node!($3);
-        let (ensure_t, ensure_) = unwrap_some_token_node!($4);
+        let (else_t, else_) = $3;
+        let (ensure_t, ensure_) = $4;
 
         // if rescue_bodies.empty? && !else_.nil?
         //   diagnostic :error, :useless_else, nil, else_t
@@ -163,7 +154,7 @@ bodystmt
 ;
 
 compstmt: stmts opt_terms {
-    |$1:Nodes| -> TSomeNode;
+    |$1:Nodes| -> SomeNode;
     $$ = builders::compstmt($1);
 };
 
@@ -327,7 +318,7 @@ command_asgn
 command_rhs
     : command_call %prec tOP_ASGN
     | command_call kRESCUE_MOD stmt {
-        |$1:Node, $2:Token, $3:Node| -> TSomeNode;
+        |$1:Node, $2:Token, $3:Node| -> SomeNode;
         let rescue_body = builders::rescue_body($2, None, None, None, None, $3);
 
         $$ = builders::begin_body(Some($1), vec![ rescue_body ], None, None, None, None);
@@ -925,7 +916,7 @@ aref_args
 arg_rhs
     : arg %prec tOP_ASGN
     | arg kRESCUE_MOD arg {
-        |$1:Node, $2:Token, $3:Node| -> TSomeNode;
+        |$1:Node, $2:Token, $3:Node| -> SomeNode;
         let rescue_body = builders::rescue_body($2, None, None, None, None, $3);
 
         $$ = builders::begin_body(Some($1), vec![ rescue_body ], None, None, None, None);
@@ -1209,7 +1200,7 @@ primary
         $$ = builders::call_method(None, None, Some($1), None, vec![], None);
     }
     | kBEGIN fake_embedded_action_primary_kBEGIN bodystmt kEND {
-        |$1: Token, $2: StackState, $3: TSomeNode, $4: Token| -> Node;
+        |$1: Token, $2: StackState, $3: SomeNode, $4: Token| -> Node;
 
         self.tokenizer.interior_lexer.cmdarg = $2;
 
@@ -1226,7 +1217,7 @@ primary
         $$ = builders::begin($1, None, $4);
     }
     | tLPAREN compstmt tRPAREN {
-        |$1: Token, $2: TSomeNode, $3: Token| -> Node;
+        |$1: Token, $2: SomeNode, $3: Token| -> Node;
 
         $$ = builders::begin($1, $2, $3);
     }
@@ -1299,15 +1290,15 @@ primary
         $$ = builders::block(lambda_call, begin_t, args, body, end_t);
     }
     | kIF expr_value then compstmt if_tail kEND {
-        |$1:Token, $2:Node, $3:Token, $4:TSomeNode, $5:TSomeTokenNode, $6:Token| -> Node;
+        |$1:Token, $2:Node, $3:Token, $4:SomeNode, $5:TSomeTokenNode, $6:Token| -> Node;
 
-        let (else_t, else_) = unwrap_some_token_node!($5);
+        let (else_t, else_) = $5;
         $$ = builders::condition($1, $2, $3, $4, else_t, else_, Some($6));
     }
     | kUNLESS expr_value then compstmt opt_else kEND {
-        |$1:Token, $2:Node, $3:Token, $4:TSomeNode, $5:TSomeTokenNode, $6:Token| -> Node;
+        |$1:Token, $2:Node, $3:Token, $4:SomeNode, $5:TSomeTokenNode, $6:Token| -> Node;
 
-        let (else_t, else_) = unwrap_some_token_node!($5);
+        let (else_t, else_) = $5;
         $$ = builders::condition($1, $2, $3, else_, else_t, $4, Some($6));
     }
     | kWHILE expr_value_do compstmt kEND {
@@ -1350,7 +1341,7 @@ primary
         $$ = builders::build_for($1, $2, $3, expr_value_node, expr_value_token, $5, $6);
     }
     | kCLASS cpath superclass fake_embedded_action__primary__kCLASS_1 bodystmt kEND {
-        |$1:Token, $2:Node, $3:TSomeTokenNode, $5:TSomeNode, $6:Token| -> Node;
+        |$1:Token, $2:Node, $3:TSomeTokenNode, $5:SomeNode, $6:Token| -> Node;
 
         if !self.tokenizer.context.is_class_definition_allowed() {
             //     diagnostic :error, :class_in_def, nil, val[0]
@@ -1358,7 +1349,7 @@ primary
         }
 
         // TODO RENAMING what's a lt?
-        let (lt_t, superclass) = unwrap_some_token_node!($3);
+        let (lt_t, superclass) = $3;
         $$ = builders::def_class($1, $2, lt_t, superclass, $5, $6);
 
         self.tokenizer.interior_lexer.pop_cmdarg();
@@ -1367,7 +1358,7 @@ primary
         self.tokenizer.context.pop();
     }
     | kCLASS tLSHFT expr term fake_embedded_action__primary__kCLASS_2 bodystmt kEND {
-        |$1:Token, $2:Token, $3:Node, $6:TSomeNode, $7:Token| -> TDummy;
+        |$1:Token, $2:Token, $3:Node, $6:SomeNode, $7:Token| -> TDummy;
 
         //   result = @builder.def_sclass(val[0], val[1], val[2],
         //                                val[5], val[6])
@@ -1382,7 +1373,7 @@ primary
         wip!();
     }
     | kMODULE cpath fake_embedded_action__primary__kMODULE_1 bodystmt kEND {
-        |$1:Token, $2:Node, $4:TSomeNode, $5:Token| -> Node;
+        |$1:Token, $2:Node, $4:SomeNode, $5:Token| -> Node;
 
         if !self.tokenizer.context.is_class_definition_allowed() {
             //     diagnostic :error, :module_in_def, nil, val[0]
@@ -1395,7 +1386,7 @@ primary
         self.tokenizer.static_env.unextend();
     }
     | kDEF fname fake_embedded_action__primary__kDEF_1 f_arglist bodystmt kEND {
-        |$1:Token, $2:Token, $4:Node, $5:TSomeNode, $6:Token| -> Node;
+        |$1:Token, $2:Token, $4:Node, $5:SomeNode, $6:Token| -> Node;
 
         $$ = builders::def_method($1, $2, $4, $5, $6);
 
@@ -1459,24 +1450,24 @@ do
 if_tail
     : opt_else
     | kELSIF expr_value then compstmt if_tail {
-        |$1:Token, $2:Node, $3:Token, $4:Node, $5:TSomeTokenNode| -> TSomeTokenNode;
+        |$1:Token, $2:Node, $3:Token, $4:SomeNode, $5:TSomeTokenNode| -> TSomeTokenNode;
 
         let k_elseif_clone = $1.clone();
-        let (else_t, else_) = unwrap_some_token_node!($5);
-        $$ = Some((
-            $1,
-            builders::condition(k_elseif_clone, $2, $3, Some($4), else_t, else_, None)
-        ));
+        let (else_t, else_) = $5;
+        $$ = (
+            Some($1),
+            Some(builders::condition(k_elseif_clone, $2, $3, $4, else_t, else_, None))
+        );
     }
 ;
 
 opt_else
     : {
-        || -> TSomeTokenNode; $$ = None;
+        || -> TSomeTokenNode; $$ = (None, None);
     }
     | kELSE compstmt {
-        |$1:Token, $2:Node| -> TSomeTokenNode;
-        $$ = Some(($1, $2));
+        |$1:Token, $2:SomeNode| -> TSomeTokenNode;
+        $$ = (Some($1), $2);
     }
 ;
 
@@ -1970,7 +1961,7 @@ opt_rescue
     : kRESCUE exc_list exc_var then compstmt opt_rescue {
         |$1:Token, $2:TSomeNodes, $3:TSomeTokenNode, $4:Token, $5:Node, $6:Nodes| -> Nodes;
 
-        let (assoc_t, exc_var) = unwrap_some_token_node!($3);
+        let (assoc_t, exc_var) = $3;
 
         let exc_list = match $2 {
             Some(exc_list_nodes) => Some(builders::array(None, exc_list_nodes, None)),
@@ -2000,20 +1991,20 @@ exc_list
 exc_var
     : tASSOC lhs {
         |$1:Token, $2:Node| -> TSomeTokenNode;
-        $$ = Some(($1, $2));
+        $$ = (Some($1), Some($2));
     }
     | {
-        || -> TSomeTokenNode; $$ = None;
+        || -> TSomeTokenNode; $$ = (None, None);
     }
 ;
 
 opt_ensure
     : kENSURE compstmt {
         |$1:Token, $2:Node| -> TSomeTokenNode;
-        $$ = Some(($1, $2));
+        $$ = (Some($1), Some($2));
     }
     | {
-        || -> TSomeTokenNode; $$ = None;
+        || -> TSomeTokenNode; $$ = (None, None);
     }
 ;
 
@@ -2243,7 +2234,7 @@ numeric
     : simple_numeric
     | tUNARY_NUM simple_numeric %prec tLOWEST {
         |$1:Token, $2:Node| -> Node;
-        $$ = builder::unary_num($1, $2);
+        $$ = builders::unary_num($1, $2);
     }
 ;
 
@@ -2366,11 +2357,10 @@ fake_embedded_action__superclass__tLT: {
 superclass
     : tLT fake_embedded_action__superclass__tLT expr_value term {
         |$1:Token, $3:Node| -> TSomeTokenNode;
-
-        $$ = Some(($1, $3));
+        $$ = (Some($1), Some($3));
     }
     | {
-        || -> TSomeTokenNode; $$ = None;
+        || -> TSomeTokenNode; $$ = (None, None);
     }
 ;
 

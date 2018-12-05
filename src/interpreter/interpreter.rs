@@ -1,6 +1,6 @@
 use crate::{
     ast::node::{Node, SomeNode},
-    interpreter::object::{Object, ObjectSpace},
+    interpreter::object::{Value, Object, ObjectSpace},
 };
 
 pub struct Interpreter {
@@ -24,7 +24,8 @@ impl Interpreter {
             Node::True => { Object::new_true() },
 
             Node::If {condition, then_body, else_body} => {
-                if self.test_obj_bool(self.eval(Some(*condition))) { // TODO macro for this case
+                let condition_evaluated_result = self.eval(Some(*condition)); // TODO macro for this `Some(*` case
+                if self.test_obj_bool(condition_evaluated_result) { 
                     self.eval(*then_body)
                 } else {
                     self.eval(*else_body)
@@ -36,6 +37,11 @@ impl Interpreter {
     }
 
     fn test_obj_bool(&self, object: Object) -> bool {
-        true
+        match object.value {
+            Value::Nil => false,
+            Value::True => true,
+            Value::False => false,
+            _ => { panic!("#test_obj_bool: don't know how to handle object: {:?}", object); }
+        }
     }
 }

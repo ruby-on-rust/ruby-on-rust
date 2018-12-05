@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use crate::interpreter::interpreter::Interpreter;
 
 #[derive(Debug)]
-enum Value {
+pub enum Value {
     // 
     // primitive
     // 
@@ -25,8 +25,8 @@ enum Value {
 
 #[derive(Debug)]
 pub struct Object {
-    id: Uuid,
-    value: Value,
+    pub id: Uuid,
+    pub value: Value,
 }
 
 impl Object {

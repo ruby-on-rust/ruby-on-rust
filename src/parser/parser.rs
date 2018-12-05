@@ -18,7 +18,7 @@ enum SV {
     Undefined,
     _0(Token),
     _1(Nodes),
-    _2(TSomeNode),
+    _2(SomeNode),
     _3(Node),
     _4(TBeginBlock),
     _5(TSomeTokenNode),
@@ -1774,17 +1774,16 @@ use crate::{
     parser::token::Token,
     parser::tokenizer::Tokenizer,
     parser::static_env::StaticEnv,
-    ast::node::{ Node, Nodes },
+    ast::node::{ Node, Nodes, SomeNode },
     ast::builders,
 };
 
 type TDummy = ();
 
-type TSomeNode = Option<Node>;
 type TSomeNodes = Option<Nodes>;
 type TTokenNode = ( InteriorToken, Node );
 type TNodeToken = ( Node, InteriorToken );
-type TSomeTokenNode = Option<(InteriorToken, Node)>;
+type TSomeTokenNode = (Option<InteriorToken>, Option<Node>);
 type TParenArgs = ( Option<InteriorToken>, Nodes, Option<InteriorToken> );
 type TLambdaBody = ( InteriorToken, Node, InteriorToken );
 type TLambda = ( Node, TLambdaBody );
@@ -1794,18 +1793,10 @@ type TBraceBody = ( Node, Node ); // opt_block_param, compstmt
 type TBraceBlock = ( InteriorToken, TBraceBody, InteriorToken );
 type TBeginBlock = ( InteriorToken, Node, InteriorToken );
 
-pub type TResult = TSomeNode;
+pub type TResult = SomeNode;
 
 macro_rules! wip { () => { panic!("WIP"); }; }
 macro_rules! interior_token { ($token:expr) => { *$token.interior_token }; }
-macro_rules! unwrap_some_token_node {
-    ($some_token_node:expr) => {
-        match $some_token_node {
-            Some((token, node)) => (Some(token), Some(node)),
-            None => (None, None),
-        }
-    }
-}
 
 macro_rules! explain {
     ( $ ( $ arg : tt ) * ) => {
@@ -2687,8 +2678,8 @@ let mut _2 = pop!(self.values_stack, _1);
 let mut _1 = pop!(self.values_stack, _2);
 
 let rescue_bodies = _2;
-        let (else_t, else_) = unwrap_some_token_node!(_3);
-        let (ensure_t, ensure_) = unwrap_some_token_node!(_4);
+        let (else_t, else_) = _3;
+        let (ensure_t, ensure_) = _4;
 
         // if rescue_bodies.empty? && !else_.nil?
         //   diagnostic :error, :useless_else, nil, else_t
@@ -6285,7 +6276,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let (else_t, else_) = unwrap_some_token_node!(_5);
+let (else_t, else_) = _5;
         let __ = builders::condition(_1, _2, _3, _4, else_t, else_, Some(_6));
 explain!("action: primary -> kIF expr_value then compstmt if_tail kEND");
 
@@ -6301,7 +6292,7 @@ let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let (else_t, else_) = unwrap_some_token_node!(_5);
+let (else_t, else_) = _5;
         let __ = builders::condition(_1, _2, _3, else_, else_t, _4, Some(_6));
 explain!("action: primary -> kUNLESS expr_value then compstmt opt_else kEND");
 
@@ -6408,7 +6399,7 @@ if !self.tokenizer.context.is_class_definition_allowed() {
         }
 
         // TODO RENAMING what's a lt?
-        let (lt_t, superclass) = unwrap_some_token_node!(_3);
+        let (lt_t, superclass) = _3;
         let __ = builders::def_class(_1, _2, lt_t, superclass, _5, _6);
 
         self.tokenizer.interior_lexer.pop_cmdarg();
@@ -6644,17 +6635,17 @@ __
 fn _handler341(&mut self) -> SV {
 // Semantic values prologue.
 let mut _5 = pop!(self.values_stack, _5);
-let mut _4 = pop!(self.values_stack, _3);
+let mut _4 = pop!(self.values_stack, _2);
 let mut _3 = interior_token!(pop!(self.values_stack, _0));
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
 let k_elseif_clone = _1.clone();
-        let (else_t, else_) = unwrap_some_token_node!(_5);
-        let __ = Some((
-            _1,
-            builders::condition(k_elseif_clone, _2, _3, Some(_4), else_t, else_, None)
-        ));
+        let (else_t, else_) = _5;
+        let __ = (
+            Some(_1),
+            Some(builders::condition(k_elseif_clone, _2, _3, _4, else_t, else_, None))
+        );
 explain!("action: if_tail -> kELSIF expr_value then compstmt if_tail");
 
 SV::_5(__)
@@ -6664,7 +6655,7 @@ fn _handler342(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ = None;
+let __ = (None, None);
 explain!("action: opt_else -> undefined");
 
 SV::_5(__)
@@ -6672,10 +6663,10 @@ SV::_5(__)
 
 fn _handler343(&mut self) -> SV {
 // Semantic values prologue.
-let mut _2 = pop!(self.values_stack, _3);
+let mut _2 = pop!(self.values_stack, _2);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = Some((_1, _2));
+let __ = (Some(_1), _2);
 explain!("action: opt_else -> kELSE compstmt");
 
 SV::_5(__)
@@ -7747,7 +7738,7 @@ let mut _3 = pop!(self.values_stack, _5);
 let mut _2 = pop!(self.values_stack, _16);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let (assoc_t, exc_var) = unwrap_some_token_node!(_3);
+let (assoc_t, exc_var) = _3;
 
         let exc_list = match _2 {
             Some(exc_list_nodes) => Some(builders::array(None, exc_list_nodes, None)),
@@ -7807,7 +7798,7 @@ fn _handler430(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = Some((_1, _2));
+let __ = (Some(_1), Some(_2));
 explain!("action: exc_var -> tASSOC lhs");
 
 SV::_5(__)
@@ -7817,7 +7808,7 @@ fn _handler431(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ = None;
+let __ = (None, None);
 explain!("action: exc_var -> undefined");
 
 SV::_5(__)
@@ -7828,7 +7819,7 @@ fn _handler432(&mut self) -> SV {
 let mut _2 = pop!(self.values_stack, _3);
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = Some((_1, _2));
+let __ = (Some(_1), Some(_2));
 explain!("action: opt_ensure -> kENSURE compstmt");
 
 SV::_5(__)
@@ -7838,7 +7829,7 @@ fn _handler433(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ = None;
+let __ = (None, None);
 explain!("action: opt_ensure -> undefined");
 
 SV::_5(__)
@@ -8583,7 +8574,7 @@ let mut _3 = pop!(self.values_stack, _3);
 self.values_stack.pop();
 let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-let __ = Some((_1, _3));
+let __ = (Some(_1), Some(_3));
 explain!("action: superclass -> tLT fake_embedded_action__superclass__tLT expr_value term");
 
 SV::_5(__)
@@ -8593,7 +8584,7 @@ fn _handler501(&mut self) -> SV {
 // Semantic values prologue.
 
 
-let __ = None;
+let __ = (None, None);
 explain!("action: superclass -> undefined");
 
 SV::_5(__)
