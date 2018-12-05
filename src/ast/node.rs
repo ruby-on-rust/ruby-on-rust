@@ -183,6 +183,7 @@ pub type Nodes = Vec<Node>;
 
 // TODO generate macros via procedure and macro, like in strum
 // TODO macro to wrap value in Some, unless it's None
+// TODO macros like hash should use pattern like { "a" => "b" }
 #[macro_export] macro_rules! n_str { ($string:expr) => { Node::Str(String::from($string)) }; }
 #[macro_export] macro_rules! n_sym { ($string:expr) => { Node::Sym(String::from($string)) }; }
 #[macro_export] macro_rules! n_lvar { ($string:expr) => { Node::LVar(String::from($string)) }; }

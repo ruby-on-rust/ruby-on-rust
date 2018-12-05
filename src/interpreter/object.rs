@@ -1,8 +1,8 @@
 use uuid::Uuid;
-
 use std::collections::HashMap;
-
 use crate::interpreter::interpreter::Interpreter;
+
+pub type ObjectId = Uuid;
 
 #[derive(Debug)]
 pub enum Value {
@@ -17,6 +17,10 @@ pub enum Value {
     // frozon literal
     // 
 
+    Class {
+        super_class: Box<Object>,
+    },
+
     // 
     // Object
     // 
@@ -25,50 +29,15 @@ pub enum Value {
 
 #[derive(Debug)]
 pub struct Object {
-    pub id: Uuid,
+    pub id: ObjectId,
     pub value: Value,
 }
 
 impl Object {
-    // pub fn new(value: Value) -> Object {
-    //     Object {
-    //         id: Uuid::new_v4(),
-    //         value: 
-    //     }
-    // }
-
-    // 
-    // primitive values
-    // 
-    pub fn new_nil() -> Object {
+    pub fn new(value: Value) -> Object {
         Object {
             id: Uuid::new_v4(),
-            value: Value::Nil,
+            value
         }
     }
-
-    pub fn new_true() -> Object {
-        Object {
-            id: Uuid::new_v4(),
-            value: Value::True,
-        }
-    }
-}
-
-pub struct ObjectSpace {
-    objects: HashMap<Uuid, Object>
-}
-
-impl ObjectSpace {
-    pub fn new() -> ObjectSpace {
-        ObjectSpace {
-            objects: HashMap::new()
-        }
-    }
-
-    // pub fn add_object(&mut self) {
-    //     let object = Object::new();
-
-    //     self.objects.insert(object.id, object);
-    // }
 }
