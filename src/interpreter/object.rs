@@ -14,7 +14,7 @@ pub enum Value {
     False,
 
     // 
-    // frozon literal
+    // frozen literal
     // 
 
     Class {
