@@ -1,5 +1,5 @@
 use crate::{
-    ast::node::Node,
+    ast::node::{Node, SomeNode},
     interpreter::object::{Object, ObjectSpace},
 };
 
@@ -14,7 +14,7 @@ impl Interpreter {
         }
     }
 
-    pub fn eval(&mut self, node: Option<Node>) -> Object {
+    pub fn eval(&mut self, node: SomeNode) -> Object {
         if node.is_none() { return Object::new_nil(); }
 
         let node = node.unwrap();
@@ -22,7 +22,20 @@ impl Interpreter {
         match node {
             Node::Nil => { Object::new_nil() },
             Node::True => { Object::new_true() },
+
+            Node::If {condition, then_body, else_body} => {
+                if self.test_obj_bool(self.eval(Some(*condition))) { // TODO macro for this case
+                    self.eval(*then_body)
+                } else {
+                    self.eval(*else_body)
+                }
+            },
+
             _ => { panic!("eval: don't know how to handle node: {:?}", node); }
         }
+    }
+
+    fn test_obj_bool(&self, object: Object) -> bool {
+        true
     }
 }

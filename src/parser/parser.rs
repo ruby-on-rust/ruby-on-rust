@@ -8322,20 +8322,13 @@ __
 
 fn _handler476(&mut self) -> SV {
 // Semantic values prologue.
-self.values_stack.pop();
-self.values_stack.pop();
+let mut _2 = pop!(self.values_stack, _3);
+let mut _1 = interior_token!(pop!(self.values_stack, _0));
 
-//   if @builder.respond_to? :negate
-        //     # AST builder interface compatibility
-        //     result = @builder.negate(val[0], val[1])
-        //   else
-        //     result = @builder.unary_num(val[0], val[1])
-        //   end
-        let __ =();
-        wip!();
+let __ = builders::unary_num(_1, _2);
 explain!("action: numeric -> tUNARY_NUM simple_numeric");
 
-SV::_6(__)
+SV::_3(__)
 }
 
 fn _handler477(&mut self) -> SV {

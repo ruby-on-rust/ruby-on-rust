@@ -2242,16 +2242,8 @@ dsym: tSYMBEG xstring_contents tSTRING_END {
 numeric
     : simple_numeric
     | tUNARY_NUM simple_numeric %prec tLOWEST {
-        //   if @builder.respond_to? :negate
-        //     # AST builder interface compatibility
-        //     result = @builder.negate(val[0], val[1])
-        //   else
-        //     result = @builder.unary_num(val[0], val[1])
-        //   end
-
-        ||->TDummy;
-        $$=();
-        wip!();
+        |$1:Token, $2:Node| -> Node;
+        $$ = builder::unary_num($1, $2);
     }
 ;
 

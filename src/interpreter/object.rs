@@ -30,7 +30,7 @@ pub struct Object {
 }
 
 impl Object {
-    // pub fn new() -> Object {
+    // pub fn new(value: Value) -> Object {
     //     Object {
     //         id: Uuid::new_v4(),
     //         value: 

@@ -105,7 +105,7 @@ pub fn unary_num(t_unary: Token, n_simple_numeric: Node) -> Node {
 //     delimited_string_map(string_t))
 // end
 pub fn string(string_t: Token) -> Node {
-    Node::Str(string_value(string_t))
+    n_str!(string_value(string_t))
 }
 
 // def string_internal(string_t)
@@ -115,7 +115,7 @@ pub fn string(string_t: Token) -> Node {
 // 
 // string_t: Token::T_STRING_CONTENT
 pub fn string_internal(string_t: Token) -> Node {
-    Node::Str(string_value(string_t))
+    n_str!(string_value(string_t))
 }
 
 // def string_compose(begin_t, parts, end_t)

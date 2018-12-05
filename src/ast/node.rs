@@ -175,7 +175,7 @@ pub enum Node {
     ERange { start: NSNode, end: NSNode }, // E as exclusive
 }
 
-type SomeNode = Option<Node>;
+pub type SomeNode = Option<Node>;
 type NNode = Box<Node>; // NestedNode
 type NSNode = Box<SomeNode>; // NestedSomeNode
 
