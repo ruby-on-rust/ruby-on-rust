@@ -17,14 +17,15 @@ pub enum Value {
     // frozen literal
     // 
 
+
     Class {
-        super_class: Box<Object>,
+        superclass: Option<ObjectId>,
     },
 
     // 
     // Object
     // 
-    Object(Box<Object>)
+    Object(ObjectId)
 }
 
 #[derive(Debug)]
@@ -36,7 +37,7 @@ pub struct Object {
 impl Object {
     pub fn new(value: Value) -> Object {
         Object {
-            id: Uuid::new_v4(),
+            id: ObjectId::new_v4(),
             value
         }
     }
