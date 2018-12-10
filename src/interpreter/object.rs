@@ -17,7 +17,6 @@ pub enum Value {
     // frozen literal
     // 
 
-
     Class {
         superclass: Option<ObjectId>,
     },
@@ -34,14 +33,11 @@ pub struct Object {
     pub value: Value,
 }
 
+// 
+// There's no Object::new, use ObjectSpace::add
+// 
 impl Object {
-    pub fn new(value: Value) -> Object {
-        Object {
-            id: ObjectId::new_v4(),
-            value
-        }
-    }
-
+    // TODO refinen with a to_bool trait/derive
     pub fn test_bool(&self) -> bool {
         match self.value {
             Value::Nil | Value::False => false,

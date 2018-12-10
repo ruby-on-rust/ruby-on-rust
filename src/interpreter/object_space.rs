@@ -16,22 +16,21 @@ pub struct ObjectSpace {
 
 impl ObjectSpace {
     pub fn new() -> ObjectSpace {
-        let nil = Object::new(Value::Nil);       let primitive_nil = nil.id;
-        let r#true = Object::new(Value::True);   let primitive_true = r#true.id;
-        let r#false = Object::new(Value::False); let primitive_false = r#false.id;
-
-        let objects = hashmap!{
-            nil.id => nil,
-            r#true.id => r#true,
-            r#false.id => r#false,
-        };
+        // primitives
+        let nil_obj_id = ObjectId::new_v4(); let nil_obj = Object { id: nil_obj_id, value: Value::Nil };
+        let true_obj_id = ObjectId::new_v4(); let true_obj = Object { id: true_obj_id, value: Value::True };
+        let false_obj_id = ObjectId::new_v4(); let false_obj = Object { id: false_obj_id, value: Value::False };
 
         let mut space = ObjectSpace {
-            objects,
-            primitive_nil, primitive_true, primitive_false,
+            objects: hashmap!{
+                nil_obj_id => nil_obj,
+                true_obj_id => true_obj,
+                false_obj_id => false_obj,
+            },
+            primitive_nil: nil_obj_id,
+            primitive_true: true_obj_id,
+            primitive_false: false_obj_id,
         };
-
-        // TODO predefine_primitive
 
         space.predefine_classes();
 
@@ -39,20 +38,25 @@ impl ObjectSpace {
     }
 
     // 
-    // add arbitrary object
+    // generata an object with arbitrary value
     // 
-    pub fn add(&mut self, object: Object) {
-        self.objects.insert(object.id, object);
+    pub fn add(&mut self, value: Value) -> ObjectId {
+        let id = ObjectId::new_v4(); // TODO wrap ObjectId
+        let object = Object {
+            value, id
+        };
+        self.objects.insert(id, object);
+        id
     }
 
     // 
     // get object
     // 
-    pub fn get_obj_by_id(&self, object_id: &ObjectId) -> &Object {
+    pub fn get_obj(&self, object_id: &ObjectId) -> &Object {
         self.objects.get(object_id).unwrap()
     }
 
-    pub fn get_primitive_nil(&self) -> &Object { self.get_obj_by_id(&self.primitive_nil) }
-    pub fn get_primitive_true(&self) -> &Object { self.get_obj_by_id(&self.primitive_true) }
-    pub fn get_primitive_false(&self) -> &Object { self.get_obj_by_id(&self.primitive_false) }
+    pub fn get_primitive_nil(&self) -> &Object { self.get_obj(&self.primitive_nil) }
+    pub fn get_primitive_true(&self) -> &Object { self.get_obj(&self.primitive_true) }
+    pub fn get_primitive_false(&self) -> &Object { self.get_obj(&self.primitive_false) }
 }
