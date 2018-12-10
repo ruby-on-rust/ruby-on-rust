@@ -4,6 +4,8 @@ use crate::interpreter::interpreter::Interpreter;
 
 pub type ObjectId = Uuid;
 
+pub fn new_obj_id() -> ObjectId { Uuid::new_v4() }
+
 #[derive(Debug)]
 pub enum Value {
     // 

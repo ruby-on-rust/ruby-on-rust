@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use crate::{
     interpreter::{
-        object::{Value, Object, ObjectId},
+        object::{Value, Object, ObjectId, new_obj_id},
     }
 };
 
@@ -17,9 +17,9 @@ pub struct ObjectSpace {
 impl ObjectSpace {
     pub fn new() -> ObjectSpace {
         // primitives
-        let nil_obj_id = ObjectId::new_v4(); let nil_obj = Object { id: nil_obj_id, value: Value::Nil };
-        let true_obj_id = ObjectId::new_v4(); let true_obj = Object { id: true_obj_id, value: Value::True };
-        let false_obj_id = ObjectId::new_v4(); let false_obj = Object { id: false_obj_id, value: Value::False };
+        let nil_obj_id = new_obj_id(); let nil_obj = Object { id: nil_obj_id, value: Value::Nil };
+        let true_obj_id = new_obj_id(); let true_obj = Object { id: true_obj_id, value: Value::True };
+        let false_obj_id = new_obj_id(); let false_obj = Object { id: false_obj_id, value: Value::False };
 
         let mut space = ObjectSpace {
             objects: hashmap!{
@@ -41,7 +41,7 @@ impl ObjectSpace {
     // generata an object with arbitrary value
     // 
     pub fn add(&mut self, value: Value) -> ObjectId {
-        let id = ObjectId::new_v4(); // TODO wrap ObjectId
+        let id = new_obj_id();
         let object = Object {
             value, id
         };
