@@ -1,9 +1,17 @@
 use uuid::Uuid;
+
 use std::collections::HashMap;
+
+pub mod name_tables;
+pub mod class_value;
+
 use crate::interpreter::interpreter::Interpreter;
+use crate::interpreter::object::class_value::ClassValue;
 
+// 
+// object id and utility
+// 
 pub type ObjectId = Uuid;
-
 pub fn new_obj_id() -> ObjectId { Uuid::new_v4() }
 
 #[derive(Debug)]
@@ -19,9 +27,7 @@ pub enum Value {
     // frozen literal
     // 
 
-    Class {
-        superclass: Option<ObjectId>,
-    },
+    Class(ClassValue),
 
     // 
     // Object

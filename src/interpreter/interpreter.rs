@@ -4,20 +4,17 @@ use crate::{
     interpreter::{
         object::{Value, Object, ObjectId},
         object_space::{ObjectSpace},
-        var_table::{VarTable},
     }
 };
 
 pub struct Interpreter {
     objects: ObjectSpace,
-    var_table: VarTable,
 }
 
 impl Interpreter {
     pub fn new() -> Interpreter {
         let mut interpreter = Interpreter {
             objects: ObjectSpace::new(),
-            var_table: VarTable::new(),
         };
 
         interpreter
@@ -32,6 +29,15 @@ impl Interpreter {
             Node::Nil => { self.objects.get_primitive_nil() },
             Node::True => { self.objects.get_primitive_true() },
             Node::False => { self.objects.get_primitive_false() },
+
+            Node::Class { name, superclass, body } => {
+                if let Node::Const { scope, name } = *name {
+                    // TODO superclass
+
+                    let class = self.objects.def_class(name).unwrap();
+                    self.objects.get(class)
+                } else { unreachable!() }
+            }
 
             Node::If {condition, then_body, else_body} => {
                 if self.eval(Some(*condition)).test_bool() { 

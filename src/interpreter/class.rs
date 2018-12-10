@@ -1,38 +1,49 @@
 use std::collections::HashMap;
 use crate::{
     interpreter::{
-        object::{Value, Object, ObjectId},
+        object::{
+            Value, Object, ObjectId,
+            name_tables::ConstsOwning,
+            class_value::ClassValue
+        },
         object_space::{ObjectSpace},
     }
 };
 
 impl ObjectSpace {
-    fn add_class_to_name_table() {
-        // TODO
-    }
-
     pub fn predefine_classes(&mut self) {
-        // BasicObject
-        let basic_object_id = self.add(Value::Class {
-            superclass: None,
-        });
+        // Module
+        let module_id = self.def_class(String::from("Module")).unwrap();
 
-        // TODO add to name table
-
-        let object_id = self.define_class(String::from("Object"), basic_object_id).unwrap();
-        let module_id = self.define_class(String::from("Module"), object_id).unwrap();
-        self.define_class(String::from("Class"), module_id);
+        // Class
+        // Class is under Module, but is as well in constants of Object
+        // TODO nested under module
+        // self.def_class(String::from("Class"), module_id);
     }
 
-    pub fn define_class(&mut self, name: String, superclass: ObjectId) -> Option<ObjectId> { // TODO use a Result
-        // TODO assert superclass is actually a Class
-
-        // create class object
-        let class_obj_value = Value::Class { superclass: Some(superclass) };
+    // 
+    // Defines a top-level class
+    // 
+    // A top-level class is a class whose superclass is Object, with the exception of BasicObject.
+    // 
+    pub fn def_class(&mut self, name: String) -> Option<ObjectId> { // TODO use a Result
+        let class_obj_value = Value::Class( ClassValue::new( self.root_object_id ) );
         let class_obj_id = self.add(class_obj_value);
 
-        // TODO add to name table
+        self.root_obj_consts_add(name, class_obj_id);
 
         Some(class_obj_id)
+    }
+
+    pub fn def_nested_class(&mut self, name: String) {
+        // superclass: ObjectId
+        // TODO assert superclass is actually a Class
+        panic!();
+    }
+
+    fn root_obj_consts_add(&mut self, name: String, r#const: ObjectId) {
+        if let Value::Class(ref mut class) = (*self.get_root_obj()).value {
+            class.consts_add(name, r#const);
+        } else { unreachable!(); }
     }
 }
