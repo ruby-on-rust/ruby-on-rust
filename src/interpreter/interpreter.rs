@@ -2,7 +2,10 @@ use std::collections::HashMap;
 use crate::{
     ast::node::{Node, SomeNode},
     interpreter::{
-        object::{Value, Object, ObjectId},
+        object::{
+            object_id::{ ObjectId },
+            Value, Object
+        },
         object_space::{ObjectSpace},
     }
 };

@@ -2,7 +2,8 @@ use std::collections::HashMap;
 use crate::{
     interpreter::{
         object::{
-            Value, Object, ObjectId,
+            object_id::{ ObjectId },
+            Value, Object,
             name_tables::ConstsOwning,
             class_value::ClassValue
         },
@@ -11,15 +12,6 @@ use crate::{
 };
 
 impl ObjectSpace {
-    pub fn predefine_classes(&mut self) {
-        // Module
-        let module = self.def_class(String::from("Module")).unwrap();
-
-        // Class
-        // Class is under Module, still, it's in constants of Object.
-        self.def_nested_class(String::from("Class"), module);
-    }
-
     // 
     // Defines a top-level class
     // 

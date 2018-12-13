@@ -2,8 +2,9 @@ use std::collections::HashMap;
 use crate::{
     interpreter::{
         object::{
-            new_obj_id, Value, Object, ObjectId,
-            name_tables::ConstTable,
+            object_id::{ ObjectId, new_obj_id },
+            Value, Object,
+            name_tables::{ ConstTable, ConstsOwning, MethodTable },
             class_value::ClassValue
         },
     }
@@ -12,8 +13,6 @@ use crate::{
 pub struct ObjectSpace {
     objects: HashMap<ObjectId, Object>,
 
-    // TODO PERFORMANCE we're using ObjectId instead of &Object everywhere, don't think it's a good idea
-    // TODO NilClass TrueClass FalseClass
     primitive_nil: ObjectId,
     primitive_true: ObjectId,
     primitive_false: ObjectId,
@@ -23,43 +22,111 @@ pub struct ObjectSpace {
 
 impl ObjectSpace {
     pub fn new() -> ObjectSpace {
-        // BasicObject
-        let basic_object_id = new_obj_id();
-        // TODO ClassValue::new
+        // 
+        // bootstrap with BasicObject Object Module Class
+        // 
+
+        let (basic_object_id, object_id, module_id, class_id) = (new_obj_id(), new_obj_id(), new_obj_id(), new_obj_id());
+
         let basic_object = Object {
             id: basic_object_id,
-            value: Value::Class( ClassValue { superclass: None, consts: ConstTable::new() } ),
+            class: class_id,
+            value: Value::Class( ClassValue::new_basic_object() ),
         };
 
-        let object_id = new_obj_id();
-        let object = Object {
+        let mut object = Object {
             id: object_id,
-            value: Value::Class( ClassValue { superclass: Some(basic_object_id), consts: ConstTable::new() } ),
+            class: class_id,
+            value: Value::Class( ClassValue::new(basic_object_id) ),
         };
 
-        // primitives
-        // TODO
-        let nil_obj_id = new_obj_id(); let nil_obj = Object { id: nil_obj_id, value: Value::Nil };
-        let true_obj_id = new_obj_id(); let true_obj = Object { id: true_obj_id, value: Value::True };
-        let false_obj_id = new_obj_id(); let false_obj = Object { id: false_obj_id, value: Value::False };
+        let module = Object {
+            id: module_id,
+            class: class_id,
+            value: Value::Class( ClassValue::new(basic_object_id) ),
+        };
+
+        let mut class = Object {
+            id: class_id,
+            class: class_id,
+            value: Value::Class( ClassValue::new(basic_object_id) ),
+        };
+
+        // 
+        // predefine singleton classes and values: NilClass, TrueClass, FalseClass
+        // 
+
+        let (nil_class_id, nil_id, true_class_id, true_id, false_class_id, false_id) = (new_obj_id(), new_obj_id(), new_obj_id(), new_obj_id(), new_obj_id(), new_obj_id());
+
+        let nil_class = Object {
+            id: nil_class_id,
+            class: class_id,
+            value: Value::Class( ClassValue::new_singleton(basic_object_id) ),
+        };
+        let nil = Object {
+            id: nil_id,
+            class: nil_class_id,
+            value: Value::Nil
+        };
+
+        let true_class = Object {
+            id: true_class_id,
+            class: class_id,
+            value: Value::Class( ClassValue::new_singleton(basic_object_id) ),
+        };
+        let r#true = Object {
+            id: nil_id,
+            class: true_class_id,
+            value: Value::True
+        };
+
+        let false_class = Object {
+            id: false_class_id,
+            class: class_id,
+            value: Value::Class( ClassValue::new_singleton(basic_object_id) ),
+        };
+        let r#false = Object {
+            id: nil_id,
+            class: false_class_id,
+            value: Value::False
+        };
+
+        // add top-level consts
+        if let Value::Class(ref mut object) = class.value {
+            object.consts_add("BasicObject".to_string(), basic_object_id);
+            object.consts_add("Object".to_string(), object_id);
+            object.consts_add("Module".to_string(), module_id);
+            object.consts_add("Class".to_string(), class_id);
+            object.consts_add("NilClass".to_string(), nil_class_id);
+            object.consts_add("TrueClass".to_string(), true_class_id);
+            object.consts_add("FalseClass".to_string(), false_class_id);
+        }
 
         let mut space = ObjectSpace {
             objects: hashmap! {
                 basic_object_id => basic_object,
                 object_id => object,
-                nil_obj_id => nil_obj,
-                true_obj_id => true_obj,
-                false_obj_id => false_obj,
+                module_id => module,
+                class_id => class,
+                nil_class_id => nil_class,
+                nil_id => nil,
+                true_class_id => true_class,
+                true_id => r#true,
+                false_class_id => false_class,
+                false_id => r#false,
             },
-            primitive_nil: nil_obj_id,
-            primitive_true: true_obj_id,
-            primitive_false: false_obj_id,
+            primitive_nil: nil_id,
+            primitive_true: true_id,
+            primitive_false: false_id,
             root_object_id: object_id,
         };
 
-        space.predefine_classes();
+        space.predefine();
 
         space
+    }
+
+    fn predefine(&mut self) {
     }
 
     // 
@@ -67,7 +134,14 @@ impl ObjectSpace {
     // 
     pub fn add(&mut self, value: Value) -> ObjectId {
         let id = new_obj_id();
-        let object = Object { id, value };
+
+        // TODO
+        assert_eq!(self.objects.contains_key(&id), false);
+
+        // TODO find top-level `Class`
+        let class = new_obj_id();
+
+        let object = Object { id, value, class };
         self.objects.insert(id, object);
         id
     }
@@ -79,9 +153,9 @@ impl ObjectSpace {
         self.objects.get_mut(&object_id).unwrap()
     }
 
-    pub fn get_root_obj(&mut self) -> &mut Object {
-        self.objects.get_mut(&self.root_object_id).unwrap()
-    }
+    // pub fn get_root_obj(&mut self) -> &mut Object {
+    //     self.objects.get_mut(&self.root_object_id).unwrap()
+    // }
 
     pub fn get_primitive_nil(&mut self) -> &mut Object { self.get(self.primitive_nil) }
     pub fn get_primitive_true(&mut self) -> &mut Object { self.get(self.primitive_true) }

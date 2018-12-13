@@ -4,20 +4,7 @@ lexer: CRITICAL not handling utf8 now
 
 lexer: ragel, p, @p
 
-all: unite T_IDENTIFIER TIdentifier
+lexer-parser: unite T_IDENTIFIER TIdentifier
 
 lexer:
   currently we only stored token's value, and dropped the location info
-
-lexer:
-  simplify generator:
-    write the patterns table at once, before looping
-
-lexer:
-  handle eof
-    we can't really `match` eof, we detect p > len
-
-lexer:
-  currently, we pass lexer.tokens into Literal, to emit tokens inside the literal. Yet we have to impl token emitting twice. we could try
-  a) pass in a callback closure instead. (FAILED due to complex lifetime issue)
-  b) wrap tokens as a struct and impl trait on it

@@ -1,18 +1,16 @@
-use uuid::Uuid;
-
 use std::collections::HashMap;
 
+pub mod object_id;
 pub mod name_tables;
 pub mod class_value;
 
-use crate::interpreter::interpreter::Interpreter;
-use crate::interpreter::object::class_value::ClassValue;
-
-// 
-// object id and utility
-// 
-pub type ObjectId = Uuid;
-pub fn new_obj_id() -> ObjectId { Uuid::new_v4() }
+use crate::interpreter::{
+    interpreter::Interpreter,
+    object::{
+        object_id::ObjectId,
+        class_value::ClassValue,
+    }
+};
 
 #[derive(Debug)]
 pub enum Value {
@@ -38,6 +36,7 @@ pub enum Value {
 #[derive(Debug)]
 pub struct Object {
     pub id: ObjectId,
+    pub class: ObjectId,
     pub value: Value,
 }
 
@@ -51,5 +50,22 @@ impl Object {
             Value::Nil | Value::False => false,
             _ => true
         }
+    }
+
+    // 
+    // class of object
+    // 
+    // TODO `rb_class_of` in cruby
+    pub fn class(&self) -> ObjectId {
+        match self.value {
+            // Value::Nil => , TODO NilClass
+            // Value::True => , TODO TrueClass
+            // Value::False => , TODO FalseClass
+            _ => { self.class }
+        }
+    }
+
+    pub fn search_method(&self) {
+        // TODO super
     }
 }
