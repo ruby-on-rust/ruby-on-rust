@@ -48,7 +48,7 @@ TOKEN_TABLES = {
   TOKEN_TABLES[:KEYWORDS_BEGIN][keyword] = TOKEN_TABLES[:KEYWORDS][keyword] = :"k#{keyword.upcase}"
 end
 
-def transform!
+def transform_lexer!
   # Dir['./src/lexer/tmp/*.rs.rl'].each do |f| File.delete f end
   Dir['./src/lexer/*.rs.rl'].each do |f|
 
