@@ -21,10 +21,8 @@ listener = Listen.to './src/lexer', only: /\.rs\.rl$/, ignore: [/tmp/], latency:
   puts 'transforming lexer...'
   transform!
 
-  # build lexer via remote ragel
-  puts `scp ./src/lexer/tmp/*.rs.rl ragel-builder:/root/ragel/lexer/`
-  puts `ssh ragel-builder "/root/ragel/dist/ragel-7.0.0.11/bin/ragel-rust /root/ragel/lexer/lexer.rs.rl -o /root/ragel/lexer/lexer.rs"`
-  puts `scp ragel-builder:/root/ragel/lexer/lexer.rs ./src/lexer/lexer.rs`
+  # build lexer via ragel
+  puts `../ragel-dest/bin/ragel-rust ./src/lexer/tmp/lexer.rs.rl -o ./src/lexer/lexer.rs`
 
   # TODO HACK public lexer state values
   lexer_content = File.read './src/lexer/lexer.rs'
