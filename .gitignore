@@ -13,10 +13,17 @@
 
 /tmp
 
+# 
 # lexer
+# 
+
 # /src/lexer/lexer.rs
 /src/lexer/tmp/*
 !/src/lexer/tmp/.keep
+
+# ragel temp file
+/src/lexer/lexer.ri
+
 
 # parser
 # /src/parser/parser.rs
