@@ -1,3 +1,4 @@
+use std::cell::RefCell;
 use std::collections::HashMap;
 use crate::{
     interpreter::{
@@ -11,13 +12,17 @@ use crate::{
 };
 
 pub struct ObjectSpace {
-    objects: HashMap<ObjectId, Object>,
+    // TODO make this an Arena/Zone/Region struct
+    objects: RefCell<HashMap<ObjectId, Object>>,
 
     primitive_nil: ObjectId,
     primitive_true: ObjectId,
     primitive_false: ObjectId,
 
-    pub root_object_id: ObjectId,
+    // primitive_basic_object: ObjectId,
+    pub primitive_object: ObjectId,
+    primitive_class: ObjectId,
+    primitive_module: ObjectId,
 }
 
 impl ObjectSpace {
@@ -103,7 +108,7 @@ impl ObjectSpace {
         }
 
         let mut space = ObjectSpace {
-            objects: hashmap! {
+            objects: RefCell::new(hashmap! {
                 basic_object_id => basic_object,
                 object_id => object,
                 module_id => module,
@@ -114,19 +119,16 @@ impl ObjectSpace {
                 true_id => r#true,
                 false_class_id => false_class,
                 false_id => r#false,
-            },
+            }),
             primitive_nil: nil_id,
             primitive_true: true_id,
             primitive_false: false_id,
-            root_object_id: object_id,
+            primitive_object: object_id,
+            primitive_class: class_id,
+            primitive_module: module_id,
         };
 
-        space.predefine();
-
         space
-    }
-
-    fn predefine(&mut self) {
     }
 
     // 
@@ -136,13 +138,13 @@ impl ObjectSpace {
         let id = new_obj_id();
 
         // TODO
-        assert_eq!(self.objects.contains_key(&id), false);
+        assert_eq!(self.objects.borrow().contains_key(&id), false);
 
         // TODO find top-level `Class`
         let class = new_obj_id();
 
         let object = Object { id, value, class };
-        self.objects.insert(id, object);
+        self.objects.borrow_mut().insert(id, object);
         id
     }
 
@@ -150,14 +152,12 @@ impl ObjectSpace {
     // get object
     // 
     pub fn get(&mut self, object_id: ObjectId) -> &mut Object {
-        self.objects.get_mut(&object_id).unwrap()
+        self.objects.borrow_mut().get_mut(&object_id).unwrap()
     }
 
-    // pub fn get_root_obj(&mut self) -> &mut Object {
-    //     self.objects.get_mut(&self.root_object_id).unwrap()
-    // }
-
+    // TODO nil! true! false!, etc.
     pub fn get_primitive_nil(&mut self) -> &mut Object { self.get(self.primitive_nil) }
     pub fn get_primitive_true(&mut self) -> &mut Object { self.get(self.primitive_true) }
     pub fn get_primitive_false(&mut self) -> &mut Object { self.get(self.primitive_false) }
+    pub fn get_primitive_object(&mut self) -> &mut Object { self.get(self.primitive_object) }
 }

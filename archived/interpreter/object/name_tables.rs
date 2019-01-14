@@ -1,5 +1,3 @@
-// TODO use symbols as keys
-
 use std::collections::HashMap;
 use crate::{
     interpreter::object::ObjectId,

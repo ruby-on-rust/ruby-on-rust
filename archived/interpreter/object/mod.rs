@@ -44,7 +44,7 @@ pub struct Object {
 // There's no Object::new, use ObjectSpace::add
 // 
 impl Object {
-    // TODO refinen with a to_bool trait/derive
+    // TODO refine with a to_bool trait/derive
     pub fn test_bool(&self) -> bool {
         match self.value {
             Value::Nil | Value::False => false,
