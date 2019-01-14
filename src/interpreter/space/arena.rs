@@ -1,6 +1,9 @@
 // 
 // Arena
 // 
+// - to allocate new object
+// - to get object from id
+// 
 
 use std::collections::HashMap;
 use std::cell::{RefCell, RefMut};
