@@ -13,7 +13,7 @@ use std::cell::{RefCell, RefMut};
 use crate::interpreter::{
     object::{
         Object,
-        oid::{Oid, new_oid},
+        oid::Oid,
         value::Value,
     },
     space::arena::Arena,
@@ -33,7 +33,7 @@ impl Space {
 
         // pre-generate ids
         let (basic_object_id, object_id, module_id, class_id) = (
-            new_oid(), new_oid(), new_oid(), new_oid());
+            Oid::new(), Oid::new(), Oid::new(), Oid::new());
 
         let basic_object = Object {
             id: basic_object_id,

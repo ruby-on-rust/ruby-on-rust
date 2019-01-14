@@ -1,4 +1,8 @@
-// TODO https://doc.rust-lang.org/rust-by-example/generics/new_types.html
 use uuid::Uuid;
-pub type Oid = Uuid;
-pub fn new_oid() -> Oid { Uuid::new_v4() }
+
+#[derive(Clone, Copy, Eq, PartialEq, Hash)]
+pub struct Oid(Uuid);
+
+impl Oid {
+    pub fn new() -> Oid { Oid(Uuid::new_v4()) }
+}

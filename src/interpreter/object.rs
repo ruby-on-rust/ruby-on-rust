@@ -13,9 +13,9 @@ pub struct Object {
 }
 
 impl Object {
-    pub fn new(value: Value, class: Oid) -> Object {
+    pub fn new(class: Oid, value: Value) -> Object {
         Object {
-            id: oid::new_oid(),
+            id: Oid::new(),
             class,
             value
         }

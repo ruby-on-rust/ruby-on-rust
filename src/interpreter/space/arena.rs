@@ -2,14 +2,12 @@
 // Arena
 // 
 
-// TODO https://doc.rust-lang.org/rust-by-example/generics/new_types.html
-
 use std::collections::HashMap;
 use std::cell::{RefCell, RefMut};
 use crate::interpreter::{
     object::{
         Object,
-        oid::{Oid, new_oid},
+        oid::Oid,
         value::Value,
     },
     space::Space,
