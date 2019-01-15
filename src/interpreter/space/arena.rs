@@ -23,7 +23,23 @@ impl Arena {
         Arena { map: HashMap::new() }
     }
 
-    pub fn insert(&mut self, object: Object) {
+    // 
+    // returns the inserted object's id
+    // 
+    // panic! if the key exists
+    // 
+    // TODO refine this panicing
+    // 
+    pub fn insert(&mut self, object: Object) -> Oid {
+        // save the id
+        let id = object.id;
+
+        if self.map.contains_key(&object.id) {
+            panic!();
+        }
+
         self.map.insert(object.id, RefCell::new(object));
+
+        id
     }
 }

@@ -3,12 +3,23 @@
 // 
 
 use crate::interpreter::{
-    object::oid::Oid,
+    object::{
+        Object,
+        oid::Oid,
+        value,
+    },
     space::Space
 };
 
 impl Space {
-    pub fn define_class(&mut self, name: String, superclass: Oid) -> Oid {
-        panic!();
+    // defines a top-level class
+    pub fn define_class(&mut self, name: &str) -> Oid {
+        let object = Object {
+            id: Oid::new(),
+            class: self.reserved_class,
+            value: value::new_class_value(self.reserved_object),
+        };
+
+        self.arena.insert(object)
     }
 }

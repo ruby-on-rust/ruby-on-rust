@@ -25,6 +25,7 @@ pub struct Space {
     reserved_object: Oid,
     reserved_module: Oid,
     reserved_class: Oid,
+    reserved_nil: Oid,
 }
 
 impl Space {
@@ -37,6 +38,7 @@ impl Space {
             reserved_object: Oid::new(),
             reserved_module: Oid::new(),
             reserved_class: Oid::new(),
+            reserved_nil: Oid::new(),
         }
     }
 
@@ -86,6 +88,13 @@ impl Space {
 
     // nil, true, false, and classes
     pub fn init_primitive_values(&mut self) {
-        // let nil_class = self.def_class("NilClass");
+        let nil_class = self.define_class("NilClass");
+
+        let nil = Object {
+            id: self.reserved_nil,
+            class: nil_class,
+            value: Value::Nil,
+        };
+        self.arena.insert(nil);
     }
 }
