@@ -8,3 +8,9 @@ pub enum Value {
     // TODO None or nil for BasicObject's superclass?
     Class { superclass: Option<Oid> }
 }
+
+pub fn new_class_value(superclass: Oid) -> Value {
+    Value::Class {
+        superclass: Some(superclass)
+    }
+}

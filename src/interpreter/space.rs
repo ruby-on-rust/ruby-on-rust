@@ -5,6 +5,7 @@
 // 
 
 mod arena;
+mod class;
 
 use std::collections::HashMap;
 use std::cell::{RefCell, RefMut};
@@ -12,69 +13,79 @@ use crate::interpreter::{
     object::{
         Object,
         oid::Oid,
-        value::Value,
+        value::{Value, new_class_value},
     },
     space::arena::Arena,
 };
 
 pub struct Space {
-    arena: Arena
+    arena: Arena,
+
+    reserved_basic_object: Oid,
+    reserved_object: Oid,
+    reserved_module: Oid,
+    reserved_class: Oid,
 }
 
 impl Space {
     pub fn new() -> Space {
-        let mut arena = Arena::new();
-
-        init_primitive_classes(&mut arena);
-
         Space {
-            arena
+            arena: Arena::new(),
+
+            // pre-generate ids
+            reserved_basic_object: Oid::new(),
+            reserved_object: Oid::new(),
+            reserved_module: Oid::new(),
+            reserved_class: Oid::new(),
         }
     }
-}
 
-// 
-// primitive classes: BasicObject, Object, Class, Module
-// 
-fn init_primitive_classes(arena: &mut Arena) {
-    // pre-generate ids
-    let (basic_object_id, object_id, module_id, class_id) = (
-        Oid::new(), Oid::new(), Oid::new(), Oid::new());
+    // 
+    // primitive classes: BasicObject, Object, Class, Module
+    // 
+    // after this, we could init other classes, like NilClass, like normal
+    // 
+    pub fn init_primitive_classes(&mut self) {
+        let basic_object = Object {
+            id: self.reserved_basic_object,
+            class: self.reserved_class,
+            value: Value::Class {
+                superclass: None
+            }
+        };
 
-    let basic_object = Object {
-        id: basic_object_id,
-        class: class_id,
-        value: Value::Class {
-            superclass: None
-        }
-    };
+        let object = Object {
+            id: self.reserved_object,
+            class: self.reserved_class,
+            value: Value::Class {
+                superclass: Some(self.reserved_basic_object)
+            }
+        };
 
-    let object = Object {
-        id: object_id,
-        class: class_id,
-        value: Value::Class {
-            superclass: Some(basic_object_id)
-        }
-    };
+        let module = Object {
+            id: self.reserved_module,
+            class: self.reserved_class,
+            value: Value::Class {
+                superclass: Some(self.reserved_object)
+            }
+        };
 
-    let module = Object {
-        id: module_id,
-        class: class_id,
-        value: Value::Class {
-            superclass: Some(object_id)
-        }
-    };
+        let class = Object {
+            id: self.reserved_class,
+            class: self.reserved_class,
+            value: Value::Class {
+                superclass: Some(self.reserved_module)
+            }
+        };
 
-    let class = Object {
-        id: class_id,
-        class: class_id,
-        value: Value::Class {
-            superclass: Some(module_id)
-        }
-    };
+        self.arena.insert(basic_object);
+        self.arena.insert(object);
+        self.arena.insert(module);
+        self.arena.insert(class);
+    }
 
-    arena.insert(basic_object);
-    arena.insert(object);
-    arena.insert(module);
-    arena.insert(class);
+    // nil, true, false, and classes
+    pub fn init_primitive_values(&mut self) {
+        // let nil_class = self.def_class("NilClass");
+    }
 }

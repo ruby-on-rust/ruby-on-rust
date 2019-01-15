@@ -7,8 +7,13 @@ pub struct Interpreter {
 
 impl Interpreter {
     pub fn new() -> Interpreter {
+        let mut space = Space::new();
+
+        space.init_primitive_classes();
+        space.init_primitive_values();
+
         Interpreter {
-            space: Space::new()
+            space
         }
     }
 
