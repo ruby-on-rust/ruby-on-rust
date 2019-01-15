@@ -1,3 +1,5 @@
+#![allow(unused_variables)]
+
 use crate::{
     token::token::Token,
     lexer::dedenter::Dedenter,

@@ -1,3 +1,5 @@
+#![allow(unused_variables)]
+
 // newer than 2a73841d6da04a5ab9bd270561165fd766722d43
 
 // TODO INCOMPLETE
@@ -10,8 +12,6 @@ use std::cell::RefCell;
 use crate::lexer::lexer::*;
 use crate::token::token::Token;
 use crate::explainer;
-
-macro_rules! wip { () => { panic!("WIP"); }; }
 
 macro_rules! explain {
     ( $ ( $ arg : tt ) * ) => {
