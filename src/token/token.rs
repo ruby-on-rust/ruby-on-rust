@@ -1,6 +1,8 @@
+#[allow(non_camel_case_types)]
+#[allow(dead_code)]
+
 // TODO refine order of token variants
 #[derive(Debug, Clone, PartialEq, AsRefStr, ToString)]
-#[allow(non_camel_case_types)]
 pub enum Token {
     T_INTEGER(isize),
     T_FLOAT(String),
