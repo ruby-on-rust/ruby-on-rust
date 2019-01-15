@@ -13,7 +13,8 @@ use crate::interpreter::{
     object::{
         Object,
         oid::Oid,
-        value::{Value, new_class_value},
+        value,
+        value::Value
     },
     space::arena::Arena,
 };
@@ -51,33 +52,29 @@ impl Space {
         let basic_object = Object {
             id: self.reserved_basic_object,
             class: self.reserved_class,
-            value: Value::Class {
-                superclass: None
-            }
+            value: Value::Class(
+                value::class::Class {
+                    superclass: None
+                }
+            )
         };
 
         let object = Object {
             id: self.reserved_object,
             class: self.reserved_class,
-            value: Value::Class {
-                superclass: Some(self.reserved_basic_object)
-            }
+            value: value::new_class_value(self.reserved_basic_object)
         };
 
         let module = Object {
             id: self.reserved_module,
             class: self.reserved_class,
-            value: Value::Class {
-                superclass: Some(self.reserved_object)
-            }
+            value: value::new_class_value(self.reserved_object)
         };
 
         let class = Object {
             id: self.reserved_class,
             class: self.reserved_class,
-            value: Value::Class {
-                superclass: Some(self.reserved_module)
-            }
+            value: value::new_class_value(self.reserved_module)
         };
 
         self.arena.insert(basic_object);

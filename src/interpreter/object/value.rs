@@ -1,16 +1,17 @@
-// TODO struct ClassValue?
+pub mod class;
 
 use crate::interpreter::object::oid::Oid;
 
 pub enum Value {
     Nil,
 
-    // TODO None or nil for BasicObject's superclass?
-    Class { superclass: Option<Oid> }
+    Class(class::Class)
 }
 
 pub fn new_class_value(superclass: Oid) -> Value {
-    Value::Class {
-        superclass: Some(superclass)
-    }
+    Value::Class(
+        class::Class {
+            superclass: Some(superclass)
+        }
+    )
 }
