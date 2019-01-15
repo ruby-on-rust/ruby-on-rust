@@ -5,7 +5,7 @@
 // 
 
 mod arena;
-mod class;
+mod hierarchy;
 
 use std::collections::HashMap;
 use std::cell::{RefCell, RefMut};
@@ -54,7 +54,8 @@ impl Space {
             class: self.reserved_class,
             value: Value::Class(
                 value::class::Class {
-                    superclass: None
+                    superclass: None,
+                    consts: HashMap::new()
                 }
             )
         };
