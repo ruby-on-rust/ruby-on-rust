@@ -6,6 +6,7 @@
 // 
 
 use std::collections::HashMap;
+use std::rc::Rc;
 use std::cell::{RefCell, RefMut};
 use crate::interpreter::{
     object::{
@@ -21,6 +22,10 @@ pub struct Arena { map: HashMap<Oid, RefCell<Object>> }
 impl Arena {
     pub fn new() -> Arena {
         Arena { map: HashMap::new() }
+    }
+
+    pub fn get(&self, oid: Oid) -> &RefCell<Object> {
+        self.map.get(&oid).unwrap()
     }
 
     // 
