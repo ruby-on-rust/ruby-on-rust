@@ -1,13 +1,13 @@
 use std::collections::HashMap;
-use crate::interpreter::object::oid::Oid;
+use crate::interpreter::object::obj_cell::ObjCell;
 
 pub struct Class {
-    pub superclass: Option<Oid>,
-    pub consts: HashMap<String, Oid>,
+    pub superclass: Option<ObjCell>,
+    pub consts: HashMap<String, ObjCell>,
 }
 
 impl Class {
-    pub fn add_const(&mut self, name: String, value: Oid) {
+    pub fn add_const(&mut self, name: String, value: ObjCell) {
         self.consts.insert(name, value);
     }
 }

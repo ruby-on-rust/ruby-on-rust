@@ -1,7 +1,7 @@
 pub mod class;
 
 use std::collections::HashMap;
-use crate::interpreter::object::oid::Oid;
+use crate::interpreter::object::obj_cell::ObjCell;
 
 pub enum Value {
     Nil,
@@ -9,7 +9,7 @@ pub enum Value {
     Class(class::Class)
 }
 
-pub fn new_class_value(superclass: Oid) -> Value {
+pub fn new_class_value(superclass: ObjCell) -> Value {
     Value::Class(
         class::Class {
             superclass: Some(superclass),

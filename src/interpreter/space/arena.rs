@@ -2,49 +2,32 @@
 // Arena
 // 
 // - to allocate new object
-// - to get object from id
 // 
 
 use std::collections::HashMap;
 use std::rc::Rc;
-use std::cell::{RefCell, RefMut};
+use std::cell::{RefCell};
 use crate::interpreter::{
     object::{
         Object,
         oid::Oid,
+        obj_cell::ObjCell,
         value::Value,
     },
     space::Space,
 };
 
-pub struct Arena { map: HashMap<Oid, RefCell<Object>> }
+pub struct Arena { cells: Vec<ObjCell> }
 
 impl Arena {
     pub fn new() -> Arena {
-        Arena { map: HashMap::new() }
+        Arena { cells: vec![] }
     }
 
-    pub fn get(&self, oid: Oid) -> &RefCell<Object> {
-        self.map.get(&oid).unwrap()
-    }
-
-    // 
-    // returns the inserted object's id
-    // 
-    // panic! if the key exists
-    // 
-    // TODO refine this panicing
-    // 
-    pub fn insert(&mut self, object: Object) -> Oid {
-        // save the id
-        let id = object.id;
-
-        if self.map.contains_key(&object.id) {
-            panic!();
-        }
-
-        self.map.insert(object.id, RefCell::new(object));
-
-        id
+    // adds a object, returns a ObjCell
+    pub fn add(&mut self, object: Object) -> ObjCell {
+        let cell = ObjCell::new(object);
+        self.cells.push(cell.clone());
+        cell
     }
 }

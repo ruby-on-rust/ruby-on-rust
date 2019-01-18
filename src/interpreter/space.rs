@@ -7,13 +7,11 @@
 mod arena;
 mod hierarchy;
 
-use std::collections::HashMap;
 use std::cell::{RefCell, RefMut};
 use crate::interpreter::{
     object::{
         Object,
-        oid::Oid,
-        value,
+        obj_cell::ObjCell,
         value::Value
     },
     space::arena::Arena,
@@ -22,11 +20,11 @@ use crate::interpreter::{
 pub struct Space {
     arena: Arena,
 
-    reserved_basic_object: Oid,
-    reserved_object: Oid,
-    reserved_module: Oid,
-    reserved_class: Oid,
-    reserved_nil: Oid,
+    reserved_basic_object: ObjCell,
+    reserved_object: ObjCell,
+    reserved_module: ObjCell,
+    reserved_class: ObjCell,
+    reserved_nil: ObjCell,
 }
 
 impl Space {
@@ -34,65 +32,24 @@ impl Space {
         Space {
             arena: Arena::new(),
 
-            // pre-generate ids
-            reserved_basic_object: Oid::new(),
-            reserved_object: Oid::new(),
-            reserved_module: Oid::new(),
-            reserved_class: Oid::new(),
-            reserved_nil: Oid::new(),
+            // pre-allocate placeholder obj cells
+            reserved_basic_object: ObjCell::new_placeholder(),
+            reserved_object: ObjCell::new_placeholder(),
+            reserved_module: ObjCell::new_placeholder(),
+            reserved_class: ObjCell::new_placeholder(),
+            reserved_nil: ObjCell::new_placeholder(),
         }
-    }
-
-    // 
-    // primitive classes: BasicObject, Object, Class, Module
-    // 
-    // after this, we could init other classes, like NilClass, like normal
-    // 
-    pub fn init_primitive_classes(&mut self) {
-        let basic_object = Object {
-            id: self.reserved_basic_object,
-            class: self.reserved_class,
-            value: Value::Class(
-                value::class::Class {
-                    superclass: None,
-                    consts: HashMap::new()
-                }
-            )
-        };
-
-        let object = Object {
-            id: self.reserved_object,
-            class: self.reserved_class,
-            value: value::new_class_value(self.reserved_basic_object)
-        };
-
-        let module = Object {
-            id: self.reserved_module,
-            class: self.reserved_class,
-            value: value::new_class_value(self.reserved_object)
-        };
-
-        let class = Object {
-            id: self.reserved_class,
-            class: self.reserved_class,
-            value: value::new_class_value(self.reserved_module)
-        };
-
-        self.arena.insert(basic_object);
-        self.arena.insert(object);
-        self.arena.insert(module);
-        self.arena.insert(class);
     }
 
     // nil, true, false, and classes
     pub fn init_primitive_values(&mut self) {
         let nil_class = self.define_class("NilClass");
-
-        let nil = Object {
-            id: self.reserved_nil,
-            class: nil_class,
-            value: Value::Nil,
-        };
-        self.arena.insert(nil);
+        let nil = Object::new(
+            nil_class, Value::Nil
+        );
+        self.arena.add(nil);
     }
+
+    // returns a nil
+    pub fn nil(&self) -> ObjCell { self.reserved_nil.clone() }
 }
