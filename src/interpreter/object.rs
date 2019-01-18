@@ -2,6 +2,7 @@ pub mod oid;
 pub mod obj_cell;
 pub mod value;
 
+use std::fmt;
 use crate::interpreter::object::{
     oid::Oid,
     obj_cell::ObjCell,

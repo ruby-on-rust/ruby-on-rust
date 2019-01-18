@@ -28,5 +28,5 @@ fn main() {
 
     let result = interpreter.eval(node);
 
-    // println!("evaluated result: {:?}", result);
+    println!("evaluated result: {}", result);
 }

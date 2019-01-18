@@ -1,3 +1,4 @@
+use std::fmt;
 use std::rc::{Rc};
 use std::cell::{RefCell};
 
@@ -7,6 +8,15 @@ use crate::interpreter::object::Object;
 pub struct ObjCell(
     pub Rc<RefCell<Option<Object>>>
 );
+
+impl fmt::Display for ObjCell {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // panic on placeholder
+        assert!(self.0.borrow().is_some());
+
+        write!(f, "ObjCell -> {}", self.0.borrow().as_ref().unwrap().id)
+    }
+}
 
 impl ObjCell {
     pub fn new(obj: Object) -> ObjCell {
@@ -23,15 +33,10 @@ impl ObjCell {
     // 
     // replace the placeholder with a real value
     // 
+    // panics unless is placeholder
+    // 
     pub fn replace_placeholder_with(&mut self, obj: Object) {
         assert!(self.0.borrow().is_none());
         (*self.0).replace(Some(obj));
     }
-
-    // // 
-    // // panic on placeholder
-    // // 
-    // pub fn borrow_mut(&mut self) -> &mut Object {
-    //     &mut self.0.get_mut().unwrap()
-    // }
 }

@@ -62,6 +62,8 @@ impl Space {
     // TODO DOC
     // 
     pub fn define_class(&mut self, name: &str) -> ObjCell {
+        dbg!("space.define_class");
+        dbg!(name);
         let new_class_cell = {
             let new_class = Object::new(
                 self.reserved_class.clone(),
@@ -70,8 +72,7 @@ impl Space {
             self.arena.add(new_class)
         };
 
-        // TODO separate
-        // object.as_class_add_const
+        // TODO somehow refine mutating object via the objref
         let mut object_cell = self.reserved_object.0.borrow_mut();
         let mut object = object_cell.as_mut().unwrap();
         if let Value::Class(class_value) = &mut object.value {

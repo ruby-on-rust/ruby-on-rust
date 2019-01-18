@@ -4,6 +4,7 @@
 // - to allocate new object
 // 
 
+use std::fmt;
 use std::collections::HashMap;
 use std::rc::Rc;
 use std::cell::{RefCell};
@@ -18,6 +19,17 @@ use crate::interpreter::{
 };
 
 pub struct Arena { cells: Vec<ObjCell> }
+
+impl fmt::Display for Arena {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let msg = self.cells.iter()
+            .map(|o| format!("{}", o))
+            .collect::<Vec<String>>()
+            .join("\n");
+
+        write!(f, "{}", msg)
+    }
+}
 
 impl Arena {
     pub fn new() -> Arena {
